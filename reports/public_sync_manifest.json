@@ -184389,6 +184389,45 @@
       "staged_size": 15693,
       "remote_revision": "d20e0fcc35f6658c4a98d7a5a3b0d2cad7c2dfeb",
       "remote_verified_at": "2026-09-11T18:02:52.316636+00:00"
+    },
+    {
+      "local_path": "checkpoints/checkpoint_20260912_020240.json",
+      "destination": "github",
+      "remote_path": "checkpoints/checkpoint_20260912_020240.json",
+      "size": 15693,
+      "sha256": "61dc756f4b0f009c35d0f39e5749b84e641067831fcda2ad47080804bafe776c",
+      "upload_status": "staged",
+      "excluded_reason": null,
+      "category": "upload_to_github",
+      "redacted_copy": false,
+      "staged_sha256": "61dc756f4b0f009c35d0f39e5749b84e641067831fcda2ad47080804bafe776c",
+      "staged_size": 15693
+    },
+    {
+      "local_path": "checkpoints/checkpoint_20260912_020257.json",
+      "destination": "github",
+      "remote_path": "checkpoints/checkpoint_20260912_020257.json",
+      "size": 15693,
+      "sha256": "2fe5993b7233ba97f25eb6a39e01f88a01f05ae087f70b9b0f1c9b93cf3359a2",
+      "upload_status": "staged",
+      "excluded_reason": null,
+      "category": "upload_to_github",
+      "redacted_copy": false,
+      "staged_sha256": "2fe5993b7233ba97f25eb6a39e01f88a01f05ae087f70b9b0f1c9b93cf3359a2",
+      "staged_size": 15693
+    },
+    {
+      "local_path": "reports/quality_metrics_ULDPGXfhYu8.json",
+      "destination": "github",
+      "remote_path": "reports/quality_metrics_ULDPGXfhYu8.json",
+      "size": 150,
+      "sha256": "8b75ca077736e4b5c4ee6d99806929688e409edd80c28c1626ecd04cdf2f4f97",
+      "upload_status": "staged",
+      "excluded_reason": null,
+      "category": "upload_to_github",
+      "redacted_copy": false,
+      "staged_sha256": "8b75ca077736e4b5c4ee6d99806929688e409edd80c28c1626ecd04cdf2f4f97",
+      "staged_size": 150
     }
   ],
   "remote_verification": {
@@ -184417,7 +184456,7 @@
   },
   "reviewable_unuploaded_count": 0,
   "reviewable_unuploaded_note": "All public-review-suitable non-media and non-sensitive files present at the final checkpoint snapshot boundary were published. Live daemons may create later files after this boundary.",
-  "public_sync_status": "COMPLETE_FOR_PUBLIC_REVIEW_ASSETS",
+  "public_sync_status": "LAST_INCREMENTAL_ASSETS_STAGED",
   "incremental_snapshots": [
     {
       "created_at": "2026-09-12T01:10:12.495191+08:00",
@@ -184441,6 +184480,13 @@
       "new_upload_to_github": 1,
       "new_upload_to_huggingface": 0,
       "boundary": "checkpoint_20260912_020025"
+    },
+    {
+      "scan_at": "2026-09-11T18:04:33.374048+00:00",
+      "new_entry_count": 3,
+      "new_upload_to_github": 3,
+      "new_upload_to_huggingface": 0,
+      "boundary": "last_incremental"
     }
   ],
   "last_incremental_sync": {
