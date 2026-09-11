@@ -1,0 +1,38 @@
+{
+  "schema_version": "0.1.0",
+  "milestone": "v0.2-final-sft-candidate-v1-20260912",
+  "github": {
+    "repository": "Iris0fTheValley/meow-neuro-corpus",
+    "commit": "be2eb65de435384d03d5cba3ad8acb12baf46c0a",
+    "tag": "v0.2-final-sft-candidate-v1-20260912",
+    "remote_verified": true
+  },
+  "huggingface": {
+    "repository": "ID-BLUEBERRY/meow-neuro-corpus-v02-artifacts",
+    "artifact_snapshot_revision": "71e194030aa8f774971d28df6e18d7a5b6b7f16d",
+    "manifest_update_revision": "904026ed53b87015407ede04da664554bce96d99",
+    "path": "final_sft_candidate_v1",
+    "remote_verified_entries": 9,
+    "public": true
+  },
+  "policy": {
+    "raw_media_uploaded": false,
+    "model_weights_uploaded": false,
+    "credentials_uploaded": false,
+    "training_candidate_promotion": false,
+    "ready_for_first_sft": false
+  },
+  "files": [
+    {"local_path": "datasets/meow_v02_sft_v1/final_sft_candidate_v1/dataset_manifest.json", "destination": "huggingface", "remote_path": "final_sft_candidate_v1/dataset_manifest.json", "size": 831, "sha256": "47a57a980869f14dfeb75495500bc3cf26fc34e3a0cc7d604b25f406934ab857", "upload_status": "verified"},
+    {"local_path": "datasets/meow_v02_sft_v1/final_sft_candidate_v1/final_delivery_report.json", "destination": "huggingface", "remote_path": "final_sft_candidate_v1/final_delivery_report.json", "size": 1342, "sha256": "3e6fa0a29ba8fe2426e820033de1ccd1017b8e5c129717c2593c1c155d09d835", "upload_status": "verified"},
+    {"local_path": "datasets/meow_v02_sft_v1/final_sft_candidate_v1/promotion_audit.jsonl", "destination": "huggingface", "remote_path": "final_sft_candidate_v1/promotion_audit.jsonl", "size": 9184507, "sha256": "b4b2465d11df2b68876c96e609d8fe818f10504a30266fffaf60fbfbf74bf87a", "upload_status": "verified"},
+    {"local_path": "datasets/meow_v02_sft_v1/final_sft_candidate_v1/quality_report.json", "destination": "huggingface", "remote_path": "final_sft_candidate_v1/quality_report.json", "size": 2870, "sha256": "110848957ee737e8d8065b6f87dea9162f82e768549894faf7b1b67f79082f6f", "upload_status": "verified"},
+    {"local_path": "datasets/meow_v02_sft_v1/final_sft_candidate_v1/rejection_funnel.json", "destination": "huggingface", "remote_path": "final_sft_candidate_v1/rejection_funnel.json", "size": 1635, "sha256": "ac2634a9c802ac6fbb720d06bef4e009dfaf4da724ad24cf0052b63c656a794c", "upload_status": "verified"},
+    {"local_path": "datasets/meow_v02_sft_v1/final_sft_candidate_v1/sealed_eval.jsonl", "destination": "huggingface", "remote_path": "final_sft_candidate_v1/sealed_eval.jsonl", "size": 456930, "sha256": "ea52671873187b965759e5d12f79e548d4756c22c0e945de1581b1b0b069bf7b", "upload_status": "verified"},
+    {"local_path": "datasets/meow_v02_sft_v1/final_sft_candidate_v1/train.jsonl", "destination": "huggingface", "remote_path": "final_sft_candidate_v1/train.jsonl", "size": 6538718, "sha256": "4adf083f60f2d6205ff9111a498fea14e44020ddadba98ff1b0153ff8c1ae848", "upload_status": "verified"},
+    {"local_path": "datasets/meow_v02_sft_v1/final_sft_candidate_v1/validation_report.json", "destination": "huggingface", "remote_path": "final_sft_candidate_v1/validation_report.json", "size": 745, "sha256": "22699458404e2d0db58af84fde165dc840671cd4b7373c1cadea148e61a8380e", "upload_status": "verified"},
+    {"local_path": "datasets/meow_v02_sft_v1/final_sft_candidate_v1/validation.jsonl", "destination": "huggingface", "remote_path": "final_sft_candidate_v1/validation.jsonl", "size": 1167440, "sha256": "ed7b1f074fb5684de52c80b478e356a1703c19ce274b68e5fcbdd37ae1b2176e", "upload_status": "verified"},
+    {"local_path": "publish/hf/README.md", "destination": "huggingface", "remote_path": "README.md", "size": 2909, "sha256": "e98452e942603e3c7c66d65bc665a36957a33c5934920720e1c7b80f37e915db", "upload_status": "verified"},
+    {"local_path": "reports/public_sync_manifest_final_candidate_v1.json", "destination": "huggingface", "remote_path": "reports/public_sync_manifest_final_candidate_v1.json", "size": 4123, "sha256": "self-referential-manifest-entry", "upload_status": "verified-after-upload; self hash intentionally omitted"}
+  ]
+}
