@@ -1,6 +1,6 @@
 # M.E.O.W. Neuro Corpus v0.2 — identity closure snapshot
 
-This private snapshot contains the reproducibility layer for the M.E.O.W. v0.2 Neuro/Evil Neuro corpus. It intentionally contains code, schemas, lightweight reports, provenance and derived identity indices only. It does not redistribute raw VOD video/audio, model weights, caches, credentials, or third-party source transcripts.
+This public snapshot contains the reproducibility layer for the M.E.O.W. v0.2 Neuro/Evil Neuro corpus. It intentionally contains code, schemas, lightweight reports, provenance and derived identity indices only. It does not redistribute raw VOD video/audio, model weights, caches, credentials, or third-party source transcripts.
 
 ## Current status
 
