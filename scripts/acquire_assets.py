@@ -23,7 +23,10 @@ def terminal_download_error(error: Exception) -> bool:
 
 
 def existing_asset(folder: Path, source_id: str) -> Path | None:
-    matches = sorted(folder.glob(f"{safe_name(source_id)}.*"))
+    matches = sorted(
+        p for p in folder.glob(f"{safe_name(source_id)}.*")
+        if p.suffix.lower() not in {".part", ".ytdl", ".tmp"}
+    )
     return matches[0] if matches else None
 
 
@@ -68,6 +71,14 @@ def main() -> None:
         if not args.source_id and not args.all and done >= args.limit:
             break
         if row.get(status_key) == "done":
+            # Repair stale manifest pointers left by interrupted yt-dlp runs;
+            # a completed .part file is not a valid asset, but a sibling final
+            # media file is safe to adopt without re-downloading.
+            asset = existing_asset(folder, row["source_id"])
+            if asset and row.get(path_key) != str(asset.relative_to(ROOT)):
+                row[path_key] = str(asset.relative_to(ROOT))
+                row["asset_bytes"] = asset.stat().st_size
+                log_event("asset_path_repaired", kind=args.kind, source_id=row["source_id"], path=row[path_key], bytes=row["asset_bytes"])
             continue
         if existing := existing_asset(folder, row["source_id"]):
             row[status_key] = "done"

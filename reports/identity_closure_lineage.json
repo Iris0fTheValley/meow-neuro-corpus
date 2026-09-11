@@ -2,7 +2,7 @@
   "schema_version": "0.1.0",
   "artifact_status": "current",
   "canonical_for": "identity_closure_lineage_and_artifact_roles",
-  "generated_at": "2026-09-11T20:07:15.058905+00:00",
+  "generated_at": "2026-09-11T20:23:56.986925+00:00",
   "code_commit": "working-tree",
   "thresholds": {
     "current_operating": {
@@ -49,10 +49,10 @@
       "canonical_for": "identity_validation_boundary",
       "path": "reports/identity_validation_boundary_audit.json",
       "schema_version": "0.1.0",
-      "generated_at": "2026-09-11T19:55:01.591155+00:00",
+      "generated_at": "2026-09-11T20:23:27.962951+00:00",
       "code_commit": "working-tree",
       "input_artifact_hashes": {
-        "self": "1bcea1b9bd4036f7605abf30410661b08a6c143efa7999ba41534663bc2ef544"
+        "self": "62a8ccdcdf1db70cf150b56f8cbc8068c130d0a3248a2ed99f438e3dd273f80a"
       }
     },
     "eres2netv2_cluster_remap": {

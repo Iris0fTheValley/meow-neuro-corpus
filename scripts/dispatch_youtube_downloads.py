@@ -40,6 +40,10 @@ def choose(rows: list[dict], limit: int) -> list[dict]:
     for row in rows:
         if row.get("source_platform") != "youtube":
             continue
+        if row.get("download_status") in {"rejected", "duplicate", "failed_permanent"}:
+            continue
+        if row.get("processing_status") == "rejected_duplicate_candidate":
+            continue
         if row.get("audio_download_status") in {"done", "blocked", "failed_permanent", "retryable", "running"}:
             continue
         if not row.get("source_url", "").startswith("https://www.youtube.com/"):

@@ -1,16 +1,15 @@
 {
-  "updated_at": "2026-09-11T16:52:40.551495+00:00",
-  "active_gpu_processes": [],
-  "launched": {
-    "pid": 50084,
-    "stage": "diarization",
-    "source_id": "zbBhnnv9XY0",
-    "args": [
-      "neuro_corpus/scripts/diarize_production_ecapa.py",
-      "--source-id=zbBhnnv9XY0",
-      "--clusters=2"
-    ]
-  },
-  "action": "launched",
-  "candidate_count": 3
+  "updated_at": "2026-09-11T20:13:00.695540+00:00",
+  "active_gpu_processes": [
+    {
+      "pid": 53176,
+      "cmdline": "\"J:\\AI friend\\MEOW Qwen3.5\\.venv-data\\Scripts\\python.exe\" neuro_corpus/scripts/asr_openai_whisper.py --source-id=R3Mr3umH9oA --model=medium.en --duration=13200"
+    },
+    {
+      "pid": 51560,
+      "cmdline": "\"C:\\Users\\12298\\AppData\\Local\\Programs\\Python\\Python311\\python.exe\" neuro_corpus/scripts/asr_openai_whisper.py --source-id=R3Mr3umH9oA --model=medium.en --duration=13200"
+    }
+  ],
+  "action": "hold_gpu_slot",
+  "reason": "an existing ASR/diarization process owns the single GPU slot"
 }

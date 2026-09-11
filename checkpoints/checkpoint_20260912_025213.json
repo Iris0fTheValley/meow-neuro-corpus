@@ -1,0 +1,340 @@
+{
+  "schema_version": "0.1.0",
+  "created_at": "2026-09-11T18:52:13.993122+00:00",
+  "videos_discovered": 1007,
+  "videos_minimal_pipeline_complete": 112,
+  "videos_full_pipeline_complete": 523,
+  "transcript_available_rows": 538,
+  "status_counts": {
+    "asr_status:done": 112,
+    "asr_status:source_transcript": 492,
+    "audio_download_status:blocked": 402,
+    "audio_download_status:done": 575,
+    "audio_download_status:pending": 2,
+    "audio_download_status:retryable": 26,
+    "diarization_status:done": 544,
+    "metadata_status:blocked": 7,
+    "metadata_status:done": 1000,
+    "pending": 492,
+    "rejected_duplicate_candidate": 1,
+    "subtitle_status:blocked": 308,
+    "subtitle_status:done": 508,
+    "subtitle_status:not_available": 191,
+    "transcript_available": 512,
+    "transcript_only": 2,
+    "video_download_status:done": 1
+  },
+  "disk_free_bytes": 83101224960,
+  "quality_gates": {
+    "state": "CONTINUE_WORKING",
+    "human_gold_is_promotion_blocker": false,
+    "auto_trusted_anchor_calibration_enabled": true,
+    "auto_trusted_anchor_policy": "Source-disjoint multi-evidence AUTO_TRUSTED anchors are valid for calibration and validation; HUMAN_VERIFIED is optional higher-evidence provenance, not a prerequisite.",
+    "reference_bank_status": "NEURO_FAMILY_PROMOTED_FOR_MAPPING_PROXY",
+    "reference_candidate_counts": {
+      "NEURO_FAMILY": 65,
+      "VEDAL": 16
+    },
+    "legacy_subtype_reference_candidate_counts": {
+      "NEURO": 15,
+      "EVIL": 10,
+      "VEDAL": 16
+    },
+    "trusted_clip_count": 0,
+    "natural_turn_source_count": 505,
+    "natural_conversation_window_count": 199371,
+    "transcript_audit_status": "AUDIT_ONLY_NO_DELETIONS",
+    "transcript_flagged_source_count": 516,
+    "twitchtranscript_status": "CONTINUE_WORKING_TRANSCRIPT_ONLY_SPEAKER_UNKNOWN",
+    "twitchtranscript_source_count": 2,
+    "twitchtranscript_window_count": 1821,
+    "twitchtranscript_training_candidate_count": 0,
+    "conversation_artifact_qa_status": "PASS",
+    "conversation_artifact_qa_error_count": 0,
+    "reference_human_review_status": "PENDING_HUMAN_GOLD_REVIEW",
+    "reference_human_review_candidate_count": 87,
+    "reference_human_reviewed_count": 0,
+    "natural_turn_quality_status": "REVIEW_PENDING_NO_DELETIONS",
+    "natural_turn_quality_flagged_source_count": 27,
+    "duplicate_group_review_status": "REVIEW_PENDING_NO_DELETIONS",
+    "duplicate_group_count": 3,
+    "surface_feature_annotation_status": "ANONYMOUS_SURFACE_FEATURES_ONLY",
+    "surface_feature_record_count": 199371,
+    "anonymous_coverage_status": "ANONYMOUS_IDENTITY_PENDING",
+    "anonymous_coverage_gap_count": 3,
+    "retry_queue_status": "RETRYABLE_ALTERNATE_SOURCE_PENDING",
+    "retryable_queue_count": 26,
+    "retry_queue_proxy_probe_status": "PROXY_METADATA_PROBE_COMPLETE_NO_MEDIA_DOWNLOAD",
+    "retry_queue_proxy_probe_count": 26,
+    "retry_queue_proxy_probe_status_counts": {
+      "PROBE_AVAILABLE_AUDIO_FORMATS": 26
+    },
+    "retry_queue_proxy_transcript_fallback_count": 14,
+    "retry_transcript_fallback_status": "TRANSCRIPT_FALLBACK_FETCH_COMPLETE_MEDIA_NOT_DOWNLOADED",
+    "retry_transcript_fallback_attempt_count": 14,
+    "retry_transcript_fallback_success_count": 14,
+    "retry_transcript_normalization_status": "TRANSCRIPT_FALLBACK_NORMALIZED_ANONYMOUS",
+    "retry_transcript_normalized_segment_count": 315555,
+    "retry_transcript_normalized_source_count": 14,
+    "retry_transcript_conversation_status": "TRANSCRIPT_ONLY_ANONYMOUS_CONVERSATIONS_QA_PENDING",
+    "retry_transcript_conversation_window_count": 78883,
+    "retry_transcript_conversation_qa_status": "PASS",
+    "retry_transcript_conversation_qa_error_count": 0,
+    "meow_v02_readiness_status": "NOT_READY_FOR_SFT",
+    "identity_mapping_queue_status": "PENDING_TRUSTED_REFERENCE",
+    "identity_mapping_pending_cluster_count": 1068,
+    "identity_mapping_mapped_cluster_count": 0,
+    "identity_mapping_family_proxy_cluster_count": 1068,
+    "identity_mapping_family_proxy_source_count": 503,
+    "neuro_family_bank_status": "NEURO_FAMILY_PROMOTED_FOR_MAPPING_PROXY",
+    "neuro_family_mapping_ready_clip_count": 65,
+    "neuro_family_gold_validated_trusted_count": 0,
+    "neuro_family_mapping_status": "PROXY_MAPPING_COMPLETE_GOLD_PENDING_HARD_NEGATIVES_APPLIED",
+    "neuro_family_mapped_cluster_count": 531,
+    "vedal_mapped_cluster_count": 180,
+    "family_mapped_conversation_status": "FAMILY_MAPPED_PROXY_QA_PASSED_TRAINING_CLOSED",
+    "family_mapped_conversation_count": 199371,
+    "family_mapped_conversation_qa_status": "PASS",
+    "family_mapped_conversation_qa_error_count": 0,
+    "family_training_candidate_status": "S_A_REVIEW_CANDIDATES_PROXY_IDENTITY_PENDING",
+    "family_s_a_review_candidate_count": 58968,
+    "family_training_candidate_qa_status": "PASS",
+    "family_open_set_ecapa_vedal_false_positive_count": 2,
+    "family_forensic_status": "FAMILY_MAPPED_CHEAP_FORENSIC_ONLY",
+    "family_forensic_turn_count": 2730013,
+    "family_candidate_dedupe_status": "PASS_NO_EXACT_DUPLICATE_WINDOWS_OVERLAP_REVIEWED",
+    "family_candidate_exact_duplicate_window_count": 0,
+    "family_candidate_overlap_membership_count": 0,
+    "family_coverage_status": "FAMILY_PROXY_COVERAGE_AUDIT_IDENTITY_FINAL_REVIEW_PENDING",
+    "family_coverage_window_count": 199371,
+    "family_hard_negative_quarantine_status": "HARD_NEGATIVE_QUARANTINE_APPLIED",
+    "family_hard_negative_quarantined_cluster_count": 0,
+    "family_gold_validation_status": "PENDING_HUMAN_GOLD_REVIEW",
+    "family_gold_validation_candidate_count": 83,
+    "family_gold_labeled_count": 0,
+    "open_set_negative_review_status": "METADATA_CANDIDATES_PENDING_MANUAL_AUDIO_REVIEW",
+    "open_set_negative_review_candidate_count": 453,
+    "open_set_negative_review_missing_buckets": [
+      "chat_tts"
+    ],
+    "open_set_negative_review_clip_status": "CLIPS_PENDING_MANUAL_AUDIO_REVIEW",
+    "open_set_negative_review_clip_count": 845,
+    "open_set_negative_gold_labeled_count": 0,
+    "open_set_negative_score_triage_status": "OPEN_SET_REVIEW_SCORE_TRIAGE_NOT_GOLD",
+    "open_set_negative_score_triage_clip_count": 845,
+    "open_set_negative_score_triage_bucket_summary": {
+      "game_voice": {
+        "clip_count": 13,
+        "potential_family_accept_count": 10,
+        "potential_family_accept_rate": 0.769231,
+        "margin_p05": -0.754705,
+        "margin_median": 0.68692
+      },
+      "guest": {
+        "clip_count": 10,
+        "potential_family_accept_count": 5,
+        "potential_family_accept_rate": 0.5,
+        "margin_p05": -0.579138,
+        "margin_median": 0.134817
+      },
+      "singing": {
+        "clip_count": 822,
+        "potential_family_accept_count": 577,
+        "potential_family_accept_rate": 0.701946,
+        "margin_p05": -0.742548,
+        "margin_median": 0.658292
+      }
+    },
+    "auto_validation_anchor_status": "AUTO_ANCHORS_READY_NOT_GOLD",
+    "auto_validation_anchor_count": 45,
+    "auto_validation_anchor_label_counts": {
+      "NEURO_FAMILY": 42,
+      "VEDAL": 1,
+      "OTHER": 2
+    },
+    "auto_validation_anchor_source_counts": {
+      "NEURO_FAMILY": 19,
+      "VEDAL": 1,
+      "OTHER": 2
+    },
+    "open_set_calibration_bank_status": "CALIBRATION_BANK_READY_AUTO_ANCHOR_NOT_GOLD",
+    "open_set_calibration_bank_label_counts": {
+      "NEURO_FAMILY": 65,
+      "VEDAL": 16,
+      "OTHER": 2
+    },
+    "open_set_calibration_excluded_confounds_count": 2,
+    "open_set_ecapa_calibration_status": "AUTO_ANCHOR_CALIBRATION_PROXY_NOT_GOLD",
+    "open_set_ecapa_selected_operating_point": {
+      "margin_threshold": 0.0,
+      "family_count": 65,
+      "family_accept": 65,
+      "family_recall_proxy": 1.0,
+      "vedal_count": 18,
+      "vedal_false_positive": 1,
+      "vedal_false_positive_rate": 0.055556
+    },
+    "open_set_xvector_calibration_status": "AUTO_ANCHOR_CALIBRATION_PROXY_NOT_GOLD",
+    "open_set_xvector_selected_operating_point": {
+      "margin_threshold": 0.0,
+      "family_count": 65,
+      "family_accept": 60,
+      "family_recall_proxy": 0.923077,
+      "vedal_count": 18,
+      "vedal_false_positive": 0,
+      "vedal_false_positive_rate": 0.0
+    },
+    "open_set_ensemble_calibration_status": "ENSEMBLE_AUTO_ANCHOR_CALIBRATION_PROXY_NOT_GOLD",
+    "open_set_ensemble_calibration_operating_point": {
+      "ecapa_margin_threshold": 0.135,
+      "xvector_margin_threshold": 0.0,
+      "family_recall_proxy": 0.923077,
+      "nontarget_false_positive_rate": 0.0
+    },
+    "identity_closure_participant_prior_status": "EXPECTED_PARTICIPANT_PRIORS_READY",
+    "identity_closure_participant_prior_source_count": 970,
+    "identity_closure_guest_negative_status": "RECURRING_GUEST_NEGATIVE_CANDIDATES_READY",
+    "identity_closure_guest_negative_candidate_count": 28,
+    "identity_closure_guest_negative_source_counts": {
+      "CerberVT": 2,
+      "Camila": 4,
+      "OTHER_GUEST": 3,
+      "Koko D. Nuts": 2,
+      "Nihmune": 2,
+      "Layna Lazar": 1,
+      "EllieMiniBot": 1,
+      "OniGiri": 1
+    },
+    "identity_closure_guest_prototype_status": "PROVISIONAL_ACOUSTIC_PROTOTYPES_READY",
+    "identity_closure_guest_prototype_count": 5,
+    "identity_closure_guest_prototype_promotion_decision": "DO_NOT_PROMOTE",
+    "identity_closure_semantic_bank_status": "SEMANTIC_IDENTITY_BANK_AUTO_TRUSTED_STYLE_ONLY",
+    "identity_closure_semantic_bank_record_count": 45,
+    "identity_closure_fusion_status": "MULTIMODAL_FUSION_PROXY_AUDIO_CONSENSUS_GATED",
+    "identity_closure_fusion_cluster_count": 1068,
+    "identity_closure_fusion_identity_counts": {
+      "NON_TARGET_GUEST": 460,
+      "NEURO_FAMILY_HIGH": 23,
+      "UNKNOWN": 339,
+      "NON_TARGET_KNOWN": 113,
+      "NON_TARGET_TTS": 11,
+      "NEURO_FAMILY_MEDIUM": 122
+    },
+    "identity_closure_eres2netv2_remap_status": "ERES2NETV2_CLUSTER_REMAP_ROBUST_MEDIAN_PROXY_COMPLETE",
+    "identity_closure_eres2netv2_remap_model": "iic/speech_eres2netv2_sv_zh-cn_16k-common",
+    "identity_closure_eres2netv2_remap_cluster_count": 1068,
+    "identity_closure_eres2netv2_remap_identity_counts": {
+      "NON_TARGET_GUEST": 498,
+      "NEURO_FAMILY": 197,
+      "UNKNOWN": 241,
+      "NON_TARGET_KNOWN": 132
+    },
+    "identity_closure_eres2netv2_remap_promotion_decision": "DO_NOT_PROMOTE",
+    "identity_closure_eres2netv2_remap_training_candidate_count": 0,
+    "identity_model_benchmark_status": "IDENTITY_MODEL_PROXY_BENCHMARK_WITH_STRESS_AUDIT",
+    "identity_model_benchmark_clip_count": 1053,
+    "identity_model_benchmark_models": {
+      "ecapa_voxceleb": {
+        "status": "PROXY_BENCHMARK_COMPLETE",
+        "selected_operating_point": {
+          "threshold": 0.2036,
+          "family_validation_count": 16,
+          "family_validation_accept": 15,
+          "family_recall_proxy": 0.9375,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        }
+      },
+      "xvector_voxceleb": {
+        "status": "PROXY_BENCHMARK_COMPLETE",
+        "selected_operating_point": {
+          "threshold": 0.0351,
+          "family_validation_count": 16,
+          "family_validation_accept": 0,
+          "family_recall_proxy": 0.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        }
+      },
+      "eres2netv2": {
+        "status": "PROXY_BENCHMARK_COMPLETE",
+        "selected_operating_point": {
+          "threshold": 0.1205,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        }
+      },
+      "campplus": {
+        "status": "PROXY_BENCHMARK_COMPLETE",
+        "selected_operating_point": {
+          "threshold": 0.1798,
+          "family_validation_count": 16,
+          "family_validation_accept": 7,
+          "family_recall_proxy": 0.4375,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        }
+      },
+      "eres2net": {
+        "status": "PROXY_BENCHMARK_COMPLETE",
+        "selected_operating_point": {
+          "threshold": 0.1315,
+          "family_validation_count": 16,
+          "family_validation_accept": 14,
+          "family_recall_proxy": 0.875,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        }
+      }
+    },
+    "identity_model_benchmark_promotion_decision": "DO_NOT_PROMOTE",
+    "identity_closure_fusion_candidate_status": "S_A_REVIEW_CANDIDATES_AUDIO_CONSENSUS_TTS_QUARANTINED",
+    "identity_closure_fusion_candidate_count": 8238,
+    "identity_closure_fusion_training_candidate_count": 0,
+    "identity_closure_chat_tts_stress_status": "CHAT_TTS_UNLABELED_STRESS_TEST_CALIBRATED",
+    "identity_closure_chat_tts_stress_clip_count": 140,
+    "identity_closure_chat_tts_stress_potential_family_accept_rate": 0.4,
+    "identity_closure_chat_tts_stress_use_for_calibration": false,
+    "identity_closure_chat_tts_rejection_layer_status": "CHAT_TTS_REJECTION_LAYER_AUDIT_COMPLETE_REJECT_ONLY",
+    "identity_closure_chat_tts_rejection_layer_version": "chat-tts-rejection-2026-09-12-v1",
+    "identity_closure_chat_tts_rejection_candidate_cluster_count": 1068,
+    "identity_closure_chat_tts_rejection_current_family_candidate_count": 145,
+    "identity_closure_chat_tts_rejection_decision_counts": {
+      "NONE": 979,
+      "QUARANTINE_REVIEW": 78,
+      "REJECT_NON_TARGET_TTS": 11
+    },
+    "identity_closure_chat_tts_rejection_family_decision_counts": {
+      "NONE": 145
+    },
+    "identity_closure_chat_tts_rejection_calibration_policy": "CHAT_TTS/OTHER_TTS layer is reject-only. Stress-only clips are not gold and cannot promote or recalibrate NEURO_FAMILY. Acoustic reject threshold is bounded by zero false reject on source-disjoint AUTO_TRUSTED family anchors.",
+    "identity_closure_chat_tts_rejection_promotion_effect": "REJECTION_ONLY_NO_FAMILY_PROMOTION",
+    "identity_closure_hard_negative_bank_status": "SOURCE_DISJOINT_HARD_NEGATIVE_BANK_READY",
+    "identity_closure_hard_negative_bank_record_count": 999,
+    "identity_closure_hard_negative_auto_trusted_count": 19,
+    "identity_closure_hard_negative_unlabeled_stress_count": 971,
+    "identity_closure_hard_negative_unlabeled_bucket_counts": {
+      "game_voice": 13,
+      "guest": 10,
+      "singing": 808,
+      "chat_tts": 140
+    },
+    "identity_closure_hard_negative_human_gold_is_promotion_blocker": false,
+    "identity_closure_fusion_audio_audit_status": "FUSION_AUDIO_CONSENSUS_AUDIT_COMPLETE",
+    "identity_closure_fusion_audio_audit_family_count": 145,
+    "identity_closure_fusion_audio_audit_family_supported_by_eres2netv2": 145,
+    "identity_closure_fusion_audio_audit_semantic_or_metadata_only_count": 0
+  },
+  "notes": [
+    "A video is not considered full-pipeline complete until subtitles/ASR, diarization, speaker mapping, conversation reconstruction, and quality metrics exist.",
+    "This checkpoint is intentionally conservative and does not infer speaker identity from titles."
+  ]
+}

@@ -2,7 +2,7 @@
   "schema_version": "0.1.0",
   "artifact_status": "current",
   "canonical_for": "identity_validation_boundary_and_independence_audit",
-  "generated_at": "2026-09-11T19:55:01.591154+00:00",
+  "generated_at": "2026-09-11T20:23:27.962448+00:00",
   "code_commit": "working-tree",
   "current_operating_threshold": 0.163198,
   "historical_benchmark_threshold": 0.1205,
@@ -41,17 +41,17 @@
     "policy": "A recording/content cluster is the unit of independence; source_id alone is insufficient."
   },
   "family_positive_validation": {
-    "status": "INSUFFICIENT_EVIDENCE",
+    "status": "AUTO_TRUSTED_INDEPENDENT_SLICE_AUDITED_INSUFFICIENT_FOR_PROMOTION",
     "candidate_reference_rows": 65,
-    "independent_rows_after_recording_cluster_exclusion": 0,
-    "independent_source_count": 0,
-    "independent_recording_cluster_count": 0,
-    "row_balanced": null,
-    "source_balanced": null,
-    "recording_cluster_balanced": null,
+    "independent_rows_after_recording_cluster_exclusion": 32,
+    "independent_source_count": 12,
+    "independent_recording_cluster_count": 12,
+    "row_balanced": 0.65625,
+    "source_balanced": 0.611111,
+    "recording_cluster_balanced": 0.611111,
     "confidence_interval": null,
     "evidence_sufficiency": false,
-    "reason": "All existing provisional family reference clips fall inside anchor/calibration recording clusters; no independent positive gold/AUTO_TRUSTED slice is available."
+    "reason": "An independent AUTO_TRUSTED positive slice is now available, but current-threshold retention is only 65.625% row-balanced / 61.111% source- and cluster-balanced, and labeled non-target precision remains incomplete; no promotion follows."
   },
   "hard_negative_validation": {
     "status": "STRESS_COVERAGE_EXPANDED_NO_GOLD_FPR",
@@ -277,12 +277,40 @@
     "policy": "Observed stress acceptance is not false-positive rate while gold_label is null; no 0 observed FP claim is made."
   },
   "candidate_end_to_end_positive_slice": {
-    "status": "NOT_EVALUATED_INSUFFICIENT_INDEPENDENT_POSITIVE",
-    "positive_validation_rows": 0,
-    "positive_validation_sources": 0,
-    "positive_validation_recording_clusters": 0,
+    "status": "AUTO_TRUSTED_POSITIVE_RETENTION_AUDIT_COMPLETE_NO_PROMOTION",
+    "positive_validation_rows": 32,
+    "positive_validation_sources": 12,
+    "positive_validation_recording_clusters": 12,
+    "independent_benchmark": {
+      "historical_clip_threshold": {
+        "value": 0.1205,
+        "row_count": 32,
+        "accept_count": 25,
+        "accept_rate": 0.78125,
+        "source_count": 12,
+        "source_balanced_rate": 0.75,
+        "recording_cluster_count": 12,
+        "recording_cluster_balanced_rate": 0.75,
+        "margin_min": -0.51577,
+        "margin_median": 0.185333,
+        "margin_max": 0.252881
+      },
+      "current_cluster_window_threshold": {
+        "value": 0.163198,
+        "row_count": 32,
+        "accept_count": 21,
+        "accept_rate": 0.65625,
+        "source_count": 12,
+        "source_balanced_rate": 0.611111,
+        "recording_cluster_count": 12,
+        "recording_cluster_balanced_rate": 0.611111,
+        "margin_min": -0.51577,
+        "margin_median": 0.185333,
+        "margin_max": 0.252881
+      }
+    },
     "proxy_family_pool_rows_not_used_as_validation": 49,
-    "policy": "A proxy identity mapping cannot validate itself; no end-to-end family retention metric is claimed until an independent positive slice exists."
+    "policy": "The independent slice is selected from explicit family metadata and dominant diarization, with recording/content-cluster exclusion and no current identity mapping dependency. It audits positive retention only; no precision, gold, or promotion claim follows."
   },
   "promotion_guard": {
     "training_candidate_allowed": false,
@@ -292,6 +320,8 @@
     "human_gold_required": false
   },
   "outputs": {
-    "split_manifest": "reports\\identity_validation_split_manifest.jsonl"
+    "split_manifest": "reports\\identity_validation_split_manifest.jsonl",
+    "independent_family_validation_slice": "speaker_refs/independent_family_validation.jsonl",
+    "independent_family_validation_benchmark": "reports/independent_family_validation_benchmark.json"
   }
 }

@@ -85,11 +85,11 @@
       "platform": "youtube",
       "kind": "clip_archive",
       "name": "Neuro-Sama Chronicles",
-      "url": "https://www.youtube.com/@NeuroSamaChronicles",
+      "url": "https://www.youtube.com/@neurochron_fan_channel",
       "uploader": "Neuro-Sama Chronicles",
       "priority": "medium",
-      "discovery_status": "seeded",
-      "notes": "Highlights and clips; retain as candidate/lead source, not as a replacement for long VODs."
+      "discovery_status": "expanded",
+      "notes": "Public highlight archive enumerated by flat playlist; retain only selected long, context-rich clips as source-recovery leads, not as a replacement for long VODs."
     },
     {
       "source_id": "yt_staz987",
@@ -510,6 +510,17 @@
       "notes": "Public archive index lead for full VOD pages; verify media accessibility and provenance before acquisition."
     },
     {
+      "source_id": "twitch_archive_twitchnosub_neuro",
+      "platform": "web",
+      "kind": "twitch_vod_archive",
+      "name": "TwitchNoSub Neuro archive",
+      "url": "https://twitchnosub.com/streamer/neuro",
+      "uploader": "TwitchNoSub",
+      "priority": "high",
+      "discovery_status": "expanded",
+      "notes": "Separate public archive index listing Neuro-labelled replays; enumerate only public metadata/media, then exclude locally known titles and verify original-source provenance."
+    },
+    {
       "source_id": "twitch_archive_streamrecorder_vedal987",
       "platform": "web",
       "kind": "twitch_vod_archive",
@@ -552,6 +563,28 @@
       "priority": "high",
       "discovery_status": "discovered_from_web_search",
       "notes": "Public preservation index for Neuro-sama-related YouTube videos; use as metadata/provenance lead and deduplicate against direct media sources."
+    },
+    {
+      "source_id": "web_streamrecorder_vedal987",
+      "platform": "web",
+      "kind": "public_twitch_recording_index",
+      "name": "StreamRecorder vedal987",
+      "url": "https://streamrecorder.io/twitch/vedal987",
+      "uploader": "StreamRecorder public index",
+      "priority": "high",
+      "discovery_status": "discovered_from_web_search",
+      "notes": "Public index of recent vedal987 streams with titles, dates and durations; no direct media acquisition assumed. Use only to discover missing VOD/archive leads, then verify public media provenance and deduplicate locally."
+    },
+    {
+      "source_id": "web_twitchmetrics_zentreya_streams",
+      "platform": "web",
+      "kind": "collaborator_vod_index",
+      "name": "TwitchMetrics Zentreya stream index",
+      "url": "https://www.twitchmetrics.net/c/128440061-zentreya/streams",
+      "uploader": "TwitchMetrics public index",
+      "priority": "medium",
+      "discovery_status": "discovered_from_web_search",
+      "notes": "Public collaborator-side stream metadata confirming alternate provenance for the 2026-09-10 D&D charity stream; use for date/title/duration matching only unless an openly accessible media source is verified."
     }
   ]
 }

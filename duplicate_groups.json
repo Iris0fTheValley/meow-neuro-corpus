@@ -18,6 +18,15 @@
         "youtube:qOMOT4A2BkE"
       ],
       "status": "review_required"
+    },
+    {
+      "duplicate_group": "dg_00003",
+      "relation": "audio_fingerprint",
+      "members": [
+        "youtube:9OXEMnv-Y00",
+        "youtube:VWrzkZ9UTo0"
+      ],
+      "status": "review_required"
     }
   ]
 }

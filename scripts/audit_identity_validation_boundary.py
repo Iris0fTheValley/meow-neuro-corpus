@@ -73,6 +73,12 @@ def main() -> None:
         row for row in family_refs
         if cluster_map.get(str(row.get("source_id"))) not in protected_clusters
     ]
+    independent_slice = [
+        row for row in read_jsonl(ROOT / "speaker_refs" / "independent_family_validation.jsonl")
+        if str(row.get("label")) == "NEURO_FAMILY"
+        and cluster_map.get(str(row.get("source_id"))) not in protected_clusters
+    ]
+    independent_benchmark = read_json(ROOT / "reports" / "independent_family_validation_benchmark.json", {})
     # This pool is deliberately not promoted to validation: it is proxy-derived
     # and only exists to make the evidence gap machine-visible.
     fusion_rows = read_jsonl(ROOT / "identity_results" / "identity_mapping_multimodal_fusion_proxy.jsonl")
@@ -125,14 +131,19 @@ def main() -> None:
     }
 
     split_audit = cluster_report.get("split_audit", {})
-    positive_status = "PASS" if independent_family_refs else "INSUFFICIENT_EVIDENCE"
+    positive_status = (
+        "AUTO_TRUSTED_INDEPENDENT_SLICE_AUDITED_INSUFFICIENT_FOR_PROMOTION"
+        if independent_slice and independent_benchmark
+        else ("PASS" if independent_family_refs else "INSUFFICIENT_EVIDENCE")
+    )
     candidate_eval = {
-        "status": "NOT_EVALUATED_INSUFFICIENT_INDEPENDENT_POSITIVE" if not independent_family_refs else "PENDING_IMPLEMENTATION",
-        "positive_validation_rows": len(independent_family_refs),
-        "positive_validation_sources": len({str(row.get("source_id")) for row in independent_family_refs}),
-        "positive_validation_recording_clusters": len({cluster_map.get(str(row.get("source_id"))) for row in independent_family_refs}),
+        "status": "AUTO_TRUSTED_POSITIVE_RETENTION_AUDIT_COMPLETE_NO_PROMOTION" if independent_slice and independent_benchmark else ("NOT_EVALUATED_INSUFFICIENT_INDEPENDENT_POSITIVE" if not independent_family_refs else "PENDING_IMPLEMENTATION"),
+        "positive_validation_rows": len(independent_slice) if independent_slice else len(independent_family_refs),
+        "positive_validation_sources": len({str(row.get("source_id")) for row in independent_slice}) if independent_slice else len({str(row.get("source_id")) for row in independent_family_refs}),
+        "positive_validation_recording_clusters": len({str(row.get("recording_cluster_id")) for row in independent_slice}) if independent_slice else len({cluster_map.get(str(row.get("source_id"))) for row in independent_family_refs}),
+        "independent_benchmark": independent_benchmark.get("operating_points", {}),
         "proxy_family_pool_rows_not_used_as_validation": len(proxy_family_pool),
-        "policy": "A proxy identity mapping cannot validate itself; no end-to-end family retention metric is claimed until an independent positive slice exists.",
+        "policy": "The independent slice is selected from explicit family metadata and dominant diarization, with recording/content-cluster exclusion and no current identity mapping dependency. It audits positive retention only; no precision, gold, or promotion claim follows.",
     }
 
     split_rows = [
@@ -142,6 +153,10 @@ def main() -> None:
     split_rows.extend(
         {"split": "transfer_validation_reference", "source_id": source, "recording_cluster_id": cluster_map.get(source), "eligible_for_independent_validation": cluster_map.get(source) not in protected_clusters}
         for source in sorted(validation_sources)
+    )
+    split_rows.extend(
+        {"split": "independent_family_validation_candidate", "source_id": str(row.get("source_id")), "recording_cluster_id": str(row.get("recording_cluster_id") or cluster_map.get(str(row.get("source_id")))), "eligible_for_independent_validation": True}
+        for row in independent_slice
     )
     SPLIT_OUT.write_text("".join(json.dumps(row, ensure_ascii=False) + "\n" for row in split_rows), encoding="utf-8")
 
@@ -158,15 +173,15 @@ def main() -> None:
         "family_positive_validation": {
             "status": positive_status,
             "candidate_reference_rows": len(family_refs),
-            "independent_rows_after_recording_cluster_exclusion": len(independent_family_refs),
-            "independent_source_count": len({str(row.get("source_id")) for row in independent_family_refs}),
-            "independent_recording_cluster_count": len({cluster_map.get(str(row.get("source_id"))) for row in independent_family_refs}),
-            "row_balanced": None,
-            "source_balanced": None,
-            "recording_cluster_balanced": None,
+            "independent_rows_after_recording_cluster_exclusion": len(independent_slice) if independent_slice else len(independent_family_refs),
+            "independent_source_count": len({str(row.get("source_id")) for row in independent_slice}) if independent_slice else len({str(row.get("source_id")) for row in independent_family_refs}),
+            "independent_recording_cluster_count": len({str(row.get("recording_cluster_id")) for row in independent_slice}) if independent_slice else len({cluster_map.get(str(row.get("source_id"))) for row in independent_family_refs}),
+            "row_balanced": (independent_benchmark.get("operating_points", {}).get("current_cluster_window_threshold", {}).get("accept_rate") if independent_benchmark else None),
+            "source_balanced": (independent_benchmark.get("operating_points", {}).get("current_cluster_window_threshold", {}).get("source_balanced_rate") if independent_benchmark else None),
+            "recording_cluster_balanced": (independent_benchmark.get("operating_points", {}).get("current_cluster_window_threshold", {}).get("recording_cluster_balanced_rate") if independent_benchmark else None),
             "confidence_interval": None,
             "evidence_sufficiency": False,
-            "reason": "All existing provisional family reference clips fall inside anchor/calibration recording clusters; no independent positive gold/AUTO_TRUSTED slice is available.",
+            "reason": "An independent AUTO_TRUSTED positive slice is now available, but current-threshold retention is only 65.625% row-balanced / 61.111% source- and cluster-balanced, and labeled non-target precision remains incomplete; no promotion follows.",
         },
         "hard_negative_validation": {
             "status": "STRESS_COVERAGE_EXPANDED_NO_GOLD_FPR",
@@ -182,13 +197,17 @@ def main() -> None:
             "identity_mapping_changed": False,
             "human_gold_required": False,
         },
-        "outputs": {"split_manifest": str(SPLIT_OUT.relative_to(ROOT))},
+        "outputs": {
+            "split_manifest": str(SPLIT_OUT.relative_to(ROOT)),
+            "independent_family_validation_slice": "speaker_refs/independent_family_validation.jsonl",
+            "independent_family_validation_benchmark": "reports/independent_family_validation_benchmark.json",
+        },
     }
     write_json(OUT, report)
     print(json.dumps({
         "status": report["family_positive_validation"]["status"],
         "recording_split_status": split_audit.get("calibration_recording_clusters_disjoint_from_validation"),
-        "independent_positive_rows": len(independent_family_refs),
+        "independent_positive_rows": len(independent_slice) if independent_slice else len(independent_family_refs),
         "proxy_family_pool_not_used": len(proxy_family_pool),
         "training_candidate_count": 0,
     }, ensure_ascii=False, indent=2))

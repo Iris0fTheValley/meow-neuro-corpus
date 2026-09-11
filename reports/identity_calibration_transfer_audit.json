@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1.0",
-  "created_at": "2026-09-11T15:14:05.303985+00:00",
+  "created_at": "2026-09-11T17:55:40.206873+00:00",
   "status": "CALIBRATION_TRANSFER_AUDIT_COMPLETE_NO_MUTATION",
   "model": "iic/speech_eres2netv2_sv_zh-cn_16k-common",
   "current_threshold": 0.1205,
