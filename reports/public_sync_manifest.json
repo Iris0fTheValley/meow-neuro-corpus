@@ -182856,21 +182856,23 @@
     "github": {
       "repository": "Iris0fTheValley/meow-neuro-corpus",
       "branch": "main",
-      "commit": "09fdea052f47654912babdfa25a25060dde39a95",
-      "tag": "v0.2-public-review-sync-20260912",
+      "commit": "c7e4ac77346bcf438868440b1d665ac7bc08aac0",
+      "tag": "v0.2-public-review-sync-complete-20260912",
       "tracked_file_count": 2332,
       "tracked_bytes": 18636650,
       "forbidden_media_or_weight_count": 0,
-      "secret_name_count": 0
+      "secret_name_count": 0,
+      "verification_scope": "verified before this manifest metadata refresh"
     },
     "huggingface": {
       "repository": "ID-BLUEBERRY/meow-neuro-corpus-v02-artifacts",
       "private": false,
-      "revision": "95b020db4de50a45d006303ec90514ced39b33fb",
+      "revision": "fb5ccdabdc98b3da5dc6c09564c315463d31077e",
       "file_count": 7075,
       "bytes": 18398970175,
       "forbidden_media_or_weight_count": 0,
-      "required_sample_hashes_verified": true
+      "required_sample_hashes_verified": true,
+      "verification_scope": "verified before this manifest metadata refresh"
     }
   },
   "reviewable_unuploaded_count": 0,
