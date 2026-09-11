@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_status": "VALIDATED_FINAL_FIRST_SFT_CANDIDATE_DATASET",
+  "dataset_dir": "datasets\\meow_v02_sft_v1\\final_sft_candidate_v1",
+  "sample_counts": {
+    "train": 4415,
+    "validation": 802,
+    "sealed_eval": 299
+  },
+  "total_samples": 5516,
+  "json_schema_errors": [],
+  "suspicious_rows": [],
+  "exact_duplicate_count": 0,
+  "near_duplicate_screen": {
+    "method": "normalized_assistant_response_collision",
+    "repeated_response_key_count": 0,
+    "repeated_response_keys_top10": []
+  },
+  "recording_cluster_leakage": {
+    "train_validation": [],
+    "train_sealed_eval": [],
+    "validation_sealed_eval": []
+  },
+  "training_candidate_true_count": 0,
+  "pass": true
+}

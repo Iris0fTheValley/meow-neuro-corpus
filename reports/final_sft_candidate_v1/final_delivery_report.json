@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_status": "FINAL_SFT_CANDIDATE_DELIVERY",
+  "raw_high_confidence_target_utterances": 82726,
+  "raw_target_utterances_with_recoverable_context": 25476,
+  "usable_target_response_rate": 0.308645,
+  "final_train_samples": 4415,
+  "validation_samples": 802,
+  "sealed_eval_samples": 299,
+  "unique_sources": 20,
+  "unique_recording_clusters": 12,
+  "removed_as_identity_uncertain": 3907,
+  "removed_as_tts_guest": 16108,
+  "removed_as_transcript_context_bad": 2,
+  "removed_as_duplicate": 0,
+  "estimated_speaker_contamination_risk": "low_relative_to_v2; all rows pass named-guest review and chat-TTS bound quarantine, but challenge clips remain unlabeled stress evidence",
+  "estimated_context_error_risk": "low_to_moderate; inherited raw-timeline context gate and independent structural validator",
+  "READY_FOR_FIRST_SFT": "NO",
+  "readiness_reason": "Explicit current phase hold forbids SFT/promotion; artifact is fail-closed and ready for user quality review, but training_candidate remains false.",
+  "paths": {
+    "dataset": "datasets\\meow_v02_sft_v1\\final_sft_candidate_v1",
+    "manifest": "datasets\\meow_v02_sft_v1\\final_sft_candidate_v1\\dataset_manifest.json",
+    "quality_report": "datasets\\meow_v02_sft_v1\\final_sft_candidate_v1\\quality_report.json"
+  }
+}

@@ -30,3 +30,5 @@ All promotion decisions remain conservative until target-vs-non-target precision
 ## Versioning and provenance
 
 Reports record scorer/model, threshold, aggregation, reference-bank provenance, source splits, and promotion decisions. This snapshot is an identity-closure milestone and is **not ready for training**.
+
+The raw-corpus recovery pass produced `production_v2_recovered` and a stricter `final_sft_candidate_v1` candidate: 5,516 rows across 20 sources and 12 recording clusters, split-disjoint by recording cluster. The candidate passed the independent structural validator with zero exact duplicates, response collisions, suspicious rows, or split leakage. It remains review-only: `READY_FOR_FIRST_SFT=NO` and `training_candidate=true` count `0`.

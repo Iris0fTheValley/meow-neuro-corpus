@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0.0",
+  "pipeline_version": "final-sft-candidate-2026-09-12-v1-fail-closed-promotion",
+  "raw_recovery_reference": "datasets\\meow_v02_sft_v1\\production_v2_recovered\\rejection_funnel.json",
+  "stages": [
+    {
+      "stage": "initial_production_v2_candidates",
+      "rows": 25533,
+      "removed_rows": 0
+    },
+    {
+      "stage": "assistant_identity_and_resolution_gate",
+      "rows": 21626,
+      "removed_rows": 3907
+    },
+    {
+      "stage": "guest_tts_contamination_rejection_gate",
+      "rows": 5518,
+      "removed_rows": 16108
+    },
+    {
+      "stage": "context_and_transcript_gate",
+      "rows": 5516,
+      "removed_rows": 2
+    },
+    {
+      "stage": "exact_and_response_deduplication",
+      "rows": 5516,
+      "removed_rows": 0
+    },
+    {
+      "stage": "final_fail_closed_candidate",
+      "rows": 5516,
+      "removed_rows": 0
+    }
+  ],
+  "recording_cluster_leakage": {
+    "train_validation": [],
+    "train_sealed_eval": [],
+    "validation_sealed_eval": []
+  },
+  "exclusion_counts": {
+    "named_guest_similarity_review_quarantine": 15799,
+    "assistant_speaker_confidence_below_0.70": 3907,
+    "chat_tts_similarity_at_or_above_family_anchor_bound": 309,
+    "assistant_text_quality": 2
+  },
+  "raw_recovery_target_total": 82726,
+  "raw_recovery_target_with_recoverable_context": 25476,
+  "raw_recovery_usable_target_response_rate": 0.308645,
+  "policy": "No assistant identity relaxation; context-side guest/TTS is allowed only when inherited raw reconstruction marked it coherent; training_candidate remains false."
+}

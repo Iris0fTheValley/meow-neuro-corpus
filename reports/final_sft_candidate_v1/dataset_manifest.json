@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_status": "FINAL_SFT_CANDIDATE_FAIL_CLOSED",
+  "pipeline_version": "final-sft-candidate-2026-09-12-v1-fail-closed-promotion",
+  "files": {
+    "train": "train.jsonl",
+    "validation": "validation.jsonl",
+    "sealed_eval": "sealed_eval.jsonl",
+    "dataset_manifest": "dataset_manifest.json",
+    "quality_report": "quality_report.json",
+    "validation_report": "validation_report.json",
+    "promotion_audit": "promotion_audit.jsonl"
+  },
+  "source_artifacts": {
+    "production_v2": "datasets\\meow_v02_sft_v1\\production_v2_recovered",
+    "family_cluster_audit": "reports\\neuro_family_148_cluster_audit.jsonl"
+  },
+  "recording_cluster_disjoint": true,
+  "training_candidate_true_count": 0,
+  "promotion_status": "CANDIDATE_ARTIFACT_ONLY_NO_SOURCE_PROMOTION"
+}
