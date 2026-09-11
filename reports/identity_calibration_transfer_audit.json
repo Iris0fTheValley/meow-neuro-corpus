@@ -1,0 +1,3245 @@
+{
+  "schema_version": "0.1.0",
+  "created_at": "2026-09-11T15:14:05.303985+00:00",
+  "status": "CALIBRATION_TRANSFER_AUDIT_COMPLETE_NO_MUTATION",
+  "model": "iic/speech_eres2netv2_sv_zh-cn_16k-common",
+  "current_threshold": 0.1205,
+  "benchmark_report_threshold": 0.1205,
+  "reference_counts": {
+    "benchmark_family_total": 42,
+    "benchmark_family_bank_train": 26,
+    "vedal": 10,
+    "guest_auto_trusted": 19
+  },
+  "anchor_comparison": [
+    {
+      "record_id": "family_meta:evil:8335sBz9aHU:00",
+      "source_id": "8335sBz9aHU",
+      "clip_path": "speaker_refs\\provisional_clips\\EVIL\\8335sBz9aHU__00.flac",
+      "saved_benchmark": {
+        "family_score": 0.916718,
+        "vedal_score": 0.511835,
+        "guest_score": 0.78122,
+        "family_margin": 0.135498
+      },
+      "benchmark_replay": {
+        "family_score": 0.907371,
+        "vedal_score": 0.511835,
+        "guest_score": null,
+        "family_margin": 0.395536,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "none"
+      },
+      "benchmark_guest_fixed": {
+        "family_score": 0.907371,
+        "vedal_score": 0.511835,
+        "guest_score": 0.746064,
+        "family_margin": 0.161307,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_pooled": {
+        "family_score": 0.916718,
+        "vedal_score": 0.511835,
+        "guest_score": 0.746064,
+        "family_margin": 0.170654,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_per_label": {
+        "family_score": 0.916718,
+        "vedal_score": 0.511835,
+        "guest_score": 0.746064,
+        "family_margin": 0.170654,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "per_label"
+      },
+      "accept": {
+        "saved_benchmark": true,
+        "formal_like_per_label": true
+      }
+    },
+    {
+      "record_id": "family_meta:evil:8335sBz9aHU:01",
+      "source_id": "8335sBz9aHU",
+      "clip_path": "speaker_refs\\provisional_clips\\EVIL\\8335sBz9aHU__01.flac",
+      "saved_benchmark": {
+        "family_score": 0.945173,
+        "vedal_score": 0.487611,
+        "guest_score": 0.792034,
+        "family_margin": 0.153139
+      },
+      "benchmark_replay": {
+        "family_score": 0.936606,
+        "vedal_score": 0.487611,
+        "guest_score": null,
+        "family_margin": 0.448994,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "none"
+      },
+      "benchmark_guest_fixed": {
+        "family_score": 0.936606,
+        "vedal_score": 0.487611,
+        "guest_score": 0.737463,
+        "family_margin": 0.199142,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_pooled": {
+        "family_score": 0.945173,
+        "vedal_score": 0.487611,
+        "guest_score": 0.737463,
+        "family_margin": 0.207709,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_per_label": {
+        "family_score": 0.945173,
+        "vedal_score": 0.487611,
+        "guest_score": 0.737463,
+        "family_margin": 0.207709,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "per_label"
+      },
+      "accept": {
+        "saved_benchmark": true,
+        "formal_like_per_label": true
+      }
+    },
+    {
+      "record_id": "family_meta:evil:8335sBz9aHU:02",
+      "source_id": "8335sBz9aHU",
+      "clip_path": "speaker_refs\\provisional_clips\\EVIL\\8335sBz9aHU__02.flac",
+      "saved_benchmark": {
+        "family_score": 0.950365,
+        "vedal_score": 0.466394,
+        "guest_score": 0.761367,
+        "family_margin": 0.188998
+      },
+      "benchmark_replay": {
+        "family_score": 0.939231,
+        "vedal_score": 0.466394,
+        "guest_score": null,
+        "family_margin": 0.472837,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "none"
+      },
+      "benchmark_guest_fixed": {
+        "family_score": 0.939231,
+        "vedal_score": 0.466394,
+        "guest_score": 0.701598,
+        "family_margin": 0.237632,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_pooled": {
+        "family_score": 0.950365,
+        "vedal_score": 0.466394,
+        "guest_score": 0.701598,
+        "family_margin": 0.248767,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_per_label": {
+        "family_score": 0.950365,
+        "vedal_score": 0.466394,
+        "guest_score": 0.701598,
+        "family_margin": 0.248767,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "per_label"
+      },
+      "accept": {
+        "saved_benchmark": true,
+        "formal_like_per_label": true
+      }
+    },
+    {
+      "record_id": "family_meta:evil:8335sBz9aHU:03",
+      "source_id": "8335sBz9aHU",
+      "clip_path": "speaker_refs\\provisional_clips\\EVIL\\8335sBz9aHU__03.flac",
+      "saved_benchmark": {
+        "family_score": 0.933018,
+        "vedal_score": 0.442805,
+        "guest_score": 0.77234,
+        "family_margin": 0.160678
+      },
+      "benchmark_replay": {
+        "family_score": 0.924088,
+        "vedal_score": 0.442805,
+        "guest_score": null,
+        "family_margin": 0.481282,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "none"
+      },
+      "benchmark_guest_fixed": {
+        "family_score": 0.924088,
+        "vedal_score": 0.442805,
+        "guest_score": 0.683732,
+        "family_margin": 0.240355,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_pooled": {
+        "family_score": 0.933018,
+        "vedal_score": 0.442805,
+        "guest_score": 0.683732,
+        "family_margin": 0.249286,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_per_label": {
+        "family_score": 0.933018,
+        "vedal_score": 0.442805,
+        "guest_score": 0.683732,
+        "family_margin": 0.249286,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "per_label"
+      },
+      "accept": {
+        "saved_benchmark": true,
+        "formal_like_per_label": true
+      }
+    },
+    {
+      "record_id": "family_meta:neuro:FpMGqhh_yd8:00",
+      "source_id": "FpMGqhh_yd8",
+      "clip_path": "speaker_refs\\provisional_clips\\NEURO\\FpMGqhh_yd8__00.flac",
+      "saved_benchmark": {
+        "family_score": 0.955538,
+        "vedal_score": 0.464733,
+        "guest_score": 0.778718,
+        "family_margin": 0.17682
+      },
+      "benchmark_replay": {
+        "family_score": 0.947457,
+        "vedal_score": 0.464733,
+        "guest_score": null,
+        "family_margin": 0.482724,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "none"
+      },
+      "benchmark_guest_fixed": {
+        "family_score": 0.947457,
+        "vedal_score": 0.464733,
+        "guest_score": 0.712816,
+        "family_margin": 0.234641,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_pooled": {
+        "family_score": 0.955538,
+        "vedal_score": 0.464733,
+        "guest_score": 0.712816,
+        "family_margin": 0.242722,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_per_label": {
+        "family_score": 0.955538,
+        "vedal_score": 0.464733,
+        "guest_score": 0.712816,
+        "family_margin": 0.242722,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "per_label"
+      },
+      "accept": {
+        "saved_benchmark": true,
+        "formal_like_per_label": true
+      }
+    },
+    {
+      "record_id": "family_meta:neuro:FpMGqhh_yd8:01",
+      "source_id": "FpMGqhh_yd8",
+      "clip_path": "speaker_refs\\provisional_clips\\NEURO\\FpMGqhh_yd8__01.flac",
+      "saved_benchmark": {
+        "family_score": 0.92153,
+        "vedal_score": 0.415927,
+        "guest_score": 0.733059,
+        "family_margin": 0.188471
+      },
+      "benchmark_replay": {
+        "family_score": 0.909186,
+        "vedal_score": 0.415927,
+        "guest_score": null,
+        "family_margin": 0.49326,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "none"
+      },
+      "benchmark_guest_fixed": {
+        "family_score": 0.909186,
+        "vedal_score": 0.415927,
+        "guest_score": 0.64958,
+        "family_margin": 0.259606,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_pooled": {
+        "family_score": 0.92153,
+        "vedal_score": 0.415927,
+        "guest_score": 0.64958,
+        "family_margin": 0.27195,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_per_label": {
+        "family_score": 0.92153,
+        "vedal_score": 0.415927,
+        "guest_score": 0.64958,
+        "family_margin": 0.27195,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "per_label"
+      },
+      "accept": {
+        "saved_benchmark": true,
+        "formal_like_per_label": true
+      }
+    },
+    {
+      "record_id": "family_meta:neuro:FpMGqhh_yd8:02",
+      "source_id": "FpMGqhh_yd8",
+      "clip_path": "speaker_refs\\provisional_clips\\NEURO\\FpMGqhh_yd8__02.flac",
+      "saved_benchmark": {
+        "family_score": 0.905857,
+        "vedal_score": 0.403304,
+        "guest_score": 0.744494,
+        "family_margin": 0.161362
+      },
+      "benchmark_replay": {
+        "family_score": 0.895779,
+        "vedal_score": 0.403304,
+        "guest_score": null,
+        "family_margin": 0.492475,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "none"
+      },
+      "benchmark_guest_fixed": {
+        "family_score": 0.895779,
+        "vedal_score": 0.403304,
+        "guest_score": 0.657843,
+        "family_margin": 0.237936,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_pooled": {
+        "family_score": 0.905857,
+        "vedal_score": 0.403304,
+        "guest_score": 0.657843,
+        "family_margin": 0.248013,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_per_label": {
+        "family_score": 0.905857,
+        "vedal_score": 0.403304,
+        "guest_score": 0.657843,
+        "family_margin": 0.248013,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "per_label"
+      },
+      "accept": {
+        "saved_benchmark": true,
+        "formal_like_per_label": true
+      }
+    },
+    {
+      "record_id": "family_meta:neuro:FpMGqhh_yd8:03",
+      "source_id": "FpMGqhh_yd8",
+      "clip_path": "speaker_refs\\provisional_clips\\NEURO\\FpMGqhh_yd8__03.flac",
+      "saved_benchmark": {
+        "family_score": 0.941416,
+        "vedal_score": 0.443753,
+        "guest_score": 0.765755,
+        "family_margin": 0.17566
+      },
+      "benchmark_replay": {
+        "family_score": 0.930083,
+        "vedal_score": 0.443753,
+        "guest_score": null,
+        "family_margin": 0.486329,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "none"
+      },
+      "benchmark_guest_fixed": {
+        "family_score": 0.930083,
+        "vedal_score": 0.443753,
+        "guest_score": 0.684508,
+        "family_margin": 0.245575,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_pooled": {
+        "family_score": 0.941416,
+        "vedal_score": 0.443753,
+        "guest_score": 0.684508,
+        "family_margin": 0.256908,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_per_label": {
+        "family_score": 0.941416,
+        "vedal_score": 0.443753,
+        "guest_score": 0.684508,
+        "family_margin": 0.256908,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "per_label"
+      },
+      "accept": {
+        "saved_benchmark": true,
+        "formal_like_per_label": true
+      }
+    },
+    {
+      "record_id": "family_meta:neuro:GjIopQlnEUY:00",
+      "source_id": "GjIopQlnEUY",
+      "clip_path": "speaker_refs\\provisional_clips\\NEURO\\GjIopQlnEUY__00.flac",
+      "saved_benchmark": {
+        "family_score": 0.921029,
+        "vedal_score": 0.359645,
+        "guest_score": 0.677987,
+        "family_margin": 0.243041
+      },
+      "benchmark_replay": {
+        "family_score": 0.914716,
+        "vedal_score": 0.359645,
+        "guest_score": null,
+        "family_margin": 0.555071,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "none"
+      },
+      "benchmark_guest_fixed": {
+        "family_score": 0.914716,
+        "vedal_score": 0.359645,
+        "guest_score": 0.602699,
+        "family_margin": 0.312016,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_pooled": {
+        "family_score": 0.921029,
+        "vedal_score": 0.359645,
+        "guest_score": 0.602699,
+        "family_margin": 0.318329,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_per_label": {
+        "family_score": 0.921029,
+        "vedal_score": 0.359645,
+        "guest_score": 0.602699,
+        "family_margin": 0.318329,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "per_label"
+      },
+      "accept": {
+        "saved_benchmark": true,
+        "formal_like_per_label": true
+      }
+    },
+    {
+      "record_id": "family_meta:neuro:GjIopQlnEUY:01",
+      "source_id": "GjIopQlnEUY",
+      "clip_path": "speaker_refs\\provisional_clips\\NEURO\\GjIopQlnEUY__01.flac",
+      "saved_benchmark": {
+        "family_score": 0.911675,
+        "vedal_score": 0.381689,
+        "guest_score": 0.724736,
+        "family_margin": 0.186939
+      },
+      "benchmark_replay": {
+        "family_score": 0.904945,
+        "vedal_score": 0.381689,
+        "guest_score": null,
+        "family_margin": 0.523256,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "none"
+      },
+      "benchmark_guest_fixed": {
+        "family_score": 0.904945,
+        "vedal_score": 0.381689,
+        "guest_score": 0.611486,
+        "family_margin": 0.293459,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_pooled": {
+        "family_score": 0.911675,
+        "vedal_score": 0.381689,
+        "guest_score": 0.611486,
+        "family_margin": 0.300189,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_per_label": {
+        "family_score": 0.911675,
+        "vedal_score": 0.381689,
+        "guest_score": 0.611486,
+        "family_margin": 0.300189,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "per_label"
+      },
+      "accept": {
+        "saved_benchmark": true,
+        "formal_like_per_label": true
+      }
+    },
+    {
+      "record_id": "family_meta:neuro:GjIopQlnEUY:02",
+      "source_id": "GjIopQlnEUY",
+      "clip_path": "speaker_refs\\provisional_clips\\NEURO\\GjIopQlnEUY__02.flac",
+      "saved_benchmark": {
+        "family_score": 0.92289,
+        "vedal_score": 0.404384,
+        "guest_score": 0.765326,
+        "family_margin": 0.157564
+      },
+      "benchmark_replay": {
+        "family_score": 0.92537,
+        "vedal_score": 0.404384,
+        "guest_score": null,
+        "family_margin": 0.520986,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "none"
+      },
+      "benchmark_guest_fixed": {
+        "family_score": 0.92537,
+        "vedal_score": 0.404384,
+        "guest_score": 0.69695,
+        "family_margin": 0.22842,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_pooled": {
+        "family_score": 0.92289,
+        "vedal_score": 0.404384,
+        "guest_score": 0.69695,
+        "family_margin": 0.22594,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_per_label": {
+        "family_score": 0.92289,
+        "vedal_score": 0.404384,
+        "guest_score": 0.69695,
+        "family_margin": 0.22594,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "per_label"
+      },
+      "accept": {
+        "saved_benchmark": true,
+        "formal_like_per_label": true
+      }
+    },
+    {
+      "record_id": "family_meta:neuro:GjIopQlnEUY:03",
+      "source_id": "GjIopQlnEUY",
+      "clip_path": "speaker_refs\\provisional_clips\\NEURO\\GjIopQlnEUY__03.flac",
+      "saved_benchmark": {
+        "family_score": 0.902214,
+        "vedal_score": 0.355142,
+        "guest_score": 0.70263,
+        "family_margin": 0.199584
+      },
+      "benchmark_replay": {
+        "family_score": 0.893672,
+        "vedal_score": 0.355142,
+        "guest_score": null,
+        "family_margin": 0.53853,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "none"
+      },
+      "benchmark_guest_fixed": {
+        "family_score": 0.893672,
+        "vedal_score": 0.355142,
+        "guest_score": 0.580628,
+        "family_margin": 0.313043,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_pooled": {
+        "family_score": 0.902214,
+        "vedal_score": 0.355142,
+        "guest_score": 0.580628,
+        "family_margin": 0.321586,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_per_label": {
+        "family_score": 0.902214,
+        "vedal_score": 0.355142,
+        "guest_score": 0.580628,
+        "family_margin": 0.321586,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "per_label"
+      },
+      "accept": {
+        "saved_benchmark": true,
+        "formal_like_per_label": true
+      }
+    },
+    {
+      "record_id": "family_meta:evil:SJxG6ASjZeY:00",
+      "source_id": "SJxG6ASjZeY",
+      "clip_path": "speaker_refs\\provisional_clips\\EVIL\\SJxG6ASjZeY__00.flac",
+      "saved_benchmark": {
+        "family_score": 0.951592,
+        "vedal_score": 0.46863,
+        "guest_score": 0.782209,
+        "family_margin": 0.169382
+      },
+      "benchmark_replay": {
+        "family_score": 0.952035,
+        "vedal_score": 0.46863,
+        "guest_score": null,
+        "family_margin": 0.483405,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "none"
+      },
+      "benchmark_guest_fixed": {
+        "family_score": 0.952035,
+        "vedal_score": 0.46863,
+        "guest_score": 0.738555,
+        "family_margin": 0.213481,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_pooled": {
+        "family_score": 0.951592,
+        "vedal_score": 0.46863,
+        "guest_score": 0.738555,
+        "family_margin": 0.213037,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_per_label": {
+        "family_score": 0.951592,
+        "vedal_score": 0.46863,
+        "guest_score": 0.738555,
+        "family_margin": 0.213037,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "per_label"
+      },
+      "accept": {
+        "saved_benchmark": true,
+        "formal_like_per_label": true
+      }
+    },
+    {
+      "record_id": "family_meta:evil:SJxG6ASjZeY:01",
+      "source_id": "SJxG6ASjZeY",
+      "clip_path": "speaker_refs\\provisional_clips\\EVIL\\SJxG6ASjZeY__01.flac",
+      "saved_benchmark": {
+        "family_score": 0.921309,
+        "vedal_score": 0.457626,
+        "guest_score": 0.739249,
+        "family_margin": 0.182061
+      },
+      "benchmark_replay": {
+        "family_score": 0.917651,
+        "vedal_score": 0.457626,
+        "guest_score": null,
+        "family_margin": 0.460025,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "none"
+      },
+      "benchmark_guest_fixed": {
+        "family_score": 0.917651,
+        "vedal_score": 0.457626,
+        "guest_score": 0.697122,
+        "family_margin": 0.220529,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_pooled": {
+        "family_score": 0.921309,
+        "vedal_score": 0.457626,
+        "guest_score": 0.697122,
+        "family_margin": 0.224187,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_per_label": {
+        "family_score": 0.921309,
+        "vedal_score": 0.457626,
+        "guest_score": 0.697122,
+        "family_margin": 0.224187,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "per_label"
+      },
+      "accept": {
+        "saved_benchmark": true,
+        "formal_like_per_label": true
+      }
+    },
+    {
+      "record_id": "family_meta:evil:SJxG6ASjZeY:02",
+      "source_id": "SJxG6ASjZeY",
+      "clip_path": "speaker_refs\\provisional_clips\\EVIL\\SJxG6ASjZeY__02.flac",
+      "saved_benchmark": {
+        "family_score": 0.947228,
+        "vedal_score": 0.488258,
+        "guest_score": 0.782158,
+        "family_margin": 0.16507
+      },
+      "benchmark_replay": {
+        "family_score": 0.940238,
+        "vedal_score": 0.488258,
+        "guest_score": null,
+        "family_margin": 0.45198,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "none"
+      },
+      "benchmark_guest_fixed": {
+        "family_score": 0.940238,
+        "vedal_score": 0.488258,
+        "guest_score": 0.722642,
+        "family_margin": 0.217596,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_pooled": {
+        "family_score": 0.947228,
+        "vedal_score": 0.488258,
+        "guest_score": 0.722642,
+        "family_margin": 0.224586,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_per_label": {
+        "family_score": 0.947228,
+        "vedal_score": 0.488258,
+        "guest_score": 0.722642,
+        "family_margin": 0.224586,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "per_label"
+      },
+      "accept": {
+        "saved_benchmark": true,
+        "formal_like_per_label": true
+      }
+    },
+    {
+      "record_id": "family_meta:evil:SJxG6ASjZeY:03",
+      "source_id": "SJxG6ASjZeY",
+      "clip_path": "speaker_refs\\provisional_clips\\EVIL\\SJxG6ASjZeY__03.flac",
+      "saved_benchmark": {
+        "family_score": 0.930959,
+        "vedal_score": 0.485493,
+        "guest_score": 0.810431,
+        "family_margin": 0.120528
+      },
+      "benchmark_replay": {
+        "family_score": 0.930111,
+        "vedal_score": 0.485493,
+        "guest_score": null,
+        "family_margin": 0.444618,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "none"
+      },
+      "benchmark_guest_fixed": {
+        "family_score": 0.930111,
+        "vedal_score": 0.485493,
+        "guest_score": 0.749351,
+        "family_margin": 0.18076,
+        "family_reference_mode": "bank_train",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_pooled": {
+        "family_score": 0.930959,
+        "vedal_score": 0.485493,
+        "guest_score": 0.749351,
+        "family_margin": 0.181608,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "pooled"
+      },
+      "formal_like_per_label": {
+        "family_score": 0.930959,
+        "vedal_score": 0.485493,
+        "guest_score": 0.749351,
+        "family_margin": 0.181608,
+        "family_reference_mode": "all",
+        "guest_reference_mode": "per_label"
+      },
+      "accept": {
+        "saved_benchmark": true,
+        "formal_like_per_label": true
+      }
+    }
+  ],
+  "formal_anchor_exact": [
+    {
+      "record_id": "family_meta:evil:8335sBz9aHU:00",
+      "source_id": "8335sBz9aHU",
+      "family_score": 0.916718,
+      "vedal_score": 0.499055,
+      "best_guest_label": "Koko D. Nuts",
+      "best_guest_score": 0.78122,
+      "family_margin": 0.135498,
+      "guest_reference_mode": "per_label",
+      "accepted_at_current_threshold": true
+    },
+    {
+      "record_id": "family_meta:evil:8335sBz9aHU:01",
+      "source_id": "8335sBz9aHU",
+      "family_score": 0.945173,
+      "vedal_score": 0.467228,
+      "best_guest_label": "CerberVT",
+      "best_guest_score": 0.792034,
+      "family_margin": 0.153139,
+      "guest_reference_mode": "per_label",
+      "accepted_at_current_threshold": true
+    },
+    {
+      "record_id": "family_meta:evil:8335sBz9aHU:02",
+      "source_id": "8335sBz9aHU",
+      "family_score": 0.950365,
+      "vedal_score": 0.446418,
+      "best_guest_label": "CerberVT",
+      "best_guest_score": 0.761367,
+      "family_margin": 0.188998,
+      "guest_reference_mode": "per_label",
+      "accepted_at_current_threshold": true
+    },
+    {
+      "record_id": "family_meta:evil:8335sBz9aHU:03",
+      "source_id": "8335sBz9aHU",
+      "family_score": 0.933018,
+      "vedal_score": 0.423132,
+      "best_guest_label": "CerberVT",
+      "best_guest_score": 0.77234,
+      "family_margin": 0.160678,
+      "guest_reference_mode": "per_label",
+      "accepted_at_current_threshold": true
+    },
+    {
+      "record_id": "family_meta:neuro:FpMGqhh_yd8:00",
+      "source_id": "FpMGqhh_yd8",
+      "family_score": 0.955538,
+      "vedal_score": 0.442144,
+      "best_guest_label": "CerberVT",
+      "best_guest_score": 0.778718,
+      "family_margin": 0.17682,
+      "guest_reference_mode": "per_label",
+      "accepted_at_current_threshold": true
+    },
+    {
+      "record_id": "family_meta:neuro:FpMGqhh_yd8:01",
+      "source_id": "FpMGqhh_yd8",
+      "family_score": 0.92153,
+      "vedal_score": 0.398621,
+      "best_guest_label": "CerberVT",
+      "best_guest_score": 0.733059,
+      "family_margin": 0.188471,
+      "guest_reference_mode": "per_label",
+      "accepted_at_current_threshold": true
+    },
+    {
+      "record_id": "family_meta:neuro:FpMGqhh_yd8:02",
+      "source_id": "FpMGqhh_yd8",
+      "family_score": 0.905857,
+      "vedal_score": 0.384845,
+      "best_guest_label": "CerberVT",
+      "best_guest_score": 0.744494,
+      "family_margin": 0.161362,
+      "guest_reference_mode": "per_label",
+      "accepted_at_current_threshold": true
+    },
+    {
+      "record_id": "family_meta:neuro:FpMGqhh_yd8:03",
+      "source_id": "FpMGqhh_yd8",
+      "family_score": 0.941416,
+      "vedal_score": 0.421743,
+      "best_guest_label": "CerberVT",
+      "best_guest_score": 0.765755,
+      "family_margin": 0.17566,
+      "guest_reference_mode": "per_label",
+      "accepted_at_current_threshold": true
+    },
+    {
+      "record_id": "family_meta:neuro:GjIopQlnEUY:00",
+      "source_id": "GjIopQlnEUY",
+      "family_score": 0.921029,
+      "vedal_score": 0.328882,
+      "best_guest_label": "CerberVT",
+      "best_guest_score": 0.677987,
+      "family_margin": 0.243041,
+      "guest_reference_mode": "per_label",
+      "accepted_at_current_threshold": true
+    },
+    {
+      "record_id": "family_meta:neuro:GjIopQlnEUY:01",
+      "source_id": "GjIopQlnEUY",
+      "family_score": 0.911675,
+      "vedal_score": 0.361908,
+      "best_guest_label": "CerberVT",
+      "best_guest_score": 0.724736,
+      "family_margin": 0.186939,
+      "guest_reference_mode": "per_label",
+      "accepted_at_current_threshold": true
+    },
+    {
+      "record_id": "family_meta:neuro:GjIopQlnEUY:02",
+      "source_id": "GjIopQlnEUY",
+      "family_score": 0.92289,
+      "vedal_score": 0.382035,
+      "best_guest_label": "CerberVT",
+      "best_guest_score": 0.765326,
+      "family_margin": 0.157564,
+      "guest_reference_mode": "per_label",
+      "accepted_at_current_threshold": true
+    },
+    {
+      "record_id": "family_meta:neuro:GjIopQlnEUY:03",
+      "source_id": "GjIopQlnEUY",
+      "family_score": 0.902214,
+      "vedal_score": 0.337949,
+      "best_guest_label": "CerberVT",
+      "best_guest_score": 0.70263,
+      "family_margin": 0.199584,
+      "guest_reference_mode": "per_label",
+      "accepted_at_current_threshold": true
+    },
+    {
+      "record_id": "family_meta:evil:SJxG6ASjZeY:00",
+      "source_id": "SJxG6ASjZeY",
+      "family_score": 0.951592,
+      "vedal_score": 0.442229,
+      "best_guest_label": "CerberVT",
+      "best_guest_score": 0.782209,
+      "family_margin": 0.169382,
+      "guest_reference_mode": "per_label",
+      "accepted_at_current_threshold": true
+    },
+    {
+      "record_id": "family_meta:evil:SJxG6ASjZeY:01",
+      "source_id": "SJxG6ASjZeY",
+      "family_score": 0.921309,
+      "vedal_score": 0.435407,
+      "best_guest_label": "Koko D. Nuts",
+      "best_guest_score": 0.739249,
+      "family_margin": 0.182061,
+      "guest_reference_mode": "per_label",
+      "accepted_at_current_threshold": true
+    },
+    {
+      "record_id": "family_meta:evil:SJxG6ASjZeY:02",
+      "source_id": "SJxG6ASjZeY",
+      "family_score": 0.947228,
+      "vedal_score": 0.472447,
+      "best_guest_label": "CerberVT",
+      "best_guest_score": 0.782158,
+      "family_margin": 0.16507,
+      "guest_reference_mode": "per_label",
+      "accepted_at_current_threshold": true
+    },
+    {
+      "record_id": "family_meta:evil:SJxG6ASjZeY:03",
+      "source_id": "SJxG6ASjZeY",
+      "family_score": 0.930959,
+      "vedal_score": 0.470301,
+      "best_guest_label": "CerberVT",
+      "best_guest_score": 0.810431,
+      "family_margin": 0.120528,
+      "guest_reference_mode": "per_label",
+      "accepted_at_current_threshold": true
+    }
+  ],
+  "current_formal_remap_known_family_sources": {
+    "8335sBz9aHU": [
+      {
+        "cluster": "SPEAKER_00",
+        "identity": "NON_TARGET_GUEST",
+        "family_score": 0.601502,
+        "vedal_score": 0.265209,
+        "best_guest_label": "Koko D. Nuts",
+        "best_guest_score": 0.739813,
+        "family_margin": -0.002891,
+        "threshold": 0.163198
+      },
+      {
+        "cluster": "SPEAKER_01",
+        "identity": "NON_TARGET_GUEST",
+        "family_score": 0.294513,
+        "vedal_score": 0.015837,
+        "best_guest_label": "Camila",
+        "best_guest_score": 0.313985,
+        "family_margin": -0.019471,
+        "threshold": 0.163198
+      }
+    ],
+    "FpMGqhh_yd8": [
+      {
+        "cluster": "SPEAKER_00",
+        "identity": "NON_TARGET_GUEST",
+        "family_score": 0.67334,
+        "vedal_score": 0.271822,
+        "best_guest_label": "CerberVT",
+        "best_guest_score": 0.698004,
+        "family_margin": 0.074136,
+        "threshold": 0.163198
+      },
+      {
+        "cluster": "SPEAKER_01",
+        "identity": "NON_TARGET_KNOWN",
+        "family_score": 0.406054,
+        "vedal_score": 0.645859,
+        "best_guest_label": "OTHER_GUEST",
+        "best_guest_score": 0.554628,
+        "family_margin": -0.239804,
+        "threshold": 0.163198
+      }
+    ],
+    "SJxG6ASjZeY": [
+      {
+        "cluster": "SPEAKER_00",
+        "identity": "NON_TARGET_GUEST",
+        "family_score": 0.449369,
+        "vedal_score": 0.28224,
+        "best_guest_label": "Koko D. Nuts",
+        "best_guest_score": 0.746339,
+        "family_margin": -0.01351,
+        "threshold": 0.163198
+      },
+      {
+        "cluster": "SPEAKER_01",
+        "identity": "NON_TARGET_GUEST",
+        "family_score": 0.277538,
+        "vedal_score": 0.320806,
+        "best_guest_label": "Camila",
+        "best_guest_score": 0.396894,
+        "family_margin": -0.119356,
+        "threshold": 0.163198
+      }
+    ],
+    "GjIopQlnEUY": [
+      {
+        "cluster": "SPEAKER_00",
+        "identity": "NON_TARGET_GUEST",
+        "family_score": 0.479276,
+        "vedal_score": 0.24107,
+        "best_guest_label": "CerberVT",
+        "best_guest_score": 0.701699,
+        "family_margin": -0.047854,
+        "threshold": 0.163198
+      },
+      {
+        "cluster": "SPEAKER_01",
+        "identity": "NON_TARGET_GUEST",
+        "family_score": 0.515101,
+        "vedal_score": 0.34946,
+        "best_guest_label": "Koko D. Nuts",
+        "best_guest_score": 0.584891,
+        "family_margin": -0.069789,
+        "threshold": 0.163198
+      }
+    ]
+  },
+  "segment_level_existing_source_audit": {
+    "8335sBz9aHU": {
+      "SPEAKER_00": {
+        "segment_count_scored": 32,
+        "segment_family_score": {
+          "min": 0.298474,
+          "median": 0.829641,
+          "max": 0.940129
+        },
+        "segment_family_margin": {
+          "min": -0.215664,
+          "median": 0.151028,
+          "max": 0.235672
+        },
+        "segment_accept_count_at_current_threshold": 21,
+        "segment_accept_rate_at_current_threshold": 0.65625,
+        "cluster_aggregate_from_formal_remap": {
+          "mapping_id": "8335sBz9aHU:SPEAKER_00",
+          "source_id": "8335sBz9aHU",
+          "cluster": "SPEAKER_00",
+          "identity": "NON_TARGET_GUEST",
+          "identity_confidence": "medium",
+          "family_score": 0.601502,
+          "vedal_score": 0.265209,
+          "best_guest_label": "Koko D. Nuts",
+          "best_guest_score": 0.739813,
+          "family_margin": -0.002891,
+          "segment_count": 8,
+          "segment_margin_min": -0.215664,
+          "segment_margin_max": 0.211821,
+          "segment_vote_rate_at_threshold": 0.125,
+          "aggregation": "median_segment_margin_over_temporary_proxy_windows",
+          "model": "iic/speech_eres2netv2_sv_zh-cn_16k-common",
+          "threshold": 0.163198,
+          "threshold_source": "source_disjoint_segment_median_zero_fp",
+          "status": "PROXY_ERES2NETV2_ROBUST_MEDIAN_MAPPING",
+          "gold_validated": false,
+          "training_candidate": false,
+          "reference_source_disjoint": true,
+          "reference_bank": "auto_validation_family_plus_source_disjoint_vedal_plus_auto_trusted_guest_hard_negatives"
+        }
+      },
+      "SPEAKER_01": {
+        "segment_count_scored": 1,
+        "segment_family_score": {
+          "min": 0.338181,
+          "median": 0.338181,
+          "max": 0.338181
+        },
+        "segment_family_margin": {
+          "min": -0.097336,
+          "median": -0.097336,
+          "max": -0.097336
+        },
+        "segment_accept_count_at_current_threshold": 0,
+        "segment_accept_rate_at_current_threshold": 0.0,
+        "cluster_aggregate_from_formal_remap": {
+          "mapping_id": "8335sBz9aHU:SPEAKER_01",
+          "source_id": "8335sBz9aHU",
+          "cluster": "SPEAKER_01",
+          "identity": "NON_TARGET_GUEST",
+          "identity_confidence": "medium",
+          "family_score": 0.294513,
+          "vedal_score": 0.015837,
+          "best_guest_label": "Camila",
+          "best_guest_score": 0.313985,
+          "family_margin": -0.019471,
+          "segment_count": 1,
+          "segment_margin_min": -0.019471,
+          "segment_margin_max": -0.019471,
+          "segment_vote_rate_at_threshold": 0.0,
+          "aggregation": "median_segment_margin_over_temporary_proxy_windows",
+          "model": "iic/speech_eres2netv2_sv_zh-cn_16k-common",
+          "threshold": 0.163198,
+          "threshold_source": "source_disjoint_segment_median_zero_fp",
+          "status": "PROXY_ERES2NETV2_ROBUST_MEDIAN_MAPPING",
+          "gold_validated": false,
+          "training_candidate": false,
+          "reference_source_disjoint": true,
+          "reference_bank": "auto_validation_family_plus_source_disjoint_vedal_plus_auto_trusted_guest_hard_negatives"
+        }
+      }
+    },
+    "FpMGqhh_yd8": {
+      "SPEAKER_00": {
+        "segment_count_scored": 32,
+        "segment_family_score": {
+          "min": 0.473779,
+          "median": 0.883611,
+          "max": 0.959065
+        },
+        "segment_family_margin": {
+          "min": -0.067438,
+          "median": 0.169971,
+          "max": 0.236771
+        },
+        "segment_accept_count_at_current_threshold": 28,
+        "segment_accept_rate_at_current_threshold": 0.875,
+        "cluster_aggregate_from_formal_remap": {
+          "mapping_id": "FpMGqhh_yd8:SPEAKER_00",
+          "source_id": "FpMGqhh_yd8",
+          "cluster": "SPEAKER_00",
+          "identity": "NON_TARGET_GUEST",
+          "identity_confidence": "medium",
+          "family_score": 0.67334,
+          "vedal_score": 0.271822,
+          "best_guest_label": "CerberVT",
+          "best_guest_score": 0.698004,
+          "family_margin": 0.074136,
+          "segment_count": 8,
+          "segment_margin_min": -0.067438,
+          "segment_margin_max": 0.230994,
+          "segment_vote_rate_at_threshold": 0.375,
+          "aggregation": "median_segment_margin_over_temporary_proxy_windows",
+          "model": "iic/speech_eres2netv2_sv_zh-cn_16k-common",
+          "threshold": 0.163198,
+          "threshold_source": "source_disjoint_segment_median_zero_fp",
+          "status": "PROXY_ERES2NETV2_ROBUST_MEDIAN_MAPPING",
+          "gold_validated": false,
+          "training_candidate": false,
+          "reference_source_disjoint": true,
+          "reference_bank": "auto_validation_family_plus_source_disjoint_vedal_plus_auto_trusted_guest_hard_negatives"
+        }
+      },
+      "SPEAKER_01": {
+        "segment_count_scored": 1,
+        "segment_family_score": {
+          "min": 0.406054,
+          "median": 0.406054,
+          "max": 0.406054
+        },
+        "segment_family_margin": {
+          "min": -0.239804,
+          "median": -0.239804,
+          "max": -0.239804
+        },
+        "segment_accept_count_at_current_threshold": 0,
+        "segment_accept_rate_at_current_threshold": 0.0,
+        "cluster_aggregate_from_formal_remap": {
+          "mapping_id": "FpMGqhh_yd8:SPEAKER_01",
+          "source_id": "FpMGqhh_yd8",
+          "cluster": "SPEAKER_01",
+          "identity": "NON_TARGET_KNOWN",
+          "identity_confidence": "medium",
+          "family_score": 0.406054,
+          "vedal_score": 0.645859,
+          "best_guest_label": "OTHER_GUEST",
+          "best_guest_score": 0.554628,
+          "family_margin": -0.239804,
+          "segment_count": 1,
+          "segment_margin_min": -0.239804,
+          "segment_margin_max": -0.239804,
+          "segment_vote_rate_at_threshold": 0.0,
+          "aggregation": "median_segment_margin_over_temporary_proxy_windows",
+          "model": "iic/speech_eres2netv2_sv_zh-cn_16k-common",
+          "threshold": 0.163198,
+          "threshold_source": "source_disjoint_segment_median_zero_fp",
+          "status": "PROXY_ERES2NETV2_ROBUST_MEDIAN_MAPPING",
+          "gold_validated": false,
+          "training_candidate": false,
+          "reference_source_disjoint": true,
+          "reference_bank": "auto_validation_family_plus_source_disjoint_vedal_plus_auto_trusted_guest_hard_negatives"
+        }
+      }
+    },
+    "GjIopQlnEUY": {
+      "SPEAKER_00": {
+        "segment_count_scored": 31,
+        "segment_family_score": {
+          "min": 0.095279,
+          "median": 0.759734,
+          "max": 0.909857
+        },
+        "segment_family_margin": {
+          "min": -0.203928,
+          "median": 0.153183,
+          "max": 0.243653
+        },
+        "segment_accept_count_at_current_threshold": 17,
+        "segment_accept_rate_at_current_threshold": 0.548387,
+        "cluster_aggregate_from_formal_remap": {
+          "mapping_id": "GjIopQlnEUY:SPEAKER_00",
+          "source_id": "GjIopQlnEUY",
+          "cluster": "SPEAKER_00",
+          "identity": "NON_TARGET_GUEST",
+          "identity_confidence": "medium",
+          "family_score": 0.479276,
+          "vedal_score": 0.24107,
+          "best_guest_label": "CerberVT",
+          "best_guest_score": 0.701699,
+          "family_margin": -0.047854,
+          "segment_count": 8,
+          "segment_margin_min": -0.147948,
+          "segment_margin_max": 0.201026,
+          "segment_vote_rate_at_threshold": 0.125,
+          "aggregation": "median_segment_margin_over_temporary_proxy_windows",
+          "model": "iic/speech_eres2netv2_sv_zh-cn_16k-common",
+          "threshold": 0.163198,
+          "threshold_source": "source_disjoint_segment_median_zero_fp",
+          "status": "PROXY_ERES2NETV2_ROBUST_MEDIAN_MAPPING",
+          "gold_validated": false,
+          "training_candidate": false,
+          "reference_source_disjoint": true,
+          "reference_bank": "auto_validation_family_plus_source_disjoint_vedal_plus_auto_trusted_guest_hard_negatives"
+        }
+      },
+      "SPEAKER_01": {
+        "segment_count_scored": 1,
+        "segment_family_score": {
+          "min": 0.515101,
+          "median": 0.515101,
+          "max": 0.515101
+        },
+        "segment_family_margin": {
+          "min": -0.06979,
+          "median": -0.06979,
+          "max": -0.06979
+        },
+        "segment_accept_count_at_current_threshold": 0,
+        "segment_accept_rate_at_current_threshold": 0.0,
+        "cluster_aggregate_from_formal_remap": {
+          "mapping_id": "GjIopQlnEUY:SPEAKER_01",
+          "source_id": "GjIopQlnEUY",
+          "cluster": "SPEAKER_01",
+          "identity": "NON_TARGET_GUEST",
+          "identity_confidence": "medium",
+          "family_score": 0.515101,
+          "vedal_score": 0.34946,
+          "best_guest_label": "Koko D. Nuts",
+          "best_guest_score": 0.584891,
+          "family_margin": -0.069789,
+          "segment_count": 1,
+          "segment_margin_min": -0.069789,
+          "segment_margin_max": -0.069789,
+          "segment_vote_rate_at_threshold": 0.0,
+          "aggregation": "median_segment_margin_over_temporary_proxy_windows",
+          "model": "iic/speech_eres2netv2_sv_zh-cn_16k-common",
+          "threshold": 0.163198,
+          "threshold_source": "source_disjoint_segment_median_zero_fp",
+          "status": "PROXY_ERES2NETV2_ROBUST_MEDIAN_MAPPING",
+          "gold_validated": false,
+          "training_candidate": false,
+          "reference_source_disjoint": true,
+          "reference_bank": "auto_validation_family_plus_source_disjoint_vedal_plus_auto_trusted_guest_hard_negatives"
+        }
+      }
+    },
+    "SJxG6ASjZeY": {
+      "SPEAKER_00": {
+        "segment_count_scored": 32,
+        "segment_family_score": {
+          "min": 0.393825,
+          "median": 0.833135,
+          "max": 0.946159
+        },
+        "segment_family_margin": {
+          "min": -0.188914,
+          "median": 0.120523,
+          "max": 0.22247
+        },
+        "segment_accept_count_at_current_threshold": 16,
+        "segment_accept_rate_at_current_threshold": 0.5,
+        "cluster_aggregate_from_formal_remap": {
+          "mapping_id": "SJxG6ASjZeY:SPEAKER_00",
+          "source_id": "SJxG6ASjZeY",
+          "cluster": "SPEAKER_00",
+          "identity": "NON_TARGET_GUEST",
+          "identity_confidence": "medium",
+          "family_score": 0.449369,
+          "vedal_score": 0.28224,
+          "best_guest_label": "Koko D. Nuts",
+          "best_guest_score": 0.746339,
+          "family_margin": -0.01351,
+          "segment_count": 8,
+          "segment_margin_min": -0.122292,
+          "segment_margin_max": 0.18729,
+          "segment_vote_rate_at_threshold": 0.125,
+          "aggregation": "median_segment_margin_over_temporary_proxy_windows",
+          "model": "iic/speech_eres2netv2_sv_zh-cn_16k-common",
+          "threshold": 0.163198,
+          "threshold_source": "source_disjoint_segment_median_zero_fp",
+          "status": "PROXY_ERES2NETV2_ROBUST_MEDIAN_MAPPING",
+          "gold_validated": false,
+          "training_candidate": false,
+          "reference_source_disjoint": true,
+          "reference_bank": "auto_validation_family_plus_source_disjoint_vedal_plus_auto_trusted_guest_hard_negatives"
+        }
+      },
+      "SPEAKER_01": {
+        "segment_count_scored": 1,
+        "segment_family_score": {
+          "min": 0.277538,
+          "median": 0.277538,
+          "max": 0.277538
+        },
+        "segment_family_margin": {
+          "min": -0.119356,
+          "median": -0.119356,
+          "max": -0.119356
+        },
+        "segment_accept_count_at_current_threshold": 0,
+        "segment_accept_rate_at_current_threshold": 0.0,
+        "cluster_aggregate_from_formal_remap": {
+          "mapping_id": "SJxG6ASjZeY:SPEAKER_01",
+          "source_id": "SJxG6ASjZeY",
+          "cluster": "SPEAKER_01",
+          "identity": "NON_TARGET_GUEST",
+          "identity_confidence": "medium",
+          "family_score": 0.277538,
+          "vedal_score": 0.320806,
+          "best_guest_label": "Camila",
+          "best_guest_score": 0.396894,
+          "family_margin": -0.119356,
+          "segment_count": 1,
+          "segment_margin_min": -0.119356,
+          "segment_margin_max": -0.119356,
+          "segment_vote_rate_at_threshold": 0.0,
+          "aggregation": "median_segment_margin_over_temporary_proxy_windows",
+          "model": "iic/speech_eres2netv2_sv_zh-cn_16k-common",
+          "threshold": 0.163198,
+          "threshold_source": "source_disjoint_segment_median_zero_fp",
+          "status": "PROXY_ERES2NETV2_ROBUST_MEDIAN_MAPPING",
+          "gold_validated": false,
+          "training_candidate": false,
+          "reference_source_disjoint": true,
+          "reference_bank": "auto_validation_family_plus_source_disjoint_vedal_plus_auto_trusted_guest_hard_negatives"
+        }
+      }
+    }
+  },
+  "segment_aggregation_calibration": {
+    "current_segment_margin_threshold": 0.1205,
+    "row_count": 45,
+    "median_margin": {
+      "selected_zero_fp": {
+        "threshold": 0.163198,
+        "family_accept": 12,
+        "family_count": 16,
+        "family_recall": 0.75,
+        "nontarget_fp": 0,
+        "nontarget_count": 29,
+        "nontarget_fpr": 0.0
+      },
+      "points": [
+        {
+          "threshold": -0.517764,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 29,
+          "nontarget_count": 29,
+          "nontarget_fpr": 1.0
+        },
+        {
+          "threshold": -0.456799,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 28,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.965517
+        },
+        {
+          "threshold": -0.404651,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 27,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.931034
+        },
+        {
+          "threshold": -0.401077,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 26,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.896552
+        },
+        {
+          "threshold": -0.353339,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 25,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.862069
+        },
+        {
+          "threshold": -0.35212,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 24,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.827586
+        },
+        {
+          "threshold": -0.352108,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 23,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.793103
+        },
+        {
+          "threshold": -0.34958,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 22,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.758621
+        },
+        {
+          "threshold": -0.337296,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 21,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.724138
+        },
+        {
+          "threshold": -0.320735,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 20,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.689655
+        },
+        {
+          "threshold": -0.234897,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 19,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.655172
+        },
+        {
+          "threshold": -0.229146,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 18,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.62069
+        },
+        {
+          "threshold": -0.197929,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 17,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.586207
+        },
+        {
+          "threshold": -0.177011,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 16,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.551724
+        },
+        {
+          "threshold": -0.175986,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 15,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.517241
+        },
+        {
+          "threshold": -0.171053,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 14,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.482759
+        },
+        {
+          "threshold": -0.161599,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 13,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.448276
+        },
+        {
+          "threshold": -0.159334,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 12,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.413793
+        },
+        {
+          "threshold": -0.137939,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 11,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.37931
+        },
+        {
+          "threshold": -0.136834,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 10,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.344828
+        },
+        {
+          "threshold": -0.134634,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 9,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.310345
+        },
+        {
+          "threshold": -0.098464,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 8,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.275862
+        },
+        {
+          "threshold": -0.064362,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 7,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.241379
+        },
+        {
+          "threshold": -0.063405,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 6,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.206897
+        },
+        {
+          "threshold": -0.057075,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 5,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.172414
+        },
+        {
+          "threshold": -0.031039,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 4,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.137931
+        },
+        {
+          "threshold": 0.000113,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 3,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.103448
+        },
+        {
+          "threshold": 0.034222,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 2,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.068966
+        },
+        {
+          "threshold": 0.108695,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 1,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.034483
+        },
+        {
+          "threshold": 0.134835,
+          "family_accept": 15,
+          "family_count": 16,
+          "family_recall": 0.9375,
+          "nontarget_fp": 1,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.034483
+        },
+        {
+          "threshold": 0.143291,
+          "family_accept": 14,
+          "family_count": 16,
+          "family_recall": 0.875,
+          "nontarget_fp": 1,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.034483
+        },
+        {
+          "threshold": 0.144278,
+          "family_accept": 13,
+          "family_count": 16,
+          "family_recall": 0.8125,
+          "nontarget_fp": 1,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.034483
+        },
+        {
+          "threshold": 0.147039,
+          "family_accept": 12,
+          "family_count": 16,
+          "family_recall": 0.75,
+          "nontarget_fp": 1,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.034483
+        },
+        {
+          "threshold": 0.163198,
+          "family_accept": 12,
+          "family_count": 16,
+          "family_recall": 0.75,
+          "nontarget_fp": 0,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.0
+        },
+        {
+          "threshold": 0.164825,
+          "family_accept": 11,
+          "family_count": 16,
+          "family_recall": 0.6875,
+          "nontarget_fp": 0,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.0
+        },
+        {
+          "threshold": 0.164887,
+          "family_accept": 10,
+          "family_count": 16,
+          "family_recall": 0.625,
+          "nontarget_fp": 0,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.0
+        },
+        {
+          "threshold": 0.165795,
+          "family_accept": 9,
+          "family_count": 16,
+          "family_recall": 0.5625,
+          "nontarget_fp": 0,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.0
+        },
+        {
+          "threshold": 0.166105,
+          "family_accept": 8,
+          "family_count": 16,
+          "family_recall": 0.5,
+          "nontarget_fp": 0,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.0
+        },
+        {
+          "threshold": 0.174648,
+          "family_accept": 7,
+          "family_count": 16,
+          "family_recall": 0.4375,
+          "nontarget_fp": 0,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.0
+        },
+        {
+          "threshold": 0.178433,
+          "family_accept": 6,
+          "family_count": 16,
+          "family_recall": 0.375,
+          "nontarget_fp": 0,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.0
+        },
+        {
+          "threshold": 0.180887,
+          "family_accept": 5,
+          "family_count": 16,
+          "family_recall": 0.3125,
+          "nontarget_fp": 0,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.0
+        },
+        {
+          "threshold": 0.188268,
+          "family_accept": 4,
+          "family_count": 16,
+          "family_recall": 0.25,
+          "nontarget_fp": 0,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.0
+        },
+        {
+          "threshold": 0.19476,
+          "family_accept": 3,
+          "family_count": 16,
+          "family_recall": 0.1875,
+          "nontarget_fp": 0,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.0
+        },
+        {
+          "threshold": 0.198416,
+          "family_accept": 2,
+          "family_count": 16,
+          "family_recall": 0.125,
+          "nontarget_fp": 0,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.0
+        },
+        {
+          "threshold": 0.250836,
+          "family_accept": 1,
+          "family_count": 16,
+          "family_recall": 0.0625,
+          "nontarget_fp": 0,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.0
+        }
+      ],
+      "family_count": 16,
+      "nontarget_count": 29
+    },
+    "trimmed_mean_margin": {
+      "selected_zero_fp": {
+        "threshold": 0.163198,
+        "family_accept": 12,
+        "family_count": 16,
+        "family_recall": 0.75,
+        "nontarget_fp": 0,
+        "nontarget_count": 29,
+        "nontarget_fpr": 0.0
+      },
+      "points": [
+        {
+          "threshold": -0.517764,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 29,
+          "nontarget_count": 29,
+          "nontarget_fpr": 1.0
+        },
+        {
+          "threshold": -0.456799,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 28,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.965517
+        },
+        {
+          "threshold": -0.404651,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 27,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.931034
+        },
+        {
+          "threshold": -0.401077,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 26,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.896552
+        },
+        {
+          "threshold": -0.353339,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 25,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.862069
+        },
+        {
+          "threshold": -0.35212,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 24,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.827586
+        },
+        {
+          "threshold": -0.352108,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 23,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.793103
+        },
+        {
+          "threshold": -0.34958,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 22,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.758621
+        },
+        {
+          "threshold": -0.337296,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 21,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.724138
+        },
+        {
+          "threshold": -0.320735,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 20,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.689655
+        },
+        {
+          "threshold": -0.234897,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 19,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.655172
+        },
+        {
+          "threshold": -0.229146,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 18,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.62069
+        },
+        {
+          "threshold": -0.197929,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 17,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.586207
+        },
+        {
+          "threshold": -0.177011,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 16,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.551724
+        },
+        {
+          "threshold": -0.175986,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 15,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.517241
+        },
+        {
+          "threshold": -0.171053,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 14,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.482759
+        },
+        {
+          "threshold": -0.161599,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 13,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.448276
+        },
+        {
+          "threshold": -0.159334,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 12,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.413793
+        },
+        {
+          "threshold": -0.137939,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 11,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.37931
+        },
+        {
+          "threshold": -0.136834,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 10,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.344828
+        },
+        {
+          "threshold": -0.134634,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 9,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.310345
+        },
+        {
+          "threshold": -0.098464,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 8,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.275862
+        },
+        {
+          "threshold": -0.064362,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 7,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.241379
+        },
+        {
+          "threshold": -0.063405,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 6,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.206897
+        },
+        {
+          "threshold": -0.057075,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 5,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.172414
+        },
+        {
+          "threshold": -0.031039,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 4,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.137931
+        },
+        {
+          "threshold": 0.000113,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 3,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.103448
+        },
+        {
+          "threshold": 0.034222,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 2,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.068966
+        },
+        {
+          "threshold": 0.108695,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 1,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.034483
+        },
+        {
+          "threshold": 0.134835,
+          "family_accept": 15,
+          "family_count": 16,
+          "family_recall": 0.9375,
+          "nontarget_fp": 1,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.034483
+        },
+        {
+          "threshold": 0.143291,
+          "family_accept": 14,
+          "family_count": 16,
+          "family_recall": 0.875,
+          "nontarget_fp": 1,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.034483
+        },
+        {
+          "threshold": 0.144278,
+          "family_accept": 13,
+          "family_count": 16,
+          "family_recall": 0.8125,
+          "nontarget_fp": 1,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.034483
+        },
+        {
+          "threshold": 0.147039,
+          "family_accept": 12,
+          "family_count": 16,
+          "family_recall": 0.75,
+          "nontarget_fp": 1,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.034483
+        },
+        {
+          "threshold": 0.163198,
+          "family_accept": 12,
+          "family_count": 16,
+          "family_recall": 0.75,
+          "nontarget_fp": 0,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.0
+        },
+        {
+          "threshold": 0.164825,
+          "family_accept": 11,
+          "family_count": 16,
+          "family_recall": 0.6875,
+          "nontarget_fp": 0,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.0
+        },
+        {
+          "threshold": 0.164887,
+          "family_accept": 10,
+          "family_count": 16,
+          "family_recall": 0.625,
+          "nontarget_fp": 0,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.0
+        },
+        {
+          "threshold": 0.165795,
+          "family_accept": 9,
+          "family_count": 16,
+          "family_recall": 0.5625,
+          "nontarget_fp": 0,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.0
+        },
+        {
+          "threshold": 0.166105,
+          "family_accept": 8,
+          "family_count": 16,
+          "family_recall": 0.5,
+          "nontarget_fp": 0,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.0
+        },
+        {
+          "threshold": 0.174648,
+          "family_accept": 7,
+          "family_count": 16,
+          "family_recall": 0.4375,
+          "nontarget_fp": 0,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.0
+        },
+        {
+          "threshold": 0.178433,
+          "family_accept": 6,
+          "family_count": 16,
+          "family_recall": 0.375,
+          "nontarget_fp": 0,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.0
+        },
+        {
+          "threshold": 0.180887,
+          "family_accept": 5,
+          "family_count": 16,
+          "family_recall": 0.3125,
+          "nontarget_fp": 0,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.0
+        },
+        {
+          "threshold": 0.188268,
+          "family_accept": 4,
+          "family_count": 16,
+          "family_recall": 0.25,
+          "nontarget_fp": 0,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.0
+        },
+        {
+          "threshold": 0.19476,
+          "family_accept": 3,
+          "family_count": 16,
+          "family_recall": 0.1875,
+          "nontarget_fp": 0,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.0
+        },
+        {
+          "threshold": 0.198416,
+          "family_accept": 2,
+          "family_count": 16,
+          "family_recall": 0.125,
+          "nontarget_fp": 0,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.0
+        },
+        {
+          "threshold": 0.250836,
+          "family_accept": 1,
+          "family_count": 16,
+          "family_recall": 0.0625,
+          "nontarget_fp": 0,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.0
+        }
+      ],
+      "family_count": 16,
+      "nontarget_count": 29
+    },
+    "vote_rate_at_current_threshold": {
+      "selected_zero_fp": {
+        "threshold": 1.0,
+        "family_accept": 14,
+        "family_count": 16,
+        "family_recall": 0.875,
+        "nontarget_fp": 0,
+        "nontarget_count": 29,
+        "nontarget_fpr": 0.0
+      },
+      "points": [
+        {
+          "threshold": 0.0,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 29,
+          "nontarget_count": 29,
+          "nontarget_fpr": 1.0
+        },
+        {
+          "threshold": 0.25,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 3,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.103448
+        },
+        {
+          "threshold": 0.333333,
+          "family_accept": 16,
+          "family_count": 16,
+          "family_recall": 1.0,
+          "nontarget_fp": 1,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.034483
+        },
+        {
+          "threshold": 0.666667,
+          "family_accept": 15,
+          "family_count": 16,
+          "family_recall": 0.9375,
+          "nontarget_fp": 1,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.034483
+        },
+        {
+          "threshold": 0.75,
+          "family_accept": 14,
+          "family_count": 16,
+          "family_recall": 0.875,
+          "nontarget_fp": 1,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.034483
+        },
+        {
+          "threshold": 1.0,
+          "family_accept": 14,
+          "family_count": 16,
+          "family_recall": 0.875,
+          "nontarget_fp": 0,
+          "nontarget_count": 29,
+          "nontarget_fpr": 0.0
+        }
+      ],
+      "family_count": 16,
+      "nontarget_count": 29
+    },
+    "rows": [
+      {
+        "record_id": "family_meta:evil:8335sBz9aHU:00",
+        "label": "NEURO_FAMILY",
+        "source_id": "8335sBz9aHU",
+        "window_count": 3,
+        "median_margin": 0.134835,
+        "trimmed_mean_margin": 0.134835,
+        "vote_rate_at_current_threshold": 0.666667,
+        "window_margins": [
+          0.164282,
+          0.134835,
+          0.099246
+        ]
+      },
+      {
+        "record_id": "family_meta:evil:8335sBz9aHU:01",
+        "label": "NEURO_FAMILY",
+        "source_id": "8335sBz9aHU",
+        "window_count": 3,
+        "median_margin": 0.144278,
+        "trimmed_mean_margin": 0.144278,
+        "vote_rate_at_current_threshold": 1.0,
+        "window_margins": [
+          0.12404,
+          0.144278,
+          0.15775
+        ]
+      },
+      {
+        "record_id": "family_meta:evil:8335sBz9aHU:02",
+        "label": "NEURO_FAMILY",
+        "source_id": "8335sBz9aHU",
+        "window_count": 3,
+        "median_margin": 0.178433,
+        "trimmed_mean_margin": 0.178433,
+        "vote_rate_at_current_threshold": 1.0,
+        "window_margins": [
+          0.195328,
+          0.178433,
+          0.175319
+        ]
+      },
+      {
+        "record_id": "family_meta:evil:8335sBz9aHU:03",
+        "label": "NEURO_FAMILY",
+        "source_id": "8335sBz9aHU",
+        "window_count": 3,
+        "median_margin": 0.143291,
+        "trimmed_mean_margin": 0.143291,
+        "vote_rate_at_current_threshold": 1.0,
+        "window_margins": [
+          0.131747,
+          0.143291,
+          0.176737
+        ]
+      },
+      {
+        "record_id": "family_meta:neuro:FpMGqhh_yd8:00",
+        "label": "NEURO_FAMILY",
+        "source_id": "FpMGqhh_yd8",
+        "window_count": 4,
+        "median_margin": 0.174648,
+        "trimmed_mean_margin": 0.174648,
+        "vote_rate_at_current_threshold": 1.0,
+        "window_margins": [
+          0.161787,
+          0.174815,
+          0.174481,
+          0.217699
+        ]
+      },
+      {
+        "record_id": "family_meta:neuro:FpMGqhh_yd8:01",
+        "label": "NEURO_FAMILY",
+        "source_id": "FpMGqhh_yd8",
+        "window_count": 3,
+        "median_margin": 0.180887,
+        "trimmed_mean_margin": 0.180887,
+        "vote_rate_at_current_threshold": 1.0,
+        "window_margins": [
+          0.180887,
+          0.176119,
+          0.192162
+        ]
+      },
+      {
+        "record_id": "family_meta:neuro:FpMGqhh_yd8:02",
+        "label": "NEURO_FAMILY",
+        "source_id": "FpMGqhh_yd8",
+        "window_count": 3,
+        "median_margin": 0.166105,
+        "trimmed_mean_margin": 0.166105,
+        "vote_rate_at_current_threshold": 1.0,
+        "window_margins": [
+          0.145426,
+          0.166105,
+          0.178264
+        ]
+      },
+      {
+        "record_id": "family_meta:neuro:FpMGqhh_yd8:03",
+        "label": "NEURO_FAMILY",
+        "source_id": "FpMGqhh_yd8",
+        "window_count": 3,
+        "median_margin": 0.165795,
+        "trimmed_mean_margin": 0.165795,
+        "vote_rate_at_current_threshold": 1.0,
+        "window_margins": [
+          0.165795,
+          0.160387,
+          0.191769
+        ]
+      },
+      {
+        "record_id": "family_meta:neuro:GjIopQlnEUY:00",
+        "label": "NEURO_FAMILY",
+        "source_id": "GjIopQlnEUY",
+        "window_count": 3,
+        "median_margin": 0.250836,
+        "trimmed_mean_margin": 0.250836,
+        "vote_rate_at_current_threshold": 1.0,
+        "window_margins": [
+          0.217325,
+          0.257958,
+          0.250836
+        ]
+      },
+      {
+        "record_id": "family_meta:neuro:GjIopQlnEUY:01",
+        "label": "NEURO_FAMILY",
+        "source_id": "GjIopQlnEUY",
+        "window_count": 3,
+        "median_margin": 0.198416,
+        "trimmed_mean_margin": 0.198416,
+        "vote_rate_at_current_threshold": 1.0,
+        "window_margins": [
+          0.199992,
+          0.198416,
+          0.140339
+        ]
+      },
+      {
+        "record_id": "family_meta:neuro:GjIopQlnEUY:02",
+        "label": "NEURO_FAMILY",
+        "source_id": "GjIopQlnEUY",
+        "window_count": 3,
+        "median_margin": 0.188268,
+        "trimmed_mean_margin": 0.188268,
+        "vote_rate_at_current_threshold": 1.0,
+        "window_margins": [
+          0.188268,
+          0.203536,
+          0.123667
+        ]
+      },
+      {
+        "record_id": "family_meta:neuro:GjIopQlnEUY:03",
+        "label": "NEURO_FAMILY",
+        "source_id": "GjIopQlnEUY",
+        "window_count": 4,
+        "median_margin": 0.19476,
+        "trimmed_mean_margin": 0.19476,
+        "vote_rate_at_current_threshold": 1.0,
+        "window_margins": [
+          0.197104,
+          0.192415,
+          0.204625,
+          0.187196
+        ]
+      },
+      {
+        "record_id": "family_meta:evil:SJxG6ASjZeY:00",
+        "label": "NEURO_FAMILY",
+        "source_id": "SJxG6ASjZeY",
+        "window_count": 3,
+        "median_margin": 0.164825,
+        "trimmed_mean_margin": 0.164825,
+        "vote_rate_at_current_threshold": 1.0,
+        "window_margins": [
+          0.154344,
+          0.164825,
+          0.17366
+        ]
+      },
+      {
+        "record_id": "family_meta:evil:SJxG6ASjZeY:01",
+        "label": "NEURO_FAMILY",
+        "source_id": "SJxG6ASjZeY",
+        "window_count": 3,
+        "median_margin": 0.164887,
+        "trimmed_mean_margin": 0.164887,
+        "vote_rate_at_current_threshold": 1.0,
+        "window_margins": [
+          0.185363,
+          0.164887,
+          0.146711
+        ]
+      },
+      {
+        "record_id": "family_meta:evil:SJxG6ASjZeY:02",
+        "label": "NEURO_FAMILY",
+        "source_id": "SJxG6ASjZeY",
+        "window_count": 4,
+        "median_margin": 0.163198,
+        "trimmed_mean_margin": 0.163198,
+        "vote_rate_at_current_threshold": 1.0,
+        "window_margins": [
+          0.140058,
+          0.150319,
+          0.178532,
+          0.176077
+        ]
+      },
+      {
+        "record_id": "family_meta:evil:SJxG6ASjZeY:03",
+        "label": "NEURO_FAMILY",
+        "source_id": "SJxG6ASjZeY",
+        "window_count": 3,
+        "median_margin": 0.108695,
+        "trimmed_mean_margin": 0.108695,
+        "vote_rate_at_current_threshold": 0.333333,
+        "window_margins": [
+          0.09568,
+          0.108695,
+          0.136608
+        ]
+      },
+      {
+        "record_id": "vedal_proxy:vedal:BV1uN411N7KR:00",
+        "label": "VEDAL",
+        "source_id": "BV1uN411N7KR",
+        "window_count": 3,
+        "median_margin": -0.401077,
+        "trimmed_mean_margin": -0.401077,
+        "vote_rate_at_current_threshold": 0.0,
+        "window_margins": [
+          -0.422033,
+          -0.401077,
+          -0.3806
+        ]
+      },
+      {
+        "record_id": "vedal_proxy:vedal:BV1uN411N7KR:01",
+        "label": "VEDAL",
+        "source_id": "BV1uN411N7KR",
+        "window_count": 3,
+        "median_margin": -0.404651,
+        "trimmed_mean_margin": -0.404651,
+        "vote_rate_at_current_threshold": 0.0,
+        "window_margins": [
+          -0.357869,
+          -0.404651,
+          -0.415315
+        ]
+      },
+      {
+        "record_id": "vedal_proxy:vedal:BV1uN411N7KR:02",
+        "label": "VEDAL",
+        "source_id": "BV1uN411N7KR",
+        "window_count": 3,
+        "median_margin": -0.337296,
+        "trimmed_mean_margin": -0.337296,
+        "vote_rate_at_current_threshold": 0.0,
+        "window_margins": [
+          -0.349248,
+          -0.337296,
+          -0.295416
+        ]
+      },
+      {
+        "record_id": "vedal_proxy:vedal:D36Hn9s7dco:00",
+        "label": "VEDAL",
+        "source_id": "D36Hn9s7dco",
+        "window_count": 4,
+        "median_margin": -0.159334,
+        "trimmed_mean_margin": -0.159334,
+        "vote_rate_at_current_threshold": 0.0,
+        "window_margins": [
+          -0.199746,
+          -0.2365,
+          -0.007784,
+          -0.118923
+        ]
+      },
+      {
+        "record_id": "vedal_proxy:vedal:i4VSpJK8gTs:00",
+        "label": "VEDAL",
+        "source_id": "i4VSpJK8gTs",
+        "window_count": 3,
+        "median_margin": -0.197929,
+        "trimmed_mean_margin": -0.197929,
+        "vote_rate_at_current_threshold": 0.0,
+        "window_margins": [
+          -0.187353,
+          -0.204909,
+          -0.197929
+        ]
+      },
+      {
+        "record_id": "vedal_proxy:vedal:i4VSpJK8gTs:01",
+        "label": "VEDAL",
+        "source_id": "i4VSpJK8gTs",
+        "window_count": 4,
+        "median_margin": -0.175986,
+        "trimmed_mean_margin": -0.175986,
+        "vote_rate_at_current_threshold": 0.0,
+        "window_margins": [
+          -0.158669,
+          -0.192289,
+          -0.171707,
+          -0.180265
+        ]
+      },
+      {
+        "record_id": "vedal_proxy:vedal:i4VSpJK8gTs:02",
+        "label": "VEDAL",
+        "source_id": "i4VSpJK8gTs",
+        "window_count": 4,
+        "median_margin": -0.161599,
+        "trimmed_mean_margin": -0.161599,
+        "vote_rate_at_current_threshold": 0.0,
+        "window_margins": [
+          -0.18341,
+          -0.167325,
+          -0.149039,
+          -0.155872
+        ]
+      },
+      {
+        "record_id": "vedal_proxy:vedal:7uTaHkuoDzo:00",
+        "label": "VEDAL",
+        "source_id": "7uTaHkuoDzo",
+        "window_count": 4,
+        "median_margin": -0.35212,
+        "trimmed_mean_margin": -0.35212,
+        "vote_rate_at_current_threshold": 0.0,
+        "window_margins": [
+          -0.370121,
+          -0.327953,
+          -0.33412,
+          -0.371177
+        ]
+      },
+      {
+        "record_id": "vedal_proxy:vedal:7uTaHkuoDzo:01",
+        "label": "VEDAL",
+        "source_id": "7uTaHkuoDzo",
+        "window_count": 3,
+        "median_margin": -0.34958,
+        "trimmed_mean_margin": -0.34958,
+        "vote_rate_at_current_threshold": 0.0,
+        "window_margins": [
+          -0.356956,
+          -0.324741,
+          -0.34958
+        ]
+      },
+      {
+        "record_id": "vedal_proxy:vedal:7uTaHkuoDzo:02",
+        "label": "VEDAL",
+        "source_id": "7uTaHkuoDzo",
+        "window_count": 4,
+        "median_margin": -0.353339,
+        "trimmed_mean_margin": -0.353339,
+        "vote_rate_at_current_threshold": 0.0,
+        "window_margins": [
+          -0.38481,
+          -0.392297,
+          -0.321868,
+          -0.284742
+        ]
+      },
+      {
+        "record_id": "guestneg:7uTaHkuoDzo:SPEAKER_00:Camila",
+        "label": "Camila",
+        "source_id": "7uTaHkuoDzo",
+        "window_count": 4,
+        "median_margin": -0.136834,
+        "trimmed_mean_margin": -0.136834,
+        "vote_rate_at_current_threshold": 0.0,
+        "window_margins": [
+          -0.026377,
+          -0.112791,
+          -0.192469,
+          -0.160878
+        ]
+      },
+      {
+        "record_id": "guestneg:7uTaHkuoDzo:SPEAKER_01:Camila",
+        "label": "Camila",
+        "source_id": "7uTaHkuoDzo",
+        "window_count": 4,
+        "median_margin": 0.000113,
+        "trimmed_mean_margin": 0.000113,
+        "vote_rate_at_current_threshold": 0.0,
+        "window_margins": [
+          -0.086856,
+          -0.036947,
+          0.037173,
+          0.051028
+        ]
+      },
+      {
+        "record_id": "guestneg:7uTaHkuoDzo:SPEAKER_02:Camila",
+        "label": "Camila",
+        "source_id": "7uTaHkuoDzo",
+        "window_count": 4,
+        "median_margin": -0.352108,
+        "trimmed_mean_margin": -0.352108,
+        "vote_rate_at_current_threshold": 0.0,
+        "window_margins": [
+          -0.325959,
+          -0.357048,
+          -0.350497,
+          -0.353719
+        ]
+      },
+      {
+        "record_id": "guestneg:GLE4JMJyVbg:SPEAKER_01:Camila",
+        "label": "Camila",
+        "source_id": "GLE4JMJyVbg",
+        "window_count": 2,
+        "median_margin": -0.057075,
+        "trimmed_mean_margin": -0.057075,
+        "vote_rate_at_current_threshold": 0.0,
+        "window_margins": [
+          -0.057075,
+          -0.057075
+        ]
+      },
+      {
+        "record_id": "guestneg:f4YwpciOb8c:SPEAKER_00:Camila",
+        "label": "Camila",
+        "source_id": "f4YwpciOb8c",
+        "window_count": 4,
+        "median_margin": -0.031039,
+        "trimmed_mean_margin": -0.031039,
+        "vote_rate_at_current_threshold": 0.0,
+        "window_margins": [
+          -0.052337,
+          -0.017078,
+          -0.025719,
+          -0.036359
+        ]
+      },
+      {
+        "record_id": "guestneg:f4YwpciOb8c:SPEAKER_01:Camila",
+        "label": "Camila",
+        "source_id": "f4YwpciOb8c",
+        "window_count": 3,
+        "median_margin": -0.456799,
+        "trimmed_mean_margin": -0.456799,
+        "vote_rate_at_current_threshold": 0.0,
+        "window_margins": [
+          -0.456799,
+          -0.463695,
+          -0.448331
+        ]
+      },
+      {
+        "record_id": "guestneg:uZTTRObEhbI:SPEAKER_00:CerberVT",
+        "label": "CerberVT",
+        "source_id": "uZTTRObEhbI",
+        "window_count": 4,
+        "median_margin": 0.034222,
+        "trimmed_mean_margin": 0.034222,
+        "vote_rate_at_current_threshold": 0.25,
+        "window_margins": [
+          0.192774,
+          0.069305,
+          -0.02454,
+          -0.000862
+        ]
+      },
+      {
+        "record_id": "guestneg:uZTTRObEhbI:SPEAKER_02:CerberVT",
+        "label": "CerberVT",
+        "source_id": "uZTTRObEhbI",
+        "window_count": 1,
+        "median_margin": -0.063405,
+        "trimmed_mean_margin": -0.063405,
+        "vote_rate_at_current_threshold": 0.0,
+        "window_margins": [
+          -0.063405
+        ]
+      },
+      {
+        "record_id": "guestneg:Pbe-2pvRo70:SPEAKER_01:Koko D. Nuts",
+        "label": "Koko D. Nuts",
+        "source_id": "Pbe-2pvRo70",
+        "window_count": 2,
+        "median_margin": -0.234897,
+        "trimmed_mean_margin": -0.234897,
+        "vote_rate_at_current_threshold": 0.0,
+        "window_margins": [
+          -0.242292,
+          -0.227501
+        ]
+      },
+      {
+        "record_id": "guestneg:lFuz9Bh9aqw:SPEAKER_00:Koko D. Nuts",
+        "label": "Koko D. Nuts",
+        "source_id": "lFuz9Bh9aqw",
+        "window_count": 4,
+        "median_margin": -0.098464,
+        "trimmed_mean_margin": -0.098464,
+        "vote_rate_at_current_threshold": 0.25,
+        "window_margins": [
+          0.126728,
+          -0.114651,
+          -0.091018,
+          -0.105909
+        ]
+      },
+      {
+        "record_id": "guestneg:lFuz9Bh9aqw:SPEAKER_01:Koko D. Nuts",
+        "label": "Koko D. Nuts",
+        "source_id": "lFuz9Bh9aqw",
+        "window_count": 2,
+        "median_margin": -0.320735,
+        "trimmed_mean_margin": -0.320735,
+        "vote_rate_at_current_threshold": 0.0,
+        "window_margins": [
+          -0.3349,
+          -0.30657
+        ]
+      },
+      {
+        "record_id": "guestneg:lFuz9Bh9aqw:SPEAKER_02:Koko D. Nuts",
+        "label": "Koko D. Nuts",
+        "source_id": "lFuz9Bh9aqw",
+        "window_count": 4,
+        "median_margin": 0.147039,
+        "trimmed_mean_margin": 0.147039,
+        "vote_rate_at_current_threshold": 0.75,
+        "window_margins": [
+          -0.178496,
+          0.140395,
+          0.168055,
+          0.153684
+        ]
+      },
+      {
+        "record_id": "guestneg:Z_ZWwV3jjU4:SPEAKER_00:Nihmune",
+        "label": "Nihmune",
+        "source_id": "Z_ZWwV3jjU4",
+        "window_count": 3,
+        "median_margin": -0.064362,
+        "trimmed_mean_margin": -0.064362,
+        "vote_rate_at_current_threshold": 0.0,
+        "window_margins": [
+          -0.064362,
+          -0.032095,
+          -0.203835
+        ]
+      },
+      {
+        "record_id": "guestneg:Z_ZWwV3jjU4:SPEAKER_02:Nihmune",
+        "label": "Nihmune",
+        "source_id": "Z_ZWwV3jjU4",
+        "window_count": 4,
+        "median_margin": -0.137939,
+        "trimmed_mean_margin": -0.137939,
+        "vote_rate_at_current_threshold": 0.0,
+        "window_margins": [
+          -0.12102,
+          -0.140018,
+          -0.152158,
+          -0.135861
+        ]
+      },
+      {
+        "record_id": "guestneg:nkkRZFvCIJA:SPEAKER_01:OTHER_GUEST",
+        "label": "OTHER_GUEST",
+        "source_id": "nkkRZFvCIJA",
+        "window_count": 3,
+        "median_margin": -0.177011,
+        "trimmed_mean_margin": -0.177011,
+        "vote_rate_at_current_threshold": 0.0,
+        "window_margins": [
+          -0.177011,
+          -0.184346,
+          -0.170585
+        ]
+      },
+      {
+        "record_id": "guestneg:nkkRZFvCIJA:SPEAKER_02:OTHER_GUEST",
+        "label": "OTHER_GUEST",
+        "source_id": "nkkRZFvCIJA",
+        "window_count": 3,
+        "median_margin": -0.229146,
+        "trimmed_mean_margin": -0.229146,
+        "vote_rate_at_current_threshold": 0.0,
+        "window_margins": [
+          -0.209966,
+          -0.229146,
+          -0.234343
+        ]
+      },
+      {
+        "record_id": "guestneg:ul-6pFevT4w:SPEAKER_00:OTHER_GUEST",
+        "label": "OTHER_GUEST",
+        "source_id": "ul-6pFevT4w",
+        "window_count": 4,
+        "median_margin": -0.134634,
+        "trimmed_mean_margin": -0.134634,
+        "vote_rate_at_current_threshold": 0.0,
+        "window_margins": [
+          -0.119135,
+          -0.134733,
+          -0.134535,
+          -0.151054
+        ]
+      },
+      {
+        "record_id": "guestneg:ul-6pFevT4w:SPEAKER_01:OTHER_GUEST",
+        "label": "OTHER_GUEST",
+        "source_id": "ul-6pFevT4w",
+        "window_count": 1,
+        "median_margin": -0.517764,
+        "trimmed_mean_margin": -0.517764,
+        "vote_rate_at_current_threshold": 0.0,
+        "window_margins": [
+          -0.517764
+        ]
+      },
+      {
+        "record_id": "guestneg:ul-6pFevT4w:SPEAKER_02:OTHER_GUEST",
+        "label": "OTHER_GUEST",
+        "source_id": "ul-6pFevT4w",
+        "window_count": 4,
+        "median_margin": -0.171053,
+        "trimmed_mean_margin": -0.171053,
+        "vote_rate_at_current_threshold": 0.0,
+        "window_margins": [
+          -0.160715,
+          -0.223056,
+          -0.181391,
+          -0.145337
+        ]
+      }
+    ],
+    "policy": "Calibration uses the corrected source-disjoint AUTO_TRUSTED family validation anchors plus source-disjoint proxy negatives; no challenge-only rows enter threshold fitting."
+  },
+  "clip_preprocessing": {
+    "8335sBz9aHU:SPEAKER_00": {
+      "proxy": {
+        "samplerate": 16000,
+        "channels": 1,
+        "duration_seconds": 20.0,
+        "frames": 320000,
+        "subtype": "PCM_16"
+      },
+      "anchor_example_infos": [
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 15.0,
+          "frames": 240000,
+          "subtype": "PCM_24"
+        },
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 16.0,
+          "frames": 256000,
+          "subtype": "PCM_24"
+        },
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 15.0,
+          "frames": 240000,
+          "subtype": "PCM_24"
+        },
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 15.0,
+          "frames": 240000,
+          "subtype": "PCM_24"
+        }
+      ]
+    },
+    "8335sBz9aHU:SPEAKER_01": {
+      "proxy": {
+        "samplerate": 16000,
+        "channels": 1,
+        "duration_seconds": 20.0,
+        "frames": 320000,
+        "subtype": "PCM_16"
+      },
+      "anchor_example_infos": [
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 15.0,
+          "frames": 240000,
+          "subtype": "PCM_24"
+        },
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 16.0,
+          "frames": 256000,
+          "subtype": "PCM_24"
+        },
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 15.0,
+          "frames": 240000,
+          "subtype": "PCM_24"
+        },
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 15.0,
+          "frames": 240000,
+          "subtype": "PCM_24"
+        }
+      ]
+    },
+    "FpMGqhh_yd8:SPEAKER_00": {
+      "proxy": {
+        "samplerate": 16000,
+        "channels": 1,
+        "duration_seconds": 20.0,
+        "frames": 320000,
+        "subtype": "PCM_16"
+      },
+      "anchor_example_infos": [
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 22.0,
+          "frames": 352000,
+          "subtype": "PCM_24"
+        },
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 17.0,
+          "frames": 272000,
+          "subtype": "PCM_24"
+        },
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 15.0,
+          "frames": 240000,
+          "subtype": "PCM_24"
+        },
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 18.0,
+          "frames": 288000,
+          "subtype": "PCM_24"
+        }
+      ]
+    },
+    "FpMGqhh_yd8:SPEAKER_01": {
+      "proxy": {
+        "samplerate": 16000,
+        "channels": 1,
+        "duration_seconds": 4.0,
+        "frames": 64000,
+        "subtype": "PCM_16"
+      },
+      "anchor_example_infos": [
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 22.0,
+          "frames": 352000,
+          "subtype": "PCM_24"
+        },
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 17.0,
+          "frames": 272000,
+          "subtype": "PCM_24"
+        },
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 15.0,
+          "frames": 240000,
+          "subtype": "PCM_24"
+        },
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 18.0,
+          "frames": 288000,
+          "subtype": "PCM_24"
+        }
+      ]
+    },
+    "SJxG6ASjZeY:SPEAKER_00": {
+      "proxy": {
+        "samplerate": 16000,
+        "channels": 1,
+        "duration_seconds": 20.0,
+        "frames": 320000,
+        "subtype": "PCM_16"
+      },
+      "anchor_example_infos": [
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 16.0,
+          "frames": 256000,
+          "subtype": "PCM_24"
+        },
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 16.0,
+          "frames": 256000,
+          "subtype": "PCM_24"
+        },
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 20.0,
+          "frames": 320000,
+          "subtype": "PCM_24"
+        },
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 15.0,
+          "frames": 240000,
+          "subtype": "PCM_24"
+        }
+      ]
+    },
+    "SJxG6ASjZeY:SPEAKER_01": {
+      "proxy": {
+        "samplerate": 16000,
+        "channels": 1,
+        "duration_seconds": 6.0,
+        "frames": 96000,
+        "subtype": "PCM_16"
+      },
+      "anchor_example_infos": [
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 16.0,
+          "frames": 256000,
+          "subtype": "PCM_24"
+        },
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 16.0,
+          "frames": 256000,
+          "subtype": "PCM_24"
+        },
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 20.0,
+          "frames": 320000,
+          "subtype": "PCM_24"
+        },
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 15.0,
+          "frames": 240000,
+          "subtype": "PCM_24"
+        }
+      ]
+    },
+    "GjIopQlnEUY:SPEAKER_00": {
+      "proxy": {
+        "samplerate": 16000,
+        "channels": 1,
+        "duration_seconds": 20.0,
+        "frames": 320000,
+        "subtype": "PCM_16"
+      },
+      "anchor_example_infos": [
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 15.0,
+          "frames": 240000,
+          "subtype": "PCM_24"
+        },
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 15.0,
+          "frames": 240000,
+          "subtype": "PCM_24"
+        },
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 16.0,
+          "frames": 256000,
+          "subtype": "PCM_24"
+        },
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 21.0,
+          "frames": 336000,
+          "subtype": "PCM_24"
+        }
+      ]
+    },
+    "GjIopQlnEUY:SPEAKER_01": {
+      "proxy": {
+        "samplerate": 16000,
+        "channels": 1,
+        "duration_seconds": 4.0,
+        "frames": 64000,
+        "subtype": "PCM_16"
+      },
+      "anchor_example_infos": [
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 15.0,
+          "frames": 240000,
+          "subtype": "PCM_24"
+        },
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 15.0,
+          "frames": 240000,
+          "subtype": "PCM_24"
+        },
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 16.0,
+          "frames": 256000,
+          "subtype": "PCM_24"
+        },
+        {
+          "samplerate": 16000,
+          "channels": 1,
+          "duration_seconds": 21.0,
+          "frames": 336000,
+          "subtype": "PCM_24"
+        }
+      ]
+    }
+  },
+  "findings": [
+    "Benchmark score rows have guest_score=null because benchmark_identity_models.py filters only kind=guest_candidate, while the current AUTO_TRUSTED guest bank uses kind=guest_auto_trusted.",
+    "Benchmark family validation uses 26 bank_train anchors; formal remap uses all 42 family anchors with source exclusion.",
+    "Formal remap uses per-guest-label max scores; benchmark (when guest predicate is fixed) uses one pooled guest prototype. These are different score transfer functions.",
+    "Formal remap queries are 4-20 second 16 kHz mono proxy cluster clips; benchmark anchors are 15-22 second 16 kHz mono reference clips. Both ModelScope paths are otherwise the same embedding API, but the query material is not the same.",
+    "This audit does not lower threshold, change mappings, or promote candidates."
+  ],
+  "policy": "HUMAN_VERIFIED is not required for this diagnostic; source-disjoint AUTO_TRUSTED evidence is retained with provenance. No promotion follows from this report."
+}

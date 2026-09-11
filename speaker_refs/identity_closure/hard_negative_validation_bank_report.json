@@ -1,0 +1,41 @@
+{
+  "schema_version": "0.1.0",
+  "created_at": "2026-09-11T14:23:12.694993+00:00",
+  "status": "SOURCE_DISJOINT_HARD_NEGATIVE_BANK_READY",
+  "family_anchor_source_count": 19,
+  "record_count": 999,
+  "auto_trusted_named_guest_count": 19,
+  "provisional_named_guest_count": 9,
+  "unlabeled_stress_clip_count": 971,
+  "unlabeled_stress_bucket_counts": {
+    "game_voice": 13,
+    "guest": 10,
+    "singing": 808,
+    "chat_tts": 140
+  },
+  "unlabeled_stress_source_counts": {
+    "game_voice": 8,
+    "guest": 5,
+    "singing": 405,
+    "chat_tts": 82
+  },
+  "label_counts": {
+    "Camila": 7,
+    "CerberVT": 3,
+    "EllieMiniBot": 1,
+    "Koko D. Nuts": 4,
+    "Layna Lazar": 2,
+    "Nihmune": 3,
+    "OTHER_GUEST": 7,
+    "OniGiri": 1
+  },
+  "evidence_tier_counts": {
+    "AUTO_TRUSTED": 19,
+    "PROVISIONAL": 9,
+    "UNLABELED_STRESS_ONLY": 971
+  },
+  "output": "speaker_refs\\identity_closure\\hard_negative_validation_bank.jsonl",
+  "gold_validated_count": 0,
+  "human_gold_is_promotion_blocker": false,
+  "policy": "AUTO_TRUSTED rows are source-disjoint, metadata-confirmed, recurring, and acoustically mined from a separate proxy; unlabeled challenge buckets stress the verifier but never become labels or final precision proof."
+}

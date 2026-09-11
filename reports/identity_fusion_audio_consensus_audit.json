@@ -1,0 +1,49 @@
+{
+  "schema_version": "0.1.0",
+  "created_at": "2026-09-11T15:37:26.518569+00:00",
+  "status": "FUSION_AUDIO_CONSENSUS_AUDIT_COMPLETE",
+  "fusion_mapping_version": "MULTIMODAL_FUSION_PROXY_AUDIO_CONSENSUS_GATED",
+  "independent_audio_model": "iic/speech_eres2netv2_sv_zh-cn_16k-common",
+  "cluster_count": 1068,
+  "joined_cluster_count": 1068,
+  "missing_independent_audio_count": 0,
+  "fusion_identity_counts": {
+    "NON_TARGET_GUEST": 460,
+    "NEURO_FAMILY_HIGH": 23,
+    "UNKNOWN": 339,
+    "NON_TARGET_KNOWN": 113,
+    "NON_TARGET_TTS": 11,
+    "NEURO_FAMILY_MEDIUM": 122
+  },
+  "cross_tab_fusion_to_eres2netv2": {
+    "NON_TARGET_GUEST -> NON_TARGET_GUEST": 455,
+    "NEURO_FAMILY_HIGH -> NEURO_FAMILY": 23,
+    "UNKNOWN -> NON_TARGET_GUEST": 39,
+    "UNKNOWN -> UNKNOWN": 234,
+    "NON_TARGET_KNOWN -> NON_TARGET_KNOWN": 112,
+    "NON_TARGET_GUEST -> NON_TARGET_KNOWN": 4,
+    "UNKNOWN -> NEURO_FAMILY": 51,
+    "NON_TARGET_TTS -> NON_TARGET_GUEST": 4,
+    "UNKNOWN -> NON_TARGET_KNOWN": 15,
+    "NEURO_FAMILY_MEDIUM -> NEURO_FAMILY": 122,
+    "NON_TARGET_TTS -> UNKNOWN": 5,
+    "NON_TARGET_TTS -> NON_TARGET_KNOWN": 1,
+    "NON_TARGET_GUEST -> UNKNOWN": 1,
+    "NON_TARGET_KNOWN -> UNKNOWN": 1,
+    "NON_TARGET_TTS -> NEURO_FAMILY": 1
+  },
+  "fusion_family_count": 145,
+  "fusion_family_supported_by_eres2netv2": 145,
+  "fusion_family_eres2netv2_unknown": 0,
+  "fusion_family_eres2netv2_non_target": 0,
+  "semantic_or_metadata_only_family_promotion_count": 0,
+  "promotion_decision": "DO_NOT_PROMOTE",
+  "training_candidate_count": 0,
+  "provenance": {
+    "fusion_output": "identity_results/identity_mapping_multimodal_fusion_proxy.jsonl",
+    "independent_audio_output": "identity_results/identity_mapping_eres2netv2_proxy.jsonl",
+    "semantic_evidence_is_auxiliary": true,
+    "metadata_and_role_cannot_override_audio_conflict": true,
+    "human_gold_is_promotion_blocker": false
+  }
+}

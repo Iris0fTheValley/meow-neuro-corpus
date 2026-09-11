@@ -1,0 +1,2365 @@
+{
+  "schema_version": "0.1.0",
+  "created_at": "2026-09-11T14:50:00.021243+00:00",
+  "status": "IDENTITY_MODEL_PROXY_BENCHMARK_WITH_STRESS_AUDIT",
+  "benchmark_version": "identity-closure-models-2026-09-11-v2",
+  "clip_count": 1053,
+  "source_count": 451,
+  "label_counts": {
+    "NEURO_FAMILY": 42,
+    "OTHER": 2,
+    "VEDAL": 19,
+    "Camila": 6,
+    "CerberVT": 2,
+    "Koko D. Nuts": 4,
+    "Nihmune": 2,
+    "OTHER_GUEST": 5,
+    "CHALLENGE_GAME_VOICE": 13,
+    "CHALLENGE_GUEST": 10,
+    "CHALLENGE_SINGING": 808,
+    "CHALLENGE_CHAT_TTS": 140
+  },
+  "gold_label_count": 0,
+  "auto_trusted_anchor_policy": "Source-disjoint multi-evidence AUTO_TRUSTED anchors are valid for calibration/validation; HUMAN_VERIFIED is a higher evidence tier, not a prerequisite.",
+  "models": {
+    "ecapa_voxceleb": {
+      "selected_operating_point": {
+        "threshold": 0.2036,
+        "family_validation_count": 16,
+        "family_validation_accept": 15,
+        "family_recall_proxy": 0.9375,
+        "nontarget_challenge_count": 29,
+        "nontarget_challenge_false_positive": 1,
+        "nontarget_challenge_false_positive_rate": 0.034483
+      },
+      "family_holdout_count": 16,
+      "calibration_negative_count": 29,
+      "challenge_clip_count": 971,
+      "points": [
+        {
+          "threshold": -0.7212,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 29,
+          "nontarget_challenge_false_positive_rate": 1.0
+        },
+        {
+          "threshold": -0.7174,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 28,
+          "nontarget_challenge_false_positive_rate": 0.965517
+        },
+        {
+          "threshold": -0.6926,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 27,
+          "nontarget_challenge_false_positive_rate": 0.931034
+        },
+        {
+          "threshold": -0.6894,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 25,
+          "nontarget_challenge_false_positive_rate": 0.862069
+        },
+        {
+          "threshold": -0.6844,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 24,
+          "nontarget_challenge_false_positive_rate": 0.827586
+        },
+        {
+          "threshold": -0.6785,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 23,
+          "nontarget_challenge_false_positive_rate": 0.793103
+        },
+        {
+          "threshold": -0.6771,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 23,
+          "nontarget_challenge_false_positive_rate": 0.793103
+        },
+        {
+          "threshold": -0.6577,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 22,
+          "nontarget_challenge_false_positive_rate": 0.758621
+        },
+        {
+          "threshold": -0.5446,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 20,
+          "nontarget_challenge_false_positive_rate": 0.689655
+        },
+        {
+          "threshold": -0.3265,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 20,
+          "nontarget_challenge_false_positive_rate": 0.689655
+        },
+        {
+          "threshold": -0.2234,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 18,
+          "nontarget_challenge_false_positive_rate": 0.62069
+        },
+        {
+          "threshold": -0.2034,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 17,
+          "nontarget_challenge_false_positive_rate": 0.586207
+        },
+        {
+          "threshold": -0.202,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 17,
+          "nontarget_challenge_false_positive_rate": 0.586207
+        },
+        {
+          "threshold": -0.1859,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 15,
+          "nontarget_challenge_false_positive_rate": 0.517241
+        },
+        {
+          "threshold": -0.1672,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 15,
+          "nontarget_challenge_false_positive_rate": 0.517241
+        },
+        {
+          "threshold": -0.157,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 14,
+          "nontarget_challenge_false_positive_rate": 0.482759
+        },
+        {
+          "threshold": -0.1259,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 12,
+          "nontarget_challenge_false_positive_rate": 0.413793
+        },
+        {
+          "threshold": -0.1219,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 11,
+          "nontarget_challenge_false_positive_rate": 0.37931
+        },
+        {
+          "threshold": -0.1204,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 10,
+          "nontarget_challenge_false_positive_rate": 0.344828
+        },
+        {
+          "threshold": -0.0872,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 10,
+          "nontarget_challenge_false_positive_rate": 0.344828
+        },
+        {
+          "threshold": -0.0478,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 8,
+          "nontarget_challenge_false_positive_rate": 0.275862
+        },
+        {
+          "threshold": -0.0036,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 7,
+          "nontarget_challenge_false_positive_rate": 0.241379
+        },
+        {
+          "threshold": 0.0295,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 7,
+          "nontarget_challenge_false_positive_rate": 0.241379
+        },
+        {
+          "threshold": 0.0564,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 5,
+          "nontarget_challenge_false_positive_rate": 0.172414
+        },
+        {
+          "threshold": 0.1061,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 4,
+          "nontarget_challenge_false_positive_rate": 0.137931
+        },
+        {
+          "threshold": 0.1291,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 3,
+          "nontarget_challenge_false_positive_rate": 0.103448
+        },
+        {
+          "threshold": 0.1603,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 3,
+          "nontarget_challenge_false_positive_rate": 0.103448
+        },
+        {
+          "threshold": 0.1985,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 2,
+          "nontarget_challenge_false_positive_rate": 0.068966
+        },
+        {
+          "threshold": 0.2036,
+          "family_validation_count": 16,
+          "family_validation_accept": 15,
+          "family_recall_proxy": 0.9375,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        },
+        {
+          "threshold": 0.2297,
+          "family_validation_count": 16,
+          "family_validation_accept": 15,
+          "family_recall_proxy": 0.9375,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        },
+        {
+          "threshold": 0.2387,
+          "family_validation_count": 16,
+          "family_validation_accept": 14,
+          "family_recall_proxy": 0.875,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        },
+        {
+          "threshold": 0.2419,
+          "family_validation_count": 16,
+          "family_validation_accept": 13,
+          "family_recall_proxy": 0.8125,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        },
+        {
+          "threshold": 0.25,
+          "family_validation_count": 16,
+          "family_validation_accept": 12,
+          "family_recall_proxy": 0.75,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        },
+        {
+          "threshold": 0.2651,
+          "family_validation_count": 16,
+          "family_validation_accept": 11,
+          "family_recall_proxy": 0.6875,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        },
+        {
+          "threshold": 0.2668,
+          "family_validation_count": 16,
+          "family_validation_accept": 9,
+          "family_recall_proxy": 0.5625,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        },
+        {
+          "threshold": 0.2711,
+          "family_validation_count": 16,
+          "family_validation_accept": 9,
+          "family_recall_proxy": 0.5625,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        },
+        {
+          "threshold": 0.2759,
+          "family_validation_count": 16,
+          "family_validation_accept": 7,
+          "family_recall_proxy": 0.4375,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        },
+        {
+          "threshold": 0.2872,
+          "family_validation_count": 16,
+          "family_validation_accept": 7,
+          "family_recall_proxy": 0.4375,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        },
+        {
+          "threshold": 0.2926,
+          "family_validation_count": 16,
+          "family_validation_accept": 5,
+          "family_recall_proxy": 0.3125,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        },
+        {
+          "threshold": 0.2968,
+          "family_validation_count": 16,
+          "family_validation_accept": 4,
+          "family_recall_proxy": 0.25,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        },
+        {
+          "threshold": 0.2999,
+          "family_validation_count": 16,
+          "family_validation_accept": 3,
+          "family_recall_proxy": 0.1875,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        },
+        {
+          "threshold": 0.308,
+          "family_validation_count": 16,
+          "family_validation_accept": 3,
+          "family_recall_proxy": 0.1875,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        },
+        {
+          "threshold": 0.3221,
+          "family_validation_count": 16,
+          "family_validation_accept": 2,
+          "family_recall_proxy": 0.125,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        },
+        {
+          "threshold": 0.3361,
+          "family_validation_count": 16,
+          "family_validation_accept": 1,
+          "family_recall_proxy": 0.0625,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        },
+        {
+          "threshold": 0.5318,
+          "family_validation_count": 16,
+          "family_validation_accept": 0,
+          "family_recall_proxy": 0.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        }
+      ],
+      "reference_rule": "all source-disjoint family anchors; source-disjoint Vedal; per-label named guest max; no unlabeled challenge rows",
+      "policy": "Auto-trusted/source-disjoint family anchors and provisional cross-source non-target anchors calibrate the verifier; unlabeled buckets are stress-only and never enter threshold fitting.",
+      "challenge_summary": {
+        "chat_tts": {
+          "clip_count": 140,
+          "potential_family_accept_count": 55,
+          "potential_family_accept_rate": 0.392857,
+          "label_status": "UNLABELED_STRESS_ONLY"
+        },
+        "game_voice": {
+          "clip_count": 13,
+          "potential_family_accept_count": 8,
+          "potential_family_accept_rate": 0.615385,
+          "label_status": "UNLABELED_STRESS_ONLY"
+        },
+        "guest": {
+          "clip_count": 10,
+          "potential_family_accept_count": 4,
+          "potential_family_accept_rate": 0.4,
+          "label_status": "UNLABELED_STRESS_ONLY"
+        },
+        "singing": {
+          "clip_count": 808,
+          "potential_family_accept_count": 463,
+          "potential_family_accept_rate": 0.57302,
+          "label_status": "UNLABELED_STRESS_ONLY"
+        }
+      },
+      "status": "PROXY_BENCHMARK_COMPLETE",
+      "model": "speechbrain/spkrec-ecapa-voxceleb",
+      "device": "cuda",
+      "clip_count": 1053,
+      "source_count": 451,
+      "runtime_seconds": 5.397,
+      "label_counts": {
+        "NEURO_FAMILY": 42,
+        "OTHER": 2,
+        "VEDAL": 19,
+        "Camila": 6,
+        "CerberVT": 2,
+        "Koko D. Nuts": 4,
+        "Nihmune": 2,
+        "OTHER_GUEST": 5,
+        "CHALLENGE_GAME_VOICE": 13,
+        "CHALLENGE_GUEST": 10,
+        "CHALLENGE_SINGING": 808,
+        "CHALLENGE_CHAT_TTS": 140
+      }
+    },
+    "xvector_voxceleb": {
+      "selected_operating_point": {
+        "threshold": 0.0351,
+        "family_validation_count": 16,
+        "family_validation_accept": 0,
+        "family_recall_proxy": 0.0,
+        "nontarget_challenge_count": 29,
+        "nontarget_challenge_false_positive": 1,
+        "nontarget_challenge_false_positive_rate": 0.034483
+      },
+      "family_holdout_count": 16,
+      "calibration_negative_count": 29,
+      "challenge_clip_count": 971,
+      "points": [
+        {
+          "threshold": -0.098,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 29,
+          "nontarget_challenge_false_positive_rate": 1.0
+        },
+        {
+          "threshold": -0.0936,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 27,
+          "nontarget_challenge_false_positive_rate": 0.931034
+        },
+        {
+          "threshold": -0.0929,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 27,
+          "nontarget_challenge_false_positive_rate": 0.931034
+        },
+        {
+          "threshold": -0.0911,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 25,
+          "nontarget_challenge_false_positive_rate": 0.862069
+        },
+        {
+          "threshold": -0.0895,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 24,
+          "nontarget_challenge_false_positive_rate": 0.827586
+        },
+        {
+          "threshold": -0.0849,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 23,
+          "nontarget_challenge_false_positive_rate": 0.793103
+        },
+        {
+          "threshold": -0.0742,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 23,
+          "nontarget_challenge_false_positive_rate": 0.793103
+        },
+        {
+          "threshold": -0.0737,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 21,
+          "nontarget_challenge_false_positive_rate": 0.724138
+        },
+        {
+          "threshold": -0.0694,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 20,
+          "nontarget_challenge_false_positive_rate": 0.689655
+        },
+        {
+          "threshold": -0.068,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 20,
+          "nontarget_challenge_false_positive_rate": 0.689655
+        },
+        {
+          "threshold": -0.0668,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 18,
+          "nontarget_challenge_false_positive_rate": 0.62069
+        },
+        {
+          "threshold": -0.0642,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 18,
+          "nontarget_challenge_false_positive_rate": 0.62069
+        },
+        {
+          "threshold": -0.0636,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 16,
+          "nontarget_challenge_false_positive_rate": 0.551724
+        },
+        {
+          "threshold": -0.0633,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 16,
+          "nontarget_challenge_false_positive_rate": 0.551724
+        },
+        {
+          "threshold": -0.0563,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 15,
+          "nontarget_challenge_false_positive_rate": 0.517241
+        },
+        {
+          "threshold": -0.0539,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 13,
+          "nontarget_challenge_false_positive_rate": 0.448276
+        },
+        {
+          "threshold": -0.0524,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 13,
+          "nontarget_challenge_false_positive_rate": 0.448276
+        },
+        {
+          "threshold": -0.0508,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 12,
+          "nontarget_challenge_false_positive_rate": 0.413793
+        },
+        {
+          "threshold": -0.05,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 11,
+          "nontarget_challenge_false_positive_rate": 0.37931
+        },
+        {
+          "threshold": -0.0409,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 9,
+          "nontarget_challenge_false_positive_rate": 0.310345
+        },
+        {
+          "threshold": -0.0408,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 9,
+          "nontarget_challenge_false_positive_rate": 0.310345
+        },
+        {
+          "threshold": -0.0364,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 8,
+          "nontarget_challenge_false_positive_rate": 0.275862
+        },
+        {
+          "threshold": -0.0283,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 6,
+          "nontarget_challenge_false_positive_rate": 0.206897
+        },
+        {
+          "threshold": -0.0271,
+          "family_validation_count": 16,
+          "family_validation_accept": 15,
+          "family_recall_proxy": 0.9375,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 6,
+          "nontarget_challenge_false_positive_rate": 0.206897
+        },
+        {
+          "threshold": -0.0258,
+          "family_validation_count": 16,
+          "family_validation_accept": 15,
+          "family_recall_proxy": 0.9375,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 5,
+          "nontarget_challenge_false_positive_rate": 0.172414
+        },
+        {
+          "threshold": -0.0207,
+          "family_validation_count": 16,
+          "family_validation_accept": 15,
+          "family_recall_proxy": 0.9375,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 5,
+          "nontarget_challenge_false_positive_rate": 0.172414
+        },
+        {
+          "threshold": -0.0124,
+          "family_validation_count": 16,
+          "family_validation_accept": 15,
+          "family_recall_proxy": 0.9375,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 4,
+          "nontarget_challenge_false_positive_rate": 0.137931
+        },
+        {
+          "threshold": -0.0043,
+          "family_validation_count": 16,
+          "family_validation_accept": 14,
+          "family_recall_proxy": 0.875,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 3,
+          "nontarget_challenge_false_positive_rate": 0.103448
+        },
+        {
+          "threshold": -0.001,
+          "family_validation_count": 16,
+          "family_validation_accept": 14,
+          "family_recall_proxy": 0.875,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 3,
+          "nontarget_challenge_false_positive_rate": 0.103448
+        },
+        {
+          "threshold": -0.0001,
+          "family_validation_count": 16,
+          "family_validation_accept": 13,
+          "family_recall_proxy": 0.8125,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 2,
+          "nontarget_challenge_false_positive_rate": 0.068966
+        },
+        {
+          "threshold": 0.0003,
+          "family_validation_count": 16,
+          "family_validation_accept": 12,
+          "family_recall_proxy": 0.75,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 2,
+          "nontarget_challenge_false_positive_rate": 0.068966
+        },
+        {
+          "threshold": 0.001,
+          "family_validation_count": 16,
+          "family_validation_accept": 12,
+          "family_recall_proxy": 0.75,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 2,
+          "nontarget_challenge_false_positive_rate": 0.068966
+        },
+        {
+          "threshold": 0.0012,
+          "family_validation_count": 16,
+          "family_validation_accept": 11,
+          "family_recall_proxy": 0.6875,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 2,
+          "nontarget_challenge_false_positive_rate": 0.068966
+        },
+        {
+          "threshold": 0.0019,
+          "family_validation_count": 16,
+          "family_validation_accept": 10,
+          "family_recall_proxy": 0.625,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 2,
+          "nontarget_challenge_false_positive_rate": 0.068966
+        },
+        {
+          "threshold": 0.0048,
+          "family_validation_count": 16,
+          "family_validation_accept": 9,
+          "family_recall_proxy": 0.5625,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 2,
+          "nontarget_challenge_false_positive_rate": 0.068966
+        },
+        {
+          "threshold": 0.005,
+          "family_validation_count": 16,
+          "family_validation_accept": 7,
+          "family_recall_proxy": 0.4375,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 2,
+          "nontarget_challenge_false_positive_rate": 0.068966
+        },
+        {
+          "threshold": 0.0054,
+          "family_validation_count": 16,
+          "family_validation_accept": 7,
+          "family_recall_proxy": 0.4375,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 2,
+          "nontarget_challenge_false_positive_rate": 0.068966
+        },
+        {
+          "threshold": 0.006,
+          "family_validation_count": 16,
+          "family_validation_accept": 6,
+          "family_recall_proxy": 0.375,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 2,
+          "nontarget_challenge_false_positive_rate": 0.068966
+        },
+        {
+          "threshold": 0.0063,
+          "family_validation_count": 16,
+          "family_validation_accept": 3,
+          "family_recall_proxy": 0.1875,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 2,
+          "nontarget_challenge_false_positive_rate": 0.068966
+        },
+        {
+          "threshold": 0.0064,
+          "family_validation_count": 16,
+          "family_validation_accept": 3,
+          "family_recall_proxy": 0.1875,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 2,
+          "nontarget_challenge_false_positive_rate": 0.068966
+        },
+        {
+          "threshold": 0.009,
+          "family_validation_count": 16,
+          "family_validation_accept": 2,
+          "family_recall_proxy": 0.125,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 2,
+          "nontarget_challenge_false_positive_rate": 0.068966
+        },
+        {
+          "threshold": 0.0098,
+          "family_validation_count": 16,
+          "family_validation_accept": 0,
+          "family_recall_proxy": 0.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 2,
+          "nontarget_challenge_false_positive_rate": 0.068966
+        },
+        {
+          "threshold": 0.0115,
+          "family_validation_count": 16,
+          "family_validation_accept": 0,
+          "family_recall_proxy": 0.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 2,
+          "nontarget_challenge_false_positive_rate": 0.068966
+        },
+        {
+          "threshold": 0.0351,
+          "family_validation_count": 16,
+          "family_validation_accept": 0,
+          "family_recall_proxy": 0.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        }
+      ],
+      "reference_rule": "all source-disjoint family anchors; source-disjoint Vedal; per-label named guest max; no unlabeled challenge rows",
+      "policy": "Auto-trusted/source-disjoint family anchors and provisional cross-source non-target anchors calibrate the verifier; unlabeled buckets are stress-only and never enter threshold fitting.",
+      "challenge_summary": {
+        "chat_tts": {
+          "clip_count": 140,
+          "potential_family_accept_count": 0,
+          "potential_family_accept_rate": 0.0,
+          "label_status": "UNLABELED_STRESS_ONLY"
+        },
+        "game_voice": {
+          "clip_count": 13,
+          "potential_family_accept_count": 0,
+          "potential_family_accept_rate": 0.0,
+          "label_status": "UNLABELED_STRESS_ONLY"
+        },
+        "guest": {
+          "clip_count": 10,
+          "potential_family_accept_count": 0,
+          "potential_family_accept_rate": 0.0,
+          "label_status": "UNLABELED_STRESS_ONLY"
+        },
+        "singing": {
+          "clip_count": 808,
+          "potential_family_accept_count": 0,
+          "potential_family_accept_rate": 0.0,
+          "label_status": "UNLABELED_STRESS_ONLY"
+        }
+      },
+      "status": "PROXY_BENCHMARK_COMPLETE",
+      "model": "speechbrain/spkrec-xvect-voxceleb",
+      "device": "cuda",
+      "clip_count": 1053,
+      "source_count": 451,
+      "runtime_seconds": 3.012,
+      "label_counts": {
+        "NEURO_FAMILY": 42,
+        "OTHER": 2,
+        "VEDAL": 19,
+        "Camila": 6,
+        "CerberVT": 2,
+        "Koko D. Nuts": 4,
+        "Nihmune": 2,
+        "OTHER_GUEST": 5,
+        "CHALLENGE_GAME_VOICE": 13,
+        "CHALLENGE_GUEST": 10,
+        "CHALLENGE_SINGING": 808,
+        "CHALLENGE_CHAT_TTS": 140
+      }
+    },
+    "eres2netv2": {
+      "selected_operating_point": {
+        "threshold": 0.1205,
+        "family_validation_count": 16,
+        "family_validation_accept": 16,
+        "family_recall_proxy": 1.0,
+        "nontarget_challenge_count": 29,
+        "nontarget_challenge_false_positive": 0,
+        "nontarget_challenge_false_positive_rate": 0.0
+      },
+      "family_holdout_count": 16,
+      "calibration_negative_count": 29,
+      "challenge_clip_count": 971,
+      "points": [
+        {
+          "threshold": -0.5743,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 29,
+          "nontarget_challenge_false_positive_rate": 1.0
+        },
+        {
+          "threshold": -0.5493,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 28,
+          "nontarget_challenge_false_positive_rate": 0.965517
+        },
+        {
+          "threshold": -0.5338,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 27,
+          "nontarget_challenge_false_positive_rate": 0.931034
+        },
+        {
+          "threshold": -0.5317,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 25,
+          "nontarget_challenge_false_positive_rate": 0.862069
+        },
+        {
+          "threshold": -0.5309,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 24,
+          "nontarget_challenge_false_positive_rate": 0.827586
+        },
+        {
+          "threshold": -0.5244,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 23,
+          "nontarget_challenge_false_positive_rate": 0.793103
+        },
+        {
+          "threshold": -0.5062,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 22,
+          "nontarget_challenge_false_positive_rate": 0.758621
+        },
+        {
+          "threshold": -0.5048,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 21,
+          "nontarget_challenge_false_positive_rate": 0.724138
+        },
+        {
+          "threshold": -0.4191,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 21,
+          "nontarget_challenge_false_positive_rate": 0.724138
+        },
+        {
+          "threshold": -0.2966,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 20,
+          "nontarget_challenge_false_positive_rate": 0.689655
+        },
+        {
+          "threshold": -0.2385,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 18,
+          "nontarget_challenge_false_positive_rate": 0.62069
+        },
+        {
+          "threshold": -0.2383,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 18,
+          "nontarget_challenge_false_positive_rate": 0.62069
+        },
+        {
+          "threshold": -0.2006,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 17,
+          "nontarget_challenge_false_positive_rate": 0.586207
+        },
+        {
+          "threshold": -0.1785,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 15,
+          "nontarget_challenge_false_positive_rate": 0.517241
+        },
+        {
+          "threshold": -0.1713,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 15,
+          "nontarget_challenge_false_positive_rate": 0.517241
+        },
+        {
+          "threshold": -0.1636,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 14,
+          "nontarget_challenge_false_positive_rate": 0.482759
+        },
+        {
+          "threshold": -0.1562,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 12,
+          "nontarget_challenge_false_positive_rate": 0.413793
+        },
+        {
+          "threshold": -0.1418,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 12,
+          "nontarget_challenge_false_positive_rate": 0.413793
+        },
+        {
+          "threshold": -0.1381,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 11,
+          "nontarget_challenge_false_positive_rate": 0.37931
+        },
+        {
+          "threshold": -0.1197,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 10,
+          "nontarget_challenge_false_positive_rate": 0.344828
+        },
+        {
+          "threshold": -0.0976,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 8,
+          "nontarget_challenge_false_positive_rate": 0.275862
+        },
+        {
+          "threshold": -0.0959,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 7,
+          "nontarget_challenge_false_positive_rate": 0.241379
+        },
+        {
+          "threshold": -0.0634,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 6,
+          "nontarget_challenge_false_positive_rate": 0.206897
+        },
+        {
+          "threshold": -0.0571,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 6,
+          "nontarget_challenge_false_positive_rate": 0.206897
+        },
+        {
+          "threshold": -0.0242,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 4,
+          "nontarget_challenge_false_positive_rate": 0.137931
+        },
+        {
+          "threshold": -0.0094,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 3,
+          "nontarget_challenge_false_positive_rate": 0.103448
+        },
+        {
+          "threshold": 0.0655,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 3,
+          "nontarget_challenge_false_positive_rate": 0.103448
+        },
+        {
+          "threshold": 0.1043,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 2,
+          "nontarget_challenge_false_positive_rate": 0.068966
+        },
+        {
+          "threshold": 0.1119,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.1205,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.1355,
+          "family_validation_count": 16,
+          "family_validation_accept": 14,
+          "family_recall_proxy": 0.875,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.1531,
+          "family_validation_count": 16,
+          "family_validation_accept": 14,
+          "family_recall_proxy": 0.875,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.1576,
+          "family_validation_count": 16,
+          "family_validation_accept": 12,
+          "family_recall_proxy": 0.75,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.1607,
+          "family_validation_count": 16,
+          "family_validation_accept": 11,
+          "family_recall_proxy": 0.6875,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.1614,
+          "family_validation_count": 16,
+          "family_validation_accept": 10,
+          "family_recall_proxy": 0.625,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.1651,
+          "family_validation_count": 16,
+          "family_validation_accept": 9,
+          "family_recall_proxy": 0.5625,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.1694,
+          "family_validation_count": 16,
+          "family_validation_accept": 8,
+          "family_recall_proxy": 0.5,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.1757,
+          "family_validation_count": 16,
+          "family_validation_accept": 7,
+          "family_recall_proxy": 0.4375,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.1768,
+          "family_validation_count": 16,
+          "family_validation_accept": 7,
+          "family_recall_proxy": 0.4375,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.1821,
+          "family_validation_count": 16,
+          "family_validation_accept": 5,
+          "family_recall_proxy": 0.3125,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.1869,
+          "family_validation_count": 16,
+          "family_validation_accept": 5,
+          "family_recall_proxy": 0.3125,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.1885,
+          "family_validation_count": 16,
+          "family_validation_accept": 3,
+          "family_recall_proxy": 0.1875,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.189,
+          "family_validation_count": 16,
+          "family_validation_accept": 2,
+          "family_recall_proxy": 0.125,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.1996,
+          "family_validation_count": 16,
+          "family_validation_accept": 1,
+          "family_recall_proxy": 0.0625,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.243,
+          "family_validation_count": 16,
+          "family_validation_accept": 1,
+          "family_recall_proxy": 0.0625,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        }
+      ],
+      "reference_rule": "all source-disjoint family anchors; source-disjoint Vedal; per-label named guest max; no unlabeled challenge rows",
+      "policy": "Auto-trusted/source-disjoint family anchors and provisional cross-source non-target anchors calibrate the verifier; unlabeled buckets are stress-only and never enter threshold fitting.",
+      "challenge_summary": {
+        "chat_tts": {
+          "clip_count": 140,
+          "potential_family_accept_count": 56,
+          "potential_family_accept_rate": 0.4,
+          "label_status": "UNLABELED_STRESS_ONLY"
+        },
+        "game_voice": {
+          "clip_count": 13,
+          "potential_family_accept_count": 6,
+          "potential_family_accept_rate": 0.461538,
+          "label_status": "UNLABELED_STRESS_ONLY"
+        },
+        "guest": {
+          "clip_count": 10,
+          "potential_family_accept_count": 3,
+          "potential_family_accept_rate": 0.3,
+          "label_status": "UNLABELED_STRESS_ONLY"
+        },
+        "singing": {
+          "clip_count": 808,
+          "potential_family_accept_count": 406,
+          "potential_family_accept_rate": 0.502475,
+          "label_status": "UNLABELED_STRESS_ONLY"
+        }
+      },
+      "status": "PROXY_BENCHMARK_COMPLETE",
+      "model": "iic/speech_eres2netv2_sv_zh-cn_16k-common",
+      "device": "cuda:0",
+      "clip_count": 1053,
+      "source_count": 451,
+      "runtime_seconds": 21.159,
+      "label_counts": {
+        "NEURO_FAMILY": 42,
+        "OTHER": 2,
+        "VEDAL": 19,
+        "Camila": 6,
+        "CerberVT": 2,
+        "Koko D. Nuts": 4,
+        "Nihmune": 2,
+        "OTHER_GUEST": 5,
+        "CHALLENGE_GAME_VOICE": 13,
+        "CHALLENGE_GUEST": 10,
+        "CHALLENGE_SINGING": 808,
+        "CHALLENGE_CHAT_TTS": 140
+      }
+    },
+    "campplus": {
+      "selected_operating_point": {
+        "threshold": 0.1798,
+        "family_validation_count": 16,
+        "family_validation_accept": 7,
+        "family_recall_proxy": 0.4375,
+        "nontarget_challenge_count": 29,
+        "nontarget_challenge_false_positive": 0,
+        "nontarget_challenge_false_positive_rate": 0.0
+      },
+      "family_holdout_count": 16,
+      "calibration_negative_count": 29,
+      "challenge_clip_count": 971,
+      "points": [
+        {
+          "threshold": -0.5351,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 28,
+          "nontarget_challenge_false_positive_rate": 0.965517
+        },
+        {
+          "threshold": -0.4806,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 27,
+          "nontarget_challenge_false_positive_rate": 0.931034
+        },
+        {
+          "threshold": -0.4614,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 26,
+          "nontarget_challenge_false_positive_rate": 0.896552
+        },
+        {
+          "threshold": -0.4453,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 25,
+          "nontarget_challenge_false_positive_rate": 0.862069
+        },
+        {
+          "threshold": -0.4439,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 25,
+          "nontarget_challenge_false_positive_rate": 0.862069
+        },
+        {
+          "threshold": -0.4264,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 23,
+          "nontarget_challenge_false_positive_rate": 0.793103
+        },
+        {
+          "threshold": -0.4179,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 23,
+          "nontarget_challenge_false_positive_rate": 0.793103
+        },
+        {
+          "threshold": -0.4129,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 21,
+          "nontarget_challenge_false_positive_rate": 0.724138
+        },
+        {
+          "threshold": -0.4086,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 20,
+          "nontarget_challenge_false_positive_rate": 0.689655
+        },
+        {
+          "threshold": -0.2493,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 20,
+          "nontarget_challenge_false_positive_rate": 0.689655
+        },
+        {
+          "threshold": -0.2258,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 18,
+          "nontarget_challenge_false_positive_rate": 0.62069
+        },
+        {
+          "threshold": -0.2004,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 18,
+          "nontarget_challenge_false_positive_rate": 0.62069
+        },
+        {
+          "threshold": -0.1959,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 16,
+          "nontarget_challenge_false_positive_rate": 0.551724
+        },
+        {
+          "threshold": -0.1812,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 15,
+          "nontarget_challenge_false_positive_rate": 0.517241
+        },
+        {
+          "threshold": -0.1438,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 14,
+          "nontarget_challenge_false_positive_rate": 0.482759
+        },
+        {
+          "threshold": -0.135,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 14,
+          "nontarget_challenge_false_positive_rate": 0.482759
+        },
+        {
+          "threshold": -0.1297,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 13,
+          "nontarget_challenge_false_positive_rate": 0.448276
+        },
+        {
+          "threshold": -0.1282,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 12,
+          "nontarget_challenge_false_positive_rate": 0.413793
+        },
+        {
+          "threshold": -0.0945,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 11,
+          "nontarget_challenge_false_positive_rate": 0.37931
+        },
+        {
+          "threshold": -0.0839,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 10,
+          "nontarget_challenge_false_positive_rate": 0.344828
+        },
+        {
+          "threshold": -0.0832,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 8,
+          "nontarget_challenge_false_positive_rate": 0.275862
+        },
+        {
+          "threshold": -0.0753,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 7,
+          "nontarget_challenge_false_positive_rate": 0.241379
+        },
+        {
+          "threshold": -0.0693,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 6,
+          "nontarget_challenge_false_positive_rate": 0.206897
+        },
+        {
+          "threshold": -0.0269,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 6,
+          "nontarget_challenge_false_positive_rate": 0.206897
+        },
+        {
+          "threshold": -0.0227,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 4,
+          "nontarget_challenge_false_positive_rate": 0.137931
+        },
+        {
+          "threshold": -0.0143,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 3,
+          "nontarget_challenge_false_positive_rate": 0.103448
+        },
+        {
+          "threshold": 0.104,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 2,
+          "nontarget_challenge_false_positive_rate": 0.068966
+        },
+        {
+          "threshold": 0.1245,
+          "family_validation_count": 16,
+          "family_validation_accept": 15,
+          "family_recall_proxy": 0.9375,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 2,
+          "nontarget_challenge_false_positive_rate": 0.068966
+        },
+        {
+          "threshold": 0.1413,
+          "family_validation_count": 16,
+          "family_validation_accept": 14,
+          "family_recall_proxy": 0.875,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 2,
+          "nontarget_challenge_false_positive_rate": 0.068966
+        },
+        {
+          "threshold": 0.1432,
+          "family_validation_count": 16,
+          "family_validation_accept": 14,
+          "family_recall_proxy": 0.875,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        },
+        {
+          "threshold": 0.1474,
+          "family_validation_count": 16,
+          "family_validation_accept": 14,
+          "family_recall_proxy": 0.875,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        },
+        {
+          "threshold": 0.1604,
+          "family_validation_count": 16,
+          "family_validation_accept": 13,
+          "family_recall_proxy": 0.8125,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        },
+        {
+          "threshold": 0.1614,
+          "family_validation_count": 16,
+          "family_validation_accept": 11,
+          "family_recall_proxy": 0.6875,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        },
+        {
+          "threshold": 0.1657,
+          "family_validation_count": 16,
+          "family_validation_accept": 11,
+          "family_recall_proxy": 0.6875,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        },
+        {
+          "threshold": 0.1676,
+          "family_validation_count": 16,
+          "family_validation_accept": 10,
+          "family_recall_proxy": 0.625,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        },
+        {
+          "threshold": 0.1704,
+          "family_validation_count": 16,
+          "family_validation_accept": 8,
+          "family_recall_proxy": 0.5,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        },
+        {
+          "threshold": 0.177,
+          "family_validation_count": 16,
+          "family_validation_accept": 8,
+          "family_recall_proxy": 0.5,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        },
+        {
+          "threshold": 0.1789,
+          "family_validation_count": 16,
+          "family_validation_accept": 7,
+          "family_recall_proxy": 0.4375,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        },
+        {
+          "threshold": 0.1798,
+          "family_validation_count": 16,
+          "family_validation_accept": 7,
+          "family_recall_proxy": 0.4375,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.1825,
+          "family_validation_count": 16,
+          "family_validation_accept": 6,
+          "family_recall_proxy": 0.375,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.1896,
+          "family_validation_count": 16,
+          "family_validation_accept": 4,
+          "family_recall_proxy": 0.25,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.1957,
+          "family_validation_count": 16,
+          "family_validation_accept": 3,
+          "family_recall_proxy": 0.1875,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.2027,
+          "family_validation_count": 16,
+          "family_validation_accept": 2,
+          "family_recall_proxy": 0.125,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.2095,
+          "family_validation_count": 16,
+          "family_validation_accept": 2,
+          "family_recall_proxy": 0.125,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.2292,
+          "family_validation_count": 16,
+          "family_validation_accept": 1,
+          "family_recall_proxy": 0.0625,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        }
+      ],
+      "reference_rule": "all source-disjoint family anchors; source-disjoint Vedal; per-label named guest max; no unlabeled challenge rows",
+      "policy": "Auto-trusted/source-disjoint family anchors and provisional cross-source non-target anchors calibrate the verifier; unlabeled buckets are stress-only and never enter threshold fitting.",
+      "challenge_summary": {
+        "chat_tts": {
+          "clip_count": 140,
+          "potential_family_accept_count": 26,
+          "potential_family_accept_rate": 0.185714,
+          "label_status": "UNLABELED_STRESS_ONLY"
+        },
+        "game_voice": {
+          "clip_count": 13,
+          "potential_family_accept_count": 4,
+          "potential_family_accept_rate": 0.307692,
+          "label_status": "UNLABELED_STRESS_ONLY"
+        },
+        "guest": {
+          "clip_count": 10,
+          "potential_family_accept_count": 2,
+          "potential_family_accept_rate": 0.2,
+          "label_status": "UNLABELED_STRESS_ONLY"
+        },
+        "singing": {
+          "clip_count": 808,
+          "potential_family_accept_count": 279,
+          "potential_family_accept_rate": 0.345297,
+          "label_status": "UNLABELED_STRESS_ONLY"
+        }
+      },
+      "status": "PROXY_BENCHMARK_COMPLETE",
+      "model": "iic/speech_campplus_sv_zh-cn_16k-common",
+      "device": "cuda:0",
+      "clip_count": 1053,
+      "source_count": 451,
+      "runtime_seconds": 32.711,
+      "label_counts": {
+        "NEURO_FAMILY": 42,
+        "OTHER": 2,
+        "VEDAL": 19,
+        "Camila": 6,
+        "CerberVT": 2,
+        "Koko D. Nuts": 4,
+        "Nihmune": 2,
+        "OTHER_GUEST": 5,
+        "CHALLENGE_GAME_VOICE": 13,
+        "CHALLENGE_GUEST": 10,
+        "CHALLENGE_SINGING": 808,
+        "CHALLENGE_CHAT_TTS": 140
+      }
+    },
+    "eres2net": {
+      "selected_operating_point": {
+        "threshold": 0.1315,
+        "family_validation_count": 16,
+        "family_validation_accept": 14,
+        "family_recall_proxy": 0.875,
+        "nontarget_challenge_count": 29,
+        "nontarget_challenge_false_positive": 0,
+        "nontarget_challenge_false_positive_rate": 0.0
+      },
+      "family_holdout_count": 16,
+      "calibration_negative_count": 29,
+      "challenge_clip_count": 971,
+      "points": [
+        {
+          "threshold": -0.5161,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 29,
+          "nontarget_challenge_false_positive_rate": 1.0
+        },
+        {
+          "threshold": -0.4739,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 28,
+          "nontarget_challenge_false_positive_rate": 0.965517
+        },
+        {
+          "threshold": -0.4731,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 26,
+          "nontarget_challenge_false_positive_rate": 0.896552
+        },
+        {
+          "threshold": -0.4662,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 26,
+          "nontarget_challenge_false_positive_rate": 0.896552
+        },
+        {
+          "threshold": -0.4606,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 25,
+          "nontarget_challenge_false_positive_rate": 0.862069
+        },
+        {
+          "threshold": -0.4472,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 23,
+          "nontarget_challenge_false_positive_rate": 0.793103
+        },
+        {
+          "threshold": -0.399,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 22,
+          "nontarget_challenge_false_positive_rate": 0.758621
+        },
+        {
+          "threshold": -0.3919,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 21,
+          "nontarget_challenge_false_positive_rate": 0.724138
+        },
+        {
+          "threshold": -0.3624,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 21,
+          "nontarget_challenge_false_positive_rate": 0.724138
+        },
+        {
+          "threshold": -0.243,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 19,
+          "nontarget_challenge_false_positive_rate": 0.655172
+        },
+        {
+          "threshold": -0.2305,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 19,
+          "nontarget_challenge_false_positive_rate": 0.655172
+        },
+        {
+          "threshold": -0.1783,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 17,
+          "nontarget_challenge_false_positive_rate": 0.586207
+        },
+        {
+          "threshold": -0.1704,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 17,
+          "nontarget_challenge_false_positive_rate": 0.586207
+        },
+        {
+          "threshold": -0.1542,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 15,
+          "nontarget_challenge_false_positive_rate": 0.517241
+        },
+        {
+          "threshold": -0.1484,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 14,
+          "nontarget_challenge_false_positive_rate": 0.482759
+        },
+        {
+          "threshold": -0.1352,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 13,
+          "nontarget_challenge_false_positive_rate": 0.448276
+        },
+        {
+          "threshold": -0.1281,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 13,
+          "nontarget_challenge_false_positive_rate": 0.448276
+        },
+        {
+          "threshold": -0.1147,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 11,
+          "nontarget_challenge_false_positive_rate": 0.37931
+        },
+        {
+          "threshold": -0.1048,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 10,
+          "nontarget_challenge_false_positive_rate": 0.344828
+        },
+        {
+          "threshold": -0.1044,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 9,
+          "nontarget_challenge_false_positive_rate": 0.310345
+        },
+        {
+          "threshold": -0.1038,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 8,
+          "nontarget_challenge_false_positive_rate": 0.275862
+        },
+        {
+          "threshold": -0.092,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 8,
+          "nontarget_challenge_false_positive_rate": 0.275862
+        },
+        {
+          "threshold": -0.0597,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 7,
+          "nontarget_challenge_false_positive_rate": 0.241379
+        },
+        {
+          "threshold": -0.057,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 5,
+          "nontarget_challenge_false_positive_rate": 0.172414
+        },
+        {
+          "threshold": -0.0413,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 4,
+          "nontarget_challenge_false_positive_rate": 0.137931
+        },
+        {
+          "threshold": -0.0301,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 3,
+          "nontarget_challenge_false_positive_rate": 0.103448
+        },
+        {
+          "threshold": 0.0736,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 2,
+          "nontarget_challenge_false_positive_rate": 0.068966
+        },
+        {
+          "threshold": 0.0918,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 2,
+          "nontarget_challenge_false_positive_rate": 0.068966
+        },
+        {
+          "threshold": 0.1044,
+          "family_validation_count": 16,
+          "family_validation_accept": 16,
+          "family_recall_proxy": 1.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        },
+        {
+          "threshold": 0.1076,
+          "family_validation_count": 16,
+          "family_validation_accept": 15,
+          "family_recall_proxy": 0.9375,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 1,
+          "nontarget_challenge_false_positive_rate": 0.034483
+        },
+        {
+          "threshold": 0.114,
+          "family_validation_count": 16,
+          "family_validation_accept": 14,
+          "family_recall_proxy": 0.875,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.1315,
+          "family_validation_count": 16,
+          "family_validation_accept": 14,
+          "family_recall_proxy": 0.875,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.1397,
+          "family_validation_count": 16,
+          "family_validation_accept": 12,
+          "family_recall_proxy": 0.75,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.1425,
+          "family_validation_count": 16,
+          "family_validation_accept": 12,
+          "family_recall_proxy": 0.75,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.1658,
+          "family_validation_count": 16,
+          "family_validation_accept": 10,
+          "family_recall_proxy": 0.625,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.1659,
+          "family_validation_count": 16,
+          "family_validation_accept": 10,
+          "family_recall_proxy": 0.625,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.1679,
+          "family_validation_count": 16,
+          "family_validation_accept": 9,
+          "family_recall_proxy": 0.5625,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.1694,
+          "family_validation_count": 16,
+          "family_validation_accept": 8,
+          "family_recall_proxy": 0.5,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.2005,
+          "family_validation_count": 16,
+          "family_validation_accept": 7,
+          "family_recall_proxy": 0.4375,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.2016,
+          "family_validation_count": 16,
+          "family_validation_accept": 5,
+          "family_recall_proxy": 0.3125,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.2029,
+          "family_validation_count": 16,
+          "family_validation_accept": 4,
+          "family_recall_proxy": 0.25,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.2063,
+          "family_validation_count": 16,
+          "family_validation_accept": 4,
+          "family_recall_proxy": 0.25,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.2098,
+          "family_validation_count": 16,
+          "family_validation_accept": 2,
+          "family_recall_proxy": 0.125,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.212,
+          "family_validation_count": 16,
+          "family_validation_accept": 2,
+          "family_recall_proxy": 0.125,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        },
+        {
+          "threshold": 0.2184,
+          "family_validation_count": 16,
+          "family_validation_accept": 0,
+          "family_recall_proxy": 0.0,
+          "nontarget_challenge_count": 29,
+          "nontarget_challenge_false_positive": 0,
+          "nontarget_challenge_false_positive_rate": 0.0
+        }
+      ],
+      "reference_rule": "all source-disjoint family anchors; source-disjoint Vedal; per-label named guest max; no unlabeled challenge rows",
+      "policy": "Auto-trusted/source-disjoint family anchors and provisional cross-source non-target anchors calibrate the verifier; unlabeled buckets are stress-only and never enter threshold fitting.",
+      "challenge_summary": {
+        "chat_tts": {
+          "clip_count": 140,
+          "potential_family_accept_count": 49,
+          "potential_family_accept_rate": 0.35,
+          "label_status": "UNLABELED_STRESS_ONLY"
+        },
+        "game_voice": {
+          "clip_count": 13,
+          "potential_family_accept_count": 6,
+          "potential_family_accept_rate": 0.461538,
+          "label_status": "UNLABELED_STRESS_ONLY"
+        },
+        "guest": {
+          "clip_count": 10,
+          "potential_family_accept_count": 3,
+          "potential_family_accept_rate": 0.3,
+          "label_status": "UNLABELED_STRESS_ONLY"
+        },
+        "singing": {
+          "clip_count": 808,
+          "potential_family_accept_count": 367,
+          "potential_family_accept_rate": 0.454208,
+          "label_status": "UNLABELED_STRESS_ONLY"
+        }
+      },
+      "status": "PROXY_BENCHMARK_COMPLETE",
+      "model": "iic/speech_eres2net_sv_zh-cn_16k-common",
+      "device": "cuda:0",
+      "clip_count": 1053,
+      "source_count": 451,
+      "runtime_seconds": 38.331,
+      "label_counts": {
+        "NEURO_FAMILY": 42,
+        "OTHER": 2,
+        "VEDAL": 19,
+        "Camila": 6,
+        "CerberVT": 2,
+        "Koko D. Nuts": 4,
+        "Nihmune": 2,
+        "OTHER_GUEST": 5,
+        "CHALLENGE_GAME_VOICE": 13,
+        "CHALLENGE_GUEST": 10,
+        "CHALLENGE_SINGING": 808,
+        "CHALLENGE_CHAT_TTS": 140
+      }
+    }
+  },
+  "validation_split": "family auto anchors plus source-disjoint provisional cross-source non-target anchors; open-set buckets are unlabeled stress-only",
+  "promotion_decision": "DO_NOT_PROMOTE",
+  "promotion_reason": "No final precision claim is made from 0/49; challenge buckets are explicitly separated from threshold fitting and require independent evidence before becoming labeled negatives."
+}

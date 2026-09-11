@@ -1,0 +1,78 @@
+{
+  "schema_version": "0.1.0",
+  "version": "guest-negative-prototypes-eres2netv2-2026-09-11-v1",
+  "created_at": "2026-09-11T12:22:47.881920+00:00",
+  "status": "PROVISIONAL_ACOUSTIC_PROTOTYPES_READY",
+  "model": "iic/speech_eres2netv2_sv_zh-cn_16k-common",
+  "candidate_count": 28,
+  "prototype_count": 5,
+  "prototypes": [
+    {
+      "label": "Camila",
+      "candidate_count": 7,
+      "source_count": 4,
+      "source_ids": [
+        "7uTaHkuoDzo",
+        "EzKb4xBkhHo",
+        "GLE4JMJyVbg",
+        "f4YwpciOb8c"
+      ],
+      "status": "PROVISIONAL_ACOUSTIC_PROTOTYPE",
+      "trusted": false,
+      "source_disjoint_validation_required": true
+    },
+    {
+      "label": "CerberVT",
+      "candidate_count": 3,
+      "source_count": 2,
+      "source_ids": [
+        "Sa9xeUkuRh4",
+        "uZTTRObEhbI"
+      ],
+      "status": "PROVISIONAL_ACOUSTIC_PROTOTYPE",
+      "trusted": false,
+      "source_disjoint_validation_required": true
+    },
+    {
+      "label": "Koko D. Nuts",
+      "candidate_count": 4,
+      "source_count": 2,
+      "source_ids": [
+        "Pbe-2pvRo70",
+        "lFuz9Bh9aqw"
+      ],
+      "status": "PROVISIONAL_ACOUSTIC_PROTOTYPE",
+      "trusted": false,
+      "source_disjoint_validation_required": true
+    },
+    {
+      "label": "Nihmune",
+      "candidate_count": 3,
+      "source_count": 2,
+      "source_ids": [
+        "D95w1v1_5k0",
+        "Z_ZWwV3jjU4"
+      ],
+      "status": "PROVISIONAL_ACOUSTIC_PROTOTYPE",
+      "trusted": false,
+      "source_disjoint_validation_required": true
+    },
+    {
+      "label": "OTHER_GUEST",
+      "candidate_count": 7,
+      "source_count": 3,
+      "source_ids": [
+        "RnUXQKq-o70",
+        "nkkRZFvCIJA",
+        "ul-6pFevT4w"
+      ],
+      "status": "PROVISIONAL_ACOUSTIC_PROTOTYPE",
+      "trusted": false,
+      "source_disjoint_validation_required": true
+    }
+  ],
+  "artifact": "speaker_refs\\identity_closure\\recurring_guest_negative_prototypes_eres2netv2.npz",
+  "gold_label_count": 0,
+  "promotion_decision": "DO_NOT_PROMOTE",
+  "policy": "Prototype vectors are derived from metadata/audio candidates only; they are negative evidence for review and must be source-disjoint from any validation source."
+}

@@ -1,0 +1,33 @@
+{
+  "schema_version": "0.1.0",
+  "updated_at": "2026-09-11T15:37:24.495264+00:00",
+  "status": "MULTIMODAL_FUSION_PROXY_AUDIO_CONSENSUS_GATED",
+  "version": "multimodal-fusion-proxy-2026-09-12-v2-chat-tts-rejection",
+  "source_count": 503,
+  "cluster_count": 1068,
+  "identity_counts": {
+    "NON_TARGET_GUEST": 460,
+    "NEURO_FAMILY_HIGH": 23,
+    "UNKNOWN": 339,
+    "NON_TARGET_KNOWN": 113,
+    "NON_TARGET_TTS": 11,
+    "NEURO_FAMILY_MEDIUM": 122
+  },
+  "conflict_counts": {
+    "eres_guest_veto": 433,
+    "chat_tts_cluster_quarantine": 78,
+    "eres_family_disagreement": 165,
+    "eres_known_nontarget_veto": 112,
+    "guest_candidate_conflict": 27,
+    "explicit_guest_family_ambiguity": 3,
+    "chat_tts_strong_reject": 11
+  },
+  "semantic_bank_version": "identity-closure-2026-09-11-v1",
+  "negative_bank_version": "multimodal-fusion-proxy-2026-09-12-v2-chat-tts-rejection",
+  "eres2netv2_mapping_version": "identity_mapping_eres2netv2_proxy",
+  "gold_validated": false,
+  "training_candidate_count": 0,
+  "promotion_decision": "DO_NOT_PROMOTE",
+  "output": "identity_results\\identity_mapping_multimodal_fusion_proxy.jsonl",
+  "policy": "Fusion family promotion requires independent ERes2NetV2 audio consensus; semantic, role, and metadata evidence cannot override ERes2NetV2 non-target or UNKNOWN disagreement. Every output remains non-training proxy."
+}

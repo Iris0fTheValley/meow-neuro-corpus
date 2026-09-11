@@ -1,0 +1,22 @@
+# Never publish source media, local caches, model weights, or credentials.
+*.wav
+*.mp3
+*.flac
+*.mp4
+*.mkv
+*.webm
+*.bin
+*.safetensors
+*.pt
+*.pth
+*.gguf
+__pycache__/
+.venv*/
+cache/
+audio/
+video/
+raw/
+*.token
+*.cookie
+*.env
+secrets.*

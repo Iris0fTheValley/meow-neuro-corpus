@@ -1,0 +1,20 @@
+{
+  "schema_version": "0.1.0",
+  "created_at": "2026-09-11T15:13:00.575466+00:00",
+  "status": "CHAT_TTS_UNLABELED_STRESS_TEST_CALIBRATED",
+  "model": "iic/speech_eres2netv2_sv_zh-cn_16k-common",
+  "proxy_threshold": 0.1205,
+  "source_disjoint_to_family_bank": true,
+  "clip_count": 140,
+  "source_count": 82,
+  "potential_family_accept_count": 56,
+  "potential_family_accept_rate": 0.4,
+  "margin_quantiles": {
+    "p05": -0.481385,
+    "median": -0.07392,
+    "p95": 0.228526
+  },
+  "gold_label_count": 0,
+  "use_for_calibration": false,
+  "policy": "Explicit TTS mention creates a stress-test interval only; calibrated score is a safety audit, not a chat-TTS label or final precision claim. Overlapping clusters are quarantined from family promotion."
+}

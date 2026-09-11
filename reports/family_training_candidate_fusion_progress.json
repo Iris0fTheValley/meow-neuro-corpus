@@ -1,0 +1,20 @@
+{
+  "schema_version": "0.1.0",
+  "updated_at": "2026-09-11T15:38:38.399853+00:00",
+  "status": "S_A_REVIEW_CANDIDATES_AUDIO_CONSENSUS_TTS_QUARANTINED",
+  "input": "conversations\\natural_conversations_anonymous.jsonl",
+  "all_output": "datasets\\family_training_candidates_fusion_review.jsonl",
+  "s_a_output": "datasets\\family_s_a_candidates_fusion_review.jsonl",
+  "record_count": 199371,
+  "grade_counts": {
+    "Q": 102217,
+    "B": 88916,
+    "S": 7951,
+    "A": 287
+  },
+  "s_a_review_candidate_count": 8238,
+  "training_candidate_count": 0,
+  "gold_validated": false,
+  "hard_negative_chat_tts_policy": "Any window turn overlapping an open-set chat-TTS challenge interval is quarantined to Q; challenge intervals remain mention-only and unlabeled.",
+  "policy": "Regrading is cluster-level and proxy-only; S/A remain review priority labels and no row is training_candidate until source-disjoint non-target validation and final promotion gates pass."
+}
