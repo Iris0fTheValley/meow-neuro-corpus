@@ -184184,6 +184184,178 @@
       "excluded_reason": "cache_or_generated_workspace",
       "category": "excluded_cache",
       "redacted_copy": false
+    },
+    {
+      "local_path": "asr/ULDPGXfhYu8.openai-medium.en.json",
+      "destination": "huggingface",
+      "remote_path": "redacted/asr/ULDPGXfhYu8.openai-medium.en.json",
+      "size": 2880484,
+      "sha256": "dfe7068ac2a57b53c0ac14b3c6441a87c2a6629d546c0108b0471394c122266c",
+      "upload_status": "staged",
+      "excluded_reason": null,
+      "category": "upload_to_huggingface",
+      "redacted_copy": true,
+      "staged_sha256": "b2b992ca65eff13b425e8bdd58f2afe53c0ce007fc6bccffed90005c4e655a69",
+      "staged_size": 2863878
+    },
+    {
+      "local_path": "checkpoints/checkpoint_20260912_015807.json",
+      "destination": "github",
+      "remote_path": "checkpoints/checkpoint_20260912_015807.json",
+      "size": 15693,
+      "sha256": "8e12f706e894571714dc9a43de14e6ad60669a339748bb5961d5bc89f7ee414a",
+      "upload_status": "staged",
+      "excluded_reason": null,
+      "category": "upload_to_github",
+      "redacted_copy": false,
+      "staged_sha256": "8e12f706e894571714dc9a43de14e6ad60669a339748bb5961d5bc89f7ee414a",
+      "staged_size": 15693
+    },
+    {
+      "local_path": "diarization/ULDPGXfhYu8.ecapa.json",
+      "destination": "huggingface",
+      "remote_path": "diarization/ULDPGXfhYu8.ecapa.json",
+      "size": 299147,
+      "sha256": "6e9433d2d4cbfd78153dcdf0e3eda7f8d3e4754aa8da0bf555ee0952d79bc091",
+      "upload_status": "staged",
+      "excluded_reason": null,
+      "category": "upload_to_huggingface",
+      "redacted_copy": false,
+      "staged_sha256": "6e9433d2d4cbfd78153dcdf0e3eda7f8d3e4754aa8da0bf555ee0952d79bc091",
+      "staged_size": 299147
+    },
+    {
+      "local_path": "logs/dispatch_sObyzmdXiOs_asr.err.log",
+      "destination": null,
+      "remote_path": null,
+      "size": 0,
+      "sha256": null,
+      "upload_status": "excluded",
+      "excluded_reason": "empty_operational_log",
+      "category": "excluded_other",
+      "redacted_copy": false
+    },
+    {
+      "local_path": "logs/dispatch_sObyzmdXiOs_asr.out.log",
+      "destination": null,
+      "remote_path": null,
+      "size": 0,
+      "sha256": null,
+      "upload_status": "excluded",
+      "excluded_reason": "empty_operational_log",
+      "category": "excluded_other",
+      "redacted_copy": false
+    },
+    {
+      "local_path": "logs/dispatch_ULDPGXfhYu8_diarization.err.log",
+      "destination": "huggingface",
+      "remote_path": "logs/dispatch_ULDPGXfhYu8_diarization.err.log",
+      "size": 119,
+      "sha256": "1ee8594e45a27cbc091fc6236ab59a58bde0b05d8816202f514e4bc2c1e7eee4",
+      "upload_status": "staged",
+      "excluded_reason": null,
+      "category": "upload_to_huggingface",
+      "redacted_copy": false,
+      "staged_sha256": "1ee8594e45a27cbc091fc6236ab59a58bde0b05d8816202f514e4bc2c1e7eee4",
+      "staged_size": 119
+    },
+    {
+      "local_path": "logs/dispatch_ULDPGXfhYu8_diarization.out.log",
+      "destination": "huggingface",
+      "remote_path": "logs/dispatch_ULDPGXfhYu8_diarization.out.log",
+      "size": 183,
+      "sha256": "decfac03c9873f4141324f0c8166df9e2d08ba17282adf5c207f3e381c59c8cc",
+      "upload_status": "staged",
+      "excluded_reason": null,
+      "category": "upload_to_huggingface",
+      "redacted_copy": false,
+      "staged_sha256": "decfac03c9873f4141324f0c8166df9e2d08ba17282adf5c207f3e381c59c8cc",
+      "staged_size": 183
+    },
+    {
+      "local_path": "logs/download_youtube_9OXEMnv-Y00.err.log",
+      "destination": "huggingface",
+      "remote_path": "logs/download_youtube_9OXEMnv-Y00.err.log",
+      "size": 354,
+      "sha256": "fb7d131a5abfc45d225c710b558243492b0cc1c170ec46c93741bb5c71a530e8",
+      "upload_status": "staged",
+      "excluded_reason": null,
+      "category": "upload_to_huggingface",
+      "redacted_copy": false,
+      "staged_sha256": "fb7d131a5abfc45d225c710b558243492b0cc1c170ec46c93741bb5c71a530e8",
+      "staged_size": 354
+    },
+    {
+      "local_path": "logs/download_youtube_9OXEMnv-Y00.out.log",
+      "destination": "huggingface",
+      "remote_path": "logs/download_youtube_9OXEMnv-Y00.out.log",
+      "size": 26762,
+      "sha256": "217a757fff3e38afca92ae4d997b5fbb8a6a958eff3be5577fa80d3e3ed5a84e",
+      "upload_status": "staged",
+      "excluded_reason": null,
+      "category": "upload_to_huggingface",
+      "redacted_copy": false,
+      "staged_sha256": "217a757fff3e38afca92ae4d997b5fbb8a6a958eff3be5577fa80d3e3ed5a84e",
+      "staged_size": 26762
+    },
+    {
+      "local_path": "logs/download_youtube_VWrzkZ9UTo0.err.log",
+      "destination": "huggingface",
+      "remote_path": "logs/download_youtube_VWrzkZ9UTo0.err.log",
+      "size": 354,
+      "sha256": "fb7d131a5abfc45d225c710b558243492b0cc1c170ec46c93741bb5c71a530e8",
+      "upload_status": "staged",
+      "excluded_reason": null,
+      "category": "upload_to_huggingface",
+      "redacted_copy": false,
+      "staged_sha256": "fb7d131a5abfc45d225c710b558243492b0cc1c170ec46c93741bb5c71a530e8",
+      "staged_size": 354
+    },
+    {
+      "local_path": "logs/download_youtube_VWrzkZ9UTo0.out.log",
+      "destination": "huggingface",
+      "remote_path": "logs/download_youtube_VWrzkZ9UTo0.out.log",
+      "size": 26703,
+      "sha256": "165d5bb1473daadada295cf9573cc67f3e52fb766c27cb391b27b16755cb6e71",
+      "upload_status": "staged",
+      "excluded_reason": null,
+      "category": "upload_to_huggingface",
+      "redacted_copy": false,
+      "staged_sha256": "165d5bb1473daadada295cf9573cc67f3e52fb766c27cb391b27b16755cb6e71",
+      "staged_size": 26703
+    },
+    {
+      "local_path": "raw_audio/9OXEMnv-Y00.webm",
+      "destination": null,
+      "remote_path": null,
+      "size": 324078025,
+      "sha256": null,
+      "upload_status": "excluded",
+      "excluded_reason": "raw_or_derived_media_asset",
+      "category": "excluded_media",
+      "redacted_copy": false
+    },
+    {
+      "local_path": "raw_audio/VWrzkZ9UTo0.webm",
+      "destination": null,
+      "remote_path": null,
+      "size": 324142132,
+      "sha256": null,
+      "upload_status": "excluded",
+      "excluded_reason": "raw_or_derived_media_asset",
+      "category": "excluded_media",
+      "redacted_copy": false
+    },
+    {
+      "local_path": "tmp/ULDPGXfhYu8.diarization.wav",
+      "destination": null,
+      "remote_path": null,
+      "size": 263713004,
+      "sha256": null,
+      "upload_status": "excluded",
+      "excluded_reason": "cache_or_generated_workspace",
+      "category": "excluded_cache",
+      "redacted_copy": false
     }
   ],
   "remote_verification": {
@@ -184212,7 +184384,7 @@
   },
   "reviewable_unuploaded_count": 0,
   "reviewable_unuploaded_note": "All current non-media, non-sensitive, public-review-suitable files were published in the stable snapshot or incremental overnight sync. Exclusions are media, cache/lease state, secret-like source config, redistribution-risk source material, empty operational logs, or transcript fallback files outside the public review allowlist.",
-  "public_sync_status": "COMPLETE_FOR_PUBLIC_REVIEW_ASSETS",
+  "public_sync_status": "FINAL_INCREMENTAL_ASSETS_STAGED",
   "incremental_snapshots": [
     {
       "created_at": "2026-09-12T01:10:12.495191+08:00",
@@ -184222,6 +184394,13 @@
       "new_upload_to_huggingface": 41,
       "new_staged_github_bytes": 501241,
       "new_staged_huggingface_bytes": 8258668
+    },
+    {
+      "scan_at": "2026-09-11T18:00:03.079858+00:00",
+      "new_entry_count": 14,
+      "new_upload_to_github": 1,
+      "new_upload_to_huggingface": 8,
+      "boundary": "final_incremental"
     }
   ],
   "last_incremental_sync": {
