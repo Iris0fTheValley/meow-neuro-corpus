@@ -184374,6 +184374,19 @@
       "excluded_reason": "cache_or_generated_workspace",
       "category": "excluded_cache",
       "redacted_copy": false
+    },
+    {
+      "local_path": "checkpoints/checkpoint_20260912_020025.json",
+      "destination": "github",
+      "remote_path": "checkpoints/checkpoint_20260912_020025.json",
+      "size": 15693,
+      "sha256": "85fe5b4d96e99008453c100fbac02d4d2c8ed761cc524662cd38264621d5c58b",
+      "upload_status": "staged",
+      "excluded_reason": null,
+      "category": "upload_to_github",
+      "redacted_copy": false,
+      "staged_sha256": "85fe5b4d96e99008453c100fbac02d4d2c8ed761cc524662cd38264621d5c58b",
+      "staged_size": 15693
     }
   ],
   "remote_verification": {
@@ -184402,7 +184415,7 @@
   },
   "reviewable_unuploaded_count": 0,
   "reviewable_unuploaded_note": "All public-review-suitable non-media and non-sensitive files present at the final incremental snapshot boundary were published. Live daemons may create later files after this boundary.",
-  "public_sync_status": "COMPLETE_FOR_PUBLIC_REVIEW_ASSETS",
+  "public_sync_status": "FINAL_CHECKPOINT_STAGED",
   "incremental_snapshots": [
     {
       "created_at": "2026-09-12T01:10:12.495191+08:00",
@@ -184419,6 +184432,13 @@
       "new_upload_to_github": 1,
       "new_upload_to_huggingface": 8,
       "boundary": "final_incremental"
+    },
+    {
+      "scan_at": "2026-09-11T18:02:30.644451+00:00",
+      "new_entry_count": 1,
+      "new_upload_to_github": 1,
+      "new_upload_to_huggingface": 0,
+      "boundary": "checkpoint_20260912_020025"
     }
   ],
   "last_incremental_sync": {
