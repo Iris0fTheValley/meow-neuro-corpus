@@ -9,7 +9,7 @@
   },
   "huggingface": {
     "repository": "ID-BLUEBERRY/meow-neuro-corpus-v02-artifacts",
-    "revision": "03c62a7f52f4d9d010bfd6bf2884536abcfdfac0",
+    "revision": "d8ced128b7520631d803aa482300692b0076ccb2",
     "path": "production_v2_recovered",
     "remote_verified_entries": 10,
     "public": true
