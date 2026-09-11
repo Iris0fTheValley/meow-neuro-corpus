@@ -80,6 +80,8 @@ def classify(rel: Path, size: int) -> dict:
     parts = path_parts(rel)
     suffix = rel.suffix.casefold()
 
+    if any("lockdir" in part.casefold() or "active_session_lease" in part.casefold() for part in rel.parts):
+        return {"category": "excluded_cache", "destination": None, "reason": "checkpoint_session_lease_lock"}
     if parts & CACHE_DIR_NAMES or suffix in CACHE_EXTENSIONS:
         return {"category": "excluded_cache", "destination": None, "reason": "cache_or_generated_workspace"}
     if suffix in MEDIA_EXTENSIONS:
