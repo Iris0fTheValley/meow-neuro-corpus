@@ -1,0 +1,76 @@
+{
+  "schema_version": "0.1.0",
+  "created_at": "2026-09-11T17:04:07.917802+00:00",
+  "throughput_state": "ACTIVE",
+  "current_counts": {
+    "videos_discovered": 971,
+    "audio_acquired": 539,
+    "metadata_complete": 964,
+    "asr_complete": 597,
+    "diarization_complete": 536,
+    "conversation_complete": 539,
+    "full_pipeline_complete": 516,
+    "processed_media_hours": 1889.753
+  },
+  "stage_counts": {
+    "metadata_status:done": 964,
+    "audio_download_status:done": 539,
+    "subtitle_status:blocked": 280,
+    "asr_status:done": 105,
+    "diarization_status:done": 536,
+    "conversation_status:done": 539,
+    "subtitle_status:not_available": 183,
+    "audio_download_status:blocked": 402,
+    "metadata_status:blocked": 7,
+    "audio_download_status:pending": 2,
+    "asr_status:source_transcript": 492,
+    "subtitle_status:done": 508,
+    "audio_download_status:retryable": 26
+  },
+  "windows": {
+    "1h": {
+      "events": 1146,
+      "asset_complete": 1,
+      "asr_complete": 0,
+      "diarization_complete": 1,
+      "fingerprint_runs": 28,
+      "asset_complete_per_hour": 1.0,
+      "asr_complete_per_hour": 0.0,
+      "diarization_complete_per_hour": 1.0
+    },
+    "3h": {
+      "events": 3397,
+      "asset_complete": 1,
+      "asr_complete": 0,
+      "diarization_complete": 1,
+      "fingerprint_runs": 83,
+      "asset_complete_per_hour": 0.333,
+      "asr_complete_per_hour": 0.0,
+      "diarization_complete_per_hour": 0.333
+    },
+    "6h": {
+      "events": 6558,
+      "asset_complete": 1,
+      "asr_complete": 28,
+      "diarization_complete": 29,
+      "fingerprint_runs": 174,
+      "asset_complete_per_hour": 0.167,
+      "asr_complete_per_hour": 4.667,
+      "diarization_complete_per_hour": 4.833
+    },
+    "12h": {
+      "events": 11275,
+      "asset_complete": 1,
+      "asr_complete": 34,
+      "diarization_complete": 34,
+      "fingerprint_runs": 317,
+      "asset_complete_per_hour": 0.083,
+      "asr_complete_per_hour": 2.833,
+      "diarization_complete_per_hour": 2.833
+    }
+  },
+  "notes": [
+    "Event-based rates are conservative; manifest is the current source of truth.",
+    "GPU idle fraction requires sampled telemetry and is not inferred from one snapshot."
+  ]
+}

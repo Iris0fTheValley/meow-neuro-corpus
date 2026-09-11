@@ -1,0 +1,13 @@
+{
+  "schema_version": "0.1.0",
+  "updated_at": "2026-09-11T06:30:48.078652+00:00",
+  "status": "PENDING_TRUSTED_REFERENCE",
+  "source_count": 505,
+  "cluster_count": 1068,
+  "mapped_cluster_count": 0,
+  "identity_counts": {
+    "UNKNOWN": 1068
+  },
+  "output": "identity_results\\identity_mapping_pending.jsonl",
+  "policy": "No title or participant metadata is used as a speaker label; identity remains UNKNOWN until fixed gold verification is available."
+}

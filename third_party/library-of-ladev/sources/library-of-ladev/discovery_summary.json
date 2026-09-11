@@ -1,0 +1,29 @@
+{
+  "terms": [
+    "Neuro",
+    "Evil",
+    "Vedal"
+  ],
+  "pages_per_term": 1,
+  "records_from_api": 300,
+  "raw_snapshots": [
+    "sources\\library-of-ladev\\api_snapshots\\search_collab_page1.json",
+    "sources\\library-of-ladev\\api_snapshots\\search_dev stream_page1.json",
+    "sources\\library-of-ladev\\api_snapshots\\search_evil collab_page1.json",
+    "sources\\library-of-ladev\\api_snapshots\\search_evil neuro-sama_page1.json",
+    "sources\\library-of-ladev\\api_snapshots\\search_evil_page1.json",
+    "sources\\library-of-ladev\\api_snapshots\\search_evil_page2.json",
+    "sources\\library-of-ladev\\api_snapshots\\search_evil_page3.json",
+    "sources\\library-of-ladev\\api_snapshots\\search_interview_page1.json",
+    "sources\\library-of-ladev\\api_snapshots\\search_just chatting_page1.json",
+    "sources\\library-of-ladev\\api_snapshots\\search_neuro-sama_page1.json",
+    "sources\\library-of-ladev\\api_snapshots\\search_neuro_page1.json",
+    "sources\\library-of-ladev\\api_snapshots\\search_neuro_page2.json",
+    "sources\\library-of-ladev\\api_snapshots\\search_neuro_page3.json",
+    "sources\\library-of-ladev\\api_snapshots\\search_vedal987_page1.json",
+    "sources\\library-of-ladev\\api_snapshots\\search_vedal_page1.json",
+    "sources\\library-of-ladev\\api_snapshots\\search_vedal_page2.json",
+    "sources\\library-of-ladev\\api_snapshots\\search_vedal_page3.json"
+  ],
+  "policy": "API transcript text remains source-attributed and is not silently treated as ASR ground truth; align it to downloaded media when available."
+}

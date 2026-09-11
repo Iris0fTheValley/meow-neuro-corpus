@@ -1,0 +1,130 @@
+{
+  "source_id": "29yeWXdUsqE",
+  "method": "SpeechBrain ECAPA-TDNN embeddings + agglomerative clustering",
+  "device": "cuda",
+  "segments": 8,
+  "mean_embedding_seconds": 0.03816611249749258,
+  "p95_embedding_seconds": 0.16057667999993996,
+  "results": [
+    {
+      "n_clusters": 2,
+      "silhouette_cosine": 0.203296959400177,
+      "cluster_sizes": {
+        "0": 7,
+        "1": 1
+      }
+    },
+    {
+      "n_clusters": 3,
+      "silhouette_cosine": 0.1488891839981079,
+      "cluster_sizes": {
+        "0": 6,
+        "1": 1,
+        "2": 1
+      }
+    }
+  ],
+  "limitations": [
+    "Silhouette is an unsupervised separation proxy, not speaker-label accuracy.",
+    "The benchmark intentionally leaves clusters anonymous; Neuro/Evil/Vedal mapping requires high-confidence reference clips and manual/metadata validation.",
+    "Music, TTS overlap, and synthetic voices may violate assumptions of ECAPA trained on human speech."
+  ],
+  "benchmarks": {
+    "1CxTCk0I79w": {
+      "source_id": "1CxTCk0I79w",
+      "method": "SpeechBrain ECAPA-TDNN embeddings + agglomerative clustering",
+      "device": "cuda",
+      "segments": 30,
+      "mean_embedding_seconds": 0.016418409999459982,
+      "p95_embedding_seconds": 0.01265657999610993,
+      "results": [
+        {
+          "n_clusters": 2,
+          "silhouette_cosine": 0.48724448680877686,
+          "cluster_sizes": {
+            "0": 4,
+            "1": 26
+          }
+        },
+        {
+          "n_clusters": 3,
+          "silhouette_cosine": 0.4416981339454651,
+          "cluster_sizes": {
+            "0": 3,
+            "1": 26,
+            "2": 1
+          }
+        }
+      ],
+      "limitations": [
+        "Silhouette is an unsupervised separation proxy, not speaker-label accuracy.",
+        "The benchmark intentionally leaves clusters anonymous; Neuro/Evil/Vedal mapping requires high-confidence reference clips and manual/metadata validation.",
+        "Music, TTS overlap, and synthetic voices may violate assumptions of ECAPA trained on human speech."
+      ]
+    },
+    "Ak7mzd3L7b0": {
+      "source_id": "Ak7mzd3L7b0",
+      "method": "SpeechBrain ECAPA-TDNN embeddings + agglomerative clustering",
+      "device": "cuda",
+      "segments": 9,
+      "mean_embedding_seconds": 0.0353008555539418,
+      "p95_embedding_seconds": 0.14939902000187422,
+      "results": [
+        {
+          "n_clusters": 2,
+          "silhouette_cosine": 0.4799264669418335,
+          "cluster_sizes": {
+            "0": 5,
+            "1": 4
+          }
+        },
+        {
+          "n_clusters": 3,
+          "silhouette_cosine": 0.3271735906600952,
+          "cluster_sizes": {
+            "0": 4,
+            "1": 4,
+            "2": 1
+          }
+        }
+      ],
+      "limitations": [
+        "Silhouette is an unsupervised separation proxy, not speaker-label accuracy.",
+        "The benchmark intentionally leaves clusters anonymous; Neuro/Evil/Vedal mapping requires high-confidence reference clips and manual/metadata validation.",
+        "Music, TTS overlap, and synthetic voices may violate assumptions of ECAPA trained on human speech."
+      ]
+    },
+    "29yeWXdUsqE": {
+      "source_id": "29yeWXdUsqE",
+      "method": "SpeechBrain ECAPA-TDNN embeddings + agglomerative clustering",
+      "device": "cuda",
+      "segments": 8,
+      "mean_embedding_seconds": 0.03814656250142434,
+      "p95_embedding_seconds": 0.1608758500020484,
+      "results": [
+        {
+          "n_clusters": 2,
+          "silhouette_cosine": 0.203296959400177,
+          "cluster_sizes": {
+            "0": 7,
+            "1": 1
+          }
+        },
+        {
+          "n_clusters": 3,
+          "silhouette_cosine": 0.1488891839981079,
+          "cluster_sizes": {
+            "0": 6,
+            "1": 1,
+            "2": 1
+          }
+        }
+      ],
+      "limitations": [
+        "Silhouette is an unsupervised separation proxy, not speaker-label accuracy.",
+        "The benchmark intentionally leaves clusters anonymous; Neuro/Evil/Vedal mapping requires high-confidence reference clips and manual/metadata validation.",
+        "Music, TTS overlap, and synthetic voices may violate assumptions of ECAPA trained on human speech."
+      ]
+    }
+  }
+}

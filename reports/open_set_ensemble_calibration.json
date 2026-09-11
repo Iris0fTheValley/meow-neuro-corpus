@@ -1,0 +1,880 @@
+{
+  "schema_version": "0.1.0",
+  "created_at": "2026-09-11T12:03:19.977337+00:00",
+  "status": "ENSEMBLE_AUTO_ANCHOR_CALIBRATION_PROXY_NOT_GOLD",
+  "models": [
+    "speechbrain/spkrec-ecapa-voxceleb",
+    "speechbrain/spkrec-xvect-voxceleb"
+  ],
+  "source_group_holdout": true,
+  "ecapa_margin_threshold": 0.135,
+  "xvector_margin_threshold": 0.0,
+  "anchor_count": 83,
+  "family_count": 65,
+  "family_ensemble_accept_count": 60,
+  "family_recall_proxy": 0.923077,
+  "nontarget_count": 18,
+  "nontarget_ensemble_false_positive_count": 0,
+  "nontarget_ensemble_false_positive_rate": 0.0,
+  "label_counts": {
+    "NEURO_FAMILY": 65,
+    "OTHER": 2,
+    "VEDAL": 16
+  },
+  "challenge_summary": {
+    "chat_tts": {
+      "clip_count": 146,
+      "ensemble_potential_family_accept_count": 20,
+      "ensemble_potential_family_accept_rate": 0.136986
+    },
+    "game_voice": {
+      "clip_count": 13,
+      "ensemble_potential_family_accept_count": 9,
+      "ensemble_potential_family_accept_rate": 0.692308
+    },
+    "guest": {
+      "clip_count": 10,
+      "ensemble_potential_family_accept_count": 5,
+      "ensemble_potential_family_accept_rate": 0.5
+    },
+    "singing": {
+      "clip_count": 822,
+      "ensemble_potential_family_accept_count": 522,
+      "ensemble_potential_family_accept_rate": 0.635036
+    }
+  },
+  "promotion_decision": "DO_NOT_PROMOTE",
+  "promotion_reason": "The ensemble is still calibrated on auto anchors, while challenge buckets are unlabeled and sparse. It is a safer mapping proxy, not final gold precision.",
+  "per_clip": [
+    {
+      "anchor_id": "family:evil:8335sBz9aHU:00",
+      "source_id": "8335sBz9aHU",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.344861,
+      "xvector_margin": 0.076189,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:evil:8335sBz9aHU:01",
+      "source_id": "8335sBz9aHU",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.32432,
+      "xvector_margin": 0.083701,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:evil:8335sBz9aHU:02",
+      "source_id": "8335sBz9aHU",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.33347,
+      "xvector_margin": 0.076511,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:evil:8335sBz9aHU:03",
+      "source_id": "8335sBz9aHU",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.312719,
+      "xvector_margin": 0.080638,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:evil:D95w1v1_5k0:01",
+      "source_id": "D95w1v1_5k0",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.212478,
+      "xvector_margin": 0.060297,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:evil:D95w1v1_5k0:03",
+      "source_id": "D95w1v1_5k0",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.24546,
+      "xvector_margin": 0.044039,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:evil:IaU9TkjCAGA:00",
+      "source_id": "IaU9TkjCAGA",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.253325,
+      "xvector_margin": 0.057222,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:evil:IaU9TkjCAGA:01",
+      "source_id": "IaU9TkjCAGA",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.342936,
+      "xvector_margin": 0.053514,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:evil:IaU9TkjCAGA:02",
+      "source_id": "IaU9TkjCAGA",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.289733,
+      "xvector_margin": 0.063628,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:evil:IaU9TkjCAGA:03",
+      "source_id": "IaU9TkjCAGA",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.324427,
+      "xvector_margin": 0.074608,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:evil:SJxG6ASjZeY:00",
+      "source_id": "SJxG6ASjZeY",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.329696,
+      "xvector_margin": 0.085642,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:evil:SJxG6ASjZeY:01",
+      "source_id": "SJxG6ASjZeY",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.335743,
+      "xvector_margin": 0.080972,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:evil:SJxG6ASjZeY:02",
+      "source_id": "SJxG6ASjZeY",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.288363,
+      "xvector_margin": 0.071867,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:evil:SJxG6ASjZeY:03",
+      "source_id": "SJxG6ASjZeY",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.36454,
+      "xvector_margin": 0.083128,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:evil:qlJmo9JPp2A:00",
+      "source_id": "qlJmo9JPp2A",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.32728,
+      "xvector_margin": 0.069126,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:evil:qlJmo9JPp2A:01",
+      "source_id": "qlJmo9JPp2A",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.354971,
+      "xvector_margin": 0.078811,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:evil:qlJmo9JPp2A:02",
+      "source_id": "qlJmo9JPp2A",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.299264,
+      "xvector_margin": 0.052034,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:evil:qlJmo9JPp2A:03",
+      "source_id": "qlJmo9JPp2A",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.352207,
+      "xvector_margin": 0.075291,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:evil:uZTTRObEhbI:00",
+      "source_id": "uZTTRObEhbI",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.139752,
+      "xvector_margin": 0.051922,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:evil:uZTTRObEhbI:01",
+      "source_id": "uZTTRObEhbI",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.670712,
+      "xvector_margin": 0.083096,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:evil:uZTTRObEhbI:02",
+      "source_id": "uZTTRObEhbI",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.81058,
+      "xvector_margin": 0.07121,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:evil:uZTTRObEhbI:03",
+      "source_id": "uZTTRObEhbI",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.286826,
+      "xvector_margin": 0.052081,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:3ObVH1U1620:00",
+      "source_id": "3ObVH1U1620",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.343154,
+      "xvector_margin": 0.068187,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:3ObVH1U1620:01",
+      "source_id": "3ObVH1U1620",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.34807,
+      "xvector_margin": 0.069988,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:3ObVH1U1620:02",
+      "source_id": "3ObVH1U1620",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.33021,
+      "xvector_margin": 0.083599,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:3ObVH1U1620:03",
+      "source_id": "3ObVH1U1620",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.304356,
+      "xvector_margin": 0.07438,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:4_kgbL9ow_Y:00",
+      "source_id": "4_kgbL9ow_Y",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.373638,
+      "xvector_margin": 0.085028,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:4_kgbL9ow_Y:01",
+      "source_id": "4_kgbL9ow_Y",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.345731,
+      "xvector_margin": 0.077766,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:4jhFIea_gWU:00",
+      "source_id": "4jhFIea_gWU",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.3092,
+      "xvector_margin": 0.06841,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:4jhFIea_gWU:01",
+      "source_id": "4jhFIea_gWU",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.421872,
+      "xvector_margin": 0.09078,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:4jhFIea_gWU:02",
+      "source_id": "4jhFIea_gWU",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.381589,
+      "xvector_margin": 0.083614,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:4jhFIea_gWU:03",
+      "source_id": "4jhFIea_gWU",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.363828,
+      "xvector_margin": 0.001437,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:9REk8M-SSd8:00",
+      "source_id": "9REk8M-SSd8",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.371494,
+      "xvector_margin": 0.091116,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:9REk8M-SSd8:01",
+      "source_id": "9REk8M-SSd8",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.384785,
+      "xvector_margin": 0.091602,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:9REk8M-SSd8:02",
+      "source_id": "9REk8M-SSd8",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.403169,
+      "xvector_margin": 0.084723,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:9REk8M-SSd8:03",
+      "source_id": "9REk8M-SSd8",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.409487,
+      "xvector_margin": 0.078982,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:BJj-8zHAZec:00",
+      "source_id": "BJj-8zHAZec",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.353233,
+      "xvector_margin": 0.077115,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:BJj-8zHAZec:01",
+      "source_id": "BJj-8zHAZec",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.328369,
+      "xvector_margin": 0.070575,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:BJj-8zHAZec:02",
+      "source_id": "BJj-8zHAZec",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.269587,
+      "xvector_margin": 0.030723,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:FpMGqhh_yd8:00",
+      "source_id": "FpMGqhh_yd8",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.403102,
+      "xvector_margin": 0.03685,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:FpMGqhh_yd8:01",
+      "source_id": "FpMGqhh_yd8",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.311361,
+      "xvector_margin": -0.052853,
+      "ecapa_accept": true,
+      "xvector_accept": false,
+      "ensemble_family_accept": false
+    },
+    {
+      "anchor_id": "family:neuro:FpMGqhh_yd8:02",
+      "source_id": "FpMGqhh_yd8",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.344704,
+      "xvector_margin": -0.024265,
+      "ecapa_accept": true,
+      "xvector_accept": false,
+      "ensemble_family_accept": false
+    },
+    {
+      "anchor_id": "family:neuro:FpMGqhh_yd8:03",
+      "source_id": "FpMGqhh_yd8",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.341743,
+      "xvector_margin": -0.064846,
+      "ecapa_accept": true,
+      "xvector_accept": false,
+      "ensemble_family_accept": false
+    },
+    {
+      "anchor_id": "family:neuro:GjIopQlnEUY:00",
+      "source_id": "GjIopQlnEUY",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.400329,
+      "xvector_margin": 0.087455,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:GjIopQlnEUY:01",
+      "source_id": "GjIopQlnEUY",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.356958,
+      "xvector_margin": 0.070539,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:GjIopQlnEUY:02",
+      "source_id": "GjIopQlnEUY",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.351984,
+      "xvector_margin": 0.039602,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:GjIopQlnEUY:03",
+      "source_id": "GjIopQlnEUY",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.299901,
+      "xvector_margin": 0.078668,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:VL1oziMsV4Y:00",
+      "source_id": "VL1oziMsV4Y",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.393719,
+      "xvector_margin": 0.086958,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:VL1oziMsV4Y:01",
+      "source_id": "VL1oziMsV4Y",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.409137,
+      "xvector_margin": 0.091784,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:VL1oziMsV4Y:02",
+      "source_id": "VL1oziMsV4Y",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.375139,
+      "xvector_margin": 0.089337,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:VL1oziMsV4Y:03",
+      "source_id": "VL1oziMsV4Y",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.365574,
+      "xvector_margin": 0.087847,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:dK33c8-8WV8:00",
+      "source_id": "dK33c8-8WV8",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.418887,
+      "xvector_margin": 0.093183,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:dK33c8-8WV8:01",
+      "source_id": "dK33c8-8WV8",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.39445,
+      "xvector_margin": 0.09867,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:dK33c8-8WV8:02",
+      "source_id": "dK33c8-8WV8",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.414221,
+      "xvector_margin": 0.085854,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:dK33c8-8WV8:03",
+      "source_id": "dK33c8-8WV8",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.37742,
+      "xvector_margin": 0.089257,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:f6Z-P9ba_Rs:01",
+      "source_id": "f6Z-P9ba_Rs",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.201223,
+      "xvector_margin": 0.037586,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:f6Z-P9ba_Rs:03",
+      "source_id": "f6Z-P9ba_Rs",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.183979,
+      "xvector_margin": 0.044552,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:taEnDJONKHY:00",
+      "source_id": "taEnDJONKHY",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.398119,
+      "xvector_margin": 0.085127,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:taEnDJONKHY:01",
+      "source_id": "taEnDJONKHY",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.403654,
+      "xvector_margin": 0.085069,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:taEnDJONKHY:02",
+      "source_id": "taEnDJONKHY",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.416746,
+      "xvector_margin": 0.082578,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:taEnDJONKHY:03",
+      "source_id": "taEnDJONKHY",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.386454,
+      "xvector_margin": 0.09384,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:xJiH_3u4kJ4:00",
+      "source_id": "xJiH_3u4kJ4",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.389728,
+      "xvector_margin": 0.026193,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "family:neuro:xJiH_3u4kJ4:01",
+      "source_id": "xJiH_3u4kJ4",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.229338,
+      "xvector_margin": -0.094929,
+      "ecapa_accept": true,
+      "xvector_accept": false,
+      "ensemble_family_accept": false
+    },
+    {
+      "anchor_id": "family:neuro:xJiH_3u4kJ4:02",
+      "source_id": "xJiH_3u4kJ4",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.327374,
+      "xvector_margin": -0.007557,
+      "ecapa_accept": true,
+      "xvector_accept": false,
+      "ensemble_family_accept": false
+    },
+    {
+      "anchor_id": "family:neuro:xJiH_3u4kJ4:03",
+      "source_id": "xJiH_3u4kJ4",
+      "label": "NEURO_FAMILY",
+      "ecapa_margin": 0.367281,
+      "xvector_margin": 0.0516,
+      "ecapa_accept": true,
+      "xvector_accept": true,
+      "ensemble_family_accept": true
+    },
+    {
+      "anchor_id": "other:selfid:OTHER:i4VSpJK8gTs:1319",
+      "source_id": "i4VSpJK8gTs",
+      "label": "OTHER",
+      "ecapa_margin": -0.134665,
+      "xvector_margin": -0.135996,
+      "ecapa_accept": false,
+      "xvector_accept": false,
+      "ensemble_family_accept": false
+    },
+    {
+      "anchor_id": "other:selfid:OTHER:uZTTRObEhbI:1799",
+      "source_id": "uZTTRObEhbI",
+      "label": "OTHER",
+      "ecapa_margin": 0.726659,
+      "xvector_margin": -0.060736,
+      "ecapa_accept": true,
+      "xvector_accept": false,
+      "ensemble_family_accept": false
+    },
+    {
+      "anchor_id": "vedal:vedal:7uTaHkuoDzo:00",
+      "source_id": "7uTaHkuoDzo",
+      "label": "VEDAL",
+      "ecapa_margin": -0.74143,
+      "xvector_margin": -0.088186,
+      "ecapa_accept": false,
+      "xvector_accept": false,
+      "ensemble_family_accept": false
+    },
+    {
+      "anchor_id": "vedal:vedal:7uTaHkuoDzo:01",
+      "source_id": "7uTaHkuoDzo",
+      "label": "VEDAL",
+      "ecapa_margin": -0.779686,
+      "xvector_margin": -0.087999,
+      "ecapa_accept": false,
+      "xvector_accept": false,
+      "ensemble_family_accept": false
+    },
+    {
+      "anchor_id": "vedal:vedal:7uTaHkuoDzo:02",
+      "source_id": "7uTaHkuoDzo",
+      "label": "VEDAL",
+      "ecapa_margin": -0.725275,
+      "xvector_margin": -0.091835,
+      "ecapa_accept": false,
+      "xvector_accept": false,
+      "ensemble_family_accept": false
+    },
+    {
+      "anchor_id": "vedal:vedal:BV1uN411N7KR:00",
+      "source_id": "BV1uN411N7KR",
+      "label": "VEDAL",
+      "ecapa_margin": -0.690288,
+      "xvector_margin": -0.096809,
+      "ecapa_accept": false,
+      "xvector_accept": false,
+      "ensemble_family_accept": false
+    },
+    {
+      "anchor_id": "vedal:vedal:BV1uN411N7KR:01",
+      "source_id": "BV1uN411N7KR",
+      "label": "VEDAL",
+      "ecapa_margin": -0.5699,
+      "xvector_margin": -0.062805,
+      "ecapa_accept": false,
+      "xvector_accept": false,
+      "ensemble_family_accept": false
+    },
+    {
+      "anchor_id": "vedal:vedal:BV1uN411N7KR:02",
+      "source_id": "BV1uN411N7KR",
+      "label": "VEDAL",
+      "ecapa_margin": -0.722765,
+      "xvector_margin": -0.068656,
+      "ecapa_accept": false,
+      "xvector_accept": false,
+      "ensemble_family_accept": false
+    },
+    {
+      "anchor_id": "vedal:vedal:D36Hn9s7dco:00",
+      "source_id": "D36Hn9s7dco",
+      "label": "VEDAL",
+      "ecapa_margin": -0.087563,
+      "xvector_margin": -0.005069,
+      "ecapa_accept": false,
+      "xvector_accept": false,
+      "ensemble_family_accept": false
+    },
+    {
+      "anchor_id": "vedal:vedal:i2QspkWXMw4:00",
+      "source_id": "i2QspkWXMw4",
+      "label": "VEDAL",
+      "ecapa_margin": -0.596349,
+      "xvector_margin": -0.018903,
+      "ecapa_accept": false,
+      "xvector_accept": false,
+      "ensemble_family_accept": false
+    },
+    {
+      "anchor_id": "vedal:vedal:i2QspkWXMw4:01",
+      "source_id": "i2QspkWXMw4",
+      "label": "VEDAL",
+      "ecapa_margin": -0.43447,
+      "xvector_margin": -0.060026,
+      "ecapa_accept": false,
+      "xvector_accept": false,
+      "ensemble_family_accept": false
+    },
+    {
+      "anchor_id": "vedal:vedal:i2QspkWXMw4:02",
+      "source_id": "i2QspkWXMw4",
+      "label": "VEDAL",
+      "ecapa_margin": -0.692692,
+      "xvector_margin": -0.0664,
+      "ecapa_accept": false,
+      "xvector_accept": false,
+      "ensemble_family_accept": false
+    },
+    {
+      "anchor_id": "vedal:vedal:i4VSpJK8gTs:00",
+      "source_id": "i4VSpJK8gTs",
+      "label": "VEDAL",
+      "ecapa_margin": -0.147149,
+      "xvector_margin": -0.05888,
+      "ecapa_accept": false,
+      "xvector_accept": false,
+      "ensemble_family_accept": false
+    },
+    {
+      "anchor_id": "vedal:vedal:i4VSpJK8gTs:01",
+      "source_id": "i4VSpJK8gTs",
+      "label": "VEDAL",
+      "ecapa_margin": -0.113805,
+      "xvector_margin": -0.051462,
+      "ecapa_accept": false,
+      "xvector_accept": false,
+      "ensemble_family_accept": false
+    },
+    {
+      "anchor_id": "vedal:vedal:i4VSpJK8gTs:02",
+      "source_id": "i4VSpJK8gTs",
+      "label": "VEDAL",
+      "ecapa_margin": -0.042261,
+      "xvector_margin": -0.052433,
+      "ecapa_accept": false,
+      "xvector_accept": false,
+      "ensemble_family_accept": false
+    },
+    {
+      "anchor_id": "vedal:vedal:omVt_nBIbDE:00",
+      "source_id": "omVt_nBIbDE",
+      "label": "VEDAL",
+      "ecapa_margin": -0.66973,
+      "xvector_margin": -0.075799,
+      "ecapa_accept": false,
+      "xvector_accept": false,
+      "ensemble_family_accept": false
+    },
+    {
+      "anchor_id": "vedal:vedal:omVt_nBIbDE:01",
+      "source_id": "omVt_nBIbDE",
+      "label": "VEDAL",
+      "ecapa_margin": -0.727825,
+      "xvector_margin": -0.102433,
+      "ecapa_accept": false,
+      "xvector_accept": false,
+      "ensemble_family_accept": false
+    },
+    {
+      "anchor_id": "vedal:vedal:omVt_nBIbDE:02",
+      "source_id": "omVt_nBIbDE",
+      "label": "VEDAL",
+      "ecapa_margin": -0.826851,
+      "xvector_margin": -0.089235,
+      "ecapa_accept": false,
+      "xvector_accept": false,
+      "ensemble_family_accept": false
+    }
+  ]
+}

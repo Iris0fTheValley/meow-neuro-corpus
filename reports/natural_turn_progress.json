@@ -1,0 +1,3038 @@
+{
+  "schema_version": "0.1.0",
+  "updated_at": "2026-09-11T06:30:24.700324+00:00",
+  "status": "CONTINUE_WORKING",
+  "completed": [
+    {
+      "source_id": "n-3mxQzJVeo",
+      "segment_count": 1097,
+      "turn_count": 663,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "P42BBJ2pCFo",
+      "segment_count": 890,
+      "turn_count": 684,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "pT_w4Iep6qI",
+      "segment_count": 839,
+      "turn_count": 431,
+      "suspicious_segments": 114
+    },
+    {
+      "source_id": "shS6QuXp338",
+      "segment_count": 1008,
+      "turn_count": 605,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "NkTBNDtBG70",
+      "segment_count": 978,
+      "turn_count": 692,
+      "suspicious_segments": 7
+    },
+    {
+      "source_id": "v6KVSNDFOyY",
+      "segment_count": 776,
+      "turn_count": 549,
+      "suspicious_segments": 140
+    },
+    {
+      "source_id": "svfZIIMSilc",
+      "segment_count": 1059,
+      "turn_count": 709,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "DXgsuHdOCeY",
+      "segment_count": 1080,
+      "turn_count": 550,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "bKmQ77dsEdQ",
+      "segment_count": 1117,
+      "turn_count": 608,
+      "suspicious_segments": 5
+    },
+    {
+      "source_id": "DomhqHxd3KE",
+      "segment_count": 977,
+      "turn_count": 717,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "Pdtro-7H_o4",
+      "segment_count": 1242,
+      "turn_count": 772,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "ndUCw16791E",
+      "segment_count": 960,
+      "turn_count": 614,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "8ujnKMkkFGo",
+      "segment_count": 1651,
+      "turn_count": 858,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "FERrsHLcBxQ",
+      "segment_count": 1120,
+      "turn_count": 776,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "uZTTRObEhbI",
+      "segment_count": 2465,
+      "turn_count": 1199,
+      "suspicious_segments": 5
+    },
+    {
+      "source_id": "T4Pgj7kjoUk",
+      "segment_count": 957,
+      "turn_count": 536,
+      "suspicious_segments": 5
+    },
+    {
+      "source_id": "f4YwpciOb8c",
+      "segment_count": 2430,
+      "turn_count": 1300,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "64zvE_T9JuM",
+      "segment_count": 1859,
+      "turn_count": 1447,
+      "suspicious_segments": 5
+    },
+    {
+      "source_id": "aVgQB97ScPg",
+      "segment_count": 1848,
+      "turn_count": 1461,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "_GRFgHhpCVY",
+      "segment_count": 938,
+      "turn_count": 673,
+      "suspicious_segments": 63
+    },
+    {
+      "source_id": "ZsDht8VcsyA",
+      "segment_count": 1667,
+      "turn_count": 1289,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "4NvFzxiD-tE",
+      "segment_count": 1360,
+      "turn_count": 1148,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "qlJmo9JPp2A",
+      "segment_count": 1375,
+      "turn_count": 1068,
+      "suspicious_segments": 7
+    },
+    {
+      "source_id": "S6zgtOcT6t4",
+      "segment_count": 1060,
+      "turn_count": 979,
+      "suspicious_segments": 27
+    },
+    {
+      "source_id": "nkkRZFvCIJA",
+      "segment_count": 1499,
+      "turn_count": 913,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "9REk8M-SSd8",
+      "segment_count": 1470,
+      "turn_count": 1091,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "f1cleaLWtHU",
+      "segment_count": 1298,
+      "turn_count": 1039,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "taEnDJONKHY",
+      "segment_count": 1513,
+      "turn_count": 1383,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "RnUXQKq-o70",
+      "segment_count": 1258,
+      "turn_count": 954,
+      "suspicious_segments": 41
+    },
+    {
+      "source_id": "Pbe-2pvRo70",
+      "segment_count": 1480,
+      "turn_count": 1163,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "zCasuFHBdTI",
+      "segment_count": 1918,
+      "turn_count": 1480,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "9bn5lJ9OXQw",
+      "segment_count": 1631,
+      "turn_count": 1317,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "kiQVuBVN8ig",
+      "segment_count": 1656,
+      "turn_count": 1231,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "hGtT4-MSzS0",
+      "segment_count": 1873,
+      "turn_count": 1473,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "rp4RZZI9YP8",
+      "segment_count": 1334,
+      "turn_count": 1154,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "dEASwQwxJgE",
+      "segment_count": 1767,
+      "turn_count": 1377,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "6G0CnNorUj8",
+      "segment_count": 1415,
+      "turn_count": 1194,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "XabSL2UbOaI",
+      "segment_count": 1815,
+      "turn_count": 1375,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "zaxmxPE6Mls",
+      "segment_count": 1409,
+      "turn_count": 1130,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "Nwhu6-QUZEc",
+      "segment_count": 1279,
+      "turn_count": 1121,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "Z4ypWTelCWQ",
+      "segment_count": 1793,
+      "turn_count": 1374,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "uW3CXDvL18U",
+      "segment_count": 1595,
+      "turn_count": 1201,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "jS765dNaCDQ",
+      "segment_count": 1625,
+      "turn_count": 1426,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "8335sBz9aHU",
+      "segment_count": 1703,
+      "turn_count": 971,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "8BUuroRgtMs",
+      "segment_count": 1480,
+      "turn_count": 1256,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "xJiH_3u4kJ4",
+      "segment_count": 1218,
+      "turn_count": 764,
+      "suspicious_segments": 124
+    },
+    {
+      "source_id": "hPRzmRZk7hQ",
+      "segment_count": 1205,
+      "turn_count": 917,
+      "suspicious_segments": 5
+    },
+    {
+      "source_id": "HqLohwUgX84",
+      "segment_count": 1152,
+      "turn_count": 1010,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "dTKmIUANsU8",
+      "segment_count": 1373,
+      "turn_count": 818,
+      "suspicious_segments": 57
+    },
+    {
+      "source_id": "5BZUIFr7g4U",
+      "segment_count": 1810,
+      "turn_count": 1496,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "FpMGqhh_yd8",
+      "segment_count": 2002,
+      "turn_count": 1243,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "T0IE_vJzTMc",
+      "segment_count": 1553,
+      "turn_count": 1395,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "mlXXQEolJ3c",
+      "segment_count": 1404,
+      "turn_count": 1115,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "f7dlKylM0GA",
+      "segment_count": 1581,
+      "turn_count": 1297,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "dK33c8-8WV8",
+      "segment_count": 1766,
+      "turn_count": 1413,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "dPp6tG1nbtQ",
+      "segment_count": 1716,
+      "turn_count": 1432,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "D95w1v1_5k0",
+      "segment_count": 2868,
+      "turn_count": 1191,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "J2_lwQevOKA",
+      "segment_count": 1710,
+      "turn_count": 1433,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "5Frk-BKHX3s",
+      "segment_count": 1648,
+      "turn_count": 1059,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "CwA807CsD08",
+      "segment_count": 1674,
+      "turn_count": 1437,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "qTgzqlF7NEc",
+      "segment_count": 855,
+      "turn_count": 428,
+      "suspicious_segments": 66
+    },
+    {
+      "source_id": "SJxG6ASjZeY",
+      "segment_count": 1846,
+      "turn_count": 950,
+      "suspicious_segments": 8
+    },
+    {
+      "source_id": "4jhFIea_gWU",
+      "segment_count": 1626,
+      "turn_count": 1400,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "3mw92P7vv7A",
+      "segment_count": 2109,
+      "turn_count": 1596,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "VL1oziMsV4Y",
+      "segment_count": 1653,
+      "turn_count": 1407,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "hZoVNDa68b4",
+      "segment_count": 1520,
+      "turn_count": 1297,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "EzKb4xBkhHo",
+      "segment_count": 2173,
+      "turn_count": 1478,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "Zf5gonN8E2A",
+      "segment_count": 2012,
+      "turn_count": 1514,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "CUb8HfPYCQc",
+      "segment_count": 2857,
+      "turn_count": 1775,
+      "suspicious_segments": 5
+    },
+    {
+      "source_id": "Sa9xeUkuRh4",
+      "segment_count": 2280,
+      "turn_count": 1664,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "i2QspkWXMw4",
+      "segment_count": 3051,
+      "turn_count": 1563,
+      "suspicious_segments": 8
+    },
+    {
+      "source_id": "i4VSpJK8gTs",
+      "segment_count": 2627,
+      "turn_count": 1186,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "pyaJixX6O88",
+      "segment_count": 1553,
+      "turn_count": 1416,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "PYfmTmFOy7o",
+      "segment_count": 2324,
+      "turn_count": 1684,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "DJj2sfrVTw4",
+      "segment_count": 2451,
+      "turn_count": 1798,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "ueTlmIHIO_k",
+      "segment_count": 3308,
+      "turn_count": 1666,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "03-w0ZwYTxg",
+      "segment_count": 2786,
+      "turn_count": 1972,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "G3N5lZxq8xw",
+      "segment_count": 3629,
+      "turn_count": 1429,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "GLE4JMJyVbg",
+      "segment_count": 3103,
+      "turn_count": 2022,
+      "suspicious_segments": 5
+    },
+    {
+      "source_id": "8He-42U23TM",
+      "segment_count": 3286,
+      "turn_count": 1816,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "BJj-8zHAZec",
+      "segment_count": 1956,
+      "turn_count": 1487,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "D36Hn9s7dco",
+      "segment_count": 3302,
+      "turn_count": 1588,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "Z_ZWwV3jjU4",
+      "segment_count": 2989,
+      "turn_count": 2007,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "u6j-cn1DLKE",
+      "segment_count": 2205,
+      "turn_count": 1713,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "5YGZKbhu3Og",
+      "segment_count": 1824,
+      "turn_count": 1435,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "nDh6wiUC4dw",
+      "segment_count": 3588,
+      "turn_count": 2195,
+      "suspicious_segments": 10
+    },
+    {
+      "source_id": "Qy4agD90vy4",
+      "segment_count": 3923,
+      "turn_count": 1738,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "hxOO4D8pQQA",
+      "segment_count": 1281,
+      "turn_count": 934,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "GjIopQlnEUY",
+      "segment_count": 2403,
+      "turn_count": 1844,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "pQFwDyrlfvA",
+      "segment_count": 2740,
+      "turn_count": 2043,
+      "suspicious_segments": 25
+    },
+    {
+      "source_id": "PbLafdGRGxw",
+      "segment_count": 2082,
+      "turn_count": 1142,
+      "suspicious_segments": 7
+    },
+    {
+      "source_id": "IaU9TkjCAGA",
+      "segment_count": 4756,
+      "turn_count": 2325,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "C-_vdh5Evfw",
+      "segment_count": 2500,
+      "turn_count": 1837,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "Ak7mzd3L7b0",
+      "segment_count": 4638,
+      "turn_count": 2004,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "ZYnNRq9FPc4",
+      "segment_count": 1930,
+      "turn_count": 1642,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "BV1m4u96dEen",
+      "segment_count": 989,
+      "turn_count": 775,
+      "suspicious_segments": 30
+    },
+    {
+      "source_id": "BV17wyFYmEUV",
+      "segment_count": 1064,
+      "turn_count": 583,
+      "suspicious_segments": 219
+    },
+    {
+      "source_id": "BV12tstzNEcQ",
+      "segment_count": 792,
+      "turn_count": 569,
+      "suspicious_segments": 214
+    },
+    {
+      "source_id": "BV1uN411N7KR",
+      "segment_count": 3750,
+      "turn_count": 1284,
+      "suspicious_segments": 113
+    },
+    {
+      "source_id": "vedal987:2866144769",
+      "segment_count": 1673,
+      "turn_count": 1120,
+      "suspicious_segments": 44
+    },
+    {
+      "source_id": "BV1X6X9BuEyg",
+      "segment_count": 6,
+      "turn_count": 5,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "BV1oWjj6UEMd",
+      "segment_count": 8,
+      "turn_count": 8,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "BV17i4y1q7t1",
+      "segment_count": 10,
+      "turn_count": 8,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "BV151gh6uE5C",
+      "segment_count": 20,
+      "turn_count": 16,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "BV11r42147oq",
+      "segment_count": 25,
+      "turn_count": 15,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "BV1Zk4y147qt",
+      "segment_count": 35,
+      "turn_count": 26,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "BV12W8izqEUy",
+      "segment_count": 33,
+      "turn_count": 27,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "BV18QdCYpESb",
+      "segment_count": 12,
+      "turn_count": 11,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "BV11L411r7DQ",
+      "segment_count": 53,
+      "turn_count": 35,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "BV1oh4y1F7jE",
+      "segment_count": 29,
+      "turn_count": 21,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "BV1TbH3zUEnu",
+      "segment_count": 52,
+      "turn_count": 42,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "BV16LY1eKENj",
+      "segment_count": 109,
+      "turn_count": 70,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "BV1Ld4y1H7wL",
+      "segment_count": 67,
+      "turn_count": 56,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "BV1tL411i7nD",
+      "segment_count": 134,
+      "turn_count": 86,
+      "suspicious_segments": 17
+    },
+    {
+      "source_id": "BV1LaaCeXEH6",
+      "segment_count": 131,
+      "turn_count": 34,
+      "suspicious_segments": 7
+    },
+    {
+      "source_id": "BV1AJ9UBVEaE",
+      "segment_count": 264,
+      "turn_count": 230,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "BV1DVoQY5EyJ",
+      "segment_count": 314,
+      "turn_count": 256,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "pC5V_ShSkqQ",
+      "segment_count": 1002,
+      "turn_count": 724,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "roAtmTNzu4I",
+      "segment_count": 972,
+      "turn_count": 878,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "joPOlqpV4s8",
+      "segment_count": 1181,
+      "turn_count": 956,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "w_zi52ikYAA",
+      "segment_count": 1029,
+      "turn_count": 646,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "bc54vGFvw-k",
+      "segment_count": 1134,
+      "turn_count": 638,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "hT-p4XGNB8k",
+      "segment_count": 1017,
+      "turn_count": 735,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "ul4SEV_euH8",
+      "segment_count": 1524,
+      "turn_count": 1282,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "nL-C7Wv5fwk",
+      "segment_count": 948,
+      "turn_count": 672,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "AcY8j2p6Noo",
+      "segment_count": 1217,
+      "turn_count": 1110,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "n3T_iCQ-2x4",
+      "segment_count": 1620,
+      "turn_count": 1293,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "ORCpxwW89Co",
+      "segment_count": 1026,
+      "turn_count": 890,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "InGcTJOv15w",
+      "segment_count": 1373,
+      "turn_count": 1223,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "5lpSLo1Q4f0",
+      "segment_count": 1434,
+      "turn_count": 988,
+      "suspicious_segments": 33
+    },
+    {
+      "source_id": "KSfhL8Gwq34",
+      "segment_count": 1271,
+      "turn_count": 1032,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "_oeqG4DVeTY",
+      "segment_count": 1016,
+      "turn_count": 674,
+      "suspicious_segments": 263
+    },
+    {
+      "source_id": "MD6eV5lSdy8",
+      "segment_count": 1204,
+      "turn_count": 801,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "0ragksm0i94",
+      "segment_count": 1020,
+      "turn_count": 705,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "VGzMeXpLxwk",
+      "segment_count": 2106,
+      "turn_count": 1255,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "EUbQ5AxyqeM",
+      "segment_count": 971,
+      "turn_count": 667,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "M_4-ht_YmZU",
+      "segment_count": 1782,
+      "turn_count": 1165,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "fSiwGjhUx88",
+      "segment_count": 2023,
+      "turn_count": 1293,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "zAzkVuuNNVU",
+      "segment_count": 1696,
+      "turn_count": 1180,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "mTYUhjtP7y4",
+      "segment_count": 1863,
+      "turn_count": 1545,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "7MiGTgGUMbk",
+      "segment_count": 2286,
+      "turn_count": 1528,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "Wi_ESii1N_Q",
+      "segment_count": 1826,
+      "turn_count": 1413,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "bSp3vObEfRU",
+      "segment_count": 864,
+      "turn_count": 669,
+      "suspicious_segments": 42
+    },
+    {
+      "source_id": "d2uwpHa4KdQ",
+      "segment_count": 1663,
+      "turn_count": 1351,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "T6UpGadBL9Q",
+      "segment_count": 1449,
+      "turn_count": 1213,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "WcsJOkTDvOg",
+      "segment_count": 1406,
+      "turn_count": 1238,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "P6ZhkQfhfLg",
+      "segment_count": 1254,
+      "turn_count": 907,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "9CEUko72Svc",
+      "segment_count": 1020,
+      "turn_count": 851,
+      "suspicious_segments": 41
+    },
+    {
+      "source_id": "ytFp-9S2wXU",
+      "segment_count": 873,
+      "turn_count": 257,
+      "suspicious_segments": 67
+    },
+    {
+      "source_id": "lq8DxGJBWmE",
+      "segment_count": 1536,
+      "turn_count": 1052,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "lAE4Wfh0uak",
+      "segment_count": 1947,
+      "turn_count": 1548,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "pbjPmqrQJ7w",
+      "segment_count": 1658,
+      "turn_count": 1362,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "wkQaOf46kv4",
+      "segment_count": 1723,
+      "turn_count": 1406,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "7RMebandhJY",
+      "segment_count": 1729,
+      "turn_count": 1370,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "fndCSqoZ_8k",
+      "segment_count": 1390,
+      "turn_count": 1173,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "z7Pteqy8kew",
+      "segment_count": 1948,
+      "turn_count": 1581,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "BpZtP8RA364",
+      "segment_count": 1417,
+      "turn_count": 1174,
+      "suspicious_segments": 5
+    },
+    {
+      "source_id": "oHwDDpEoRNs",
+      "segment_count": 1598,
+      "turn_count": 1362,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "gTXl0O3pUiI",
+      "segment_count": 1592,
+      "turn_count": 1358,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "3m5gif0hD30",
+      "segment_count": 2153,
+      "turn_count": 1441,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "TR42hqiIZWg",
+      "segment_count": 1680,
+      "turn_count": 1411,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "oBa6oh1HXNo",
+      "segment_count": 1776,
+      "turn_count": 1416,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "SLa06WhcpCg",
+      "segment_count": 1709,
+      "turn_count": 1352,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "Lcx7fQNczo0",
+      "segment_count": 1803,
+      "turn_count": 1452,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "f1yHOeo6r5c",
+      "segment_count": 1598,
+      "turn_count": 1311,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "1rOPxGyS0_E",
+      "segment_count": 1679,
+      "turn_count": 1153,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "E3U5YsX-Xfc",
+      "segment_count": 1704,
+      "turn_count": 1355,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "kH_2jq5LvGE",
+      "segment_count": 1663,
+      "turn_count": 1352,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "bBs8SYMMjdY",
+      "segment_count": 1715,
+      "turn_count": 1516,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "PVb0oqDXJTs",
+      "segment_count": 1427,
+      "turn_count": 1245,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "EAYjUfI8vvI",
+      "segment_count": 1538,
+      "turn_count": 1240,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "oKoVicIkam0",
+      "segment_count": 2570,
+      "turn_count": 1530,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "cZavF07ZE58",
+      "segment_count": 1730,
+      "turn_count": 1104,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "JokSKobmhU4",
+      "segment_count": 1942,
+      "turn_count": 1571,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "mnWFJsynNjE",
+      "segment_count": 2754,
+      "turn_count": 1219,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "cZ3XGXBrrVU",
+      "segment_count": 2142,
+      "turn_count": 1331,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "N5kg9Beh22Q",
+      "segment_count": 1747,
+      "turn_count": 1400,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "JrG0M1RPxb4",
+      "segment_count": 1945,
+      "turn_count": 1504,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "39wNwjSOQMg",
+      "segment_count": 1949,
+      "turn_count": 1536,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "sC5x5pQHXyE",
+      "segment_count": 1523,
+      "turn_count": 1325,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "RSnIYKVU7dc",
+      "segment_count": 2085,
+      "turn_count": 1072,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "soyb0qQJ78E",
+      "segment_count": 1571,
+      "turn_count": 1263,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "HADTvZeWYis",
+      "segment_count": 2074,
+      "turn_count": 1501,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "fJCfLLOPCws",
+      "segment_count": 1616,
+      "turn_count": 865,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "aTFdfb8ihtM",
+      "segment_count": 3470,
+      "turn_count": 1239,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "VkB3DUBEcfw",
+      "segment_count": 1953,
+      "turn_count": 1115,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "LM8BU1ciJg0",
+      "segment_count": 1215,
+      "turn_count": 667,
+      "suspicious_segments": 8
+    },
+    {
+      "source_id": "MTqTCHeORas",
+      "segment_count": 1396,
+      "turn_count": 1249,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "KHe2WiVgIWU",
+      "segment_count": 1753,
+      "turn_count": 1262,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "5V0H0dicnww",
+      "segment_count": 2069,
+      "turn_count": 1198,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "VMQSffoo8IM",
+      "segment_count": 1084,
+      "turn_count": 917,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "3f9HLs85Ggs",
+      "segment_count": 942,
+      "turn_count": 587,
+      "suspicious_segments": 49
+    },
+    {
+      "source_id": "WHB6H39x2vw",
+      "segment_count": 2327,
+      "turn_count": 1663,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "O2bgHB2w9i8",
+      "segment_count": 1483,
+      "turn_count": 1285,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "IA-fveG3TF4",
+      "segment_count": 1850,
+      "turn_count": 1471,
+      "suspicious_segments": 5
+    },
+    {
+      "source_id": "g30kz_F9rtI",
+      "segment_count": 2124,
+      "turn_count": 1208,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "kNzSZMQzTRU",
+      "segment_count": 2100,
+      "turn_count": 1503,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "dOirx_i9Xj4",
+      "segment_count": 1573,
+      "turn_count": 1339,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "WkodFcXVunY",
+      "segment_count": 1831,
+      "turn_count": 1485,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "7FPl91xzxRQ",
+      "segment_count": 574,
+      "turn_count": 433,
+      "suspicious_segments": 5
+    },
+    {
+      "source_id": "PKMmBtPZQek",
+      "segment_count": 1894,
+      "turn_count": 1536,
+      "suspicious_segments": 7
+    },
+    {
+      "source_id": "2SMHsZvE75c",
+      "segment_count": 1393,
+      "turn_count": 1054,
+      "suspicious_segments": 53
+    },
+    {
+      "source_id": "o7TseDvrfp8",
+      "segment_count": 1782,
+      "turn_count": 704,
+      "suspicious_segments": 24
+    },
+    {
+      "source_id": "Mk1D_avGBfA",
+      "segment_count": 207,
+      "turn_count": 203,
+      "suspicious_segments": 9
+    },
+    {
+      "source_id": "-dtNeJBiKlk",
+      "segment_count": 1578,
+      "turn_count": 879,
+      "suspicious_segments": 21
+    },
+    {
+      "source_id": "fnSKQj-R5n4",
+      "segment_count": 2212,
+      "turn_count": 1480,
+      "suspicious_segments": 9
+    },
+    {
+      "source_id": "Sg8FwvOnzBk",
+      "segment_count": 1806,
+      "turn_count": 1572,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "2Ys8HQp3bls",
+      "segment_count": 3032,
+      "turn_count": 1380,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "mp-3Gt9lZVE",
+      "segment_count": 222,
+      "turn_count": 216,
+      "suspicious_segments": 8
+    },
+    {
+      "source_id": "kJ1i5Bj9TqI",
+      "segment_count": 1846,
+      "turn_count": 1589,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "R_r7XjyjyZ4",
+      "segment_count": 1177,
+      "turn_count": 618,
+      "suspicious_segments": 586
+    },
+    {
+      "source_id": "uTKB2e-1HPQ",
+      "segment_count": 1663,
+      "turn_count": 1334,
+      "suspicious_segments": 207
+    },
+    {
+      "source_id": "dc8_a13Vesk",
+      "segment_count": 237,
+      "turn_count": 219,
+      "suspicious_segments": 38
+    },
+    {
+      "source_id": "k97cns4k3i0",
+      "segment_count": 2248,
+      "turn_count": 1275,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "2QpbuPz8xXM",
+      "segment_count": 0,
+      "turn_count": 0,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "Lrh7qoq0mCI",
+      "segment_count": 1367,
+      "turn_count": 456,
+      "suspicious_segments": 14
+    },
+    {
+      "source_id": "osQWDsiRaQI",
+      "segment_count": 1912,
+      "turn_count": 1387,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "dK4KleqiHcM",
+      "segment_count": 2445,
+      "turn_count": 1794,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "jEFop7RSB2o",
+      "segment_count": 3287,
+      "turn_count": 1217,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "YOUF_kkKkYs",
+      "segment_count": 1125,
+      "turn_count": 925,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "qWQzk_eO2S0",
+      "segment_count": 611,
+      "turn_count": 364,
+      "suspicious_segments": 15
+    },
+    {
+      "source_id": "DckwPdlr6aU",
+      "segment_count": 2111,
+      "turn_count": 1324,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "7bAR-y8FOSg",
+      "segment_count": 1776,
+      "turn_count": 1564,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "LGTSnUp6n1Q",
+      "segment_count": 2320,
+      "turn_count": 1576,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "acgRo4Hgam8",
+      "segment_count": 3322,
+      "turn_count": 1283,
+      "suspicious_segments": 9
+    },
+    {
+      "source_id": "iVrEbuNz8Tc",
+      "segment_count": 2383,
+      "turn_count": 1259,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "KFleCg-F1tE",
+      "segment_count": 1307,
+      "turn_count": 614,
+      "suspicious_segments": 28
+    },
+    {
+      "source_id": "bpmR3KItW3g",
+      "segment_count": 2337,
+      "turn_count": 1699,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "kt_Zeb4b2eg",
+      "segment_count": 2068,
+      "turn_count": 1546,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "iC2X7pu7B34",
+      "segment_count": 2586,
+      "turn_count": 1595,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "QT-6ltfZfdg",
+      "segment_count": 2085,
+      "turn_count": 1458,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "FsgVdTEhUnY",
+      "segment_count": 2203,
+      "turn_count": 1636,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "3vmpPKJpn70",
+      "segment_count": 1751,
+      "turn_count": 1561,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "pwH8FIYWCsc",
+      "segment_count": 2407,
+      "turn_count": 1432,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "_sDWrziA7Q0",
+      "segment_count": 1139,
+      "turn_count": 535,
+      "suspicious_segments": 880
+    },
+    {
+      "source_id": "Vt7XYkLne1Y",
+      "segment_count": 1937,
+      "turn_count": 1556,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "wy232_tYT6g",
+      "segment_count": 2069,
+      "turn_count": 1237,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "z14LubJKDLI",
+      "segment_count": 2998,
+      "turn_count": 1348,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "pujweF8NYko",
+      "segment_count": 2930,
+      "turn_count": 1529,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "5vZ7xwdFKYY",
+      "segment_count": 3567,
+      "turn_count": 1037,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "OXxi37FAsl0",
+      "segment_count": 1668,
+      "turn_count": 1003,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "TfDeIac-BnA",
+      "segment_count": 2283,
+      "turn_count": 1486,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "OhrmbW9bEzg",
+      "segment_count": 1274,
+      "turn_count": 983,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "faJMooKnYac",
+      "segment_count": 1230,
+      "turn_count": 986,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "rj4RXH__JH0",
+      "segment_count": 3199,
+      "turn_count": 1356,
+      "suspicious_segments": 8
+    },
+    {
+      "source_id": "F9CeFQOikJg",
+      "segment_count": 2358,
+      "turn_count": 1411,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "I5ICo2gaGYo",
+      "segment_count": 1368,
+      "turn_count": 1171,
+      "suspicious_segments": 5
+    },
+    {
+      "source_id": "gm2AUjZQc7o",
+      "segment_count": 1147,
+      "turn_count": 599,
+      "suspicious_segments": 11
+    },
+    {
+      "source_id": "8h0Rrc_cczc",
+      "segment_count": 3385,
+      "turn_count": 1666,
+      "suspicious_segments": 10
+    },
+    {
+      "source_id": "LN-YOhbyh1Q",
+      "segment_count": 978,
+      "turn_count": 484,
+      "suspicious_segments": 11
+    },
+    {
+      "source_id": "oXlSi2AmQ58",
+      "segment_count": 2795,
+      "turn_count": 1935,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "HQ8DABLQrSM",
+      "segment_count": 3043,
+      "turn_count": 1684,
+      "suspicious_segments": 52
+    },
+    {
+      "source_id": "wDY2uaNPkXc",
+      "segment_count": 3803,
+      "turn_count": 1787,
+      "suspicious_segments": 12
+    },
+    {
+      "source_id": "jgj4x452a3Y",
+      "segment_count": 4094,
+      "turn_count": 1361,
+      "suspicious_segments": 8
+    },
+    {
+      "source_id": "SGdlU_38IIo",
+      "segment_count": 2337,
+      "turn_count": 1623,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "Wyl6jVgmHWM",
+      "segment_count": 3470,
+      "turn_count": 2252,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "WHLE8yqabJg",
+      "segment_count": 2657,
+      "turn_count": 1582,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "QrpJ5HXDngY",
+      "segment_count": 3976,
+      "turn_count": 2101,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "l1vehL9z_4g",
+      "segment_count": 1749,
+      "turn_count": 1282,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "qXBMfy4eRN8",
+      "segment_count": 2609,
+      "turn_count": 1655,
+      "suspicious_segments": 15
+    },
+    {
+      "source_id": "cXWF3HJHNUw",
+      "segment_count": 2799,
+      "turn_count": 1835,
+      "suspicious_segments": 7
+    },
+    {
+      "source_id": "Mwkx4-wjNpU",
+      "segment_count": 1199,
+      "turn_count": 921,
+      "suspicious_segments": 36
+    },
+    {
+      "source_id": "wWAyma8IobI",
+      "segment_count": 1574,
+      "turn_count": 894,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "T7CidtnJxOk",
+      "segment_count": 3697,
+      "turn_count": 2057,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "Q6rjoY-adU8",
+      "segment_count": 3610,
+      "turn_count": 1710,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "g5TWmzamvJU",
+      "segment_count": 3090,
+      "turn_count": 1821,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "WYSbM9nWxlg",
+      "segment_count": 1250,
+      "turn_count": 997,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "PqW-yJ1iKZI",
+      "segment_count": 3708,
+      "turn_count": 1151,
+      "suspicious_segments": 7
+    },
+    {
+      "source_id": "AIYaBYVX95o",
+      "segment_count": 3498,
+      "turn_count": 1943,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "VMg1RlwlbB0",
+      "segment_count": 4125,
+      "turn_count": 1778,
+      "suspicious_segments": 9
+    },
+    {
+      "source_id": "9p8fsrr40pg",
+      "segment_count": 2986,
+      "turn_count": 1454,
+      "suspicious_segments": 25
+    },
+    {
+      "source_id": "v4RUlgoPIwg",
+      "segment_count": 4727,
+      "turn_count": 2454,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "Y-p5XBsi8yI",
+      "segment_count": 4758,
+      "turn_count": 2291,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "UftAIsW_hos",
+      "segment_count": 3856,
+      "turn_count": 1975,
+      "suspicious_segments": 5
+    },
+    {
+      "source_id": "HW_miy1BWPc",
+      "segment_count": 3862,
+      "turn_count": 1662,
+      "suspicious_segments": 7
+    },
+    {
+      "source_id": "pTWjpVB1KzY",
+      "segment_count": 4180,
+      "turn_count": 2281,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "mrZcKOWNOMk",
+      "segment_count": 4070,
+      "turn_count": 2141,
+      "suspicious_segments": 9
+    },
+    {
+      "source_id": "5hS1ERaX6Tg",
+      "segment_count": 2615,
+      "turn_count": 1512,
+      "suspicious_segments": 48
+    },
+    {
+      "source_id": "TbEY1CHKTvE",
+      "segment_count": 4957,
+      "turn_count": 1937,
+      "suspicious_segments": 7
+    },
+    {
+      "source_id": "m3SCA0r4mqE",
+      "segment_count": 5347,
+      "turn_count": 1920,
+      "suspicious_segments": 5
+    },
+    {
+      "source_id": "2YSGzQgWwHo",
+      "segment_count": 4899,
+      "turn_count": 2444,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "VEzVw6axClI",
+      "segment_count": 4904,
+      "turn_count": 2270,
+      "suspicious_segments": 21
+    },
+    {
+      "source_id": "n4Dgbmg5r5g",
+      "segment_count": 6280,
+      "turn_count": 2478,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "5E2Qmanm-IQ",
+      "segment_count": 5602,
+      "turn_count": 2262,
+      "suspicious_segments": 14
+    },
+    {
+      "source_id": "ic4d0661ePk",
+      "segment_count": 31,
+      "turn_count": 29,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "fatAMpWM2sQ",
+      "segment_count": 413,
+      "turn_count": 255,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "DDSgYtHfC6E",
+      "segment_count": 334,
+      "turn_count": 304,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "YAfFi_JLhpA",
+      "segment_count": 1473,
+      "turn_count": 968,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "PntK-KwQwsk",
+      "segment_count": 669,
+      "turn_count": 592,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "E1xdVxUI1V8",
+      "segment_count": 1176,
+      "turn_count": 622,
+      "suspicious_segments": 11
+    },
+    {
+      "source_id": "FdYBc6aMjd0",
+      "segment_count": 1931,
+      "turn_count": 1198,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "7uTaHkuoDzo",
+      "segment_count": 2398,
+      "turn_count": 1652,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "URJaj3XMBcQ",
+      "segment_count": 1248,
+      "turn_count": 1135,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "55jzWD5rSX0",
+      "segment_count": 1666,
+      "turn_count": 1290,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "8UgcH7YLxzA",
+      "segment_count": 2354,
+      "turn_count": 1611,
+      "suspicious_segments": 8
+    },
+    {
+      "source_id": "oyP_VgFrVPI",
+      "segment_count": 1974,
+      "turn_count": 1293,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "eAnoQ7F7VPU",
+      "segment_count": 1352,
+      "turn_count": 1209,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "GcpV77hw3sA",
+      "segment_count": 1971,
+      "turn_count": 1134,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "FC7B8wFbhgY",
+      "segment_count": 3388,
+      "turn_count": 1358,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "g5nP81A4M-I",
+      "segment_count": 1521,
+      "turn_count": 1240,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "RvRtkDz75Wo",
+      "segment_count": 1634,
+      "turn_count": 1296,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "BS9TxqIBvcY",
+      "segment_count": 3626,
+      "turn_count": 1773,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "omVt_nBIbDE",
+      "segment_count": 3321,
+      "turn_count": 2164,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "f6Z-P9ba_Rs",
+      "segment_count": 3205,
+      "turn_count": 1795,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "QOCw_l9FDRk",
+      "segment_count": 2041,
+      "turn_count": 1516,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "ag3qJ0aiEtw",
+      "segment_count": 3620,
+      "turn_count": 1720,
+      "suspicious_segments": 8
+    },
+    {
+      "source_id": "4_kgbL9ow_Y",
+      "segment_count": 2271,
+      "turn_count": 1643,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "i6sP99T7pUI",
+      "segment_count": 3892,
+      "turn_count": 1604,
+      "suspicious_segments": 9
+    },
+    {
+      "source_id": "-QvvvL1kILU",
+      "segment_count": 1581,
+      "turn_count": 1214,
+      "suspicious_segments": 36
+    },
+    {
+      "source_id": "lFuz9Bh9aqw",
+      "segment_count": 3912,
+      "turn_count": 1788,
+      "suspicious_segments": 7
+    },
+    {
+      "source_id": "3ObVH1U1620",
+      "segment_count": 2406,
+      "turn_count": 1770,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "SFMX0moGnGY",
+      "segment_count": 2381,
+      "turn_count": 790,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "UVUPWvKp6h4",
+      "segment_count": 5404,
+      "turn_count": 2508,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "VRK_Q8hn4Gc",
+      "segment_count": 5586,
+      "turn_count": 2600,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "lUa_qO_6kv4",
+      "segment_count": 5952,
+      "turn_count": 2984,
+      "suspicious_segments": 5
+    },
+    {
+      "source_id": "NQz4IIlkp2A",
+      "segment_count": 5345,
+      "turn_count": 2529,
+      "suspicious_segments": 8
+    },
+    {
+      "source_id": "qXOaqqtxMic",
+      "segment_count": 6576,
+      "turn_count": 3102,
+      "suspicious_segments": 15
+    },
+    {
+      "source_id": "GBly8rSCvIw",
+      "segment_count": 5814,
+      "turn_count": 3645,
+      "suspicious_segments": 7
+    },
+    {
+      "source_id": "zvM34PmjCCQ",
+      "segment_count": 4808,
+      "turn_count": 3313,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "qEtG_wA0tZA",
+      "segment_count": 6038,
+      "turn_count": 2446,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "Zjzvv95IdnY",
+      "segment_count": 4660,
+      "turn_count": 3116,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "0vhGdjfxPo8",
+      "segment_count": 5766,
+      "turn_count": 3339,
+      "suspicious_segments": 10
+    },
+    {
+      "source_id": "gNysylzZocU",
+      "segment_count": 6906,
+      "turn_count": 2967,
+      "suspicious_segments": 9
+    },
+    {
+      "source_id": "LYRxpMl7K6o",
+      "segment_count": 7054,
+      "turn_count": 3244,
+      "suspicious_segments": 13
+    },
+    {
+      "source_id": "aZjaaMsgPwM",
+      "segment_count": 6910,
+      "turn_count": 3247,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "C3okBaUsw4U",
+      "segment_count": 6116,
+      "turn_count": 2749,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "Pkgp4TRNTxY",
+      "segment_count": 7768,
+      "turn_count": 3358,
+      "suspicious_segments": 15
+    },
+    {
+      "source_id": "a7BuFAbuBbc",
+      "segment_count": 6727,
+      "turn_count": 2972,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "jFwiEMfG0n4",
+      "segment_count": 7903,
+      "turn_count": 3106,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "qOMOT4A2BkE",
+      "segment_count": 5640,
+      "turn_count": 3156,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "mE3t477e_X0",
+      "segment_count": 8424,
+      "turn_count": 4118,
+      "suspicious_segments": 25
+    },
+    {
+      "source_id": "6oipVZAEQ-U",
+      "segment_count": 8450,
+      "turn_count": 3865,
+      "suspicious_segments": 15
+    },
+    {
+      "source_id": "tvBiEvvNRYc",
+      "segment_count": 8199,
+      "turn_count": 3021,
+      "suspicious_segments": 7
+    },
+    {
+      "source_id": "ea2sPOwyHxk",
+      "segment_count": 7915,
+      "turn_count": 3382,
+      "suspicious_segments": 5
+    },
+    {
+      "source_id": "GnEfcWoZLGE",
+      "segment_count": 5761,
+      "turn_count": 3458,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "RM76ndnuVYI",
+      "segment_count": 8117,
+      "turn_count": 3503,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "RzWka-vKjl0",
+      "segment_count": 8420,
+      "turn_count": 3819,
+      "suspicious_segments": 16
+    },
+    {
+      "source_id": "h0Swl8G5GaE",
+      "segment_count": 8359,
+      "turn_count": 3729,
+      "suspicious_segments": 20
+    },
+    {
+      "source_id": "4PY51T-1Tks",
+      "segment_count": 5682,
+      "turn_count": 2992,
+      "suspicious_segments": 7
+    },
+    {
+      "source_id": "hdjEUrwmXtA",
+      "segment_count": 7118,
+      "turn_count": 2994,
+      "suspicious_segments": 8
+    },
+    {
+      "source_id": "ME0qrf4hWLE",
+      "segment_count": 7476,
+      "turn_count": 3998,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "jI0eZVEb34o",
+      "segment_count": 7806,
+      "turn_count": 3947,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "yoLwjsRus1Y",
+      "segment_count": 8300,
+      "turn_count": 3975,
+      "suspicious_segments": 10
+    },
+    {
+      "source_id": "cihLZUo37us",
+      "segment_count": 7370,
+      "turn_count": 3616,
+      "suspicious_segments": 12
+    },
+    {
+      "source_id": "q54jUYq4JY8",
+      "segment_count": 9288,
+      "turn_count": 3683,
+      "suspicious_segments": 15
+    },
+    {
+      "source_id": "t7D6ZsOKg1A",
+      "segment_count": 7884,
+      "turn_count": 3853,
+      "suspicious_segments": 5
+    },
+    {
+      "source_id": "TMg2Bs46StM",
+      "segment_count": 5049,
+      "turn_count": 2687,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "t9fwV6W31HE",
+      "segment_count": 7509,
+      "turn_count": 3213,
+      "suspicious_segments": 5
+    },
+    {
+      "source_id": "qjspEVxJ2zM",
+      "segment_count": 6797,
+      "turn_count": 3280,
+      "suspicious_segments": 9
+    },
+    {
+      "source_id": "3ZQ9iEG54DI",
+      "segment_count": 6049,
+      "turn_count": 3486,
+      "suspicious_segments": 10
+    },
+    {
+      "source_id": "k6KE2z2h_b4",
+      "segment_count": 6225,
+      "turn_count": 2753,
+      "suspicious_segments": 15
+    },
+    {
+      "source_id": "nRwQvfJ8fVI",
+      "segment_count": 6996,
+      "turn_count": 3416,
+      "suspicious_segments": 14
+    },
+    {
+      "source_id": "U4voGWGZKos",
+      "segment_count": 6251,
+      "turn_count": 3630,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "HiR-UzcfsK8",
+      "segment_count": 5694,
+      "turn_count": 3596,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "Q8kZT_tnRak",
+      "segment_count": 8187,
+      "turn_count": 3706,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "vdZdT1_f8U4",
+      "segment_count": 6647,
+      "turn_count": 3439,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "W-8ORRpJIC4",
+      "segment_count": 7206,
+      "turn_count": 3468,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "DRTnhtwdsTQ",
+      "segment_count": 8494,
+      "turn_count": 3748,
+      "suspicious_segments": 11
+    },
+    {
+      "source_id": "MlhWhuxocG4",
+      "segment_count": 7087,
+      "turn_count": 3741,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "8zyIE0q0STA",
+      "segment_count": 7267,
+      "turn_count": 3291,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "GkSf1KXfxgY",
+      "segment_count": 8705,
+      "turn_count": 3783,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "lVgNpGWwy0E",
+      "segment_count": 7424,
+      "turn_count": 3917,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "Uzl3veJKQVY",
+      "segment_count": 7460,
+      "turn_count": 3485,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "zECWUft_kGM",
+      "segment_count": 6868,
+      "turn_count": 4309,
+      "suspicious_segments": 16
+    },
+    {
+      "source_id": "6SWTL3geE3A",
+      "segment_count": 7610,
+      "turn_count": 4496,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "PXbgswDnajg",
+      "segment_count": 9257,
+      "turn_count": 4215,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "vhAKoqHU1nI",
+      "segment_count": 8189,
+      "turn_count": 5249,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "PGzJ-uPGOcU",
+      "segment_count": 7912,
+      "turn_count": 4865,
+      "suspicious_segments": 14
+    },
+    {
+      "source_id": "RFyb1_ef0-Y",
+      "segment_count": 11649,
+      "turn_count": 4518,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "9bT7aVXZCb0",
+      "segment_count": 9327,
+      "turn_count": 4954,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "UJpxdHytJB0",
+      "segment_count": 6784,
+      "turn_count": 4954,
+      "suspicious_segments": 23
+    },
+    {
+      "source_id": "gCOFxilQH-k",
+      "segment_count": 9463,
+      "turn_count": 4933,
+      "suspicious_segments": 14
+    },
+    {
+      "source_id": "7efSMKd6Oxc",
+      "segment_count": 9002,
+      "turn_count": 5413,
+      "suspicious_segments": 23
+    },
+    {
+      "source_id": "pNEK1wtLtoI",
+      "segment_count": 10040,
+      "turn_count": 5044,
+      "suspicious_segments": 18
+    },
+    {
+      "source_id": "wQ-xXeXL42A",
+      "segment_count": 7340,
+      "turn_count": 4246,
+      "suspicious_segments": 12
+    },
+    {
+      "source_id": "boSq4mRZQrg",
+      "segment_count": 8262,
+      "turn_count": 4730,
+      "suspicious_segments": 13
+    },
+    {
+      "source_id": "Z-kXB5jXcAA",
+      "segment_count": 7917,
+      "turn_count": 5382,
+      "suspicious_segments": 10
+    },
+    {
+      "source_id": "DbNcG7_E9Jg",
+      "segment_count": 9408,
+      "turn_count": 4883,
+      "suspicious_segments": 17
+    },
+    {
+      "source_id": "uxL433Ch5Vg",
+      "segment_count": 6850,
+      "turn_count": 4341,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "tl2KsmeQA7c",
+      "segment_count": 7423,
+      "turn_count": 4558,
+      "suspicious_segments": 15
+    },
+    {
+      "source_id": "BqPaismpTn4",
+      "segment_count": 8892,
+      "turn_count": 4599,
+      "suspicious_segments": 15
+    },
+    {
+      "source_id": "IV85ZNmojXg",
+      "segment_count": 9646,
+      "turn_count": 4812,
+      "suspicious_segments": 13
+    },
+    {
+      "source_id": "B7kNYj9-Mmw",
+      "segment_count": 8428,
+      "turn_count": 4826,
+      "suspicious_segments": 13
+    },
+    {
+      "source_id": "GraI2RiQpAA",
+      "segment_count": 10241,
+      "turn_count": 5001,
+      "suspicious_segments": 16
+    },
+    {
+      "source_id": "nWMdSHBnlBs",
+      "segment_count": 9899,
+      "turn_count": 4881,
+      "suspicious_segments": 13
+    },
+    {
+      "source_id": "mfOj0HDL4ac",
+      "segment_count": 10507,
+      "turn_count": 5381,
+      "suspicious_segments": 5
+    },
+    {
+      "source_id": "Q47IvKkzV8M",
+      "segment_count": 10494,
+      "turn_count": 5825,
+      "suspicious_segments": 21
+    },
+    {
+      "source_id": "ogNCHXO2oAI",
+      "segment_count": 826,
+      "turn_count": 630,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "X_4WBNz4P4Q",
+      "segment_count": 9117,
+      "turn_count": 5224,
+      "suspicious_segments": 36
+    },
+    {
+      "source_id": "nw2EWbvVfA4",
+      "segment_count": 12019,
+      "turn_count": 5636,
+      "suspicious_segments": 11
+    },
+    {
+      "source_id": "1U06zbSri78",
+      "segment_count": 566,
+      "turn_count": 385,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "MXmKOWVONts",
+      "segment_count": 10380,
+      "turn_count": 6254,
+      "suspicious_segments": 9
+    },
+    {
+      "source_id": "Ji30eaFehQQ",
+      "segment_count": 12096,
+      "turn_count": 5955,
+      "suspicious_segments": 5
+    },
+    {
+      "source_id": "VRxQcYeJUuI",
+      "segment_count": 11236,
+      "turn_count": 6405,
+      "suspicious_segments": 7
+    },
+    {
+      "source_id": "OEOKm_d22zA",
+      "segment_count": 9610,
+      "turn_count": 5082,
+      "suspicious_segments": 18
+    },
+    {
+      "source_id": "aHDXrR5uPvU",
+      "segment_count": 10215,
+      "turn_count": 4807,
+      "suspicious_segments": 80
+    },
+    {
+      "source_id": "o-qgT1zmoIM",
+      "segment_count": 10325,
+      "turn_count": 5654,
+      "suspicious_segments": 17
+    },
+    {
+      "source_id": "WHD8lXuCE5s",
+      "segment_count": 11479,
+      "turn_count": 5702,
+      "suspicious_segments": 11
+    },
+    {
+      "source_id": "X8qp4hr55hQ",
+      "segment_count": 8777,
+      "turn_count": 5813,
+      "suspicious_segments": 7
+    },
+    {
+      "source_id": "ul-6pFevT4w",
+      "segment_count": 7474,
+      "turn_count": 3601,
+      "suspicious_segments": 39
+    },
+    {
+      "source_id": "-UyVqjxe9ek",
+      "segment_count": 1190,
+      "turn_count": 878,
+      "suspicious_segments": 184
+    },
+    {
+      "source_id": "1CxTCk0I79w",
+      "segment_count": 1482,
+      "turn_count": 1093,
+      "suspicious_segments": 88
+    },
+    {
+      "source_id": "29yeWXdUsqE",
+      "segment_count": 1491,
+      "turn_count": 684,
+      "suspicious_segments": 44
+    },
+    {
+      "source_id": "3QlnyZo39jY",
+      "segment_count": 812,
+      "turn_count": 679,
+      "suspicious_segments": 79
+    },
+    {
+      "source_id": "-IEJhV_pE4o",
+      "segment_count": 1687,
+      "turn_count": 1395,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "-jwDs0n0R3o",
+      "segment_count": 410,
+      "turn_count": 288,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "1cySjIF4DOg",
+      "segment_count": 786,
+      "turn_count": 588,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "vedal987:2868847714",
+      "segment_count": 1326,
+      "turn_count": 912,
+      "suspicious_segments": 64
+    },
+    {
+      "source_id": "BV11FZ3YREpN",
+      "segment_count": 43,
+      "turn_count": 7,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "NqyzbHF0E2o",
+      "segment_count": 231,
+      "turn_count": 160,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "bQgfC8PXcRM",
+      "segment_count": 985,
+      "turn_count": 529,
+      "suspicious_segments": 8
+    },
+    {
+      "source_id": "cki7oHEr-wo",
+      "segment_count": 1681,
+      "turn_count": 1053,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "bNSS40anhNk",
+      "segment_count": 1723,
+      "turn_count": 1251,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "lS9cfec_mFM",
+      "segment_count": 2471,
+      "turn_count": 1347,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "Jrno_9DdQ1k",
+      "segment_count": 961,
+      "turn_count": 593,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "4jqtSOaFq3Y",
+      "segment_count": 1052,
+      "turn_count": 770,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "GiRF7_T5FZs",
+      "segment_count": 2820,
+      "turn_count": 1124,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "cQr3XP8JBtc",
+      "segment_count": 2804,
+      "turn_count": 1326,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "XSJ_mbEXGVw",
+      "segment_count": 1135,
+      "turn_count": 790,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "E_Ddc4z-pLo",
+      "segment_count": 2826,
+      "turn_count": 1048,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "s7v0cJll5Sg",
+      "segment_count": 1784,
+      "turn_count": 1272,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "AZz14TXVbOk",
+      "segment_count": 2817,
+      "turn_count": 1358,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "v9sgRmXZMQQ",
+      "segment_count": 2221,
+      "turn_count": 1618,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "bLMHeZ6Qmmk",
+      "segment_count": 1657,
+      "turn_count": 1424,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "DBJJ1S3drLI",
+      "segment_count": 1901,
+      "turn_count": 1159,
+      "suspicious_segments": 5
+    },
+    {
+      "source_id": "hyt5p1uYvDs",
+      "segment_count": 1464,
+      "turn_count": 1330,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "lwAYSOfAz5M",
+      "segment_count": 1460,
+      "turn_count": 1297,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "cM6q2GESfcE",
+      "segment_count": 1416,
+      "turn_count": 1132,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "FeddkoNaK1c",
+      "segment_count": 1002,
+      "turn_count": 893,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "tY_1vy-5sgM",
+      "segment_count": 1218,
+      "turn_count": 1022,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "_KdcUfHaMWQ",
+      "segment_count": 1788,
+      "turn_count": 576,
+      "suspicious_segments": 23
+    },
+    {
+      "source_id": "ZB6EXPyGd9Q",
+      "segment_count": 2386,
+      "turn_count": 1304,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "n2V6qtVMbCo",
+      "segment_count": 2431,
+      "turn_count": 1278,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "CTs0M8KCou8",
+      "segment_count": 2270,
+      "turn_count": 1450,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "0skD_GzCLEg",
+      "segment_count": 0,
+      "turn_count": 0,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "5PVUZ6BlpVA",
+      "segment_count": 2637,
+      "turn_count": 1027,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "GQYkGamad08",
+      "segment_count": 1132,
+      "turn_count": 735,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "keWIeu0Map0",
+      "segment_count": 2940,
+      "turn_count": 1105,
+      "suspicious_segments": 8
+    },
+    {
+      "source_id": "g4sxu0NgQOg",
+      "segment_count": 2640,
+      "turn_count": 1421,
+      "suspicious_segments": 5
+    },
+    {
+      "source_id": "iJXYPNjLLT4",
+      "segment_count": 2197,
+      "turn_count": 1240,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "scUt5sDWObY",
+      "segment_count": 3086,
+      "turn_count": 1470,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "SXYKpWqANbA",
+      "segment_count": 2808,
+      "turn_count": 1503,
+      "suspicious_segments": 9
+    },
+    {
+      "source_id": "PQOAfFl5ufc",
+      "segment_count": 3137,
+      "turn_count": 1448,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "hxFOFraKLbg",
+      "segment_count": 2283,
+      "turn_count": 1584,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "Lkq1CRDBbJw",
+      "segment_count": 2764,
+      "turn_count": 1384,
+      "suspicious_segments": 5
+    },
+    {
+      "source_id": "73bCoDI_8ck",
+      "segment_count": 2001,
+      "turn_count": 1169,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "Jo0kaaNd6JM",
+      "segment_count": 3254,
+      "turn_count": 1427,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "DhlQLYP0fyY",
+      "segment_count": 2164,
+      "turn_count": 1610,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "Hz9XMb2kHJg",
+      "segment_count": 1841,
+      "turn_count": 1552,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "-Lb9iP94CWE",
+      "segment_count": 1783,
+      "turn_count": 1315,
+      "suspicious_segments": 33
+    },
+    {
+      "source_id": "7IHN4lYOgOc",
+      "segment_count": 1853,
+      "turn_count": 1601,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "ISqXsLoOOiI",
+      "segment_count": 2045,
+      "turn_count": 1062,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "RvvOTUz3WMI",
+      "segment_count": 3529,
+      "turn_count": 1630,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "pso6ULSHbAU",
+      "segment_count": 3479,
+      "turn_count": 1265,
+      "suspicious_segments": 8
+    },
+    {
+      "source_id": "qIh6Kh3ME6I",
+      "segment_count": 2780,
+      "turn_count": 1801,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "uSnshb1R28k",
+      "segment_count": 3848,
+      "turn_count": 1544,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "SdGrn17-Db0",
+      "segment_count": 3692,
+      "turn_count": 1329,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "jtGYihhXpRo",
+      "segment_count": 3445,
+      "turn_count": 1753,
+      "suspicious_segments": 5
+    },
+    {
+      "source_id": "8EpwFqOeYyg",
+      "segment_count": 3385,
+      "turn_count": 1045,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "OyKzKB5-0uE",
+      "segment_count": 1325,
+      "turn_count": 782,
+      "suspicious_segments": 9
+    },
+    {
+      "source_id": "dYidoz-xoVE",
+      "segment_count": 2329,
+      "turn_count": 1650,
+      "suspicious_segments": 0
+    },
+    {
+      "source_id": "KywxB-rz5tI",
+      "segment_count": 3062,
+      "turn_count": 1283,
+      "suspicious_segments": 7
+    },
+    {
+      "source_id": "PqMUrTGDSmo",
+      "segment_count": 3324,
+      "turn_count": 1775,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "bujHKQ1mrpc",
+      "segment_count": 3418,
+      "turn_count": 1465,
+      "suspicious_segments": 3
+    },
+    {
+      "source_id": "gnbWxNFi6rE",
+      "segment_count": 3753,
+      "turn_count": 1437,
+      "suspicious_segments": 5
+    },
+    {
+      "source_id": "v56RL1RMfoM",
+      "segment_count": 3618,
+      "turn_count": 1707,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "ME4aPeeuJv8",
+      "segment_count": 3525,
+      "turn_count": 2024,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "qAzS5_AQDjs",
+      "segment_count": 3833,
+      "turn_count": 1677,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "tSTBe1s9zyk",
+      "segment_count": 4058,
+      "turn_count": 1758,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "1OznaGLyscQ",
+      "segment_count": 3648,
+      "turn_count": 2148,
+      "suspicious_segments": 11
+    },
+    {
+      "source_id": "XFZIAcUcOe8",
+      "segment_count": 3601,
+      "turn_count": 1984,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "qFH0YI1L9LQ",
+      "segment_count": 4071,
+      "turn_count": 1875,
+      "suspicious_segments": 9
+    },
+    {
+      "source_id": "t1EkR9woRb8",
+      "segment_count": 1780,
+      "turn_count": 1587,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "rqH7zIKwpsQ",
+      "segment_count": 3056,
+      "turn_count": 1768,
+      "suspicious_segments": 9
+    },
+    {
+      "source_id": "-_020lB41pQ",
+      "segment_count": 3095,
+      "turn_count": 1710,
+      "suspicious_segments": 44
+    },
+    {
+      "source_id": "ZYfLa34ODo4",
+      "segment_count": 4344,
+      "turn_count": 1640,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "-lFNGZcLiEo",
+      "segment_count": 3243,
+      "turn_count": 868,
+      "suspicious_segments": 33
+    },
+    {
+      "source_id": "CImSL8Na5Ds",
+      "segment_count": 3775,
+      "turn_count": 2391,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "4Bx6yw59jtA",
+      "segment_count": 4085,
+      "turn_count": 1581,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "JuWKG_OIsJ4",
+      "segment_count": 4750,
+      "turn_count": 2288,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "FK7BD5Ijq8c",
+      "segment_count": 3816,
+      "turn_count": 1949,
+      "suspicious_segments": 2
+    },
+    {
+      "source_id": "sCxfaWCplwg",
+      "segment_count": 4453,
+      "turn_count": 1987,
+      "suspicious_segments": 5
+    },
+    {
+      "source_id": "sr0qwO0IgXM",
+      "segment_count": 3034,
+      "turn_count": 1825,
+      "suspicious_segments": 12
+    },
+    {
+      "source_id": "0c8j7fnQgSo",
+      "segment_count": 5012,
+      "turn_count": 1956,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "NEmuPTqEfk0",
+      "segment_count": 4789,
+      "turn_count": 2624,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "KXEokbG8nsM",
+      "segment_count": 3790,
+      "turn_count": 2110,
+      "suspicious_segments": 18
+    },
+    {
+      "source_id": "q2sYFRSQjYc",
+      "segment_count": 4624,
+      "turn_count": 1887,
+      "suspicious_segments": 9
+    },
+    {
+      "source_id": "UDFETAD4ptw",
+      "segment_count": 4351,
+      "turn_count": 2442,
+      "suspicious_segments": 1
+    },
+    {
+      "source_id": "yOsQtz239U0",
+      "segment_count": 7209,
+      "turn_count": 1927,
+      "suspicious_segments": 6
+    },
+    {
+      "source_id": "vSYqdWuKnws",
+      "segment_count": 5668,
+      "turn_count": 2807,
+      "suspicious_segments": 7
+    },
+    {
+      "source_id": "4s9ecO0DK9o",
+      "segment_count": 6943,
+      "turn_count": 2856,
+      "suspicious_segments": 10
+    },
+    {
+      "source_id": "ewosmioAXYM",
+      "segment_count": 8263,
+      "turn_count": 3543,
+      "suspicious_segments": 9
+    },
+    {
+      "source_id": "zBXw2u4ZEjM",
+      "segment_count": 8348,
+      "turn_count": 3268,
+      "suspicious_segments": 29
+    },
+    {
+      "source_id": "sAQKOCidmm8",
+      "segment_count": 8499,
+      "turn_count": 3259,
+      "suspicious_segments": 33
+    },
+    {
+      "source_id": "i5s-4JzOqOk",
+      "segment_count": 6340,
+      "turn_count": 2765,
+      "suspicious_segments": 23
+    },
+    {
+      "source_id": "cDqbBwofAmw",
+      "segment_count": 5191,
+      "turn_count": 2611,
+      "suspicious_segments": 14
+    },
+    {
+      "source_id": "2sfUKne9Eu8",
+      "segment_count": 7286,
+      "turn_count": 3016,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "VpuL3yKYU-w",
+      "segment_count": 7346,
+      "turn_count": 5997,
+      "suspicious_segments": 12
+    },
+    {
+      "source_id": "pQnOBe5O1uE",
+      "segment_count": 7265,
+      "turn_count": 6231,
+      "suspicious_segments": 5
+    },
+    {
+      "source_id": "R_ns_it6vFY",
+      "segment_count": 11209,
+      "turn_count": 4882,
+      "suspicious_segments": 41
+    },
+    {
+      "source_id": "uwAVUHIooNI",
+      "segment_count": 11200,
+      "turn_count": 5540,
+      "suspicious_segments": 54
+    },
+    {
+      "source_id": "tohNWnNlDKU",
+      "segment_count": 7879,
+      "turn_count": 6827,
+      "suspicious_segments": 10
+    },
+    {
+      "source_id": "xWsRE4_EmXA",
+      "segment_count": 10427,
+      "turn_count": 4685,
+      "suspicious_segments": 17
+    },
+    {
+      "source_id": "VPOywcw8tXI",
+      "segment_count": 7601,
+      "turn_count": 6806,
+      "suspicious_segments": 4
+    },
+    {
+      "source_id": "2HIZ6GzGSN8",
+      "segment_count": 1928,
+      "turn_count": 1007,
+      "suspicious_segments": 11
+    }
+  ],
+  "identity_mapping": "not_attempted_without_trusted_reference_bank"
+}

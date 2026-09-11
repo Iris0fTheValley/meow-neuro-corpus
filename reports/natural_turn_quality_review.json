@@ -1,0 +1,230 @@
+{
+  "schema_version": "0.1.0",
+  "updated_at": "2026-09-11T06:30:33.590088+00:00",
+  "status": "REVIEW_PENDING_NO_DELETIONS",
+  "source_count": 505,
+  "flagged_source_count": 27,
+  "policy": "Suspicious ASR is quarantined for review; this report does not delete, rewrite, or promote data.",
+  "thresholds": {
+    "suspicious_segments_at_least": 50,
+    "suspicious_ratio_at_least": 0.05
+  },
+  "flagged_sources": [
+    {
+      "source_id": "_sDWrziA7Q0",
+      "segment_count": 1139,
+      "turn_count": 535,
+      "suspicious_segments": 880,
+      "suspicious_ratio": 0.772608,
+      "review_status": "pending"
+    },
+    {
+      "source_id": "R_r7XjyjyZ4",
+      "segment_count": 1177,
+      "turn_count": 618,
+      "suspicious_segments": 586,
+      "suspicious_ratio": 0.497876,
+      "review_status": "pending"
+    },
+    {
+      "source_id": "BV12tstzNEcQ",
+      "segment_count": 792,
+      "turn_count": 569,
+      "suspicious_segments": 214,
+      "suspicious_ratio": 0.270202,
+      "review_status": "pending"
+    },
+    {
+      "source_id": "_oeqG4DVeTY",
+      "segment_count": 1016,
+      "turn_count": 674,
+      "suspicious_segments": 263,
+      "suspicious_ratio": 0.258858,
+      "review_status": "pending"
+    },
+    {
+      "source_id": "BV17wyFYmEUV",
+      "segment_count": 1064,
+      "turn_count": 583,
+      "suspicious_segments": 219,
+      "suspicious_ratio": 0.205827,
+      "review_status": "pending"
+    },
+    {
+      "source_id": "v6KVSNDFOyY",
+      "segment_count": 776,
+      "turn_count": 549,
+      "suspicious_segments": 140,
+      "suspicious_ratio": 0.180412,
+      "review_status": "pending"
+    },
+    {
+      "source_id": "dc8_a13Vesk",
+      "segment_count": 237,
+      "turn_count": 219,
+      "suspicious_segments": 38,
+      "suspicious_ratio": 0.160338,
+      "review_status": "pending"
+    },
+    {
+      "source_id": "-UyVqjxe9ek",
+      "segment_count": 1190,
+      "turn_count": 878,
+      "suspicious_segments": 184,
+      "suspicious_ratio": 0.154622,
+      "review_status": "pending"
+    },
+    {
+      "source_id": "pT_w4Iep6qI",
+      "segment_count": 839,
+      "turn_count": 431,
+      "suspicious_segments": 114,
+      "suspicious_ratio": 0.135876,
+      "review_status": "pending"
+    },
+    {
+      "source_id": "BV1tL411i7nD",
+      "segment_count": 134,
+      "turn_count": 86,
+      "suspicious_segments": 17,
+      "suspicious_ratio": 0.126866,
+      "review_status": "pending"
+    },
+    {
+      "source_id": "uTKB2e-1HPQ",
+      "segment_count": 1663,
+      "turn_count": 1334,
+      "suspicious_segments": 207,
+      "suspicious_ratio": 0.124474,
+      "review_status": "pending"
+    },
+    {
+      "source_id": "BV1TbH3zUEnu",
+      "segment_count": 52,
+      "turn_count": 42,
+      "suspicious_segments": 6,
+      "suspicious_ratio": 0.115385,
+      "review_status": "pending"
+    },
+    {
+      "source_id": "xJiH_3u4kJ4",
+      "segment_count": 1218,
+      "turn_count": 764,
+      "suspicious_segments": 124,
+      "suspicious_ratio": 0.101806,
+      "review_status": "pending"
+    },
+    {
+      "source_id": "3QlnyZo39jY",
+      "segment_count": 812,
+      "turn_count": 679,
+      "suspicious_segments": 79,
+      "suspicious_ratio": 0.097291,
+      "review_status": "pending"
+    },
+    {
+      "source_id": "qTgzqlF7NEc",
+      "segment_count": 855,
+      "turn_count": 428,
+      "suspicious_segments": 66,
+      "suspicious_ratio": 0.077193,
+      "review_status": "pending"
+    },
+    {
+      "source_id": "ytFp-9S2wXU",
+      "segment_count": 873,
+      "turn_count": 257,
+      "suspicious_segments": 67,
+      "suspicious_ratio": 0.076747,
+      "review_status": "pending"
+    },
+    {
+      "source_id": "_GRFgHhpCVY",
+      "segment_count": 938,
+      "turn_count": 673,
+      "suspicious_segments": 63,
+      "suspicious_ratio": 0.067164,
+      "review_status": "pending"
+    },
+    {
+      "source_id": "1CxTCk0I79w",
+      "segment_count": 1482,
+      "turn_count": 1093,
+      "suspicious_segments": 88,
+      "suspicious_ratio": 0.059379,
+      "review_status": "pending"
+    },
+    {
+      "source_id": "BV1LaaCeXEH6",
+      "segment_count": 131,
+      "turn_count": 34,
+      "suspicious_segments": 7,
+      "suspicious_ratio": 0.053435,
+      "review_status": "pending"
+    },
+    {
+      "source_id": "3f9HLs85Ggs",
+      "segment_count": 942,
+      "turn_count": 587,
+      "suspicious_segments": 49,
+      "suspicious_ratio": 0.052017,
+      "review_status": "pending"
+    },
+    {
+      "source_id": "vedal987:2868847714",
+      "segment_count": 1326,
+      "turn_count": 912,
+      "suspicious_segments": 64,
+      "suspicious_ratio": 0.048265,
+      "review_status": "pending"
+    },
+    {
+      "source_id": "dTKmIUANsU8",
+      "segment_count": 1373,
+      "turn_count": 818,
+      "suspicious_segments": 57,
+      "suspicious_ratio": 0.041515,
+      "review_status": "pending"
+    },
+    {
+      "source_id": "2SMHsZvE75c",
+      "segment_count": 1393,
+      "turn_count": 1054,
+      "suspicious_segments": 53,
+      "suspicious_ratio": 0.038047,
+      "review_status": "pending"
+    },
+    {
+      "source_id": "BV1uN411N7KR",
+      "segment_count": 3750,
+      "turn_count": 1284,
+      "suspicious_segments": 113,
+      "suspicious_ratio": 0.030133,
+      "review_status": "pending"
+    },
+    {
+      "source_id": "HQ8DABLQrSM",
+      "segment_count": 3043,
+      "turn_count": 1684,
+      "suspicious_segments": 52,
+      "suspicious_ratio": 0.017088,
+      "review_status": "pending"
+    },
+    {
+      "source_id": "aHDXrR5uPvU",
+      "segment_count": 10215,
+      "turn_count": 4807,
+      "suspicious_segments": 80,
+      "suspicious_ratio": 0.007832,
+      "review_status": "pending"
+    },
+    {
+      "source_id": "uwAVUHIooNI",
+      "segment_count": 11200,
+      "turn_count": 5540,
+      "suspicious_segments": 54,
+      "suspicious_ratio": 0.004821,
+      "review_status": "pending"
+    }
+  ]
+}

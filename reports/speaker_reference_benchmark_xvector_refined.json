@@ -1,0 +1,1011 @@
+{
+  "schema_version": "0.1.0",
+  "created_at": "2026-09-11T00:28:33.715200+00:00",
+  "status": "PROXY_BENCHMARK_ONLY",
+  "reference_bank_version": "provisional-2026-09-11-v1",
+  "model": "speechbrain/spkrec-xvect-voxceleb",
+  "candidate_manifest": "speaker_refs/reference_candidates_for_next_validation.jsonl",
+  "device": "cpu",
+  "clip_count": 56,
+  "source_count": 15,
+  "cross_source_leave_one_source_out": true,
+  "metrics": {
+    "NEURO": {
+      "clips_evaluated": 45,
+      "independent_sources": 12,
+      "proxy_accuracy": 0.844444,
+      "proxy_false_positives": 3,
+      "proxy_false_negatives": 7,
+      "mean_label_score": 0.971621,
+      "p05_label_score": 0.910292,
+      "mean_margin": 0.007287,
+      "p05_margin": 0.001265
+    },
+    "EVIL": {
+      "clips_evaluated": 11,
+      "independent_sources": 3,
+      "proxy_accuracy": 0.727273,
+      "proxy_false_positives": 7,
+      "proxy_false_negatives": 3,
+      "mean_label_score": 0.969261,
+      "p05_label_score": 0.940169,
+      "mean_margin": 0.006407,
+      "p05_margin": 0.000309
+    },
+    "VEDAL": {
+      "clips_evaluated": 0,
+      "independent_sources": 0
+    }
+  },
+  "confusion": {
+    "EVIL->EVIL": 8,
+    "EVIL->NEURO": 3,
+    "NEURO->NEURO": 38,
+    "NEURO->EVIL": 7
+  },
+  "runtime_seconds": 0.8,
+  "runtime_seconds_per_clip": 0.0143,
+  "ram_before_bytes": null,
+  "ram_after_bytes": null,
+  "peak_gpu_memory": null,
+  "negative_other": {
+    "status": "not_available",
+    "reason": "No safely labeled non-target reference clips were present; do not interpret proxy accuracy as precision."
+  },
+  "promotion_decision": "DO_NOT_PROMOTE",
+  "promotion_reason": "Labels are metadata-derived provisional hints and Vedal has no single-identity source; fixed negative gold set and independent validation remain incomplete.",
+  "per_clip": [
+    {
+      "candidate_id": "evil:D95w1v1_5k0:01",
+      "source_id": "D95w1v1_5k0",
+      "provisional_identity": "EVIL",
+      "predicted_identity": "EVIL",
+      "scores": {
+        "NEURO": 0.978666,
+        "EVIL": 0.983507
+      },
+      "best_score": 0.983507,
+      "second_best_identity": "NEURO",
+      "second_best_score": 0.978666,
+      "margin": 0.004841,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "evil:D95w1v1_5k0:02",
+      "source_id": "D95w1v1_5k0",
+      "provisional_identity": "EVIL",
+      "predicted_identity": "EVIL",
+      "scores": {
+        "NEURO": 0.92542,
+        "EVIL": 0.938054
+      },
+      "best_score": 0.938054,
+      "second_best_identity": "NEURO",
+      "second_best_score": 0.92542,
+      "margin": 0.012633,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "evil:D95w1v1_5k0:03",
+      "source_id": "D95w1v1_5k0",
+      "provisional_identity": "EVIL",
+      "predicted_identity": "EVIL",
+      "scores": {
+        "NEURO": 0.96975,
+        "EVIL": 0.975254
+      },
+      "best_score": 0.975254,
+      "second_best_identity": "NEURO",
+      "second_best_score": 0.96975,
+      "margin": 0.005504,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "evil:qlJmo9JPp2A:00",
+      "source_id": "qlJmo9JPp2A",
+      "provisional_identity": "EVIL",
+      "predicted_identity": "EVIL",
+      "scores": {
+        "NEURO": 0.98341,
+        "EVIL": 0.984168
+      },
+      "best_score": 0.984168,
+      "second_best_identity": "NEURO",
+      "second_best_score": 0.98341,
+      "margin": 0.000758,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "evil:qlJmo9JPp2A:01",
+      "source_id": "qlJmo9JPp2A",
+      "provisional_identity": "EVIL",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.982651,
+        "EVIL": 0.982151
+      },
+      "best_score": 0.982651,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.982151,
+      "margin": 0.0005,
+      "correct_against_provisional_label": false,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "evil:qlJmo9JPp2A:02",
+      "source_id": "qlJmo9JPp2A",
+      "provisional_identity": "EVIL",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.967111,
+        "EVIL": 0.942285
+      },
+      "best_score": 0.967111,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.942285,
+      "margin": 0.024827,
+      "correct_against_provisional_label": false,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "evil:qlJmo9JPp2A:03",
+      "source_id": "qlJmo9JPp2A",
+      "provisional_identity": "EVIL",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.981682,
+        "EVIL": 0.974417
+      },
+      "best_score": 0.981682,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.974417,
+      "margin": 0.007265,
+      "correct_against_provisional_label": false,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "evil:uZTTRObEhbI:00",
+      "source_id": "uZTTRObEhbI",
+      "provisional_identity": "EVIL",
+      "predicted_identity": "EVIL",
+      "scores": {
+        "NEURO": 0.957723,
+        "EVIL": 0.969629
+      },
+      "best_score": 0.969629,
+      "second_best_identity": "NEURO",
+      "second_best_score": 0.957723,
+      "margin": 0.011906,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "evil:uZTTRObEhbI:01",
+      "source_id": "uZTTRObEhbI",
+      "provisional_identity": "EVIL",
+      "predicted_identity": "EVIL",
+      "scores": {
+        "NEURO": 0.964883,
+        "EVIL": 0.965284
+      },
+      "best_score": 0.965284,
+      "second_best_identity": "NEURO",
+      "second_best_score": 0.964883,
+      "margin": 0.000401,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "evil:uZTTRObEhbI:02",
+      "source_id": "uZTTRObEhbI",
+      "provisional_identity": "EVIL",
+      "predicted_identity": "EVIL",
+      "scores": {
+        "NEURO": 0.985656,
+        "EVIL": 0.987284
+      },
+      "best_score": 0.987284,
+      "second_best_identity": "NEURO",
+      "second_best_score": 0.985656,
+      "margin": 0.001628,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "evil:uZTTRObEhbI:03",
+      "source_id": "uZTTRObEhbI",
+      "provisional_identity": "EVIL",
+      "predicted_identity": "EVIL",
+      "scores": {
+        "NEURO": 0.959624,
+        "EVIL": 0.959841
+      },
+      "best_score": 0.959841,
+      "second_best_identity": "NEURO",
+      "second_best_score": 0.959624,
+      "margin": 0.000217,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:3ObVH1U1620:00",
+      "source_id": "3ObVH1U1620",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.984565,
+        "EVIL": 0.983346
+      },
+      "best_score": 0.984565,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.983346,
+      "margin": 0.001219,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:3ObVH1U1620:01",
+      "source_id": "3ObVH1U1620",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "EVIL",
+      "scores": {
+        "NEURO": 0.980742,
+        "EVIL": 0.981543
+      },
+      "best_score": 0.981543,
+      "second_best_identity": "NEURO",
+      "second_best_score": 0.980742,
+      "margin": 0.000801,
+      "correct_against_provisional_label": false,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:3ObVH1U1620:02",
+      "source_id": "3ObVH1U1620",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.988314,
+        "EVIL": 0.983815
+      },
+      "best_score": 0.988314,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.983815,
+      "margin": 0.004499,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:3ObVH1U1620:03",
+      "source_id": "3ObVH1U1620",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.982956,
+        "EVIL": 0.977608
+      },
+      "best_score": 0.982956,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.977608,
+      "margin": 0.005348,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:4_kgbL9ow_Y:00",
+      "source_id": "4_kgbL9ow_Y",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.984314,
+        "EVIL": 0.97859
+      },
+      "best_score": 0.984314,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.97859,
+      "margin": 0.005724,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:4_kgbL9ow_Y:01",
+      "source_id": "4_kgbL9ow_Y",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.987665,
+        "EVIL": 0.983033
+      },
+      "best_score": 0.987665,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.983033,
+      "margin": 0.004632,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:4jhFIea_gWU:00",
+      "source_id": "4jhFIea_gWU",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.986499,
+        "EVIL": 0.979478
+      },
+      "best_score": 0.986499,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.979478,
+      "margin": 0.007021,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:4jhFIea_gWU:01",
+      "source_id": "4jhFIea_gWU",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.987194,
+        "EVIL": 0.981961
+      },
+      "best_score": 0.987194,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.981961,
+      "margin": 0.005233,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:4jhFIea_gWU:02",
+      "source_id": "4jhFIea_gWU",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.985756,
+        "EVIL": 0.978094
+      },
+      "best_score": 0.985756,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.978094,
+      "margin": 0.007662,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:4jhFIea_gWU:03",
+      "source_id": "4jhFIea_gWU",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.946843,
+        "EVIL": 0.923383
+      },
+      "best_score": 0.946843,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.923383,
+      "margin": 0.02346,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:9REk8M-SSd8:00",
+      "source_id": "9REk8M-SSd8",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.985824,
+        "EVIL": 0.979109
+      },
+      "best_score": 0.985824,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.979109,
+      "margin": 0.006715,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:9REk8M-SSd8:01",
+      "source_id": "9REk8M-SSd8",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.986094,
+        "EVIL": 0.977985
+      },
+      "best_score": 0.986094,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.977985,
+      "margin": 0.00811,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:9REk8M-SSd8:02",
+      "source_id": "9REk8M-SSd8",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.986527,
+        "EVIL": 0.98182
+      },
+      "best_score": 0.986527,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.98182,
+      "margin": 0.004707,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:9REk8M-SSd8:03",
+      "source_id": "9REk8M-SSd8",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.985344,
+        "EVIL": 0.978316
+      },
+      "best_score": 0.985344,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.978316,
+      "margin": 0.007028,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:BJj-8zHAZec:00",
+      "source_id": "BJj-8zHAZec",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.984166,
+        "EVIL": 0.978391
+      },
+      "best_score": 0.984166,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.978391,
+      "margin": 0.005775,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:BJj-8zHAZec:01",
+      "source_id": "BJj-8zHAZec",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.984273,
+        "EVIL": 0.982822
+      },
+      "best_score": 0.984273,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.982822,
+      "margin": 0.001451,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:BJj-8zHAZec:02",
+      "source_id": "BJj-8zHAZec",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "EVIL",
+      "scores": {
+        "NEURO": 0.970876,
+        "EVIL": 0.971848
+      },
+      "best_score": 0.971848,
+      "second_best_identity": "NEURO",
+      "second_best_score": 0.970876,
+      "margin": 0.000972,
+      "correct_against_provisional_label": false,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:FpMGqhh_yd8:00",
+      "source_id": "FpMGqhh_yd8",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.96241,
+        "EVIL": 0.950498
+      },
+      "best_score": 0.96241,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.950498,
+      "margin": 0.011912,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:FpMGqhh_yd8:01",
+      "source_id": "FpMGqhh_yd8",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.906746,
+        "EVIL": 0.894217
+      },
+      "best_score": 0.906746,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.894217,
+      "margin": 0.012528,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:FpMGqhh_yd8:02",
+      "source_id": "FpMGqhh_yd8",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.924475,
+        "EVIL": 0.910647
+      },
+      "best_score": 0.924475,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.910647,
+      "margin": 0.013828,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:FpMGqhh_yd8:03",
+      "source_id": "FpMGqhh_yd8",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.904337,
+        "EVIL": 0.889864
+      },
+      "best_score": 0.904337,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.889864,
+      "margin": 0.014473,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:GjIopQlnEUY:00",
+      "source_id": "GjIopQlnEUY",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.986959,
+        "EVIL": 0.984452
+      },
+      "best_score": 0.986959,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.984452,
+      "margin": 0.002507,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:GjIopQlnEUY:01",
+      "source_id": "GjIopQlnEUY",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.988214,
+        "EVIL": 0.981872
+      },
+      "best_score": 0.988214,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.981872,
+      "margin": 0.006342,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:GjIopQlnEUY:02",
+      "source_id": "GjIopQlnEUY",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "EVIL",
+      "scores": {
+        "NEURO": 0.975777,
+        "EVIL": 0.977622
+      },
+      "best_score": 0.977622,
+      "second_best_identity": "NEURO",
+      "second_best_score": 0.975777,
+      "margin": 0.001845,
+      "correct_against_provisional_label": false,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:GjIopQlnEUY:03",
+      "source_id": "GjIopQlnEUY",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.983093,
+        "EVIL": 0.980684
+      },
+      "best_score": 0.983093,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.980684,
+      "margin": 0.002409,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:VL1oziMsV4Y:00",
+      "source_id": "VL1oziMsV4Y",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.986828,
+        "EVIL": 0.977801
+      },
+      "best_score": 0.986828,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.977801,
+      "margin": 0.009028,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:VL1oziMsV4Y:01",
+      "source_id": "VL1oziMsV4Y",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.985895,
+        "EVIL": 0.980279
+      },
+      "best_score": 0.985895,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.980279,
+      "margin": 0.005616,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:VL1oziMsV4Y:02",
+      "source_id": "VL1oziMsV4Y",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.987401,
+        "EVIL": 0.982434
+      },
+      "best_score": 0.987401,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.982434,
+      "margin": 0.004967,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:VL1oziMsV4Y:03",
+      "source_id": "VL1oziMsV4Y",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.985441,
+        "EVIL": 0.982912
+      },
+      "best_score": 0.985441,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.982912,
+      "margin": 0.002529,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:dK33c8-8WV8:00",
+      "source_id": "dK33c8-8WV8",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.985689,
+        "EVIL": 0.983213
+      },
+      "best_score": 0.985689,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.983213,
+      "margin": 0.002476,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:dK33c8-8WV8:01",
+      "source_id": "dK33c8-8WV8",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.984334,
+        "EVIL": 0.975128
+      },
+      "best_score": 0.984334,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.975128,
+      "margin": 0.009207,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:dK33c8-8WV8:02",
+      "source_id": "dK33c8-8WV8",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.988635,
+        "EVIL": 0.98251
+      },
+      "best_score": 0.988635,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.98251,
+      "margin": 0.006125,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:dK33c8-8WV8:03",
+      "source_id": "dK33c8-8WV8",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.98787,
+        "EVIL": 0.980616
+      },
+      "best_score": 0.98787,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.980616,
+      "margin": 0.007254,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:f6Z-P9ba_Rs:00",
+      "source_id": "f6Z-P9ba_Rs",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "EVIL",
+      "scores": {
+        "NEURO": 0.958042,
+        "EVIL": 0.968623
+      },
+      "best_score": 0.968623,
+      "second_best_identity": "NEURO",
+      "second_best_score": 0.958042,
+      "margin": 0.010581,
+      "correct_against_provisional_label": false,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:f6Z-P9ba_Rs:01",
+      "source_id": "f6Z-P9ba_Rs",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "EVIL",
+      "scores": {
+        "NEURO": 0.966852,
+        "EVIL": 0.971207
+      },
+      "best_score": 0.971207,
+      "second_best_identity": "NEURO",
+      "second_best_score": 0.966852,
+      "margin": 0.004354,
+      "correct_against_provisional_label": false,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:f6Z-P9ba_Rs:02",
+      "source_id": "f6Z-P9ba_Rs",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "EVIL",
+      "scores": {
+        "NEURO": 0.940368,
+        "EVIL": 0.956503
+      },
+      "best_score": 0.956503,
+      "second_best_identity": "NEURO",
+      "second_best_score": 0.940368,
+      "margin": 0.016135,
+      "correct_against_provisional_label": false,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:f6Z-P9ba_Rs:03",
+      "source_id": "f6Z-P9ba_Rs",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "EVIL",
+      "scores": {
+        "NEURO": 0.966797,
+        "EVIL": 0.972667
+      },
+      "best_score": 0.972667,
+      "second_best_identity": "NEURO",
+      "second_best_score": 0.966797,
+      "margin": 0.005869,
+      "correct_against_provisional_label": false,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:taEnDJONKHY:00",
+      "source_id": "taEnDJONKHY",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.987984,
+        "EVIL": 0.984967
+      },
+      "best_score": 0.987984,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.984967,
+      "margin": 0.003016,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:taEnDJONKHY:01",
+      "source_id": "taEnDJONKHY",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.988305,
+        "EVIL": 0.985312
+      },
+      "best_score": 0.988305,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.985312,
+      "margin": 0.002994,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:taEnDJONKHY:02",
+      "source_id": "taEnDJONKHY",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.987423,
+        "EVIL": 0.985186
+      },
+      "best_score": 0.987423,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.985186,
+      "margin": 0.002237,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:taEnDJONKHY:03",
+      "source_id": "taEnDJONKHY",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.982385,
+        "EVIL": 0.974371
+      },
+      "best_score": 0.982385,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.974371,
+      "margin": 0.008014,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:xJiH_3u4kJ4:00",
+      "source_id": "xJiH_3u4kJ4",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.952815,
+        "EVIL": 0.937505
+      },
+      "best_score": 0.952815,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.937505,
+      "margin": 0.015311,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:xJiH_3u4kJ4:01",
+      "source_id": "xJiH_3u4kJ4",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.880926,
+        "EVIL": 0.866548
+      },
+      "best_score": 0.880926,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.866548,
+      "margin": 0.014377,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:xJiH_3u4kJ4:02",
+      "source_id": "xJiH_3u4kJ4",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.928753,
+        "EVIL": 0.913231
+      },
+      "best_score": 0.928753,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.913231,
+      "margin": 0.015522,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    },
+    {
+      "candidate_id": "neuro:xJiH_3u4kJ4:03",
+      "source_id": "xJiH_3u4kJ4",
+      "provisional_identity": "NEURO",
+      "predicted_identity": "NEURO",
+      "scores": {
+        "NEURO": 0.960231,
+        "EVIL": 0.944134
+      },
+      "best_score": 0.960231,
+      "second_best_identity": "EVIL",
+      "second_best_score": 0.944134,
+      "margin": 0.016097,
+      "correct_against_provisional_label": true,
+      "reference_bank_version": "provisional-2026-09-11-v1",
+      "validation_status": "proxy_only_not_trusted"
+    }
+  ]
+}

@@ -1,0 +1,2037 @@
+{
+  "schema_version": "0.1.0",
+  "updated_at": "2026-09-11T06:31:59.246362+00:00",
+  "status": "CONTINUE_WORKING_ANONYMOUS_IDENTITY_PENDING",
+  "source_count": 505,
+  "window_count": 199371,
+  "window_type_counts": {
+    "4_8_turns": 113966,
+    "8_20_turns": 56983,
+    "20_plus_turns": 28422
+  },
+  "training_candidate_count": 0,
+  "dedupe_status": "source-segment provenance recorded; cross-source dedupe pending",
+  "identity_mapping": "not_attempted_without_trusted_reference_bank",
+  "per_source": {
+    "-IEJhV_pE4o": {
+      "windows": 304,
+      "turns": 1395
+    },
+    "-Lb9iP94CWE": {
+      "windows": 287,
+      "turns": 1315
+    },
+    "-QvvvL1kILU": {
+      "windows": 266,
+      "turns": 1214
+    },
+    "-UyVqjxe9ek": {
+      "windows": 192,
+      "turns": 878
+    },
+    "-_020lB41pQ": {
+      "windows": 374,
+      "turns": 1710
+    },
+    "-dtNeJBiKlk": {
+      "windows": 192,
+      "turns": 879
+    },
+    "-jwDs0n0R3o": {
+      "windows": 63,
+      "turns": 288
+    },
+    "-lFNGZcLiEo": {
+      "windows": 190,
+      "turns": 868
+    },
+    "03-w0ZwYTxg": {
+      "windows": 432,
+      "turns": 1972
+    },
+    "0c8j7fnQgSo": {
+      "windows": 428,
+      "turns": 1956
+    },
+    "0ragksm0i94": {
+      "windows": 154,
+      "turns": 705
+    },
+    "0skD_GzCLEg": {
+      "windows": 0,
+      "turns": 0
+    },
+    "0vhGdjfxPo8": {
+      "windows": 730,
+      "turns": 3339
+    },
+    "1CxTCk0I79w": {
+      "windows": 239,
+      "turns": 1093
+    },
+    "1OznaGLyscQ": {
+      "windows": 470,
+      "turns": 2148
+    },
+    "1U06zbSri78": {
+      "windows": 84,
+      "turns": 385
+    },
+    "1cySjIF4DOg": {
+      "windows": 129,
+      "turns": 588
+    },
+    "1rOPxGyS0_E": {
+      "windows": 252,
+      "turns": 1153
+    },
+    "29yeWXdUsqE": {
+      "windows": 150,
+      "turns": 684
+    },
+    "2HIZ6GzGSN8": {
+      "windows": 220,
+      "turns": 1007
+    },
+    "2QpbuPz8xXM": {
+      "windows": 0,
+      "turns": 0
+    },
+    "2SMHsZvE75c": {
+      "windows": 231,
+      "turns": 1054
+    },
+    "2YSGzQgWwHo": {
+      "windows": 535,
+      "turns": 2444
+    },
+    "2Ys8HQp3bls": {
+      "windows": 302,
+      "turns": 1380
+    },
+    "2sfUKne9Eu8": {
+      "windows": 660,
+      "turns": 3016
+    },
+    "39wNwjSOQMg": {
+      "windows": 336,
+      "turns": 1536
+    },
+    "3ObVH1U1620": {
+      "windows": 387,
+      "turns": 1770
+    },
+    "3QlnyZo39jY": {
+      "windows": 148,
+      "turns": 679
+    },
+    "3ZQ9iEG54DI": {
+      "windows": 763,
+      "turns": 3486
+    },
+    "3f9HLs85Ggs": {
+      "windows": 128,
+      "turns": 587
+    },
+    "3m5gif0hD30": {
+      "windows": 315,
+      "turns": 1441
+    },
+    "3mw92P7vv7A": {
+      "windows": 350,
+      "turns": 1596
+    },
+    "3vmpPKJpn70": {
+      "windows": 342,
+      "turns": 1561
+    },
+    "4Bx6yw59jtA": {
+      "windows": 346,
+      "turns": 1581
+    },
+    "4NvFzxiD-tE": {
+      "windows": 252,
+      "turns": 1148
+    },
+    "4PY51T-1Tks": {
+      "windows": 654,
+      "turns": 2992
+    },
+    "4_kgbL9ow_Y": {
+      "windows": 359,
+      "turns": 1643
+    },
+    "4jhFIea_gWU": {
+      "windows": 307,
+      "turns": 1400
+    },
+    "4jqtSOaFq3Y": {
+      "windows": 168,
+      "turns": 770
+    },
+    "4s9ecO0DK9o": {
+      "windows": 625,
+      "turns": 2856
+    },
+    "55jzWD5rSX0": {
+      "windows": 282,
+      "turns": 1290
+    },
+    "5BZUIFr7g4U": {
+      "windows": 328,
+      "turns": 1496
+    },
+    "5E2Qmanm-IQ": {
+      "windows": 495,
+      "turns": 2262
+    },
+    "5Frk-BKHX3s": {
+      "windows": 231,
+      "turns": 1059
+    },
+    "5PVUZ6BlpVA": {
+      "windows": 224,
+      "turns": 1027
+    },
+    "5V0H0dicnww": {
+      "windows": 262,
+      "turns": 1198
+    },
+    "5YGZKbhu3Og": {
+      "windows": 314,
+      "turns": 1435
+    },
+    "5hS1ERaX6Tg": {
+      "windows": 331,
+      "turns": 1512
+    },
+    "5lpSLo1Q4f0": {
+      "windows": 217,
+      "turns": 988
+    },
+    "5vZ7xwdFKYY": {
+      "windows": 227,
+      "turns": 1037
+    },
+    "64zvE_T9JuM": {
+      "windows": 316,
+      "turns": 1447
+    },
+    "6G0CnNorUj8": {
+      "windows": 261,
+      "turns": 1194
+    },
+    "6SWTL3geE3A": {
+      "windows": 983,
+      "turns": 4496
+    },
+    "6oipVZAEQ-U": {
+      "windows": 846,
+      "turns": 3865
+    },
+    "73bCoDI_8ck": {
+      "windows": 255,
+      "turns": 1169
+    },
+    "7FPl91xzxRQ": {
+      "windows": 94,
+      "turns": 433
+    },
+    "7IHN4lYOgOc": {
+      "windows": 350,
+      "turns": 1601
+    },
+    "7MiGTgGUMbk": {
+      "windows": 335,
+      "turns": 1528
+    },
+    "7RMebandhJY": {
+      "windows": 300,
+      "turns": 1370
+    },
+    "7bAR-y8FOSg": {
+      "windows": 343,
+      "turns": 1564
+    },
+    "7efSMKd6Oxc": {
+      "windows": 1184,
+      "turns": 5413
+    },
+    "7uTaHkuoDzo": {
+      "windows": 362,
+      "turns": 1652
+    },
+    "8335sBz9aHU": {
+      "windows": 212,
+      "turns": 971
+    },
+    "8BUuroRgtMs": {
+      "windows": 275,
+      "turns": 1256
+    },
+    "8EpwFqOeYyg": {
+      "windows": 229,
+      "turns": 1045
+    },
+    "8He-42U23TM": {
+      "windows": 398,
+      "turns": 1816
+    },
+    "8UgcH7YLxzA": {
+      "windows": 352,
+      "turns": 1611
+    },
+    "8h0Rrc_cczc": {
+      "windows": 364,
+      "turns": 1666
+    },
+    "8ujnKMkkFGo": {
+      "windows": 188,
+      "turns": 858
+    },
+    "8zyIE0q0STA": {
+      "windows": 720,
+      "turns": 3291
+    },
+    "9CEUko72Svc": {
+      "windows": 185,
+      "turns": 851
+    },
+    "9REk8M-SSd8": {
+      "windows": 238,
+      "turns": 1091
+    },
+    "9bT7aVXZCb0": {
+      "windows": 1084,
+      "turns": 4954
+    },
+    "9bn5lJ9OXQw": {
+      "windows": 288,
+      "turns": 1317
+    },
+    "9p8fsrr40pg": {
+      "windows": 318,
+      "turns": 1454
+    },
+    "AIYaBYVX95o": {
+      "windows": 425,
+      "turns": 1943
+    },
+    "AZz14TXVbOk": {
+      "windows": 297,
+      "turns": 1358
+    },
+    "AcY8j2p6Noo": {
+      "windows": 243,
+      "turns": 1110
+    },
+    "Ak7mzd3L7b0": {
+      "windows": 439,
+      "turns": 2004
+    },
+    "B7kNYj9-Mmw": {
+      "windows": 1056,
+      "turns": 4826
+    },
+    "BJj-8zHAZec": {
+      "windows": 325,
+      "turns": 1487
+    },
+    "BS9TxqIBvcY": {
+      "windows": 388,
+      "turns": 1773
+    },
+    "BV11FZ3YREpN": {
+      "windows": 1,
+      "turns": 7
+    },
+    "BV11L411r7DQ": {
+      "windows": 7,
+      "turns": 35
+    },
+    "BV11r42147oq": {
+      "windows": 3,
+      "turns": 15
+    },
+    "BV12W8izqEUy": {
+      "windows": 6,
+      "turns": 27
+    },
+    "BV12tstzNEcQ": {
+      "windows": 125,
+      "turns": 569
+    },
+    "BV151gh6uE5C": {
+      "windows": 3,
+      "turns": 16
+    },
+    "BV16LY1eKENj": {
+      "windows": 15,
+      "turns": 70
+    },
+    "BV17i4y1q7t1": {
+      "windows": 2,
+      "turns": 8
+    },
+    "BV17wyFYmEUV": {
+      "windows": 127,
+      "turns": 583
+    },
+    "BV18QdCYpESb": {
+      "windows": 2,
+      "turns": 11
+    },
+    "BV1AJ9UBVEaE": {
+      "windows": 50,
+      "turns": 230
+    },
+    "BV1DVoQY5EyJ": {
+      "windows": 56,
+      "turns": 256
+    },
+    "BV1LaaCeXEH6": {
+      "windows": 7,
+      "turns": 34
+    },
+    "BV1Ld4y1H7wL": {
+      "windows": 13,
+      "turns": 56
+    },
+    "BV1TbH3zUEnu": {
+      "windows": 9,
+      "turns": 42
+    },
+    "BV1X6X9BuEyg": {
+      "windows": 1,
+      "turns": 5
+    },
+    "BV1Zk4y147qt": {
+      "windows": 6,
+      "turns": 26
+    },
+    "BV1m4u96dEen": {
+      "windows": 169,
+      "turns": 775
+    },
+    "BV1oWjj6UEMd": {
+      "windows": 2,
+      "turns": 8
+    },
+    "BV1oh4y1F7jE": {
+      "windows": 5,
+      "turns": 21
+    },
+    "BV1tL411i7nD": {
+      "windows": 19,
+      "turns": 86
+    },
+    "BV1uN411N7KR": {
+      "windows": 281,
+      "turns": 1284
+    },
+    "BpZtP8RA364": {
+      "windows": 257,
+      "turns": 1174
+    },
+    "BqPaismpTn4": {
+      "windows": 1006,
+      "turns": 4599
+    },
+    "C-_vdh5Evfw": {
+      "windows": 402,
+      "turns": 1837
+    },
+    "C3okBaUsw4U": {
+      "windows": 602,
+      "turns": 2749
+    },
+    "CImSL8Na5Ds": {
+      "windows": 523,
+      "turns": 2391
+    },
+    "CTs0M8KCou8": {
+      "windows": 317,
+      "turns": 1450
+    },
+    "CUb8HfPYCQc": {
+      "windows": 388,
+      "turns": 1775
+    },
+    "CwA807CsD08": {
+      "windows": 315,
+      "turns": 1437
+    },
+    "D36Hn9s7dco": {
+      "windows": 348,
+      "turns": 1588
+    },
+    "D95w1v1_5k0": {
+      "windows": 260,
+      "turns": 1191
+    },
+    "DBJJ1S3drLI": {
+      "windows": 253,
+      "turns": 1159
+    },
+    "DDSgYtHfC6E": {
+      "windows": 66,
+      "turns": 304
+    },
+    "DJj2sfrVTw4": {
+      "windows": 393,
+      "turns": 1798
+    },
+    "DRTnhtwdsTQ": {
+      "windows": 820,
+      "turns": 3748
+    },
+    "DXgsuHdOCeY": {
+      "windows": 120,
+      "turns": 550
+    },
+    "DbNcG7_E9Jg": {
+      "windows": 1067,
+      "turns": 4883
+    },
+    "DckwPdlr6aU": {
+      "windows": 290,
+      "turns": 1324
+    },
+    "DhlQLYP0fyY": {
+      "windows": 352,
+      "turns": 1610
+    },
+    "DomhqHxd3KE": {
+      "windows": 157,
+      "turns": 717
+    },
+    "E1xdVxUI1V8": {
+      "windows": 136,
+      "turns": 622
+    },
+    "E3U5YsX-Xfc": {
+      "windows": 296,
+      "turns": 1355
+    },
+    "EAYjUfI8vvI": {
+      "windows": 272,
+      "turns": 1240
+    },
+    "EUbQ5AxyqeM": {
+      "windows": 146,
+      "turns": 667
+    },
+    "E_Ddc4z-pLo": {
+      "windows": 230,
+      "turns": 1048
+    },
+    "EzKb4xBkhHo": {
+      "windows": 323,
+      "turns": 1478
+    },
+    "F9CeFQOikJg": {
+      "windows": 308,
+      "turns": 1411
+    },
+    "FC7B8wFbhgY": {
+      "windows": 297,
+      "turns": 1358
+    },
+    "FERrsHLcBxQ": {
+      "windows": 170,
+      "turns": 776
+    },
+    "FK7BD5Ijq8c": {
+      "windows": 427,
+      "turns": 1949
+    },
+    "FdYBc6aMjd0": {
+      "windows": 262,
+      "turns": 1198
+    },
+    "FeddkoNaK1c": {
+      "windows": 196,
+      "turns": 893
+    },
+    "FpMGqhh_yd8": {
+      "windows": 272,
+      "turns": 1243
+    },
+    "FsgVdTEhUnY": {
+      "windows": 358,
+      "turns": 1636
+    },
+    "G3N5lZxq8xw": {
+      "windows": 313,
+      "turns": 1429
+    },
+    "GBly8rSCvIw": {
+      "windows": 798,
+      "turns": 3645
+    },
+    "GLE4JMJyVbg": {
+      "windows": 442,
+      "turns": 2022
+    },
+    "GQYkGamad08": {
+      "windows": 161,
+      "turns": 735
+    },
+    "GcpV77hw3sA": {
+      "windows": 248,
+      "turns": 1134
+    },
+    "GiRF7_T5FZs": {
+      "windows": 246,
+      "turns": 1124
+    },
+    "GjIopQlnEUY": {
+      "windows": 404,
+      "turns": 1844
+    },
+    "GkSf1KXfxgY": {
+      "windows": 827,
+      "turns": 3783
+    },
+    "GnEfcWoZLGE": {
+      "windows": 756,
+      "turns": 3458
+    },
+    "GraI2RiQpAA": {
+      "windows": 1094,
+      "turns": 5001
+    },
+    "HADTvZeWYis": {
+      "windows": 329,
+      "turns": 1501
+    },
+    "HQ8DABLQrSM": {
+      "windows": 369,
+      "turns": 1684
+    },
+    "HW_miy1BWPc": {
+      "windows": 364,
+      "turns": 1662
+    },
+    "HiR-UzcfsK8": {
+      "windows": 787,
+      "turns": 3596
+    },
+    "HqLohwUgX84": {
+      "windows": 220,
+      "turns": 1010
+    },
+    "Hz9XMb2kHJg": {
+      "windows": 339,
+      "turns": 1552
+    },
+    "I5ICo2gaGYo": {
+      "windows": 255,
+      "turns": 1171
+    },
+    "IA-fveG3TF4": {
+      "windows": 322,
+      "turns": 1471
+    },
+    "ISqXsLoOOiI": {
+      "windows": 232,
+      "turns": 1062
+    },
+    "IV85ZNmojXg": {
+      "windows": 1053,
+      "turns": 4812
+    },
+    "IaU9TkjCAGA": {
+      "windows": 509,
+      "turns": 2325
+    },
+    "InGcTJOv15w": {
+      "windows": 267,
+      "turns": 1223
+    },
+    "J2_lwQevOKA": {
+      "windows": 314,
+      "turns": 1433
+    },
+    "Ji30eaFehQQ": {
+      "windows": 1302,
+      "turns": 5955
+    },
+    "Jo0kaaNd6JM": {
+      "windows": 311,
+      "turns": 1427
+    },
+    "JokSKobmhU4": {
+      "windows": 343,
+      "turns": 1571
+    },
+    "JrG0M1RPxb4": {
+      "windows": 329,
+      "turns": 1504
+    },
+    "Jrno_9DdQ1k": {
+      "windows": 129,
+      "turns": 593
+    },
+    "JuWKG_OIsJ4": {
+      "windows": 500,
+      "turns": 2288
+    },
+    "KFleCg-F1tE": {
+      "windows": 134,
+      "turns": 614
+    },
+    "KHe2WiVgIWU": {
+      "windows": 276,
+      "turns": 1262
+    },
+    "KSfhL8Gwq34": {
+      "windows": 226,
+      "turns": 1032
+    },
+    "KXEokbG8nsM": {
+      "windows": 462,
+      "turns": 2110
+    },
+    "KywxB-rz5tI": {
+      "windows": 280,
+      "turns": 1283
+    },
+    "LGTSnUp6n1Q": {
+      "windows": 345,
+      "turns": 1576
+    },
+    "LM8BU1ciJg0": {
+      "windows": 146,
+      "turns": 667
+    },
+    "LN-YOhbyh1Q": {
+      "windows": 106,
+      "turns": 484
+    },
+    "LYRxpMl7K6o": {
+      "windows": 710,
+      "turns": 3244
+    },
+    "Lcx7fQNczo0": {
+      "windows": 318,
+      "turns": 1452
+    },
+    "Lkq1CRDBbJw": {
+      "windows": 303,
+      "turns": 1384
+    },
+    "Lrh7qoq0mCI": {
+      "windows": 100,
+      "turns": 456
+    },
+    "MD6eV5lSdy8": {
+      "windows": 175,
+      "turns": 801
+    },
+    "ME0qrf4hWLE": {
+      "windows": 875,
+      "turns": 3998
+    },
+    "ME4aPeeuJv8": {
+      "windows": 443,
+      "turns": 2024
+    },
+    "MTqTCHeORas": {
+      "windows": 273,
+      "turns": 1249
+    },
+    "MXmKOWVONts": {
+      "windows": 1368,
+      "turns": 6254
+    },
+    "M_4-ht_YmZU": {
+      "windows": 255,
+      "turns": 1165
+    },
+    "Mk1D_avGBfA": {
+      "windows": 44,
+      "turns": 203
+    },
+    "MlhWhuxocG4": {
+      "windows": 819,
+      "turns": 3741
+    },
+    "Mwkx4-wjNpU": {
+      "windows": 202,
+      "turns": 921
+    },
+    "N5kg9Beh22Q": {
+      "windows": 307,
+      "turns": 1400
+    },
+    "NEmuPTqEfk0": {
+      "windows": 574,
+      "turns": 2624
+    },
+    "NQz4IIlkp2A": {
+      "windows": 553,
+      "turns": 2529
+    },
+    "NkTBNDtBG70": {
+      "windows": 152,
+      "turns": 692
+    },
+    "NqyzbHF0E2o": {
+      "windows": 35,
+      "turns": 160
+    },
+    "Nwhu6-QUZEc": {
+      "windows": 245,
+      "turns": 1121
+    },
+    "O2bgHB2w9i8": {
+      "windows": 281,
+      "turns": 1285
+    },
+    "OEOKm_d22zA": {
+      "windows": 1112,
+      "turns": 5082
+    },
+    "ORCpxwW89Co": {
+      "windows": 195,
+      "turns": 890
+    },
+    "OXxi37FAsl0": {
+      "windows": 219,
+      "turns": 1003
+    },
+    "OhrmbW9bEzg": {
+      "windows": 215,
+      "turns": 983
+    },
+    "OyKzKB5-0uE": {
+      "windows": 171,
+      "turns": 782
+    },
+    "P42BBJ2pCFo": {
+      "windows": 150,
+      "turns": 684
+    },
+    "P6ZhkQfhfLg": {
+      "windows": 198,
+      "turns": 907
+    },
+    "PGzJ-uPGOcU": {
+      "windows": 1064,
+      "turns": 4865
+    },
+    "PKMmBtPZQek": {
+      "windows": 336,
+      "turns": 1536
+    },
+    "PQOAfFl5ufc": {
+      "windows": 317,
+      "turns": 1448
+    },
+    "PVb0oqDXJTs": {
+      "windows": 273,
+      "turns": 1245
+    },
+    "PXbgswDnajg": {
+      "windows": 922,
+      "turns": 4215
+    },
+    "PYfmTmFOy7o": {
+      "windows": 369,
+      "turns": 1684
+    },
+    "PbLafdGRGxw": {
+      "windows": 250,
+      "turns": 1142
+    },
+    "Pbe-2pvRo70": {
+      "windows": 254,
+      "turns": 1163
+    },
+    "Pdtro-7H_o4": {
+      "windows": 169,
+      "turns": 772
+    },
+    "Pkgp4TRNTxY": {
+      "windows": 735,
+      "turns": 3358
+    },
+    "PntK-KwQwsk": {
+      "windows": 129,
+      "turns": 592
+    },
+    "PqMUrTGDSmo": {
+      "windows": 388,
+      "turns": 1775
+    },
+    "PqW-yJ1iKZI": {
+      "windows": 252,
+      "turns": 1151
+    },
+    "Q47IvKkzV8M": {
+      "windows": 1274,
+      "turns": 5825
+    },
+    "Q6rjoY-adU8": {
+      "windows": 374,
+      "turns": 1710
+    },
+    "Q8kZT_tnRak": {
+      "windows": 811,
+      "turns": 3706
+    },
+    "QOCw_l9FDRk": {
+      "windows": 332,
+      "turns": 1516
+    },
+    "QT-6ltfZfdg": {
+      "windows": 318,
+      "turns": 1458
+    },
+    "QrpJ5HXDngY": {
+      "windows": 460,
+      "turns": 2101
+    },
+    "Qy4agD90vy4": {
+      "windows": 380,
+      "turns": 1738
+    },
+    "RFyb1_ef0-Y": {
+      "windows": 988,
+      "turns": 4518
+    },
+    "RM76ndnuVYI": {
+      "windows": 766,
+      "turns": 3503
+    },
+    "RSnIYKVU7dc": {
+      "windows": 234,
+      "turns": 1072
+    },
+    "R_ns_it6vFY": {
+      "windows": 1067,
+      "turns": 4882
+    },
+    "R_r7XjyjyZ4": {
+      "windows": 135,
+      "turns": 618
+    },
+    "RnUXQKq-o70": {
+      "windows": 209,
+      "turns": 954
+    },
+    "RvRtkDz75Wo": {
+      "windows": 283,
+      "turns": 1296
+    },
+    "RvvOTUz3WMI": {
+      "windows": 357,
+      "turns": 1630
+    },
+    "RzWka-vKjl0": {
+      "windows": 835,
+      "turns": 3819
+    },
+    "S6zgtOcT6t4": {
+      "windows": 213,
+      "turns": 979
+    },
+    "SFMX0moGnGY": {
+      "windows": 173,
+      "turns": 790
+    },
+    "SGdlU_38IIo": {
+      "windows": 355,
+      "turns": 1623
+    },
+    "SJxG6ASjZeY": {
+      "windows": 208,
+      "turns": 950
+    },
+    "SLa06WhcpCg": {
+      "windows": 296,
+      "turns": 1352
+    },
+    "SXYKpWqANbA": {
+      "windows": 329,
+      "turns": 1503
+    },
+    "Sa9xeUkuRh4": {
+      "windows": 364,
+      "turns": 1664
+    },
+    "SdGrn17-Db0": {
+      "windows": 290,
+      "turns": 1329
+    },
+    "Sg8FwvOnzBk": {
+      "windows": 344,
+      "turns": 1572
+    },
+    "T0IE_vJzTMc": {
+      "windows": 304,
+      "turns": 1395
+    },
+    "T4Pgj7kjoUk": {
+      "windows": 118,
+      "turns": 536
+    },
+    "T6UpGadBL9Q": {
+      "windows": 266,
+      "turns": 1213
+    },
+    "T7CidtnJxOk": {
+      "windows": 450,
+      "turns": 2057
+    },
+    "TMg2Bs46StM": {
+      "windows": 588,
+      "turns": 2687
+    },
+    "TR42hqiIZWg": {
+      "windows": 308,
+      "turns": 1411
+    },
+    "TbEY1CHKTvE": {
+      "windows": 423,
+      "turns": 1937
+    },
+    "TfDeIac-BnA": {
+      "windows": 325,
+      "turns": 1486
+    },
+    "U4voGWGZKos": {
+      "windows": 794,
+      "turns": 3630
+    },
+    "UDFETAD4ptw": {
+      "windows": 534,
+      "turns": 2442
+    },
+    "UJpxdHytJB0": {
+      "windows": 1084,
+      "turns": 4954
+    },
+    "URJaj3XMBcQ": {
+      "windows": 248,
+      "turns": 1135
+    },
+    "UVUPWvKp6h4": {
+      "windows": 549,
+      "turns": 2508
+    },
+    "UftAIsW_hos": {
+      "windows": 432,
+      "turns": 1975
+    },
+    "Uzl3veJKQVY": {
+      "windows": 763,
+      "turns": 3485
+    },
+    "VEzVw6axClI": {
+      "windows": 497,
+      "turns": 2270
+    },
+    "VGzMeXpLxwk": {
+      "windows": 274,
+      "turns": 1255
+    },
+    "VL1oziMsV4Y": {
+      "windows": 308,
+      "turns": 1407
+    },
+    "VMQSffoo8IM": {
+      "windows": 201,
+      "turns": 917
+    },
+    "VMg1RlwlbB0": {
+      "windows": 388,
+      "turns": 1778
+    },
+    "VPOywcw8tXI": {
+      "windows": 1489,
+      "turns": 6806
+    },
+    "VRK_Q8hn4Gc": {
+      "windows": 569,
+      "turns": 2600
+    },
+    "VRxQcYeJUuI": {
+      "windows": 1401,
+      "turns": 6405
+    },
+    "VkB3DUBEcfw": {
+      "windows": 244,
+      "turns": 1115
+    },
+    "VpuL3yKYU-w": {
+      "windows": 1312,
+      "turns": 5997
+    },
+    "Vt7XYkLne1Y": {
+      "windows": 341,
+      "turns": 1556
+    },
+    "W-8ORRpJIC4": {
+      "windows": 759,
+      "turns": 3468
+    },
+    "WHB6H39x2vw": {
+      "windows": 364,
+      "turns": 1663
+    },
+    "WHD8lXuCE5s": {
+      "windows": 1247,
+      "turns": 5702
+    },
+    "WHLE8yqabJg": {
+      "windows": 346,
+      "turns": 1582
+    },
+    "WYSbM9nWxlg": {
+      "windows": 218,
+      "turns": 997
+    },
+    "WcsJOkTDvOg": {
+      "windows": 271,
+      "turns": 1238
+    },
+    "Wi_ESii1N_Q": {
+      "windows": 309,
+      "turns": 1413
+    },
+    "WkodFcXVunY": {
+      "windows": 325,
+      "turns": 1485
+    },
+    "Wyl6jVgmHWM": {
+      "windows": 493,
+      "turns": 2252
+    },
+    "X8qp4hr55hQ": {
+      "windows": 1272,
+      "turns": 5813
+    },
+    "XFZIAcUcOe8": {
+      "windows": 434,
+      "turns": 1984
+    },
+    "XSJ_mbEXGVw": {
+      "windows": 173,
+      "turns": 790
+    },
+    "X_4WBNz4P4Q": {
+      "windows": 1143,
+      "turns": 5224
+    },
+    "XabSL2UbOaI": {
+      "windows": 301,
+      "turns": 1375
+    },
+    "Y-p5XBsi8yI": {
+      "windows": 500,
+      "turns": 2291
+    },
+    "YAfFi_JLhpA": {
+      "windows": 212,
+      "turns": 968
+    },
+    "YOUF_kkKkYs": {
+      "windows": 203,
+      "turns": 925
+    },
+    "Z-kXB5jXcAA": {
+      "windows": 1177,
+      "turns": 5382
+    },
+    "Z4ypWTelCWQ": {
+      "windows": 301,
+      "turns": 1374
+    },
+    "ZB6EXPyGd9Q": {
+      "windows": 286,
+      "turns": 1304
+    },
+    "ZYfLa34ODo4": {
+      "windows": 359,
+      "turns": 1640
+    },
+    "ZYnNRq9FPc4": {
+      "windows": 359,
+      "turns": 1642
+    },
+    "Z_ZWwV3jjU4": {
+      "windows": 439,
+      "turns": 2007
+    },
+    "Zf5gonN8E2A": {
+      "windows": 331,
+      "turns": 1514
+    },
+    "Zjzvv95IdnY": {
+      "windows": 682,
+      "turns": 3116
+    },
+    "ZsDht8VcsyA": {
+      "windows": 282,
+      "turns": 1289
+    },
+    "_GRFgHhpCVY": {
+      "windows": 147,
+      "turns": 673
+    },
+    "_KdcUfHaMWQ": {
+      "windows": 126,
+      "turns": 576
+    },
+    "_oeqG4DVeTY": {
+      "windows": 147,
+      "turns": 674
+    },
+    "_sDWrziA7Q0": {
+      "windows": 117,
+      "turns": 535
+    },
+    "a7BuFAbuBbc": {
+      "windows": 651,
+      "turns": 2972
+    },
+    "aHDXrR5uPvU": {
+      "windows": 1051,
+      "turns": 4807
+    },
+    "aTFdfb8ihtM": {
+      "windows": 271,
+      "turns": 1239
+    },
+    "aVgQB97ScPg": {
+      "windows": 320,
+      "turns": 1461
+    },
+    "aZjaaMsgPwM": {
+      "windows": 710,
+      "turns": 3247
+    },
+    "acgRo4Hgam8": {
+      "windows": 280,
+      "turns": 1283
+    },
+    "ag3qJ0aiEtw": {
+      "windows": 377,
+      "turns": 1720
+    },
+    "bBs8SYMMjdY": {
+      "windows": 332,
+      "turns": 1516
+    },
+    "bKmQ77dsEdQ": {
+      "windows": 133,
+      "turns": 608
+    },
+    "bLMHeZ6Qmmk": {
+      "windows": 311,
+      "turns": 1424
+    },
+    "bNSS40anhNk": {
+      "windows": 273,
+      "turns": 1251
+    },
+    "bQgfC8PXcRM": {
+      "windows": 115,
+      "turns": 529
+    },
+    "bSp3vObEfRU": {
+      "windows": 147,
+      "turns": 669
+    },
+    "bc54vGFvw-k": {
+      "windows": 140,
+      "turns": 638
+    },
+    "boSq4mRZQrg": {
+      "windows": 1035,
+      "turns": 4730
+    },
+    "bpmR3KItW3g": {
+      "windows": 371,
+      "turns": 1699
+    },
+    "bujHKQ1mrpc": {
+      "windows": 321,
+      "turns": 1465
+    },
+    "cDqbBwofAmw": {
+      "windows": 570,
+      "turns": 2611
+    },
+    "cM6q2GESfcE": {
+      "windows": 248,
+      "turns": 1132
+    },
+    "cQr3XP8JBtc": {
+      "windows": 290,
+      "turns": 1326
+    },
+    "cXWF3HJHNUw": {
+      "windows": 401,
+      "turns": 1835
+    },
+    "cZ3XGXBrrVU": {
+      "windows": 290,
+      "turns": 1331
+    },
+    "cZavF07ZE58": {
+      "windows": 241,
+      "turns": 1104
+    },
+    "cihLZUo37us": {
+      "windows": 791,
+      "turns": 3616
+    },
+    "cki7oHEr-wo": {
+      "windows": 231,
+      "turns": 1053
+    },
+    "d2uwpHa4KdQ": {
+      "windows": 295,
+      "turns": 1351
+    },
+    "dEASwQwxJgE": {
+      "windows": 301,
+      "turns": 1377
+    },
+    "dK33c8-8WV8": {
+      "windows": 309,
+      "turns": 1413
+    },
+    "dK4KleqiHcM": {
+      "windows": 392,
+      "turns": 1794
+    },
+    "dOirx_i9Xj4": {
+      "windows": 293,
+      "turns": 1339
+    },
+    "dPp6tG1nbtQ": {
+      "windows": 314,
+      "turns": 1432
+    },
+    "dTKmIUANsU8": {
+      "windows": 178,
+      "turns": 818
+    },
+    "dYidoz-xoVE": {
+      "windows": 360,
+      "turns": 1650
+    },
+    "dc8_a13Vesk": {
+      "windows": 48,
+      "turns": 219
+    },
+    "eAnoQ7F7VPU": {
+      "windows": 265,
+      "turns": 1209
+    },
+    "ea2sPOwyHxk": {
+      "windows": 740,
+      "turns": 3382
+    },
+    "ewosmioAXYM": {
+      "windows": 775,
+      "turns": 3543
+    },
+    "f1cleaLWtHU": {
+      "windows": 227,
+      "turns": 1039
+    },
+    "f1yHOeo6r5c": {
+      "windows": 287,
+      "turns": 1311
+    },
+    "f4YwpciOb8c": {
+      "windows": 285,
+      "turns": 1300
+    },
+    "f6Z-P9ba_Rs": {
+      "windows": 392,
+      "turns": 1795
+    },
+    "f7dlKylM0GA": {
+      "windows": 283,
+      "turns": 1297
+    },
+    "fJCfLLOPCws": {
+      "windows": 189,
+      "turns": 865
+    },
+    "fSiwGjhUx88": {
+      "windows": 283,
+      "turns": 1293
+    },
+    "faJMooKnYac": {
+      "windows": 216,
+      "turns": 986
+    },
+    "fatAMpWM2sQ": {
+      "windows": 56,
+      "turns": 255
+    },
+    "fnSKQj-R5n4": {
+      "windows": 324,
+      "turns": 1480
+    },
+    "fndCSqoZ_8k": {
+      "windows": 257,
+      "turns": 1173
+    },
+    "g30kz_F9rtI": {
+      "windows": 265,
+      "turns": 1208
+    },
+    "g4sxu0NgQOg": {
+      "windows": 311,
+      "turns": 1421
+    },
+    "g5TWmzamvJU": {
+      "windows": 399,
+      "turns": 1821
+    },
+    "g5nP81A4M-I": {
+      "windows": 272,
+      "turns": 1240
+    },
+    "gCOFxilQH-k": {
+      "windows": 1079,
+      "turns": 4933
+    },
+    "gNysylzZocU": {
+      "windows": 649,
+      "turns": 2967
+    },
+    "gTXl0O3pUiI": {
+      "windows": 297,
+      "turns": 1358
+    },
+    "gm2AUjZQc7o": {
+      "windows": 131,
+      "turns": 599
+    },
+    "gnbWxNFi6rE": {
+      "windows": 315,
+      "turns": 1437
+    },
+    "h0Swl8G5GaE": {
+      "windows": 815,
+      "turns": 3729
+    },
+    "hGtT4-MSzS0": {
+      "windows": 322,
+      "turns": 1473
+    },
+    "hPRzmRZk7hQ": {
+      "windows": 201,
+      "turns": 917
+    },
+    "hT-p4XGNB8k": {
+      "windows": 161,
+      "turns": 735
+    },
+    "hZoVNDa68b4": {
+      "windows": 283,
+      "turns": 1297
+    },
+    "hdjEUrwmXtA": {
+      "windows": 654,
+      "turns": 2994
+    },
+    "hxFOFraKLbg": {
+      "windows": 346,
+      "turns": 1584
+    },
+    "hxOO4D8pQQA": {
+      "windows": 204,
+      "turns": 934
+    },
+    "hyt5p1uYvDs": {
+      "windows": 290,
+      "turns": 1330
+    },
+    "i2QspkWXMw4": {
+      "windows": 342,
+      "turns": 1563
+    },
+    "i4VSpJK8gTs": {
+      "windows": 259,
+      "turns": 1186
+    },
+    "i5s-4JzOqOk": {
+      "windows": 605,
+      "turns": 2765
+    },
+    "i6sP99T7pUI": {
+      "windows": 351,
+      "turns": 1604
+    },
+    "iC2X7pu7B34": {
+      "windows": 349,
+      "turns": 1595
+    },
+    "iJXYPNjLLT4": {
+      "windows": 272,
+      "turns": 1240
+    },
+    "iVrEbuNz8Tc": {
+      "windows": 275,
+      "turns": 1259
+    },
+    "ic4d0661ePk": {
+      "windows": 7,
+      "turns": 29
+    },
+    "jEFop7RSB2o": {
+      "windows": 266,
+      "turns": 1217
+    },
+    "jFwiEMfG0n4": {
+      "windows": 679,
+      "turns": 3106
+    },
+    "jI0eZVEb34o": {
+      "windows": 863,
+      "turns": 3947
+    },
+    "jS765dNaCDQ": {
+      "windows": 311,
+      "turns": 1426
+    },
+    "jgj4x452a3Y": {
+      "windows": 297,
+      "turns": 1361
+    },
+    "joPOlqpV4s8": {
+      "windows": 210,
+      "turns": 956
+    },
+    "jtGYihhXpRo": {
+      "windows": 384,
+      "turns": 1753
+    },
+    "k6KE2z2h_b4": {
+      "windows": 602,
+      "turns": 2753
+    },
+    "k97cns4k3i0": {
+      "windows": 279,
+      "turns": 1275
+    },
+    "kH_2jq5LvGE": {
+      "windows": 296,
+      "turns": 1352
+    },
+    "kJ1i5Bj9TqI": {
+      "windows": 348,
+      "turns": 1589
+    },
+    "kNzSZMQzTRU": {
+      "windows": 329,
+      "turns": 1503
+    },
+    "keWIeu0Map0": {
+      "windows": 241,
+      "turns": 1105
+    },
+    "kiQVuBVN8ig": {
+      "windows": 269,
+      "turns": 1231
+    },
+    "kt_Zeb4b2eg": {
+      "windows": 338,
+      "turns": 1546
+    },
+    "l1vehL9z_4g": {
+      "windows": 280,
+      "turns": 1282
+    },
+    "lAE4Wfh0uak": {
+      "windows": 339,
+      "turns": 1548
+    },
+    "lFuz9Bh9aqw": {
+      "windows": 392,
+      "turns": 1788
+    },
+    "lS9cfec_mFM": {
+      "windows": 294,
+      "turns": 1347
+    },
+    "lUa_qO_6kv4": {
+      "windows": 653,
+      "turns": 2984
+    },
+    "lVgNpGWwy0E": {
+      "windows": 857,
+      "turns": 3917
+    },
+    "lq8DxGJBWmE": {
+      "windows": 231,
+      "turns": 1052
+    },
+    "lwAYSOfAz5M": {
+      "windows": 283,
+      "turns": 1297
+    },
+    "m3SCA0r4mqE": {
+      "windows": 420,
+      "turns": 1920
+    },
+    "mE3t477e_X0": {
+      "windows": 901,
+      "turns": 4118
+    },
+    "mTYUhjtP7y4": {
+      "windows": 338,
+      "turns": 1545
+    },
+    "mfOj0HDL4ac": {
+      "windows": 1177,
+      "turns": 5381
+    },
+    "mlXXQEolJ3c": {
+      "windows": 244,
+      "turns": 1115
+    },
+    "mnWFJsynNjE": {
+      "windows": 266,
+      "turns": 1219
+    },
+    "mp-3Gt9lZVE": {
+      "windows": 48,
+      "turns": 216
+    },
+    "mrZcKOWNOMk": {
+      "windows": 469,
+      "turns": 2141
+    },
+    "n-3mxQzJVeo": {
+      "windows": 145,
+      "turns": 663
+    },
+    "n2V6qtVMbCo": {
+      "windows": 280,
+      "turns": 1278
+    },
+    "n3T_iCQ-2x4": {
+      "windows": 283,
+      "turns": 1293
+    },
+    "n4Dgbmg5r5g": {
+      "windows": 542,
+      "turns": 2478
+    },
+    "nDh6wiUC4dw": {
+      "windows": 479,
+      "turns": 2195
+    },
+    "nL-C7Wv5fwk": {
+      "windows": 147,
+      "turns": 672
+    },
+    "nRwQvfJ8fVI": {
+      "windows": 748,
+      "turns": 3416
+    },
+    "nWMdSHBnlBs": {
+      "windows": 1067,
+      "turns": 4881
+    },
+    "ndUCw16791E": {
+      "windows": 134,
+      "turns": 614
+    },
+    "nkkRZFvCIJA": {
+      "windows": 199,
+      "turns": 913
+    },
+    "nw2EWbvVfA4": {
+      "windows": 1233,
+      "turns": 5636
+    },
+    "o-qgT1zmoIM": {
+      "windows": 1237,
+      "turns": 5654
+    },
+    "o7TseDvrfp8": {
+      "windows": 154,
+      "turns": 704
+    },
+    "oBa6oh1HXNo": {
+      "windows": 310,
+      "turns": 1416
+    },
+    "oHwDDpEoRNs": {
+      "windows": 297,
+      "turns": 1362
+    },
+    "oKoVicIkam0": {
+      "windows": 335,
+      "turns": 1530
+    },
+    "oXlSi2AmQ58": {
+      "windows": 423,
+      "turns": 1935
+    },
+    "ogNCHXO2oAI": {
+      "windows": 138,
+      "turns": 630
+    },
+    "omVt_nBIbDE": {
+      "windows": 474,
+      "turns": 2164
+    },
+    "osQWDsiRaQI": {
+      "windows": 303,
+      "turns": 1387
+    },
+    "oyP_VgFrVPI": {
+      "windows": 283,
+      "turns": 1293
+    },
+    "pC5V_ShSkqQ": {
+      "windows": 159,
+      "turns": 724
+    },
+    "pNEK1wtLtoI": {
+      "windows": 1104,
+      "turns": 5044
+    },
+    "pQFwDyrlfvA": {
+      "windows": 447,
+      "turns": 2043
+    },
+    "pQnOBe5O1uE": {
+      "windows": 1363,
+      "turns": 6231
+    },
+    "pTWjpVB1KzY": {
+      "windows": 499,
+      "turns": 2281
+    },
+    "pT_w4Iep6qI": {
+      "windows": 94,
+      "turns": 431
+    },
+    "pbjPmqrQJ7w": {
+      "windows": 297,
+      "turns": 1362
+    },
+    "pso6ULSHbAU": {
+      "windows": 276,
+      "turns": 1265
+    },
+    "pujweF8NYko": {
+      "windows": 335,
+      "turns": 1529
+    },
+    "pwH8FIYWCsc": {
+      "windows": 314,
+      "turns": 1432
+    },
+    "pyaJixX6O88": {
+      "windows": 310,
+      "turns": 1416
+    },
+    "q2sYFRSQjYc": {
+      "windows": 413,
+      "turns": 1887
+    },
+    "q54jUYq4JY8": {
+      "windows": 805,
+      "turns": 3683
+    },
+    "qAzS5_AQDjs": {
+      "windows": 367,
+      "turns": 1677
+    },
+    "qEtG_wA0tZA": {
+      "windows": 535,
+      "turns": 2446
+    },
+    "qFH0YI1L9LQ": {
+      "windows": 409,
+      "turns": 1875
+    },
+    "qIh6Kh3ME6I": {
+      "windows": 394,
+      "turns": 1801
+    },
+    "qOMOT4A2BkE": {
+      "windows": 691,
+      "turns": 3156
+    },
+    "qTgzqlF7NEc": {
+      "windows": 94,
+      "turns": 428
+    },
+    "qWQzk_eO2S0": {
+      "windows": 80,
+      "turns": 364
+    },
+    "qXBMfy4eRN8": {
+      "windows": 362,
+      "turns": 1655
+    },
+    "qXOaqqtxMic": {
+      "windows": 679,
+      "turns": 3102
+    },
+    "qjspEVxJ2zM": {
+      "windows": 717,
+      "turns": 3280
+    },
+    "qlJmo9JPp2A": {
+      "windows": 234,
+      "turns": 1068
+    },
+    "rj4RXH__JH0": {
+      "windows": 297,
+      "turns": 1356
+    },
+    "roAtmTNzu4I": {
+      "windows": 192,
+      "turns": 878
+    },
+    "rp4RZZI9YP8": {
+      "windows": 252,
+      "turns": 1154
+    },
+    "rqH7zIKwpsQ": {
+      "windows": 387,
+      "turns": 1768
+    },
+    "s7v0cJll5Sg": {
+      "windows": 279,
+      "turns": 1272
+    },
+    "sAQKOCidmm8": {
+      "windows": 713,
+      "turns": 3259
+    },
+    "sC5x5pQHXyE": {
+      "windows": 290,
+      "turns": 1325
+    },
+    "sCxfaWCplwg": {
+      "windows": 434,
+      "turns": 1987
+    },
+    "scUt5sDWObY": {
+      "windows": 322,
+      "turns": 1470
+    },
+    "shS6QuXp338": {
+      "windows": 133,
+      "turns": 605
+    },
+    "soyb0qQJ78E": {
+      "windows": 276,
+      "turns": 1263
+    },
+    "sr0qwO0IgXM": {
+      "windows": 399,
+      "turns": 1825
+    },
+    "svfZIIMSilc": {
+      "windows": 155,
+      "turns": 709
+    },
+    "t1EkR9woRb8": {
+      "windows": 346,
+      "turns": 1587
+    },
+    "t7D6ZsOKg1A": {
+      "windows": 843,
+      "turns": 3853
+    },
+    "t9fwV6W31HE": {
+      "windows": 703,
+      "turns": 3213
+    },
+    "tSTBe1s9zyk": {
+      "windows": 385,
+      "turns": 1758
+    },
+    "tY_1vy-5sgM": {
+      "windows": 224,
+      "turns": 1022
+    },
+    "taEnDJONKHY": {
+      "windows": 302,
+      "turns": 1383
+    },
+    "tl2KsmeQA7c": {
+      "windows": 997,
+      "turns": 4558
+    },
+    "tohNWnNlDKU": {
+      "windows": 1493,
+      "turns": 6827
+    },
+    "tvBiEvvNRYc": {
+      "windows": 661,
+      "turns": 3021
+    },
+    "u6j-cn1DLKE": {
+      "windows": 374,
+      "turns": 1713
+    },
+    "uSnshb1R28k": {
+      "windows": 338,
+      "turns": 1544
+    },
+    "uTKB2e-1HPQ": {
+      "windows": 292,
+      "turns": 1334
+    },
+    "uW3CXDvL18U": {
+      "windows": 262,
+      "turns": 1201
+    },
+    "uZTTRObEhbI": {
+      "windows": 262,
+      "turns": 1199
+    },
+    "ueTlmIHIO_k": {
+      "windows": 364,
+      "turns": 1666
+    },
+    "ul-6pFevT4w": {
+      "windows": 787,
+      "turns": 3601
+    },
+    "ul4SEV_euH8": {
+      "windows": 280,
+      "turns": 1282
+    },
+    "uwAVUHIooNI": {
+      "windows": 1212,
+      "turns": 5540
+    },
+    "uxL433Ch5Vg": {
+      "windows": 950,
+      "turns": 4341
+    },
+    "v4RUlgoPIwg": {
+      "windows": 537,
+      "turns": 2454
+    },
+    "v56RL1RMfoM": {
+      "windows": 373,
+      "turns": 1707
+    },
+    "v6KVSNDFOyY": {
+      "windows": 120,
+      "turns": 549
+    },
+    "v9sgRmXZMQQ": {
+      "windows": 353,
+      "turns": 1618
+    },
+    "vSYqdWuKnws": {
+      "windows": 614,
+      "turns": 2807
+    },
+    "vdZdT1_f8U4": {
+      "windows": 752,
+      "turns": 3439
+    },
+    "vedal987:2866144769": {
+      "windows": 245,
+      "turns": 1120
+    },
+    "vedal987:2868847714": {
+      "windows": 199,
+      "turns": 912
+    },
+    "vhAKoqHU1nI": {
+      "windows": 1148,
+      "turns": 5249
+    },
+    "wDY2uaNPkXc": {
+      "windows": 391,
+      "turns": 1787
+    },
+    "wQ-xXeXL42A": {
+      "windows": 929,
+      "turns": 4246
+    },
+    "wWAyma8IobI": {
+      "windows": 196,
+      "turns": 894
+    },
+    "w_zi52ikYAA": {
+      "windows": 141,
+      "turns": 646
+    },
+    "wkQaOf46kv4": {
+      "windows": 308,
+      "turns": 1406
+    },
+    "wy232_tYT6g": {
+      "windows": 271,
+      "turns": 1237
+    },
+    "xJiH_3u4kJ4": {
+      "windows": 168,
+      "turns": 764
+    },
+    "xWsRE4_EmXA": {
+      "windows": 1025,
+      "turns": 4685
+    },
+    "yOsQtz239U0": {
+      "windows": 421,
+      "turns": 1927
+    },
+    "yoLwjsRus1Y": {
+      "windows": 869,
+      "turns": 3975
+    },
+    "ytFp-9S2wXU": {
+      "windows": 56,
+      "turns": 257
+    },
+    "z14LubJKDLI": {
+      "windows": 295,
+      "turns": 1348
+    },
+    "z7Pteqy8kew": {
+      "windows": 346,
+      "turns": 1581
+    },
+    "zAzkVuuNNVU": {
+      "windows": 259,
+      "turns": 1180
+    },
+    "zBXw2u4ZEjM": {
+      "windows": 715,
+      "turns": 3268
+    },
+    "zCasuFHBdTI": {
+      "windows": 324,
+      "turns": 1480
+    },
+    "zECWUft_kGM": {
+      "windows": 943,
+      "turns": 4309
+    },
+    "zaxmxPE6Mls": {
+      "windows": 247,
+      "turns": 1130
+    },
+    "zvM34PmjCCQ": {
+      "windows": 724,
+      "turns": 3313
+    }
+  }
+}

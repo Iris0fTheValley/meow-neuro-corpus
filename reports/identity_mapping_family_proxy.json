@@ -1,0 +1,24 @@
+{
+  "schema_version": "0.1.0",
+  "updated_at": "2026-09-11T11:53:56.784038+00:00",
+  "status": "PROXY_MAPPING_COMPLETE_GOLD_PENDING_HARD_NEGATIVES_APPLIED",
+  "model": "speechbrain/spkrec-ecapa-voxceleb",
+  "reference_bank": "speaker_refs/reference_bank_neuro_family.json",
+  "source_count": 503,
+  "cluster_count": 1068,
+  "mapping_margin_threshold": 0.02,
+  "identity_counts": {
+    "UNKNOWN": 357,
+    "NEURO_FAMILY": 531,
+    "VEDAL": 180
+  },
+  "status_counts": {
+    "PROXY_UNKNOWN_LOW_MARGIN": 356,
+    "PROXY_MAPPED_OPEN_SET": 711,
+    "PROXY_QUARANTINED_HARD_NEGATIVE": 1
+  },
+  "gold_validated": false,
+  "training_candidate_count": 0,
+  "output": "identity_results/identity_mapping_family_proxy.jsonl",
+  "policy": "Known hard-negative sources are quarantined to UNKNOWN; low-margin and unresolved clusters remain UNKNOWN."
+}

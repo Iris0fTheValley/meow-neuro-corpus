@@ -1,0 +1,16 @@
+{
+  "updated_at": "2026-09-11T16:52:40.551495+00:00",
+  "active_gpu_processes": [],
+  "launched": {
+    "pid": 50084,
+    "stage": "diarization",
+    "source_id": "zbBhnnv9XY0",
+    "args": [
+      "neuro_corpus/scripts/diarize_production_ecapa.py",
+      "--source-id=zbBhnnv9XY0",
+      "--clusters=2"
+    ]
+  },
+  "action": "launched",
+  "candidate_count": 3
+}

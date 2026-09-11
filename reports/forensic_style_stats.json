@@ -1,0 +1,31 @@
+{
+  "schema_version": "0.1.0",
+  "scope": "all preserved conversation records currently in conversations_raw.jsonl",
+  "conversation_records": 110470,
+  "turns": 2204124,
+  "counts": {
+    "response_length": 16877281,
+    "sentence_count": 2598607,
+    "self_reference": 109583,
+    "uncertainty": 73757,
+    "repair": 56233,
+    "assertiveness": 39108,
+    "banter": 28944,
+    "absurd_shift": 6356,
+    "emotional_leak": 30492,
+    "identity_reference": 54080,
+    "multi_turn_value": 110383.7,
+    "asr_confidence": 3697.690838220334,
+    "speaker_confidence": 78974.11835190651,
+    "technical_value": 35299.0,
+    "emotional_intensity": 22377.5,
+    "topic_switching": 45929.0,
+    "state_transition_value": 40215.66666666902,
+    "state_carry": 23691.25,
+    "lore_dependency": 22535.0,
+    "visual_context_dependency": 48842.0,
+    "language_fingerprint_value": 41322.5,
+    "context_dependency": 111148.40000000001
+  },
+  "policy": "These are descriptive corpus statistics, not labels of the speaker's true psychology; unknown-speaker records remain excluded from training candidates until mapping is validated."
+}

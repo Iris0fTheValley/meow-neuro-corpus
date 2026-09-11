@@ -1,0 +1,39 @@
+/**
+ * Route Mappings
+ * (sails.config.routes)
+ *
+ * Your routes tell Sails what to do each time it receives a request.
+ *
+ * For more information on configuring custom routes, check out:
+ * http://sailsjs.com/anatomy/config/routes-js
+ */
+
+module.exports.routes = {
+  /***************************************************************************
+   *                                                                          *
+   * Custom routes here...                                                    *
+   *                                                                          *
+   * If a request to a URL doesn't match any of the custom routes above, it   *
+   * is matched against Sails route blueprints. See `config/blueprints.js`    *
+   * for configuration options and examples.                                  *
+   *                                                                          *
+   ***************************************************************************/
+  'GET /': 'home/view-home',
+  'POST /upload': 'upload/upload',
+  'GET /search': 'sections/search',
+  'POST /search': 'sections/search',
+  'GET /bookmarks': 'sections/bookmarks',
+  'POST /bookmarks': 'sections/bookmarks',
+  'POST /api/bookmarks/fallback': 'api/bookmarks-fallback',
+  'POST /api/bookmarks/backup': 'api/bookmarks-backup',
+  'GET /api/search': 'api/search',
+  'POST /api/search': 'api/search',
+  'GET /api/export-transcript': 'sections/export-transcript',
+  'GET /admin': 'admin/view-admin',
+  'POST /admin': 'admin/view-admin',
+  'PUT /admin/api/videos/:url': 'admin/save-video',
+
+  'GET /docs/swagger.json': async function (_req, res) {
+    return res.sendFile(require('path').resolve(__dirname, '../assets/docs/swagger.json'));
+  },
+};

@@ -1,0 +1,35 @@
+{
+  "schema_version": "0.1.0",
+  "updated_at": "2026-09-11T11:56:52.722185+00:00",
+  "status": "PASS",
+  "training_candidate_count": 0,
+  "results": [
+    {
+      "label": "all_grades",
+      "path": "datasets\\family_training_candidates_review.jsonl",
+      "status": "PASS",
+      "rows": 199371,
+      "grade_counts": {
+        "Q": 42441,
+        "B": 97962,
+        "S": 57354,
+        "A": 1614
+      },
+      "error_count": 0,
+      "errors": []
+    },
+    {
+      "label": "s_a_only",
+      "path": "datasets\\family_s_a_candidates_review.jsonl",
+      "status": "PASS",
+      "rows": 58968,
+      "grade_counts": {
+        "S": 57354,
+        "A": 1614
+      },
+      "error_count": 0,
+      "errors": []
+    }
+  ],
+  "policy": "Review candidates are not training candidates until final gold/QA promotion."
+}

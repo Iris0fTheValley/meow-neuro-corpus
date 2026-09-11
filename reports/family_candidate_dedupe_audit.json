@@ -1,0 +1,11 @@
+{
+  "schema_version": "0.1.0",
+  "updated_at": "2026-09-11T11:57:25.462860+00:00",
+  "status": "PASS_NO_EXACT_DUPLICATE_WINDOWS_OVERLAP_REVIEWED",
+  "candidate_count": 58968,
+  "exact_duplicate_window_count": 0,
+  "overlapping_segment_membership_count": 0,
+  "exact_duplicates": [],
+  "overlapping_segments": [],
+  "policy": "S/A queue contains canonical 4-8 windows only; overlap counts are retained as review evidence and never silently deduplicated."
+}

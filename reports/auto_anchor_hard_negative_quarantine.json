@@ -1,0 +1,20 @@
+{
+  "schema_version": "0.1.0",
+  "updated_at": "2026-09-11T11:53:56.699814+00:00",
+  "status": "AUTO_ANCHOR_HARD_NEGATIVE_QUARANTINE_APPLIED",
+  "target_count": 1,
+  "changed_family_to_unknown_count": 1,
+  "targets": [
+    {
+      "source_id": "uZTTRObEhbI",
+      "cluster": "SPEAKER_00",
+      "anchor_id": "selfid:OTHER:uZTTRObEhbI:1799",
+      "text_preview": "My name is Cerber.",
+      "ecapa_family_vs_nontarget_margin": 0.726659,
+      "xvector_family_vs_nontarget_margin": -0.060736,
+      "reason": "metadata-confirmed OTHER self-identification is a cross-model family false positive"
+    }
+  ],
+  "backup": "identity_results\\identity_mapping_family_proxy_pre_auto_anchor_hard_negative.jsonl",
+  "policy": "Only metadata-confirmed OTHER self-identification with strong ECAPA family acceptance and X-vector non-target rejection is quarantined; no training promotion is performed."
+}

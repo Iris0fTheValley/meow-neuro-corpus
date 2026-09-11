@@ -1,0 +1,11 @@
+{
+  "schema_version": "0.1.0",
+  "created_at": "2026-09-11T06:42:07.974009+00:00",
+  "status": "TRANSCRIPT_ONLY_ANONYMOUS_CONVERSATIONS_QA_PENDING",
+  "source_count": 14,
+  "window_count": 78883,
+  "output": "conversations\\retry_transcript_conversations_anonymous.jsonl",
+  "training_candidate_count": 0,
+  "identity_mapped_count": 0,
+  "policy": "Transcript fallback windows are isolated from audio-mapped family conversations; all speakers remain UNKNOWN and training is closed until audio/speaker QA."
+}

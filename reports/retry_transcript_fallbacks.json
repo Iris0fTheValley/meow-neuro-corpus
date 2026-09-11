@@ -1,0 +1,172 @@
+{
+  "schema_version": "0.1.0",
+  "created_at": "2026-09-11T05:54:56.477318+00:00",
+  "status": "TRANSCRIPT_FALLBACK_FETCH_COMPLETE_MEDIA_NOT_DOWNLOADED",
+  "attempt_count": 14,
+  "success_count": 14,
+  "results": [
+    {
+      "source_id": "7E3eTK7XTik",
+      "source_url": "https://www.youtube.com/watch?v=7E3eTK7XTik",
+      "status": "FETCH_COMPLETED",
+      "new_files": [
+        "retry_queue\\transcript_fallbacks\\7E3eTK7XTik.en-orig.vtt",
+        "retry_queue\\transcript_fallbacks\\7E3eTK7XTik.en.vtt",
+        "retry_queue\\transcript_fallbacks\\7E3eTK7XTik.zh-Hant.vtt"
+      ],
+      "error_tail": null,
+      "media_downloaded": false
+    },
+    {
+      "source_id": "Sb-2DZTRPiE",
+      "source_url": "https://www.youtube.com/watch?v=Sb-2DZTRPiE",
+      "status": "FETCH_COMPLETED",
+      "new_files": [
+        "retry_queue\\transcript_fallbacks\\Sb-2DZTRPiE.en-orig.vtt",
+        "retry_queue\\transcript_fallbacks\\Sb-2DZTRPiE.en.vtt"
+      ],
+      "error_tail": null,
+      "media_downloaded": false
+    },
+    {
+      "source_id": "pIP7oydkHL0",
+      "source_url": "https://www.youtube.com/watch?v=pIP7oydkHL0",
+      "status": "FETCH_COMPLETED",
+      "new_files": [
+        "retry_queue\\transcript_fallbacks\\pIP7oydkHL0.en-orig.vtt",
+        "retry_queue\\transcript_fallbacks\\pIP7oydkHL0.en.vtt"
+      ],
+      "error_tail": null,
+      "media_downloaded": false
+    },
+    {
+      "source_id": "210ZElCkOCY",
+      "source_url": "https://www.youtube.com/watch?v=210ZElCkOCY",
+      "status": "FETCH_COMPLETED",
+      "new_files": [
+        "retry_queue\\transcript_fallbacks\\210ZElCkOCY.en-orig.vtt",
+        "retry_queue\\transcript_fallbacks\\210ZElCkOCY.en.vtt",
+        "retry_queue\\transcript_fallbacks\\210ZElCkOCY.zh-Hant.vtt"
+      ],
+      "error_tail": null,
+      "media_downloaded": false
+    },
+    {
+      "source_id": "5ZB3bi1yKc0",
+      "source_url": "https://www.youtube.com/watch?v=5ZB3bi1yKc0",
+      "status": "FETCH_COMPLETED",
+      "new_files": [
+        "retry_queue\\transcript_fallbacks\\5ZB3bi1yKc0.en-orig.vtt",
+        "retry_queue\\transcript_fallbacks\\5ZB3bi1yKc0.en.vtt"
+      ],
+      "error_tail": null,
+      "media_downloaded": false
+    },
+    {
+      "source_id": "iR9I75l3xpU",
+      "source_url": "https://www.youtube.com/watch?v=iR9I75l3xpU",
+      "status": "FETCH_COMPLETED",
+      "new_files": [
+        "retry_queue\\transcript_fallbacks\\iR9I75l3xpU.en-orig.vtt",
+        "retry_queue\\transcript_fallbacks\\iR9I75l3xpU.en.vtt",
+        "retry_queue\\transcript_fallbacks\\iR9I75l3xpU.zh-Hans.vtt"
+      ],
+      "error_tail": null,
+      "media_downloaded": false
+    },
+    {
+      "source_id": "bOU_Q3Q2_ZA",
+      "source_url": "https://www.youtube.com/watch?v=bOU_Q3Q2_ZA",
+      "status": "FETCH_COMPLETED",
+      "new_files": [
+        "retry_queue\\transcript_fallbacks\\bOU_Q3Q2_ZA.en-orig.vtt",
+        "retry_queue\\transcript_fallbacks\\bOU_Q3Q2_ZA.en.vtt",
+        "retry_queue\\transcript_fallbacks\\bOU_Q3Q2_ZA.zh-Hant.vtt"
+      ],
+      "error_tail": null,
+      "media_downloaded": false
+    },
+    {
+      "source_id": "icoi8HoZ4gk",
+      "source_url": "https://www.youtube.com/watch?v=icoi8HoZ4gk",
+      "status": "FETCH_COMPLETED",
+      "new_files": [
+        "retry_queue\\transcript_fallbacks\\icoi8HoZ4gk.en-orig.vtt",
+        "retry_queue\\transcript_fallbacks\\icoi8HoZ4gk.en.vtt",
+        "retry_queue\\transcript_fallbacks\\icoi8HoZ4gk.zh-Hans.vtt"
+      ],
+      "error_tail": null,
+      "media_downloaded": false
+    },
+    {
+      "source_id": "8mKb6SGAGBM",
+      "source_url": "https://www.youtube.com/watch?v=8mKb6SGAGBM",
+      "status": "FETCH_COMPLETED",
+      "new_files": [
+        "retry_queue\\transcript_fallbacks\\8mKb6SGAGBM.en-orig.vtt",
+        "retry_queue\\transcript_fallbacks\\8mKb6SGAGBM.en.vtt"
+      ],
+      "error_tail": null,
+      "media_downloaded": false
+    },
+    {
+      "source_id": "h-UT2YEldYk",
+      "source_url": "https://www.youtube.com/watch?v=h-UT2YEldYk",
+      "status": "FETCH_COMPLETED",
+      "new_files": [
+        "retry_queue\\transcript_fallbacks\\h-UT2YEldYk.en-orig.vtt",
+        "retry_queue\\transcript_fallbacks\\h-UT2YEldYk.en.vtt",
+        "retry_queue\\transcript_fallbacks\\h-UT2YEldYk.zh-Hans.vtt"
+      ],
+      "error_tail": null,
+      "media_downloaded": false
+    },
+    {
+      "source_id": "1Jj55IECAIM",
+      "source_url": "https://www.youtube.com/watch?v=1Jj55IECAIM",
+      "status": "FETCH_COMPLETED",
+      "new_files": [
+        "retry_queue\\transcript_fallbacks\\1Jj55IECAIM.en-orig.vtt",
+        "retry_queue\\transcript_fallbacks\\1Jj55IECAIM.en.vtt"
+      ],
+      "error_tail": null,
+      "media_downloaded": false
+    },
+    {
+      "source_id": "aQlQReekXaw",
+      "source_url": "https://www.youtube.com/watch?v=aQlQReekXaw",
+      "status": "FETCH_COMPLETED",
+      "new_files": [
+        "retry_queue\\transcript_fallbacks\\aQlQReekXaw.en-orig.vtt",
+        "retry_queue\\transcript_fallbacks\\aQlQReekXaw.en.vtt",
+        "retry_queue\\transcript_fallbacks\\aQlQReekXaw.zh-Hans.vtt"
+      ],
+      "error_tail": null,
+      "media_downloaded": false
+    },
+    {
+      "source_id": "ROM2kYhbp38",
+      "source_url": "https://www.youtube.com/watch?v=ROM2kYhbp38",
+      "status": "FETCH_COMPLETED",
+      "new_files": [
+        "retry_queue\\transcript_fallbacks\\ROM2kYhbp38.en-orig.vtt",
+        "retry_queue\\transcript_fallbacks\\ROM2kYhbp38.en.vtt"
+      ],
+      "error_tail": null,
+      "media_downloaded": false
+    },
+    {
+      "source_id": "rjYTX81wIkg",
+      "source_url": "https://www.youtube.com/watch?v=rjYTX81wIkg",
+      "status": "FETCH_COMPLETED",
+      "new_files": [
+        "retry_queue\\transcript_fallbacks\\rjYTX81wIkg.en-orig.vtt",
+        "retry_queue\\transcript_fallbacks\\rjYTX81wIkg.en.vtt",
+        "retry_queue\\transcript_fallbacks\\rjYTX81wIkg.zh-Hant.vtt"
+      ],
+      "error_tail": null,
+      "media_downloaded": false
+    }
+  ],
+  "policy": "Only public subtitle/automatic-caption files are fetched. No audio/video media, credentials, or auth bypass is used; original retryable manifest statuses remain unchanged."
+}

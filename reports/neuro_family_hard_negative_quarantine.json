@@ -1,0 +1,11 @@
+{
+  "schema_version": "0.1.0",
+  "updated_at": "2026-09-11T11:53:56.604014+00:00",
+  "status": "HARD_NEGATIVE_QUARANTINE_APPLIED",
+  "sources": [
+    "Ak7mzd3L7b0"
+  ],
+  "changed_family_to_unknown_count": 0,
+  "backup": "identity_results\\identity_mapping_family_proxy_pre_hard_negative.jsonl",
+  "policy": "Known non-target false positives are quarantined conservatively; raw audio and original proxy mapping remain preserved."
+}

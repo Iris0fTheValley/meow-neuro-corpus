@@ -67,9 +67,17 @@ if __name__ == "__main__":
     urls = [u for u in snapshot.get("transcript_links", []) if "/transcript/" in u and u.rstrip("/").split("/")[-1] not in {"transcript", "transcripts"}]
     out_dir = ROOT / "sources" / "sozai" / "transcript_pages"
     out_dir.mkdir(parents=True, exist_ok=True)
+    summary_path = ROOT / "sources" / "sozai" / "transcript_pages_summary.json"
+    prior_pages = {}
+    if summary_path.exists():
+        try:
+            prior_pages = {p.get("url"): p for p in json.loads(summary_path.read_text(encoding="utf-8")).get("pages", []) if p.get("url")}
+        except (OSError, json.JSONDecodeError):
+            prior_pages = {}
+    todo_urls = [url for url in urls if url not in prior_pages or not prior_pages[url].get("transcript_path")]
     pages: list[dict] = []
     with ThreadPoolExecutor(max_workers=4) as pool:
-        futures = [pool.submit(fetch, url) for url in urls]
+        futures = [pool.submit(fetch, url) for url in todo_urls]
         for future in as_completed(futures):
             url, html = future.result()
             slug = url.rstrip("/").split("/")[-1]
@@ -89,13 +97,15 @@ if __name__ == "__main__":
                 transcript_path = str(transcript_path_obj.relative_to(ROOT))
                 segment_count = len(transcript) if isinstance(transcript, list) else 1
             pages.append({"url": url, "slug": slug, "title": title, "youtube_ids": ids, "bytes": len(html), "duration": iso_duration_seconds(duration_match.group(1) if duration_match else None), "upload_date": upload_match.group(1) if upload_match else None, "transcript_path": transcript_path, "transcript_segment_count": segment_count})
-    pages.sort(key=lambda x: x["url"])
-    write_json(ROOT / "sources" / "sozai" / "transcript_pages_summary.json", {"retrieved_at": datetime.now(timezone.utc).isoformat(), "pages": pages, "source": "SozAI public transcript pages"})
+    fetched_pages = pages
+    prior_pages.update({p["url"]: p for p in pages})
+    pages = sorted(prior_pages.values(), key=lambda x: x["url"])
+    write_json(summary_path, {"retrieved_at": datetime.now(timezone.utc).isoformat(), "pages": pages, "source": "SozAI public transcript pages", "skipped_existing_pages": len(urls) - len(todo_urls)})
     rows = []
-    for page in pages:
+    for page in fetched_pages:
         for source_id in page["youtube_ids"]:
             rows.append({"source_platform": "youtube", "source_id": source_id, "source_url": f"https://www.youtube.com/watch?v={source_id}", "title": page["title"], "uploader": "Neuro-sama Unofficial VODs (SozAI transcript index)", "upload_date": page.get("upload_date"), "duration": page.get("duration"), "discovery_method": "public_transcript_index", "discovery_source": page["url"], "transcript_source": "SozAI public transcript", "transcript_source_url": page["url"], "transcript_available": True, "transcript_path": page["transcript_path"], "transcript_segment_count": page["transcript_segment_count"], "subtitle_languages": ["en"], "rights_note": "Public transcript index; retain source attribution and verify original media before training use."})
     if rows:
         write_master(merge_rows(read_jsonl(ROOT / "manifest" / "master_video_manifest.jsonl"), rows))
-    log_event("sozai_transcript_pages_complete", pages=len(pages), pages_with_youtube_ids=sum(bool(p["youtube_ids"]) for p in pages), manifest_leads=len(rows))
-    print(json.dumps({"pages": len(pages), "pages_with_youtube_ids": sum(bool(p["youtube_ids"]) for p in pages), "manifest_leads": len(rows)}, ensure_ascii=False))
+    log_event("sozai_transcript_pages_complete", pages=len(fetched_pages), skipped_existing_pages=len(urls) - len(todo_urls), pages_with_youtube_ids=sum(bool(p["youtube_ids"]) for p in fetched_pages), manifest_leads=len(rows))
+    print(json.dumps({"pages": len(fetched_pages), "skipped_existing_pages": len(urls) - len(todo_urls), "pages_with_youtube_ids": sum(bool(p["youtube_ids"]) for p in fetched_pages), "manifest_leads": len(rows)}, ensure_ascii=False))

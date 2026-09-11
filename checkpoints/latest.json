@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1.0",
-  "created_at": "2026-09-11T15:47:03.862201+00:00",
+  "created_at": "2026-09-11T16:52:25.150318+00:00",
   "videos_discovered": 970,
   "videos_minimal_pipeline_complete": 105,
   "videos_full_pipeline_complete": 515,
@@ -23,7 +23,7 @@
     "transcript_only": 2,
     "video_download_status:done": 1
   },
-  "disk_free_bytes": 108132225024,
+  "disk_free_bytes": 107599634432,
   "quality_gates": {
     "state": "CONTINUE_WORKING",
     "human_gold_is_promotion_blocker": false,

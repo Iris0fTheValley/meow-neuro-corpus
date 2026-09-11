@@ -67,13 +67,16 @@ def main() -> None:
         log_event("ladev_search_complete", term=term, results=term_count)
     existing = read_jsonl(ROOT / "manifest" / "master_video_manifest.jsonl")
     initial = read_jsonl(ROOT / "manifest" / "initial_queue.jsonl")
-    write_master(merge_rows(existing, initial, discovered))
+    known = {(str(row.get("source_platform") or ""), str(row.get("source_id") or row.get("source_url") or "")) for row in existing}
+    new_discovered = [row for row in discovered if (str(row.get("source_platform") or ""), str(row.get("source_id") or row.get("source_url") or "")) not in known]
+    write_master(merge_rows(existing, initial, new_discovered))
     write_json(ROOT / "sources" / "library-of-ladev" / "discovery_summary.json", {
         "terms": list(dict.fromkeys(args.term)), "pages_per_term": args.pages, "records_from_api": len(discovered),
+        "new_manifest_leads": len(new_discovered), "skipped_existing_leads": len(discovered) - len(new_discovered),
         "raw_snapshots": [str(p.relative_to(ROOT)) for p in sorted(snapshot_dir.glob("search_*_page*.json"))],
         "policy": "API transcript text remains source-attributed and is not silently treated as ASR ground truth; align it to downloaded media when available.",
     })
-    print(json.dumps({"terms": list(dict.fromkeys(args.term)), "records_from_api": len(discovered), "master": len(read_jsonl(ROOT / "manifest" / "master_video_manifest.jsonl"))}, ensure_ascii=False))
+    print(json.dumps({"terms": list(dict.fromkeys(args.term)), "records_from_api": len(discovered), "new_manifest_leads": len(new_discovered), "skipped_existing_leads": len(discovered) - len(new_discovered), "master": len(read_jsonl(ROOT / "manifest" / "master_video_manifest.jsonl"))}, ensure_ascii=False))
 
 
 if __name__ == "__main__":

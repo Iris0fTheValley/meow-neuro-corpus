@@ -1,0 +1,16 @@
+{
+  "schema_version": "0.1.0",
+  "updated_at": "2026-09-11T06:40:30.968302+00:00",
+  "status": "ANONYMOUS_SURFACE_FEATURES_ONLY",
+  "source": "conversations\\natural_conversations_anonymous.jsonl",
+  "output": "forensic_annotations\\natural_anonymous_surface_features.jsonl",
+  "record_count": 199371,
+  "training_candidate_count": 0,
+  "identity_mapping": "not_attempted",
+  "response_length_buckets": {
+    "short": 516,
+    "medium": 114407,
+    "long": 84448
+  },
+  "policy": "Cheap lexical features are descriptive only; semantic forensic labels require identity-mapped, QA-passed data."
+}

@@ -1,0 +1,977 @@
+{
+  "schema_version": "0.1.0",
+  "created_at": "2026-09-11T04:02:54.916520+00:00",
+  "status": "OPEN_SET_PROXY_BENCHMARK",
+  "model": "speechbrain/spkrec-ecapa-voxceleb",
+  "source_report": "reports/speaker_reference_benchmark_all_ecapa_cpu.json",
+  "family_definition": "NEURO_FAMILY = provisional NEURO + provisional EVIL",
+  "nontarget_definition": "VEDAL is the only safely labeled non-target proxy currently available",
+  "cross_source_leave_one_source_out": true,
+  "clip_count": 87,
+  "target_family_clip_count": 69,
+  "target_family_source_count": 18,
+  "vedal_nontarget_clip_count": 18,
+  "vedal_nontarget_source_count": 7,
+  "threshold_sweep": [
+    {
+      "family_margin_threshold": 0.0,
+      "target_family_clips": 69,
+      "target_family_accepted": 69,
+      "target_family_recall_proxy": 1.0,
+      "vedal_nontarget_clips": 18,
+      "vedal_false_positive_count": 2,
+      "vedal_false_positive_rate": 0.111111
+    },
+    {
+      "family_margin_threshold": 0.01,
+      "target_family_clips": 69,
+      "target_family_accepted": 68,
+      "target_family_recall_proxy": 0.985507,
+      "vedal_nontarget_clips": 18,
+      "vedal_false_positive_count": 2,
+      "vedal_false_positive_rate": 0.111111
+    },
+    {
+      "family_margin_threshold": 0.02,
+      "target_family_clips": 69,
+      "target_family_accepted": 68,
+      "target_family_recall_proxy": 0.985507,
+      "vedal_nontarget_clips": 18,
+      "vedal_false_positive_count": 2,
+      "vedal_false_positive_rate": 0.111111
+    },
+    {
+      "family_margin_threshold": 0.03,
+      "target_family_clips": 69,
+      "target_family_accepted": 68,
+      "target_family_recall_proxy": 0.985507,
+      "vedal_nontarget_clips": 18,
+      "vedal_false_positive_count": 2,
+      "vedal_false_positive_rate": 0.111111
+    },
+    {
+      "family_margin_threshold": 0.05,
+      "target_family_clips": 69,
+      "target_family_accepted": 68,
+      "target_family_recall_proxy": 0.985507,
+      "vedal_nontarget_clips": 18,
+      "vedal_false_positive_count": 2,
+      "vedal_false_positive_rate": 0.111111
+    },
+    {
+      "family_margin_threshold": 0.1,
+      "target_family_clips": 69,
+      "target_family_accepted": 68,
+      "target_family_recall_proxy": 0.985507,
+      "vedal_nontarget_clips": 18,
+      "vedal_false_positive_count": 2,
+      "vedal_false_positive_rate": 0.111111
+    },
+    {
+      "family_margin_threshold": 0.2,
+      "target_family_clips": 69,
+      "target_family_accepted": 65,
+      "target_family_recall_proxy": 0.942029,
+      "vedal_nontarget_clips": 18,
+      "vedal_false_positive_count": 2,
+      "vedal_false_positive_rate": 0.111111
+    }
+  ],
+  "selected_mapping_margin_threshold": 0.02,
+  "selected_target_family_accept_count": 68,
+  "selected_target_family_recall_proxy": 0.985507,
+  "selected_vedal_false_positive_count": 2,
+  "negative_other": {
+    "status": "INCOMPLETE",
+    "missing": [
+      "guest",
+      "chat_tts",
+      "male_guest",
+      "female_guest",
+      "game_voice",
+      "singing"
+    ],
+    "policy": "Do not interpret Vedal-only nontarget proxy as final open-set precision."
+  },
+  "promotion_decision": "PROMOTE_NEURO_FAMILY_FOR_MAPPING_WITH_OPEN_SET_GATE",
+  "promotion_reason": "Neuro/Evil subtype confusion is intentionally collapsed; family proxy is evaluated against Vedal with a positive margin gate. Non-target gold remains incomplete.",
+  "per_clip": [
+    {
+      "candidate_id": "evil:8335sBz9aHU:00",
+      "source_id": "8335sBz9aHU",
+      "provisional_identity": "EVIL",
+      "population": "target_family",
+      "family_score": 0.89036,
+      "vedal_score": 0.163053,
+      "family_vs_vedal_margin": 0.727307,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "evil:8335sBz9aHU:01",
+      "source_id": "8335sBz9aHU",
+      "provisional_identity": "EVIL",
+      "population": "target_family",
+      "family_score": 0.888045,
+      "vedal_score": 0.201951,
+      "family_vs_vedal_margin": 0.686094,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "evil:8335sBz9aHU:02",
+      "source_id": "8335sBz9aHU",
+      "provisional_identity": "EVIL",
+      "population": "target_family",
+      "family_score": 0.904543,
+      "vedal_score": 0.141112,
+      "family_vs_vedal_margin": 0.763431,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "evil:8335sBz9aHU:03",
+      "source_id": "8335sBz9aHU",
+      "provisional_identity": "EVIL",
+      "population": "target_family",
+      "family_score": 0.877526,
+      "vedal_score": 0.195004,
+      "family_vs_vedal_margin": 0.682522,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "evil:D95w1v1_5k0:00",
+      "source_id": "D95w1v1_5k0",
+      "provisional_identity": "EVIL",
+      "population": "target_family",
+      "family_score": 0.542456,
+      "vedal_score": 0.03529,
+      "family_vs_vedal_margin": 0.507166,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "evil:D95w1v1_5k0:01",
+      "source_id": "D95w1v1_5k0",
+      "provisional_identity": "EVIL",
+      "population": "target_family",
+      "family_score": 0.666005,
+      "vedal_score": 0.107318,
+      "family_vs_vedal_margin": 0.558687,
+      "model_predicted_identity": "EVIL"
+    },
+    {
+      "candidate_id": "evil:D95w1v1_5k0:02",
+      "source_id": "D95w1v1_5k0",
+      "provisional_identity": "EVIL",
+      "population": "target_family",
+      "family_score": 0.065348,
+      "vedal_score": 0.058913,
+      "family_vs_vedal_margin": 0.006435,
+      "model_predicted_identity": "EVIL"
+    },
+    {
+      "candidate_id": "evil:D95w1v1_5k0:03",
+      "source_id": "D95w1v1_5k0",
+      "provisional_identity": "EVIL",
+      "population": "target_family",
+      "family_score": 0.584413,
+      "vedal_score": 0.125115,
+      "family_vs_vedal_margin": 0.459298,
+      "model_predicted_identity": "EVIL"
+    },
+    {
+      "candidate_id": "evil:IaU9TkjCAGA:00",
+      "source_id": "IaU9TkjCAGA",
+      "provisional_identity": "EVIL",
+      "population": "target_family",
+      "family_score": 0.826486,
+      "vedal_score": 0.124596,
+      "family_vs_vedal_margin": 0.70189,
+      "model_predicted_identity": "EVIL"
+    },
+    {
+      "candidate_id": "evil:IaU9TkjCAGA:01",
+      "source_id": "IaU9TkjCAGA",
+      "provisional_identity": "EVIL",
+      "population": "target_family",
+      "family_score": 0.826726,
+      "vedal_score": 0.18765,
+      "family_vs_vedal_margin": 0.639076,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "evil:IaU9TkjCAGA:02",
+      "source_id": "IaU9TkjCAGA",
+      "provisional_identity": "EVIL",
+      "population": "target_family",
+      "family_score": 0.863517,
+      "vedal_score": 0.183071,
+      "family_vs_vedal_margin": 0.680446,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "evil:IaU9TkjCAGA:03",
+      "source_id": "IaU9TkjCAGA",
+      "provisional_identity": "EVIL",
+      "population": "target_family",
+      "family_score": 0.91107,
+      "vedal_score": 0.165836,
+      "family_vs_vedal_margin": 0.745234,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "evil:SJxG6ASjZeY:00",
+      "source_id": "SJxG6ASjZeY",
+      "provisional_identity": "EVIL",
+      "population": "target_family",
+      "family_score": 0.923617,
+      "vedal_score": 0.186322,
+      "family_vs_vedal_margin": 0.737295,
+      "model_predicted_identity": "EVIL"
+    },
+    {
+      "candidate_id": "evil:SJxG6ASjZeY:01",
+      "source_id": "SJxG6ASjZeY",
+      "provisional_identity": "EVIL",
+      "population": "target_family",
+      "family_score": 0.905495,
+      "vedal_score": 0.123592,
+      "family_vs_vedal_margin": 0.781903,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "evil:SJxG6ASjZeY:02",
+      "source_id": "SJxG6ASjZeY",
+      "provisional_identity": "EVIL",
+      "population": "target_family",
+      "family_score": 0.86267,
+      "vedal_score": 0.205987,
+      "family_vs_vedal_margin": 0.656683,
+      "model_predicted_identity": "EVIL"
+    },
+    {
+      "candidate_id": "evil:SJxG6ASjZeY:03",
+      "source_id": "SJxG6ASjZeY",
+      "provisional_identity": "EVIL",
+      "population": "target_family",
+      "family_score": 0.874199,
+      "vedal_score": 0.130061,
+      "family_vs_vedal_margin": 0.744138,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "evil:qlJmo9JPp2A:00",
+      "source_id": "qlJmo9JPp2A",
+      "provisional_identity": "EVIL",
+      "population": "target_family",
+      "family_score": 0.878436,
+      "vedal_score": 0.147809,
+      "family_vs_vedal_margin": 0.730627,
+      "model_predicted_identity": "EVIL"
+    },
+    {
+      "candidate_id": "evil:qlJmo9JPp2A:01",
+      "source_id": "qlJmo9JPp2A",
+      "provisional_identity": "EVIL",
+      "population": "target_family",
+      "family_score": 0.891894,
+      "vedal_score": 0.112862,
+      "family_vs_vedal_margin": 0.779032,
+      "model_predicted_identity": "EVIL"
+    },
+    {
+      "candidate_id": "evil:qlJmo9JPp2A:02",
+      "source_id": "qlJmo9JPp2A",
+      "provisional_identity": "EVIL",
+      "population": "target_family",
+      "family_score": 0.90013,
+      "vedal_score": 0.194219,
+      "family_vs_vedal_margin": 0.705911,
+      "model_predicted_identity": "EVIL"
+    },
+    {
+      "candidate_id": "evil:qlJmo9JPp2A:03",
+      "source_id": "qlJmo9JPp2A",
+      "provisional_identity": "EVIL",
+      "population": "target_family",
+      "family_score": 0.885629,
+      "vedal_score": 0.2076,
+      "family_vs_vedal_margin": 0.678029,
+      "model_predicted_identity": "EVIL"
+    },
+    {
+      "candidate_id": "evil:uZTTRObEhbI:00",
+      "source_id": "uZTTRObEhbI",
+      "provisional_identity": "EVIL",
+      "population": "target_family",
+      "family_score": 0.333512,
+      "vedal_score": 0.199163,
+      "family_vs_vedal_margin": 0.134349,
+      "model_predicted_identity": "EVIL"
+    },
+    {
+      "candidate_id": "evil:uZTTRObEhbI:01",
+      "source_id": "uZTTRObEhbI",
+      "provisional_identity": "EVIL",
+      "population": "target_family",
+      "family_score": 0.774633,
+      "vedal_score": 0.128485,
+      "family_vs_vedal_margin": 0.646148,
+      "model_predicted_identity": "EVIL"
+    },
+    {
+      "candidate_id": "evil:uZTTRObEhbI:02",
+      "source_id": "uZTTRObEhbI",
+      "provisional_identity": "EVIL",
+      "population": "target_family",
+      "family_score": 0.877438,
+      "vedal_score": 0.186044,
+      "family_vs_vedal_margin": 0.691394,
+      "model_predicted_identity": "EVIL"
+    },
+    {
+      "candidate_id": "evil:uZTTRObEhbI:03",
+      "source_id": "uZTTRObEhbI",
+      "provisional_identity": "EVIL",
+      "population": "target_family",
+      "family_score": 0.412706,
+      "vedal_score": 0.175367,
+      "family_vs_vedal_margin": 0.237339,
+      "model_predicted_identity": "EVIL"
+    },
+    {
+      "candidate_id": "neuro:3ObVH1U1620:00",
+      "source_id": "3ObVH1U1620",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.895043,
+      "vedal_score": 0.165792,
+      "family_vs_vedal_margin": 0.729251,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:3ObVH1U1620:01",
+      "source_id": "3ObVH1U1620",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.882636,
+      "vedal_score": 0.112037,
+      "family_vs_vedal_margin": 0.770599,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:3ObVH1U1620:02",
+      "source_id": "3ObVH1U1620",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.924415,
+      "vedal_score": 0.140967,
+      "family_vs_vedal_margin": 0.783448,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:3ObVH1U1620:03",
+      "source_id": "3ObVH1U1620",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.899034,
+      "vedal_score": 0.113202,
+      "family_vs_vedal_margin": 0.785832,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:4_kgbL9ow_Y:00",
+      "source_id": "4_kgbL9ow_Y",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.932297,
+      "vedal_score": 0.165211,
+      "family_vs_vedal_margin": 0.767086,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:4_kgbL9ow_Y:01",
+      "source_id": "4_kgbL9ow_Y",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.895962,
+      "vedal_score": 0.169815,
+      "family_vs_vedal_margin": 0.726147,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:4jhFIea_gWU:00",
+      "source_id": "4jhFIea_gWU",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.91402,
+      "vedal_score": 0.177932,
+      "family_vs_vedal_margin": 0.736088,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:4jhFIea_gWU:01",
+      "source_id": "4jhFIea_gWU",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.924332,
+      "vedal_score": 0.118155,
+      "family_vs_vedal_margin": 0.806177,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:4jhFIea_gWU:02",
+      "source_id": "4jhFIea_gWU",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.929743,
+      "vedal_score": 0.175089,
+      "family_vs_vedal_margin": 0.754654,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:4jhFIea_gWU:03",
+      "source_id": "4jhFIea_gWU",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.940336,
+      "vedal_score": 0.115669,
+      "family_vs_vedal_margin": 0.824667,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:9REk8M-SSd8:00",
+      "source_id": "9REk8M-SSd8",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.947204,
+      "vedal_score": 0.181993,
+      "family_vs_vedal_margin": 0.765211,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:9REk8M-SSd8:01",
+      "source_id": "9REk8M-SSd8",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.953353,
+      "vedal_score": 0.151449,
+      "family_vs_vedal_margin": 0.801904,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:9REk8M-SSd8:02",
+      "source_id": "9REk8M-SSd8",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.933578,
+      "vedal_score": 0.120493,
+      "family_vs_vedal_margin": 0.813085,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:9REk8M-SSd8:03",
+      "source_id": "9REk8M-SSd8",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.909278,
+      "vedal_score": 0.113426,
+      "family_vs_vedal_margin": 0.795852,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:BJj-8zHAZec:00",
+      "source_id": "BJj-8zHAZec",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.907717,
+      "vedal_score": 0.151871,
+      "family_vs_vedal_margin": 0.755846,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:BJj-8zHAZec:01",
+      "source_id": "BJj-8zHAZec",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.931673,
+      "vedal_score": 0.180936,
+      "family_vs_vedal_margin": 0.750737,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:BJj-8zHAZec:02",
+      "source_id": "BJj-8zHAZec",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.702098,
+      "vedal_score": 0.156251,
+      "family_vs_vedal_margin": 0.545847,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:FpMGqhh_yd8:00",
+      "source_id": "FpMGqhh_yd8",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.948216,
+      "vedal_score": 0.116923,
+      "family_vs_vedal_margin": 0.831293,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:FpMGqhh_yd8:01",
+      "source_id": "FpMGqhh_yd8",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.863668,
+      "vedal_score": 0.15916,
+      "family_vs_vedal_margin": 0.704508,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:FpMGqhh_yd8:02",
+      "source_id": "FpMGqhh_yd8",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.898939,
+      "vedal_score": 0.135043,
+      "family_vs_vedal_margin": 0.763896,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:FpMGqhh_yd8:03",
+      "source_id": "FpMGqhh_yd8",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.903852,
+      "vedal_score": 0.141229,
+      "family_vs_vedal_margin": 0.762623,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:GjIopQlnEUY:00",
+      "source_id": "GjIopQlnEUY",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.905269,
+      "vedal_score": 0.156555,
+      "family_vs_vedal_margin": 0.748714,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:GjIopQlnEUY:01",
+      "source_id": "GjIopQlnEUY",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.942525,
+      "vedal_score": 0.165751,
+      "family_vs_vedal_margin": 0.776774,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:GjIopQlnEUY:02",
+      "source_id": "GjIopQlnEUY",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.904175,
+      "vedal_score": 0.121272,
+      "family_vs_vedal_margin": 0.782903,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:GjIopQlnEUY:03",
+      "source_id": "GjIopQlnEUY",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.869972,
+      "vedal_score": 0.17784,
+      "family_vs_vedal_margin": 0.692132,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:VL1oziMsV4Y:00",
+      "source_id": "VL1oziMsV4Y",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.930482,
+      "vedal_score": 0.115089,
+      "family_vs_vedal_margin": 0.815393,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:VL1oziMsV4Y:01",
+      "source_id": "VL1oziMsV4Y",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.921561,
+      "vedal_score": 0.122332,
+      "family_vs_vedal_margin": 0.799229,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:VL1oziMsV4Y:02",
+      "source_id": "VL1oziMsV4Y",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.94713,
+      "vedal_score": 0.142804,
+      "family_vs_vedal_margin": 0.804326,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:VL1oziMsV4Y:03",
+      "source_id": "VL1oziMsV4Y",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.895693,
+      "vedal_score": 0.163162,
+      "family_vs_vedal_margin": 0.732531,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:dK33c8-8WV8:00",
+      "source_id": "dK33c8-8WV8",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.932735,
+      "vedal_score": 0.155124,
+      "family_vs_vedal_margin": 0.777611,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:dK33c8-8WV8:01",
+      "source_id": "dK33c8-8WV8",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.928891,
+      "vedal_score": 0.179271,
+      "family_vs_vedal_margin": 0.74962,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:dK33c8-8WV8:02",
+      "source_id": "dK33c8-8WV8",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.907007,
+      "vedal_score": 0.165406,
+      "family_vs_vedal_margin": 0.741601,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:dK33c8-8WV8:03",
+      "source_id": "dK33c8-8WV8",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.946427,
+      "vedal_score": 0.132525,
+      "family_vs_vedal_margin": 0.813902,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:f6Z-P9ba_Rs:00",
+      "source_id": "f6Z-P9ba_Rs",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.224364,
+      "vedal_score": 0.094908,
+      "family_vs_vedal_margin": 0.129456,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:f6Z-P9ba_Rs:01",
+      "source_id": "f6Z-P9ba_Rs",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.724636,
+      "vedal_score": 0.173447,
+      "family_vs_vedal_margin": 0.551189,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:f6Z-P9ba_Rs:02",
+      "source_id": "f6Z-P9ba_Rs",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.156329,
+      "vedal_score": -0.000359,
+      "family_vs_vedal_margin": 0.156688,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:f6Z-P9ba_Rs:03",
+      "source_id": "f6Z-P9ba_Rs",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.566744,
+      "vedal_score": -0.003018,
+      "family_vs_vedal_margin": 0.569762,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:taEnDJONKHY:00",
+      "source_id": "taEnDJONKHY",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.92218,
+      "vedal_score": 0.182422,
+      "family_vs_vedal_margin": 0.739758,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:taEnDJONKHY:01",
+      "source_id": "taEnDJONKHY",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.947651,
+      "vedal_score": 0.15052,
+      "family_vs_vedal_margin": 0.797131,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:taEnDJONKHY:02",
+      "source_id": "taEnDJONKHY",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.919784,
+      "vedal_score": 0.112697,
+      "family_vs_vedal_margin": 0.807087,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:taEnDJONKHY:03",
+      "source_id": "taEnDJONKHY",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.919388,
+      "vedal_score": 0.126909,
+      "family_vs_vedal_margin": 0.792479,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:xJiH_3u4kJ4:00",
+      "source_id": "xJiH_3u4kJ4",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.930917,
+      "vedal_score": 0.124768,
+      "family_vs_vedal_margin": 0.806149,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:xJiH_3u4kJ4:01",
+      "source_id": "xJiH_3u4kJ4",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.808685,
+      "vedal_score": 0.104643,
+      "family_vs_vedal_margin": 0.704042,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:xJiH_3u4kJ4:02",
+      "source_id": "xJiH_3u4kJ4",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.892503,
+      "vedal_score": 0.1503,
+      "family_vs_vedal_margin": 0.742203,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "neuro:xJiH_3u4kJ4:03",
+      "source_id": "xJiH_3u4kJ4",
+      "provisional_identity": "NEURO",
+      "population": "target_family",
+      "family_score": 0.918509,
+      "vedal_score": 0.146149,
+      "family_vs_vedal_margin": 0.77236,
+      "model_predicted_identity": "NEURO"
+    },
+    {
+      "candidate_id": "vedal:7uTaHkuoDzo:00",
+      "source_id": "7uTaHkuoDzo",
+      "provisional_identity": "VEDAL",
+      "population": "known_nontarget_vedal",
+      "family_score": -0.004465,
+      "vedal_score": 0.695215,
+      "family_vs_vedal_margin": -0.69968,
+      "model_predicted_identity": "VEDAL"
+    },
+    {
+      "candidate_id": "vedal:7uTaHkuoDzo:01",
+      "source_id": "7uTaHkuoDzo",
+      "provisional_identity": "VEDAL",
+      "population": "known_nontarget_vedal",
+      "family_score": -0.009726,
+      "vedal_score": 0.713463,
+      "family_vs_vedal_margin": -0.723189,
+      "model_predicted_identity": "VEDAL"
+    },
+    {
+      "candidate_id": "vedal:7uTaHkuoDzo:02",
+      "source_id": "7uTaHkuoDzo",
+      "provisional_identity": "VEDAL",
+      "population": "known_nontarget_vedal",
+      "family_score": 0.066625,
+      "vedal_score": 0.742968,
+      "family_vs_vedal_margin": -0.676343,
+      "model_predicted_identity": "VEDAL"
+    },
+    {
+      "candidate_id": "vedal:Ak7mzd3L7b0:00",
+      "source_id": "Ak7mzd3L7b0",
+      "provisional_identity": "VEDAL",
+      "population": "known_nontarget_vedal",
+      "family_score": 0.818935,
+      "vedal_score": 0.017254,
+      "family_vs_vedal_margin": 0.801681,
+      "model_predicted_identity": "EVIL"
+    },
+    {
+      "candidate_id": "vedal:Ak7mzd3L7b0:01",
+      "source_id": "Ak7mzd3L7b0",
+      "provisional_identity": "VEDAL",
+      "population": "known_nontarget_vedal",
+      "family_score": 0.735048,
+      "vedal_score": 0.008765,
+      "family_vs_vedal_margin": 0.726283,
+      "model_predicted_identity": "EVIL"
+    },
+    {
+      "candidate_id": "vedal:BV1uN411N7KR:00",
+      "source_id": "BV1uN411N7KR",
+      "provisional_identity": "VEDAL",
+      "population": "known_nontarget_vedal",
+      "family_score": 0.049267,
+      "vedal_score": 0.697072,
+      "family_vs_vedal_margin": -0.647805,
+      "model_predicted_identity": "VEDAL"
+    },
+    {
+      "candidate_id": "vedal:BV1uN411N7KR:01",
+      "source_id": "BV1uN411N7KR",
+      "provisional_identity": "VEDAL",
+      "population": "known_nontarget_vedal",
+      "family_score": 0.025237,
+      "vedal_score": 0.578591,
+      "family_vs_vedal_margin": -0.553354,
+      "model_predicted_identity": "VEDAL"
+    },
+    {
+      "candidate_id": "vedal:BV1uN411N7KR:02",
+      "source_id": "BV1uN411N7KR",
+      "provisional_identity": "VEDAL",
+      "population": "known_nontarget_vedal",
+      "family_score": 0.002833,
+      "vedal_score": 0.689012,
+      "family_vs_vedal_margin": -0.686179,
+      "model_predicted_identity": "VEDAL"
+    },
+    {
+      "candidate_id": "vedal:D36Hn9s7dco:00",
+      "source_id": "D36Hn9s7dco",
+      "provisional_identity": "VEDAL",
+      "population": "known_nontarget_vedal",
+      "family_score": -0.026133,
+      "vedal_score": 0.034966,
+      "family_vs_vedal_margin": -0.061099,
+      "model_predicted_identity": "VEDAL"
+    },
+    {
+      "candidate_id": "vedal:i2QspkWXMw4:00",
+      "source_id": "i2QspkWXMw4",
+      "provisional_identity": "VEDAL",
+      "population": "known_nontarget_vedal",
+      "family_score": -0.014599,
+      "vedal_score": 0.545491,
+      "family_vs_vedal_margin": -0.56009,
+      "model_predicted_identity": "VEDAL"
+    },
+    {
+      "candidate_id": "vedal:i2QspkWXMw4:01",
+      "source_id": "i2QspkWXMw4",
+      "provisional_identity": "VEDAL",
+      "population": "known_nontarget_vedal",
+      "family_score": 0.065724,
+      "vedal_score": 0.489652,
+      "family_vs_vedal_margin": -0.423928,
+      "model_predicted_identity": "VEDAL"
+    },
+    {
+      "candidate_id": "vedal:i2QspkWXMw4:02",
+      "source_id": "i2QspkWXMw4",
+      "provisional_identity": "VEDAL",
+      "population": "known_nontarget_vedal",
+      "family_score": 0.035044,
+      "vedal_score": 0.678472,
+      "family_vs_vedal_margin": -0.643428,
+      "model_predicted_identity": "VEDAL"
+    },
+    {
+      "candidate_id": "vedal:i4VSpJK8gTs:00",
+      "source_id": "i4VSpJK8gTs",
+      "provisional_identity": "VEDAL",
+      "population": "known_nontarget_vedal",
+      "family_score": 0.045359,
+      "vedal_score": 0.182249,
+      "family_vs_vedal_margin": -0.13689,
+      "model_predicted_identity": "VEDAL"
+    },
+    {
+      "candidate_id": "vedal:i4VSpJK8gTs:01",
+      "source_id": "i4VSpJK8gTs",
+      "provisional_identity": "VEDAL",
+      "population": "known_nontarget_vedal",
+      "family_score": 0.036795,
+      "vedal_score": 0.148911,
+      "family_vs_vedal_margin": -0.112116,
+      "model_predicted_identity": "VEDAL"
+    },
+    {
+      "candidate_id": "vedal:i4VSpJK8gTs:02",
+      "source_id": "i4VSpJK8gTs",
+      "provisional_identity": "VEDAL",
+      "population": "known_nontarget_vedal",
+      "family_score": 0.096156,
+      "vedal_score": 0.143393,
+      "family_vs_vedal_margin": -0.047237,
+      "model_predicted_identity": "VEDAL"
+    },
+    {
+      "candidate_id": "vedal:omVt_nBIbDE:00",
+      "source_id": "omVt_nBIbDE",
+      "provisional_identity": "VEDAL",
+      "population": "known_nontarget_vedal",
+      "family_score": 0.099128,
+      "vedal_score": 0.742546,
+      "family_vs_vedal_margin": -0.643418,
+      "model_predicted_identity": "VEDAL"
+    },
+    {
+      "candidate_id": "vedal:omVt_nBIbDE:01",
+      "source_id": "omVt_nBIbDE",
+      "provisional_identity": "VEDAL",
+      "population": "known_nontarget_vedal",
+      "family_score": 0.060745,
+      "vedal_score": 0.745693,
+      "family_vs_vedal_margin": -0.684948,
+      "model_predicted_identity": "VEDAL"
+    },
+    {
+      "candidate_id": "vedal:omVt_nBIbDE:02",
+      "source_id": "omVt_nBIbDE",
+      "provisional_identity": "VEDAL",
+      "population": "known_nontarget_vedal",
+      "family_score": 0.026973,
+      "vedal_score": 0.80992,
+      "family_vs_vedal_margin": -0.782947,
+      "model_predicted_identity": "VEDAL"
+    }
+  ],
+  "confusion_original_model": {
+    "EVIL->NEURO": 10,
+    "EVIL->EVIL": 14,
+    "NEURO->NEURO": 45,
+    "VEDAL->VEDAL": 16,
+    "VEDAL->EVIL": 2
+  }
+}

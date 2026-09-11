@@ -1,0 +1,67 @@
+{
+  "schema_version": "0.1.0",
+  "created_at": "2026-09-11T11:50:14.329475+00:00",
+  "status": "CALIBRATION_BANK_READY_AUTO_ANCHOR_NOT_GOLD",
+  "candidate_manifest": "speaker_refs\\open_set_calibration_candidates.jsonl",
+  "family_manifest": "speaker_refs\\open_set_calibration_family.jsonl",
+  "vedal_manifest": "speaker_refs\\open_set_calibration_vedal.jsonl",
+  "other_manifest": "speaker_refs\\open_set_calibration_other.jsonl",
+  "excluded_confounds_manifest": "speaker_refs\\open_set_calibration_excluded_confounds.jsonl",
+  "label_counts": {
+    "NEURO_FAMILY": 65,
+    "VEDAL": 16,
+    "OTHER": 2
+  },
+  "source_counts": {
+    "NEURO_FAMILY:3ObVH1U1620": 4,
+    "NEURO_FAMILY:4_kgbL9ow_Y": 2,
+    "NEURO_FAMILY:4jhFIea_gWU": 4,
+    "NEURO_FAMILY:8335sBz9aHU": 4,
+    "NEURO_FAMILY:9REk8M-SSd8": 4,
+    "NEURO_FAMILY:BJj-8zHAZec": 3,
+    "NEURO_FAMILY:D95w1v1_5k0": 2,
+    "NEURO_FAMILY:FpMGqhh_yd8": 4,
+    "NEURO_FAMILY:GjIopQlnEUY": 4,
+    "NEURO_FAMILY:IaU9TkjCAGA": 4,
+    "NEURO_FAMILY:SJxG6ASjZeY": 4,
+    "NEURO_FAMILY:VL1oziMsV4Y": 4,
+    "NEURO_FAMILY:dK33c8-8WV8": 4,
+    "NEURO_FAMILY:f6Z-P9ba_Rs": 2,
+    "NEURO_FAMILY:qlJmo9JPp2A": 4,
+    "NEURO_FAMILY:taEnDJONKHY": 4,
+    "NEURO_FAMILY:uZTTRObEhbI": 4,
+    "NEURO_FAMILY:xJiH_3u4kJ4": 4,
+    "VEDAL:BV1uN411N7KR": 3,
+    "VEDAL:omVt_nBIbDE": 3,
+    "VEDAL:i2QspkWXMw4": 3,
+    "VEDAL:D36Hn9s7dco": 1,
+    "VEDAL:i4VSpJK8gTs": 3,
+    "VEDAL:7uTaHkuoDzo": 3,
+    "OTHER:i4VSpJK8gTs": 1,
+    "OTHER:uZTTRObEhbI": 1
+  },
+  "source_counts_by_label": {
+    "NEURO_FAMILY": 18,
+    "OTHER": 2,
+    "VEDAL": 6
+  },
+  "excluded_confounds_count": 2,
+  "excluded_confounds": [
+    {
+      "anchor_id": "vedal:Ak7mzd3L7b0:00",
+      "source_id": "Ak7mzd3L7b0",
+      "clip_path": "speaker_refs\\provisional_clips\\VEDAL\\Ak7mzd3L7b0__00.flac",
+      "reason": "candidate windows are lyric/music material; both ECAPA and x-vector produced family false positives",
+      "retained_as": "challenge_only"
+    },
+    {
+      "anchor_id": "vedal:Ak7mzd3L7b0:01",
+      "source_id": "Ak7mzd3L7b0",
+      "clip_path": "speaker_refs\\provisional_clips\\VEDAL\\Ak7mzd3L7b0__01.flac",
+      "reason": "candidate windows are lyric/music material; both ECAPA and x-vector produced family false positives",
+      "retained_as": "challenge_only"
+    }
+  ],
+  "policy": "Auto anchors calibrate the verifier only; no row is human gold or a training candidate.",
+  "family_policy": "NEURO and EVIL are collapsed into NEURO_FAMILY."
+}

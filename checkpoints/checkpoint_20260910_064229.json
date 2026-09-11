@@ -1,0 +1,17 @@
+{
+  "schema_version": "0.1.0",
+  "created_at": "2026-09-09T22:42:29.637276+00:00",
+  "videos_discovered": 446,
+  "videos_minimal_pipeline_complete": 0,
+  "status_counts": {
+    "audio_download_status:done": 4,
+    "metadata_status:done": 9,
+    "metadata_status:failed": 3,
+    "pending": 446
+  },
+  "disk_free_bytes": null,
+  "notes": [
+    "A video is not considered full-pipeline complete until subtitles/ASR, diarization, speaker mapping, conversation reconstruction, and quality metrics exist.",
+    "This checkpoint is intentionally conservative and does not infer speaker identity from titles."
+  ]
+}

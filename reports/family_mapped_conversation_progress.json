@@ -1,0 +1,16 @@
+{
+  "schema_version": "0.1.0",
+  "updated_at": "2026-09-11T11:54:57.011945+00:00",
+  "status": "FAMILY_MAPPED_PROXY_QA_PASSED_TRAINING_CLOSED",
+  "source": "conversations\\natural_conversations_anonymous.jsonl",
+  "output": "conversations\\natural_conversations_family_mapped.jsonl",
+  "record_count": 199371,
+  "training_candidate_count": 0,
+  "identity_counts": {
+    "NEURO_FAMILY": 1601201,
+    "VEDAL": 494232,
+    "UNKNOWN": 634580
+  },
+  "policy": "Family mapping is proxy-only; S/A candidates remain closed until conversation QA and negative open-set coverage are complete.",
+  "qa_report": "reports/family_mapped_conversation_qa.json"
+}

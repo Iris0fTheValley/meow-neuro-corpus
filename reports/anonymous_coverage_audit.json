@@ -1,0 +1,40 @@
+{
+  "schema_version": "0.1.0",
+  "updated_at": "2026-09-11T06:41:01.764806+00:00",
+  "status": "ANONYMOUS_IDENTITY_PENDING",
+  "record_count": 199371,
+  "source_count": 503,
+  "training_candidate_count": 0,
+  "identity_distribution": "deferred_until_gold_validated_mapping",
+  "source_platform_counts": {
+    "youtube": 198018,
+    "bilibili": 909,
+    "twitch_archive": 444
+  },
+  "window_type_counts": {
+    "4_8_turns": 113966,
+    "8_20_turns": 56983,
+    "20_plus_turns": 28422
+  },
+  "response_length_buckets": {
+    "short": 516,
+    "medium": 114407,
+    "long": 84448
+  },
+  "turn_count_buckets": {
+    "4-8": 114011,
+    "9-20": 56952,
+    "21+": 28408
+  },
+  "context_dependency_counts": {
+    "possible_context_dependent": 9091,
+    "low_or_unknown": 164950,
+    "likely_context_dependent": 25330
+  },
+  "coverage_gaps": [
+    "Neuro/Evil/Vedal identity distributions unavailable",
+    "identity-specific forensic distributions unavailable",
+    "state and affect coverage require validated identity mapping and semantic annotation"
+  ],
+  "policy": "Metadata participant names are not used as speaker labels; unknown remains unknown."
+}

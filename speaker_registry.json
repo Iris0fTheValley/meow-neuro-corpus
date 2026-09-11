@@ -1,0 +1,31 @@
+{
+  "schema_version": "0.1.0",
+  "updated_at": "2026-09-11",
+  "speaker_reference_bank_version": "provisional-2026-09-11-v1",
+  "speaker_reference_bank_path": "speaker_refs/reference_bank.json",
+  "gold_validation_path": "speaker_refs/gold_validation.json",
+  "neuro_family_gold_validation_path": "speaker_refs/gold_validation_neuro_family.json",
+  "speaker_reference_benchmark_path": "reports/speaker_reference_benchmark.json",
+  "speaker_reference_xvector_benchmark_path": "reports/speaker_reference_benchmark_all_xvector_cpu.json",
+  "speaker_reference_dual_model_path": "speaker_refs/reference_bank_all_dual_model.json",
+  "vedal_provisional_reference_path": "speaker_refs/reference_bank_vedal_provisional.json",
+  "neuro_family_reference_bank_path": "speaker_refs/reference_bank_neuro_family.json",
+  "neuro_family_ecapa_open_set_benchmark_path": "reports/speaker_reference_neuro_family_ecapa_open_set.json",
+  "neuro_family_xvector_open_set_benchmark_path": "reports/speaker_reference_neuro_family_xvector_open_set.json",
+  "neuro_family_identity_mapping_path": "identity_results/identity_mapping_family_proxy.jsonl",
+  "reference_human_review_queue_path": "speaker_refs/reference_human_review_queue.jsonl",
+  "reference_human_review_summary_path": "speaker_refs/reference_human_review_queue.json",
+  "reference_candidate_counts": {"NEURO": 45, "EVIL": 24, "VEDAL": 18},
+  "speaker_reference_validation_status": "NEURO_FAMILY_PROMOTED_FOR_MAPPING_PROXY_VEDAL_OPEN_SET_GOLD_PENDING",
+  "speaker_reference_validation_note": "69 provisional clips across 18 sources were benchmarked with leave-one-source-out ECAPA prototypes; Evil/Neuro confusion remains too high and Vedal has no single-identity source.",
+  "speakers": [
+    {"speaker_id":"NEURO_FAMILY","display_name":"Neuro/Evil family","persona":"Neuro + Evil Neuro","status":"reference_promoted_for_mapping_proxy","mapping_confidence":"proxy_open_set","reference_embeddings":[],"gold_validated":false},
+    {"speaker_id":"NEURO","display_name":"Neuro-sama","persona":"Neuro","status":"subtype_reference_pending","mapping_confidence":null,"reference_embeddings":[]},
+    {"speaker_id":"EVIL","display_name":"Evil Neuro","persona":"Evil","status":"subtype_reference_pending","mapping_confidence":null,"reference_embeddings":[]},
+    {"speaker_id":"VEDAL","display_name":"Vedal","persona":"human developer","status":"reference_pending","mapping_confidence":null,"reference_embeddings":[]},
+    {"speaker_id":"GUEST_1","display_name":"collab guest 1","persona":"guest","status":"unknown","mapping_confidence":null,"reference_embeddings":[]},
+    {"speaker_id":"NEURO_OR_EVIL","display_name":"Neuro or Evil","persona":"uncertain synthetic voice","status":"allowed_uncertain_class","mapping_confidence":null,"reference_embeddings":[]},
+    {"speaker_id":"UNKNOWN","display_name":"unknown speaker","persona":"unknown","status":"allowed_unknown_class","mapping_confidence":null,"reference_embeddings":[]}
+  ],
+  "policy": "Training target is NEURO_FAMILY (Neuro + Evil) versus VEDAL versus OTHER/UNKNOWN. Neuro/Evil subtype may be retained for analysis but never blocks family promotion. Use UNKNOWN for low-margin or unvalidated non-target cases."
+}

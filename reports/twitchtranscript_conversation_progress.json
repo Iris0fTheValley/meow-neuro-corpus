@@ -1,0 +1,34 @@
+{
+  "schema_version": "0.1.0",
+  "updated_at": "2026-09-11T00:39:53.208045+00:00",
+  "status": "CONTINUE_WORKING_TRANSCRIPT_ONLY_SPEAKER_UNKNOWN",
+  "source_count": 2,
+  "window_count": 1821,
+  "window_type_counts": {
+    "4_8_segments": 1041,
+    "8_20_segments": 520,
+    "20_plus_segments": 260
+  },
+  "training_candidate_count": 0,
+  "identity_mapping": "not_attempted_without_audio_and_trusted_reference_bank",
+  "raw_preserved": true,
+  "cleaning_report": "reports/twitchtranscript_cleaning.json",
+  "per_source": {
+    "twitchtranscripts:2647969262": {
+      "vod_id": "2647969262",
+      "title": "THE 2025 NEURO SUBATHON",
+      "segment_count": 4879,
+      "window_count": 1067,
+      "training_candidate_count": 0,
+      "speaker_mapping": "unknown"
+    },
+    "twitchtranscripts:2666374112": {
+      "vod_id": "2666374112",
+      "title": "Neuro-sama Subathon 2025-26 | Last day (reduced captains)",
+      "segment_count": 3444,
+      "window_count": 754,
+      "training_candidate_count": 0,
+      "speaker_mapping": "unknown"
+    }
+  }
+}

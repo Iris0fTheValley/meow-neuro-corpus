@@ -1,0 +1,11 @@
+{
+  "schema_version": "0.1.0",
+  "updated_at": "2026-09-11T06:42:31.296742+00:00",
+  "status": "PASS",
+  "record_count": 78883,
+  "source_count": 14,
+  "training_candidate_count": 0,
+  "error_count": 0,
+  "errors": [],
+  "policy": "Transcript-only fallback conversations remain anonymous and training-closed."
+}

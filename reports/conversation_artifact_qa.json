@@ -1,0 +1,41 @@
+{
+  "schema_version": "0.1.0",
+  "updated_at": "2026-09-11T06:41:29.308143+00:00",
+  "status": "PASS",
+  "training_candidate_count": 0,
+  "layers": [
+    {
+      "layer": "natural_turns",
+      "path": "conversations\\natural_conversations_anonymous.jsonl",
+      "status": "PASS",
+      "rows": 199371,
+      "unique_conversation_ids": 199371,
+      "training_candidate_count": 0,
+      "unknown_identity_count": 199371,
+      "window_type_counts": {
+        "4_8_turns": 113966,
+        "8_20_turns": 56983,
+        "20_plus_turns": 28422
+      },
+      "error_count": 0,
+      "errors": []
+    },
+    {
+      "layer": "twitchtranscripts",
+      "path": "conversations\\twitchtranscript_conversations_anonymous.jsonl",
+      "status": "PASS",
+      "rows": 1821,
+      "unique_conversation_ids": 1821,
+      "training_candidate_count": 0,
+      "unknown_identity_count": 1821,
+      "window_type_counts": {
+        "4_8_segments": 1041,
+        "8_20_segments": 520,
+        "20_plus_segments": 260
+      },
+      "error_count": 0,
+      "errors": []
+    }
+  ],
+  "policy": "Identity and training gates remain closed until trusted gold validation exists."
+}

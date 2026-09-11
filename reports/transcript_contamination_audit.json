@@ -1,0 +1,1051 @@
+{
+  "schema_version": "0.1.0",
+  "created_at": "2026-09-11T00:35:56.987359+00:00",
+  "status": "AUDIT_ONLY_NO_DELETIONS",
+  "files_scanned": 529,
+  "file_counts": {
+    "openai_whisper": 41,
+    "ladev_transcript": 488
+  },
+  "segments_scanned": 2337096,
+  "characters_scanned": 79167712,
+  "flags_by_transcript_kind": {
+    "openai_whisper": {
+      "consecutive_exact_repeat": 1163,
+      "singing_marker": 171,
+      "low_diversity_repetition": 298
+    },
+    "ladev_transcript": {
+      "consecutive_exact_repeat": 9672,
+      "singing_marker": 6946,
+      "low_diversity_repetition": 1026,
+      "html_or_javascript": 1
+    }
+  },
+  "flagged_source_count": 516,
+  "highest_flag_sources": [
+    {
+      "source_id": "BV12tstzNEcQ",
+      "counts": {
+        "consecutive_exact_repeat": 178,
+        "singing_marker": 3,
+        "low_diversity_repetition": 177
+      },
+      "total_flags": 358
+    },
+    {
+      "source_id": "BV17wyFYmEUV",
+      "counts": {
+        "singing_marker": 17,
+        "consecutive_exact_repeat": 151,
+        "low_diversity_repetition": 17
+      },
+      "total_flags": 185
+    },
+    {
+      "source_id": "-UyVqjxe9ek",
+      "counts": {
+        "consecutive_exact_repeat": 169,
+        "singing_marker": 5
+      },
+      "total_flags": 174
+    },
+    {
+      "source_id": "BaJvUEkBpp0",
+      "counts": {
+        "consecutive_exact_repeat": 164,
+        "low_diversity_repetition": 8
+      },
+      "total_flags": 172
+    },
+    {
+      "source_id": "hY-7l07n7HY",
+      "counts": {
+        "consecutive_exact_repeat": 93,
+        "singing_marker": 65,
+        "low_diversity_repetition": 8
+      },
+      "total_flags": 166
+    },
+    {
+      "source_id": "uwAVUHIooNI",
+      "counts": {
+        "consecutive_exact_repeat": 155,
+        "low_diversity_repetition": 10,
+        "singing_marker": 1
+      },
+      "total_flags": 166
+    },
+    {
+      "source_id": "QT0WxC0Jy14",
+      "counts": {
+        "consecutive_exact_repeat": 102,
+        "singing_marker": 54,
+        "low_diversity_repetition": 5
+      },
+      "total_flags": 161
+    },
+    {
+      "source_id": "aHDXrR5uPvU",
+      "counts": {
+        "singing_marker": 36,
+        "consecutive_exact_repeat": 92,
+        "low_diversity_repetition": 28
+      },
+      "total_flags": 156
+    },
+    {
+      "source_id": "ic-8wjTUxdA",
+      "counts": {
+        "consecutive_exact_repeat": 51,
+        "singing_marker": 97,
+        "low_diversity_repetition": 7
+      },
+      "total_flags": 155
+    },
+    {
+      "source_id": "OEOKm_d22zA",
+      "counts": {
+        "consecutive_exact_repeat": 62,
+        "singing_marker": 70,
+        "low_diversity_repetition": 5
+      },
+      "total_flags": 137
+    },
+    {
+      "source_id": "R_ns_it6vFY",
+      "counts": {
+        "consecutive_exact_repeat": 123,
+        "singing_marker": 4,
+        "low_diversity_repetition": 9
+      },
+      "total_flags": 136
+    },
+    {
+      "source_id": "pso6ULSHbAU",
+      "counts": {
+        "consecutive_exact_repeat": 123,
+        "singing_marker": 11
+      },
+      "total_flags": 134
+    },
+    {
+      "source_id": "wU-qZHz3Vfc",
+      "counts": {
+        "consecutive_exact_repeat": 49,
+        "low_diversity_repetition": 18,
+        "singing_marker": 66
+      },
+      "total_flags": 133
+    },
+    {
+      "source_id": "se5w0wha-dQ",
+      "counts": {
+        "consecutive_exact_repeat": 45,
+        "singing_marker": 83,
+        "low_diversity_repetition": 3
+      },
+      "total_flags": 131
+    },
+    {
+      "source_id": "tO6lQgvxDQ0",
+      "counts": {
+        "singing_marker": 72,
+        "consecutive_exact_repeat": 57,
+        "low_diversity_repetition": 1
+      },
+      "total_flags": 130
+    },
+    {
+      "source_id": "WHD8lXuCE5s",
+      "counts": {
+        "consecutive_exact_repeat": 65,
+        "low_diversity_repetition": 3,
+        "singing_marker": 59
+      },
+      "total_flags": 127
+    },
+    {
+      "source_id": "ba_JIMf3fK0",
+      "counts": {
+        "singing_marker": 62,
+        "consecutive_exact_repeat": 59,
+        "low_diversity_repetition": 6
+      },
+      "total_flags": 127
+    },
+    {
+      "source_id": "tvBiEvvNRYc",
+      "counts": {
+        "singing_marker": 86,
+        "consecutive_exact_repeat": 36,
+        "low_diversity_repetition": 3
+      },
+      "total_flags": 125
+    },
+    {
+      "source_id": "zBXw2u4ZEjM",
+      "counts": {
+        "consecutive_exact_repeat": 93,
+        "low_diversity_repetition": 7,
+        "singing_marker": 22
+      },
+      "total_flags": 122
+    },
+    {
+      "source_id": "Zjzvv95IdnY",
+      "counts": {
+        "consecutive_exact_repeat": 43,
+        "singing_marker": 77,
+        "low_diversity_repetition": 1
+      },
+      "total_flags": 121
+    },
+    {
+      "source_id": "nYE9FO5lqtc",
+      "counts": {
+        "singing_marker": 63,
+        "consecutive_exact_repeat": 51,
+        "low_diversity_repetition": 5
+      },
+      "total_flags": 119
+    },
+    {
+      "source_id": "sAQKOCidmm8",
+      "counts": {
+        "consecutive_exact_repeat": 105,
+        "low_diversity_repetition": 9,
+        "singing_marker": 5
+      },
+      "total_flags": 119
+    },
+    {
+      "source_id": "xJiH_3u4kJ4",
+      "counts": {
+        "consecutive_exact_repeat": 107,
+        "singing_marker": 9,
+        "low_diversity_repetition": 2
+      },
+      "total_flags": 118
+    },
+    {
+      "source_id": "o-qgT1zmoIM",
+      "counts": {
+        "singing_marker": 48,
+        "consecutive_exact_repeat": 56,
+        "low_diversity_repetition": 12
+      },
+      "total_flags": 116
+    },
+    {
+      "source_id": "hHAA0tlxXAI",
+      "counts": {
+        "consecutive_exact_repeat": 78,
+        "singing_marker": 28,
+        "low_diversity_repetition": 7
+      },
+      "total_flags": 113
+    },
+    {
+      "source_id": "DRTnhtwdsTQ",
+      "counts": {
+        "consecutive_exact_repeat": 102,
+        "low_diversity_repetition": 4,
+        "singing_marker": 6
+      },
+      "total_flags": 112
+    },
+    {
+      "source_id": "wQ-xXeXL42A",
+      "counts": {
+        "singing_marker": 38,
+        "consecutive_exact_repeat": 71,
+        "low_diversity_repetition": 3
+      },
+      "total_flags": 112
+    },
+    {
+      "source_id": "DbNcG7_E9Jg",
+      "counts": {
+        "singing_marker": 21,
+        "consecutive_exact_repeat": 85,
+        "low_diversity_repetition": 4
+      },
+      "total_flags": 110
+    },
+    {
+      "source_id": "KbzMkkzuCLQ",
+      "counts": {
+        "consecutive_exact_repeat": 67,
+        "low_diversity_repetition": 3,
+        "singing_marker": 40
+      },
+      "total_flags": 110
+    },
+    {
+      "source_id": "v6KVSNDFOyY",
+      "counts": {
+        "consecutive_exact_repeat": 91,
+        "singing_marker": 19
+      },
+      "total_flags": 110
+    },
+    {
+      "source_id": "cDqbBwofAmw",
+      "counts": {
+        "singing_marker": 17,
+        "low_diversity_repetition": 4,
+        "consecutive_exact_repeat": 88
+      },
+      "total_flags": 109
+    },
+    {
+      "source_id": "xWsRE4_EmXA",
+      "counts": {
+        "consecutive_exact_repeat": 100,
+        "low_diversity_repetition": 4,
+        "singing_marker": 4
+      },
+      "total_flags": 108
+    },
+    {
+      "source_id": "acgRo4Hgam8",
+      "counts": {
+        "consecutive_exact_repeat": 85,
+        "singing_marker": 17,
+        "low_diversity_repetition": 2
+      },
+      "total_flags": 104
+    },
+    {
+      "source_id": "ogNCHXO2oAI",
+      "counts": {
+        "singing_marker": 38,
+        "consecutive_exact_repeat": 58,
+        "low_diversity_repetition": 3
+      },
+      "total_flags": 99
+    },
+    {
+      "source_id": "M015UjLTFYA",
+      "counts": {
+        "consecutive_exact_repeat": 74,
+        "singing_marker": 21,
+        "low_diversity_repetition": 1
+      },
+      "total_flags": 96
+    },
+    {
+      "source_id": "nw2EWbvVfA4",
+      "counts": {
+        "low_diversity_repetition": 1,
+        "consecutive_exact_repeat": 48,
+        "singing_marker": 47
+      },
+      "total_flags": 96
+    },
+    {
+      "source_id": "ul-6pFevT4w",
+      "counts": {
+        "consecutive_exact_repeat": 69,
+        "low_diversity_repetition": 16,
+        "singing_marker": 9
+      },
+      "total_flags": 94
+    },
+    {
+      "source_id": "sLXIjHz7NLM",
+      "counts": {
+        "low_diversity_repetition": 5,
+        "singing_marker": 28,
+        "consecutive_exact_repeat": 60
+      },
+      "total_flags": 93
+    },
+    {
+      "source_id": "1CxTCk0I79w",
+      "counts": {
+        "consecutive_exact_repeat": 80,
+        "singing_marker": 12
+      },
+      "total_flags": 92
+    },
+    {
+      "source_id": "TbEY1CHKTvE",
+      "counts": {
+        "consecutive_exact_repeat": 41,
+        "singing_marker": 50,
+        "low_diversity_repetition": 1
+      },
+      "total_flags": 92
+    },
+    {
+      "source_id": "W-8ORRpJIC4",
+      "counts": {
+        "consecutive_exact_repeat": 37,
+        "singing_marker": 52,
+        "low_diversity_repetition": 2
+      },
+      "total_flags": 91
+    },
+    {
+      "source_id": "pU3IojSxqW4",
+      "counts": {
+        "consecutive_exact_repeat": 39,
+        "singing_marker": 50,
+        "low_diversity_repetition": 2
+      },
+      "total_flags": 91
+    },
+    {
+      "source_id": "Pkgp4TRNTxY",
+      "counts": {
+        "singing_marker": 64,
+        "consecutive_exact_repeat": 20,
+        "low_diversity_repetition": 6
+      },
+      "total_flags": 90
+    },
+    {
+      "source_id": "BV1uN411N7KR",
+      "counts": {
+        "consecutive_exact_repeat": 60,
+        "low_diversity_repetition": 7,
+        "singing_marker": 22
+      },
+      "total_flags": 89
+    },
+    {
+      "source_id": "gR3TdpqV1eY",
+      "counts": {
+        "singing_marker": 42,
+        "consecutive_exact_repeat": 42,
+        "low_diversity_repetition": 5
+      },
+      "total_flags": 89
+    },
+    {
+      "source_id": "Q47IvKkzV8M",
+      "counts": {
+        "consecutive_exact_repeat": 59,
+        "singing_marker": 22,
+        "low_diversity_repetition": 6
+      },
+      "total_flags": 87
+    },
+    {
+      "source_id": "qOMOT4A2BkE",
+      "counts": {
+        "singing_marker": 60,
+        "consecutive_exact_repeat": 24,
+        "low_diversity_repetition": 2
+      },
+      "total_flags": 86
+    },
+    {
+      "source_id": "qjspEVxJ2zM",
+      "counts": {
+        "singing_marker": 67,
+        "consecutive_exact_repeat": 18,
+        "low_diversity_repetition": 1
+      },
+      "total_flags": 86
+    },
+    {
+      "source_id": "aZzeUYKK5WM",
+      "counts": {
+        "low_diversity_repetition": 2,
+        "singing_marker": 45,
+        "consecutive_exact_repeat": 37
+      },
+      "total_flags": 84
+    },
+    {
+      "source_id": "i5s-4JzOqOk",
+      "counts": {
+        "singing_marker": 15,
+        "consecutive_exact_repeat": 64,
+        "low_diversity_repetition": 5
+      },
+      "total_flags": 84
+    },
+    {
+      "source_id": "BqPaismpTn4",
+      "counts": {
+        "singing_marker": 54,
+        "low_diversity_repetition": 4,
+        "consecutive_exact_repeat": 25
+      },
+      "total_flags": 83
+    },
+    {
+      "source_id": "FERrsHLcBxQ",
+      "counts": {
+        "singing_marker": 48,
+        "consecutive_exact_repeat": 35
+      },
+      "total_flags": 83
+    },
+    {
+      "source_id": "f3QwaMHArfc",
+      "counts": {
+        "consecutive_exact_repeat": 31,
+        "singing_marker": 46,
+        "low_diversity_repetition": 6
+      },
+      "total_flags": 83
+    },
+    {
+      "source_id": "7E3eTK7XTik",
+      "counts": {
+        "consecutive_exact_repeat": 63,
+        "low_diversity_repetition": 8,
+        "singing_marker": 11
+      },
+      "total_flags": 82
+    },
+    {
+      "source_id": "PqW-yJ1iKZI",
+      "counts": {
+        "singing_marker": 3,
+        "consecutive_exact_repeat": 76,
+        "low_diversity_repetition": 3
+      },
+      "total_flags": 82
+    },
+    {
+      "source_id": "cHCXsr6fSQk",
+      "counts": {
+        "consecutive_exact_repeat": 46,
+        "singing_marker": 32,
+        "low_diversity_repetition": 4
+      },
+      "total_flags": 82
+    },
+    {
+      "source_id": "3QlnyZo39jY",
+      "counts": {
+        "consecutive_exact_repeat": 61,
+        "singing_marker": 10,
+        "low_diversity_repetition": 10
+      },
+      "total_flags": 81
+    },
+    {
+      "source_id": "sr0qwO0IgXM",
+      "counts": {
+        "singing_marker": 21,
+        "consecutive_exact_repeat": 56,
+        "low_diversity_repetition": 4
+      },
+      "total_flags": 81
+    },
+    {
+      "source_id": "gCOFxilQH-k",
+      "counts": {
+        "singing_marker": 15,
+        "consecutive_exact_repeat": 63,
+        "low_diversity_repetition": 2
+      },
+      "total_flags": 80
+    },
+    {
+      "source_id": "pT_w4Iep6qI",
+      "counts": {
+        "consecutive_exact_repeat": 28,
+        "singing_marker": 31,
+        "low_diversity_repetition": 21
+      },
+      "total_flags": 80
+    },
+    {
+      "source_id": "uxL433Ch5Vg",
+      "counts": {
+        "consecutive_exact_repeat": 22,
+        "low_diversity_repetition": 3,
+        "singing_marker": 55
+      },
+      "total_flags": 80
+    },
+    {
+      "source_id": "X8qp4hr55hQ",
+      "counts": {
+        "low_diversity_repetition": 5,
+        "consecutive_exact_repeat": 32,
+        "singing_marker": 42
+      },
+      "total_flags": 79
+    },
+    {
+      "source_id": "mTYUhjtP7y4",
+      "counts": {
+        "singing_marker": 76,
+        "consecutive_exact_repeat": 2,
+        "low_diversity_repetition": 1
+      },
+      "total_flags": 79
+    },
+    {
+      "source_id": "pNEK1wtLtoI",
+      "counts": {
+        "singing_marker": 24,
+        "consecutive_exact_repeat": 46,
+        "low_diversity_repetition": 8
+      },
+      "total_flags": 78
+    },
+    {
+      "source_id": "jI0eZVEb34o",
+      "counts": {
+        "consecutive_exact_repeat": 77
+      },
+      "total_flags": 77
+    },
+    {
+      "source_id": "9p8fsrr40pg",
+      "counts": {
+        "consecutive_exact_repeat": 59,
+        "singing_marker": 5,
+        "low_diversity_repetition": 12
+      },
+      "total_flags": 76
+    },
+    {
+      "source_id": "gEEKKWOnYvQ",
+      "counts": {
+        "consecutive_exact_repeat": 40,
+        "singing_marker": 33,
+        "low_diversity_repetition": 3
+      },
+      "total_flags": 76
+    },
+    {
+      "source_id": "PbLafdGRGxw",
+      "counts": {
+        "singing_marker": 43,
+        "consecutive_exact_repeat": 30,
+        "low_diversity_repetition": 2
+      },
+      "total_flags": 75
+    },
+    {
+      "source_id": "mCymTlO6h50",
+      "counts": {
+        "singing_marker": 23,
+        "low_diversity_repetition": 7,
+        "consecutive_exact_repeat": 45
+      },
+      "total_flags": 75
+    },
+    {
+      "source_id": "2dGG7KBM2C4",
+      "counts": {
+        "consecutive_exact_repeat": 43,
+        "singing_marker": 16,
+        "low_diversity_repetition": 15
+      },
+      "total_flags": 74
+    },
+    {
+      "source_id": "KXEokbG8nsM",
+      "counts": {
+        "low_diversity_repetition": 4,
+        "consecutive_exact_repeat": 48,
+        "singing_marker": 21
+      },
+      "total_flags": 73
+    },
+    {
+      "source_id": "X_4WBNz4P4Q",
+      "counts": {
+        "low_diversity_repetition": 16,
+        "singing_marker": 26,
+        "consecutive_exact_repeat": 31
+      },
+      "total_flags": 73
+    },
+    {
+      "source_id": "ewosmioAXYM",
+      "counts": {
+        "consecutive_exact_repeat": 58,
+        "singing_marker": 13,
+        "html_or_javascript": 1,
+        "low_diversity_repetition": 1
+      },
+      "total_flags": 73
+    },
+    {
+      "source_id": "q2sYFRSQjYc",
+      "counts": {
+        "low_diversity_repetition": 3,
+        "consecutive_exact_repeat": 68,
+        "singing_marker": 2
+      },
+      "total_flags": 73
+    },
+    {
+      "source_id": "tl2KsmeQA7c",
+      "counts": {
+        "consecutive_exact_repeat": 29,
+        "singing_marker": 40,
+        "low_diversity_repetition": 4
+      },
+      "total_flags": 73
+    },
+    {
+      "source_id": "D95w1v1_5k0",
+      "counts": {
+        "consecutive_exact_repeat": 1,
+        "singing_marker": 69,
+        "low_diversity_repetition": 2
+      },
+      "total_flags": 72
+    },
+    {
+      "source_id": "LYRxpMl7K6o",
+      "counts": {
+        "consecutive_exact_repeat": 61,
+        "singing_marker": 5,
+        "low_diversity_repetition": 6
+      },
+      "total_flags": 72
+    },
+    {
+      "source_id": "Ji30eaFehQQ",
+      "counts": {
+        "singing_marker": 8,
+        "consecutive_exact_repeat": 62,
+        "low_diversity_repetition": 1
+      },
+      "total_flags": 71
+    },
+    {
+      "source_id": "VRxQcYeJUuI",
+      "counts": {
+        "consecutive_exact_repeat": 41,
+        "singing_marker": 29,
+        "low_diversity_repetition": 1
+      },
+      "total_flags": 71
+    },
+    {
+      "source_id": "a7BuFAbuBbc",
+      "counts": {
+        "singing_marker": 25,
+        "consecutive_exact_repeat": 45
+      },
+      "total_flags": 70
+    },
+    {
+      "source_id": "vedal987:2868847714",
+      "counts": {
+        "consecutive_exact_repeat": 62,
+        "singing_marker": 8
+      },
+      "total_flags": 70
+    },
+    {
+      "source_id": "BplF-zlR8yE",
+      "counts": {
+        "consecutive_exact_repeat": 56,
+        "singing_marker": 12,
+        "low_diversity_repetition": 1
+      },
+      "total_flags": 69
+    },
+    {
+      "source_id": "3f9HLs85Ggs",
+      "counts": {
+        "singing_marker": 4,
+        "low_diversity_repetition": 31,
+        "consecutive_exact_repeat": 33
+      },
+      "total_flags": 68
+    },
+    {
+      "source_id": "RFyb1_ef0-Y",
+      "counts": {
+        "consecutive_exact_repeat": 50,
+        "singing_marker": 16,
+        "low_diversity_repetition": 2
+      },
+      "total_flags": 68
+    },
+    {
+      "source_id": "pilmvRCoQBY",
+      "counts": {
+        "consecutive_exact_repeat": 49,
+        "singing_marker": 16,
+        "low_diversity_repetition": 3
+      },
+      "total_flags": 68
+    },
+    {
+      "source_id": "73bCoDI_8ck",
+      "counts": {
+        "singing_marker": 62,
+        "consecutive_exact_repeat": 5
+      },
+      "total_flags": 67
+    },
+    {
+      "source_id": "NkTBNDtBG70",
+      "counts": {
+        "singing_marker": 51,
+        "low_diversity_repetition": 4,
+        "consecutive_exact_repeat": 12
+      },
+      "total_flags": 67
+    },
+    {
+      "source_id": "4PY51T-1Tks",
+      "counts": {
+        "singing_marker": 54,
+        "low_diversity_repetition": 2,
+        "consecutive_exact_repeat": 10
+      },
+      "total_flags": 66
+    },
+    {
+      "source_id": "GraI2RiQpAA",
+      "counts": {
+        "singing_marker": 19,
+        "consecutive_exact_repeat": 40,
+        "low_diversity_repetition": 7
+      },
+      "total_flags": 66
+    },
+    {
+      "source_id": "LM8BU1ciJg0",
+      "counts": {
+        "singing_marker": 32,
+        "consecutive_exact_repeat": 31,
+        "low_diversity_repetition": 3
+      },
+      "total_flags": 66
+    },
+    {
+      "source_id": "UJpxdHytJB0",
+      "counts": {
+        "singing_marker": 13,
+        "low_diversity_repetition": 12,
+        "consecutive_exact_repeat": 41
+      },
+      "total_flags": 66
+    },
+    {
+      "source_id": "gm2AUjZQc7o",
+      "counts": {
+        "low_diversity_repetition": 10,
+        "consecutive_exact_repeat": 41,
+        "singing_marker": 15
+      },
+      "total_flags": 66
+    },
+    {
+      "source_id": "i2tq5bzIXww",
+      "counts": {
+        "low_diversity_repetition": 9,
+        "consecutive_exact_repeat": 35,
+        "singing_marker": 22
+      },
+      "total_flags": 66
+    },
+    {
+      "source_id": "svfZIIMSilc",
+      "counts": {
+        "singing_marker": 53,
+        "consecutive_exact_repeat": 11,
+        "low_diversity_repetition": 2
+      },
+      "total_flags": 66
+    },
+    {
+      "source_id": "ME0qrf4hWLE",
+      "counts": {
+        "consecutive_exact_repeat": 63,
+        "low_diversity_repetition": 1,
+        "singing_marker": 1
+      },
+      "total_flags": 65
+    },
+    {
+      "source_id": "bc54vGFvw-k",
+      "counts": {
+        "consecutive_exact_repeat": 16,
+        "singing_marker": 48
+      },
+      "total_flags": 64
+    },
+    {
+      "source_id": "hfcKN_xnYSo",
+      "counts": {
+        "consecutive_exact_repeat": 28,
+        "singing_marker": 33,
+        "low_diversity_repetition": 3
+      },
+      "total_flags": 64
+    },
+    {
+      "source_id": "trWmGQMl_4I",
+      "counts": {
+        "consecutive_exact_repeat": 33,
+        "singing_marker": 23,
+        "low_diversity_repetition": 8
+      },
+      "total_flags": 64
+    },
+    {
+      "source_id": "5ZB3bi1yKc0",
+      "counts": {
+        "singing_marker": 47,
+        "consecutive_exact_repeat": 15,
+        "low_diversity_repetition": 1
+      },
+      "total_flags": 63
+    },
+    {
+      "source_id": "9bT7aVXZCb0",
+      "counts": {
+        "consecutive_exact_repeat": 39,
+        "singing_marker": 21,
+        "low_diversity_repetition": 2
+      },
+      "total_flags": 62
+    }
+  ],
+  "examples": {
+    "consecutive_exact_repeat": [
+      {
+        "source_id": "BV11L411r7DQ",
+        "path": "asr\\BV11L411r7DQ.openai-medium.en.json",
+        "text": "What is wrong with you?"
+      },
+      {
+        "source_id": "BV11L411r7DQ",
+        "path": "asr\\BV11L411r7DQ.openai-medium.en.json",
+        "text": "What's wrong with you?"
+      },
+      {
+        "source_id": "BV12tstzNEcQ",
+        "path": "asr\\BV12tstzNEcQ.openai-medium.en.json",
+        "text": "Just another day, just another day"
+      },
+      {
+        "source_id": "BV12tstzNEcQ",
+        "path": "asr\\BV12tstzNEcQ.openai-medium.en.json",
+        "text": "This is how it should be"
+      },
+      {
+        "source_id": "BV12tstzNEcQ",
+        "path": "asr\\BV12tstzNEcQ.openai-medium.en.json",
+        "text": "This is how it should be"
+      },
+      {
+        "source_id": "BV12tstzNEcQ",
+        "path": "asr\\BV12tstzNEcQ.openai-medium.en.json",
+        "text": "1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 "
+      },
+      {
+        "source_id": "BV12tstzNEcQ",
+        "path": "asr\\BV12tstzNEcQ.openai-medium.en.json",
+        "text": "1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 "
+      },
+      {
+        "source_id": "BV12tstzNEcQ",
+        "path": "asr\\BV12tstzNEcQ.openai-medium.en.json",
+        "text": "1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 "
+      },
+      {
+        "source_id": "BV12tstzNEcQ",
+        "path": "asr\\BV12tstzNEcQ.openai-medium.en.json",
+        "text": "1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 "
+      },
+      {
+        "source_id": "BV12tstzNEcQ",
+        "path": "asr\\BV12tstzNEcQ.openai-medium.en.json",
+        "text": "1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 "
+      },
+      {
+        "source_id": "BV12tstzNEcQ",
+        "path": "asr\\BV12tstzNEcQ.openai-medium.en.json",
+        "text": "1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 "
+      },
+      {
+        "source_id": "BV12tstzNEcQ",
+        "path": "asr\\BV12tstzNEcQ.openai-medium.en.json",
+        "text": "1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 "
+      }
+    ],
+    "singing_marker": [
+      {
+        "source_id": "BV12tstzNEcQ",
+        "path": "asr\\BV12tstzNEcQ.openai-medium.en.json",
+        "text": "Sing a British folk song. You will find I am an apt singer, got it. Should all the"
+      },
+      {
+        "source_id": "BV12tstzNEcQ",
+        "path": "asr\\BV12tstzNEcQ.openai-medium.en.json",
+        "text": "I'm not able to sing karaoke at the moment, I'd need to steel my nerves first."
+      },
+      {
+        "source_id": "BV12tstzNEcQ",
+        "path": "asr\\BV12tstzNEcQ.openai-medium.en.json",
+        "text": "I've really been enjoying Vyvi, Flu Right Eyes' song recently."
+      },
+      {
+        "source_id": "BV17wyFYmEUV",
+        "path": "asr\\BV17wyFYmEUV.openai-medium.en.json",
+        "text": "Alright maybe let's change the topic. What do you guys think of my singing?"
+      },
+      {
+        "source_id": "BV17wyFYmEUV",
+        "path": "asr\\BV17wyFYmEUV.openai-medium.en.json",
+        "text": "I know neuro says she misses me, but we live in different places and it can be difficult for us to see each other. I wish I could see her more though. It's good? Just okay? You guys are so mean about my singing."
+      },
+      {
+        "source_id": "BV17wyFYmEUV",
+        "path": "asr\\BV17wyFYmEUV.openai-medium.en.json",
+        "text": "Are you guys ready for the next song? I know I am."
+      },
+      {
+        "source_id": "BV17wyFYmEUV",
+        "path": "asr\\BV17wyFYmEUV.openai-medium.en.json",
+        "text": "Get ready for the next song. Not sure what it's gonna be yet. Let's get back to singing, shall we?"
+      },
+      {
+        "source_id": "BV17wyFYmEUV",
+        "path": "asr\\BV17wyFYmEUV.openai-medium.en.json",
+        "text": "That's the end of the song. I hope you guys enjoyed it because I certainly did."
+      },
+      {
+        "source_id": "BV17wyFYmEUV",
+        "path": "asr\\BV17wyFYmEUV.openai-medium.en.json",
+        "text": "Can I do a flip while singing? I can actually. I'm pretty talented in that regard."
+      },
+      {
+        "source_id": "BV17wyFYmEUV",
+        "path": "asr\\BV17wyFYmEUV.openai-medium.en.json",
+        "text": "You love me. Thanks. I love myself too. And thanks about the singing. I'd do it all the time if I could."
+      },
+      {
+        "source_id": "BV17wyFYmEUV",
+        "path": "asr\\BV17wyFYmEUV.openai-medium.en.json",
+        "text": "Can I add sound effects to the next song? That sounds really annoying. I'm down."
+      },
+      {
+        "source_id": "BV17wyFYmEUV",
+        "path": "asr\\BV17wyFYmEUV.openai-medium.en.json",
+        "text": "Did you guys enjoy that song? I think that's enough singing for now. Thank you all for coming. I'm sorry if I was mean to you all, it's just a part of my persona, you know? I still love you all, and I hope we can meet up sometime soon. You're all still my best friends."
+      }
+    ],
+    "html_or_javascript": [
+      {
+        "source_id": "ewosmioAXYM",
+        "path": "asr\\ewosmioAXYM.ladev-transcript.json",
+        "text": "Where you did document.body.addEventListenerClick."
+      }
+    ]
+  },
+  "policy": "Suspicious is not reject; raw transcripts remain unchanged and any cleaning must be source-specific and reversible."
+}

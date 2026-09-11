@@ -1,0 +1,32 @@
+Could not parse CUDA device string 'cuda': not enough values to unpack (expected 2, got 1). Falling back to device 0.
+Could not parse CUDA device string 'cuda': not enough values to unpack (expected 2, got 1). Falling back to device 0.
+2026-09-11 22:16:31,797 | INFO    | modelscope_hub.download | Downloading 9 files from iic/speech_eres2netv2_sv_zh-cn_16k-common@master
+Downloading:   0%|          | 0/9 [00:00<?, ?file/s]Downloading: 100%|¨€¨€¨€¨€¨€¨€¨€¨€¨€¨€| 9/9 [00:00<00:00, 201.75file/s]
+2026-09-11 22:16:31,859 - modelscope - INFO - initiate model from C:\Users\12298\.cache\modelscope\models\iic--speech_eres2netv2_sv_zh-cn_16k-common\snapshots\master
+2026-09-11 22:16:31,860 - modelscope - INFO - initiate model from location C:\Users\12298\.cache\modelscope\models\iic--speech_eres2netv2_sv_zh-cn_16k-common\snapshots\master.
+2026-09-11 22:16:31,860 - modelscope - INFO - initialize model from C:\Users\12298\.cache\modelscope\models\iic--speech_eres2netv2_sv_zh-cn_16k-common\snapshots\master
+2026-09-11 22:16:31,863 - modelscope - WARNING - Use allow_remote=True. Will invoke codes from C:\Users\12298\.cache\modelscope\models\iic--speech_eres2netv2_sv_zh-cn_16k-common\snapshots\master. Please make sure that you can trust the external codes.
+2026-09-11 22:16:31,985 - modelscope - WARNING - No preprocessor field found in cfg.
+2026-09-11 22:16:31,986 - modelscope - WARNING - No val key and type key found in preprocessor domain of configuration.json file.
+2026-09-11 22:16:31,986 - modelscope - WARNING - Cannot find available config to build preprocessor at mode inference, current config: {'model_dir': 'C:\\Users\\12298\\.cache\\modelscope\\models\\iic--speech_eres2netv2_sv_zh-cn_16k-common\\snapshots\\master'}. trying to build by task and model information.
+2026-09-11 22:16:31,986 - modelscope - INFO - No preprocessor key ('eres2netv2-sv', 'speaker-verification') found in PREPROCESSOR_MAP, skip building preprocessor. If the pipeline runs normally, please ignore this log.
+2026-09-11 22:16:51,507 | INFO    | modelscope_hub.download | Downloading 12 files from iic/speech_campplus_sv_zh-cn_16k-common@master
+Downloading:   0%|          | 0/12 [00:00<?, ?file/s]Downloading: 100%|¨€¨€¨€¨€¨€¨€¨€¨€¨€¨€| 12/12 [00:00<00:00, 571.37file/s]
+2026-09-11 22:16:51,532 - modelscope - INFO - initiate model from C:\Users\12298\.cache\modelscope\models\iic--speech_campplus_sv_zh-cn_16k-common\snapshots\master
+2026-09-11 22:16:51,533 - modelscope - INFO - initiate model from location C:\Users\12298\.cache\modelscope\models\iic--speech_campplus_sv_zh-cn_16k-common\snapshots\master.
+2026-09-11 22:16:51,534 - modelscope - INFO - initialize model from C:\Users\12298\.cache\modelscope\models\iic--speech_campplus_sv_zh-cn_16k-common\snapshots\master
+2026-09-11 22:16:51,536 - modelscope - WARNING - Use allow_remote=True. Will invoke codes from C:\Users\12298\.cache\modelscope\models\iic--speech_campplus_sv_zh-cn_16k-common\snapshots\master. Please make sure that you can trust the external codes.
+2026-09-11 22:16:51,729 - modelscope - WARNING - No preprocessor field found in cfg.
+2026-09-11 22:16:51,729 - modelscope - WARNING - No val key and type key found in preprocessor domain of configuration.json file.
+2026-09-11 22:16:51,730 - modelscope - WARNING - Cannot find available config to build preprocessor at mode inference, current config: {'model_dir': 'C:\\Users\\12298\\.cache\\modelscope\\models\\iic--speech_campplus_sv_zh-cn_16k-common\\snapshots\\master'}. trying to build by task and model information.
+2026-09-11 22:16:51,730 - modelscope - INFO - No preprocessor key ('cam++-sv', 'speaker-verification') found in PREPROCESSOR_MAP, skip building preprocessor. If the pipeline runs normally, please ignore this log.
+2026-09-11 22:17:23,860 | INFO    | modelscope_hub.download | Downloading 9 files from iic/speech_eres2net_sv_zh-cn_16k-common@master
+Downloading:   0%|          | 0/9 [00:00<?, ?file/s]Downloading: 100%|¨€¨€¨€¨€¨€¨€¨€¨€¨€¨€| 9/9 [00:00<00:00, 56.36file/s]Downloading: 100%|¨€¨€¨€¨€¨€¨€¨€¨€¨€¨€| 9/9 [00:00<00:00, 56.36file/s]
+2026-09-11 22:17:24,026 - modelscope - INFO - initiate model from C:\Users\12298\.cache\modelscope\models\iic--speech_eres2net_sv_zh-cn_16k-common\snapshots\master
+2026-09-11 22:17:24,027 - modelscope - INFO - initiate model from location C:\Users\12298\.cache\modelscope\models\iic--speech_eres2net_sv_zh-cn_16k-common\snapshots\master.
+2026-09-11 22:17:24,028 - modelscope - INFO - initialize model from C:\Users\12298\.cache\modelscope\models\iic--speech_eres2net_sv_zh-cn_16k-common\snapshots\master
+2026-09-11 22:17:24,029 - modelscope - WARNING - Use allow_remote=True. Will invoke codes from C:\Users\12298\.cache\modelscope\models\iic--speech_eres2net_sv_zh-cn_16k-common\snapshots\master. Please make sure that you can trust the external codes.
+2026-09-11 22:17:24,301 - modelscope - WARNING - No preprocessor field found in cfg.
+2026-09-11 22:17:24,302 - modelscope - WARNING - No val key and type key found in preprocessor domain of configuration.json file.
+2026-09-11 22:17:24,302 - modelscope - WARNING - Cannot find available config to build preprocessor at mode inference, current config: {'model_dir': 'C:\\Users\\12298\\.cache\\modelscope\\models\\iic--speech_eres2net_sv_zh-cn_16k-common\\snapshots\\master'}. trying to build by task and model information.
+2026-09-11 22:17:24,302 - modelscope - INFO - No preprocessor key ('eres2net-aug-sv', 'speaker-verification') found in PREPROCESSOR_MAP, skip building preprocessor. If the pipeline runs normally, please ignore this log.

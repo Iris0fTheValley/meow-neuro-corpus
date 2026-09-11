@@ -1,0 +1,31 @@
+{
+  "schema_version": "0.1.0",
+  "created_at": "2026-09-10T13:54:39.434859+00:00",
+  "videos_discovered": 970,
+  "videos_minimal_pipeline_complete": 35,
+  "videos_full_pipeline_complete": 43,
+  "transcript_available_rows": 537,
+  "status_counts": {
+    "asr_status:done": 35,
+    "asr_status:source_transcript": 117,
+    "audio_download_status:blocked": 4,
+    "audio_download_status:done": 43,
+    "audio_download_status:pending": 2,
+    "diarization_status:done": 43,
+    "metadata_status:done": 134,
+    "metadata_status:failed": 20,
+    "pending": 456,
+    "subtitle_status:blocked": 37,
+    "subtitle_status:done": 104,
+    "subtitle_status:not_available": 54,
+    "subtitle_status:pending": 2,
+    "transcript_available": 512,
+    "transcript_only": 2,
+    "video_download_status:done": 1
+  },
+  "disk_free_bytes": 216329375744,
+  "notes": [
+    "A video is not considered full-pipeline complete until subtitles/ASR, diarization, speaker mapping, conversation reconstruction, and quality metrics exist.",
+    "This checkpoint is intentionally conservative and does not infer speaker identity from titles."
+  ]
+}

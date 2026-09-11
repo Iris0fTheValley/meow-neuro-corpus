@@ -1,0 +1,15 @@
+{
+  "schema_version": "0.1.0",
+  "created_at": "2026-09-11T05:56:44.176267+00:00",
+  "status": "TRANSCRIPT_FALLBACK_NORMALIZED_ANONYMOUS",
+  "input_file_count": 36,
+  "segment_count": 315555,
+  "source_count": 14,
+  "output": "retry_queue\\transcript_fallbacks_normalized.jsonl",
+  "training_candidate_count": 0,
+  "stats": {
+    "skipped_empty_or_invalid": 80031,
+    "segments": 315555
+  },
+  "policy": "Subtitle fallback segments remain anonymous and are not merged into family-mapped conversations or S/A candidates without audio and speaker QA."
+}

@@ -1,0 +1,16 @@
+{
+  "schema_version": "0.1.0",
+  "updated_at": "2026-09-11T11:55:30.274680+00:00",
+  "status": "PASS",
+  "record_count": 199371,
+  "unique_conversation_ids": 199371,
+  "turn_identity_counts": {
+    "UNKNOWN": 634580,
+    "NEURO_FAMILY": 1601201,
+    "VEDAL": 494232
+  },
+  "training_candidate_count": 0,
+  "error_count": 0,
+  "errors": [],
+  "policy": "Proxy family mapping is accepted for analysis and QA; S/A promotion remains separately gated."
+}

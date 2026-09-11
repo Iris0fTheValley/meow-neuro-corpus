@@ -1,0 +1,23 @@
+{
+  "schema_version": "0.1.0",
+  "groups": [
+    {
+      "duplicate_group": "dg_00001",
+      "relation": "audio_fingerprint",
+      "members": [
+        "youtube:2sfUKne9Eu8",
+        "youtube:gNysylzZocU"
+      ],
+      "status": "review_required"
+    },
+    {
+      "duplicate_group": "dg_00002",
+      "relation": "audio_fingerprint",
+      "members": [
+        "youtube:q54jUYq4JY8",
+        "youtube:qOMOT4A2BkE"
+      ],
+      "status": "review_required"
+    }
+  ]
+}

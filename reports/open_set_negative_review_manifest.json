@@ -1,0 +1,20 @@
+{
+  "schema_version": "0.1.0",
+  "created_at": "2026-09-11T05:49:52.030383+00:00",
+  "status": "METADATA_CANDIDATES_PENDING_MANUAL_AUDIO_REVIEW",
+  "candidate_count": 453,
+  "bucket_counts": {
+    "chat_tts": 0,
+    "singing": 427,
+    "game_voice": 13,
+    "guest": 13
+  },
+  "missing_buckets": [
+    "chat_tts"
+  ],
+  "source_exclusion_count": 25,
+  "output": "speaker_refs\\open_set_negative_review_manifest.jsonl",
+  "gold_label_count": 0,
+  "benchmark_ready_count": 0,
+  "policy": "Metadata keywords only create a review queue; no source or clip is treated as OTHER, guest, chat TTS, singing, or game voice until audio-level manual/external gold review."
+}

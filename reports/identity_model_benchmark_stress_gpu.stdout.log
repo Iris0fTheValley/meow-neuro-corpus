@@ -1,0 +1,72 @@
+{
+  "status": "IDENTITY_MODEL_PROXY_BENCHMARK_WITH_STRESS_AUDIT",
+  "clip_count": 1053,
+  "models": {
+    "ecapa_voxceleb": {
+      "status": "PROXY_BENCHMARK_COMPLETE",
+      "selected_operating_point": {
+        "threshold": 0.5842,
+        "family_validation_count": 5,
+        "family_validation_accept": 4,
+        "family_recall_proxy": 0.8,
+        "nontarget_challenge_count": 29,
+        "nontarget_challenge_false_positive": 0,
+        "nontarget_challenge_false_positive_rate": 0.0
+      },
+      "runtime_seconds": 5.187
+    },
+    "xvector_voxceleb": {
+      "status": "PROXY_BENCHMARK_COMPLETE",
+      "selected_operating_point": {
+        "threshold": 0.0554,
+        "family_validation_count": 5,
+        "family_validation_accept": 0,
+        "family_recall_proxy": 0.0,
+        "nontarget_challenge_count": 29,
+        "nontarget_challenge_false_positive": 1,
+        "nontarget_challenge_false_positive_rate": 0.034483
+      },
+      "runtime_seconds": 2.817
+    },
+    "eres2netv2": {
+      "status": "PROXY_BENCHMARK_COMPLETE",
+      "selected_operating_point": {
+        "threshold": 0.447,
+        "family_validation_count": 5,
+        "family_validation_accept": 5,
+        "family_recall_proxy": 1.0,
+        "nontarget_challenge_count": 29,
+        "nontarget_challenge_false_positive": 0,
+        "nontarget_challenge_false_positive_rate": 0.0
+      },
+      "runtime_seconds": 20.213
+    },
+    "campplus": {
+      "status": "PROXY_BENCHMARK_COMPLETE",
+      "selected_operating_point": {
+        "threshold": 0.4135,
+        "family_validation_count": 5,
+        "family_validation_accept": 3,
+        "family_recall_proxy": 0.6,
+        "nontarget_challenge_count": 29,
+        "nontarget_challenge_false_positive": 0,
+        "nontarget_challenge_false_positive_rate": 0.0
+      },
+      "runtime_seconds": 32.155
+    },
+    "eres2net": {
+      "status": "PROXY_BENCHMARK_COMPLETE",
+      "selected_operating_point": {
+        "threshold": 0.3235,
+        "family_validation_count": 5,
+        "family_validation_accept": 4,
+        "family_recall_proxy": 0.8,
+        "nontarget_challenge_count": 29,
+        "nontarget_challenge_false_positive": 0,
+        "nontarget_challenge_false_positive_rate": 0.0
+      },
+      "runtime_seconds": 38.079
+    }
+  },
+  "promotion_decision": "DO_NOT_PROMOTE"
+}

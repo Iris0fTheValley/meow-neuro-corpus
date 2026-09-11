@@ -1,0 +1,63 @@
+{
+  "name": "library-of-ladev",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Library of Ladev",
+  "keywords": [],
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@inertiajs/react": "2.2.11",
+    "@mui/icons-material": "^6.4.1",
+    "@mui/material": "^6.4.1",
+    "@mui/x-date-pickers": "^7.24.1",
+    "@sailscasts/sails-hook-node-fetch": "^0.0.3",
+    "@sailshq/lodash": "^3.10.6",
+    "dayjs": "^1.11.13",
+    "fix-esm": "^1.0.1",
+    "inertia-sails": "^0.2.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-window": "^2.2.1",
+    "react-youtube": "^10.1.0",
+    "sails": "^1.5.12",
+    "sails-flash": "^0.0.1",
+    "sails-hook-mail": "^0.1.0",
+    "sails-hook-organics": "^3.0.0",
+    "sails-hook-orm": "^4.0.3",
+    "sails-hook-sockets": "^3.0.1",
+    "sails-hook-uploads": "^0.4.3",
+    "sails-hook-wish": "^0.0.9",
+    "sails-postgresql": "^5.0.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@rsbuild/plugin-react": "^1.0.2",
+    "@types/node": "^22.5.5",
+    "@types/react": "^18.3.29",
+    "@types/react-dom": "^18.3.7",
+    "create-sails-generator": "^0.0.3",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^16.5.0",
+    "playwright": "^1.47.1",
+    "prettier": "^2.8.8",
+    "sails-hook-shipwright": "^0.3.0",
+    "sails.io.js": "^1.2.1",
+    "socket.io-client": "^4.7.5",
+    "typescript": "^6.0.3"
+  },
+  "scripts": {
+    "dev": "node --watch app.js",
+    "start": "node app.js",
+    "lint": "prettier --check .",
+    "lint:fix": "prettier --write .",
+    "typecheck": "tsc --noEmit",
+    "test:unit": "node --test ./tests/unit/**/*.test.js",
+    "test": "npm run test:unit"
+  },
+  "main": "app.js",
+  "engines": {
+    "node": ">=18.0"
+  }
+}

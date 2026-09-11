@@ -1,0 +1,29 @@
+{
+  "schema_version": "0.1.0",
+  "created_at": "2026-09-11T12:01:35.079981+00:00",
+  "status": "AUTO_ANCHORS_READY_NOT_GOLD",
+  "anchor_manifest": "speaker_refs\\auto_validation_anchors.jsonl",
+  "challenge_manifest": "speaker_refs\\open_set_challenge_set.jsonl",
+  "anchor_count": 45,
+  "anchor_label_counts": {
+    "NEURO_FAMILY": 42,
+    "VEDAL": 1,
+    "OTHER": 2
+  },
+  "anchor_source_counts": {
+    "NEURO_FAMILY": 19,
+    "VEDAL": 1,
+    "OTHER": 2
+  },
+  "cross_source_minimum_policy": "Calibration must use source-group holdout; no label is trusted from a single source.",
+  "family_policy": "NEURO and EVIL are intentionally collapsed into NEURO_FAMILY.",
+  "gold_policy": "Auto anchors are independent-evidence validation anchors, not human gold and never training promotion.",
+  "challenge_clip_count": 991,
+  "challenge_bucket_counts": {
+    "game_voice": 13,
+    "guest": 10,
+    "singing": 822,
+    "chat_tts": 146
+  },
+  "source_count_total": 21
+}

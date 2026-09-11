@@ -1,0 +1,25 @@
+{
+  "schema_version": "0.1.0",
+  "created_at": "2026-09-11T14:25:53.656989+00:00",
+  "status": "ERES2NETV2_CLUSTER_REMAP_PROXY_COMPLETE",
+  "version": "eres2netv2-cluster-remap-proxy-2026-09-11-v2-audio-hard-negative-bank",
+  "model": "iic/speech_eres2netv2_sv_zh-cn_16k-common",
+  "threshold": 0.4446,
+  "query_cluster_count": 1068,
+  "source_count": 503,
+  "reference_counts": {
+    "family": 42,
+    "vedal": 10,
+    "guest": 19
+  },
+  "identity_counts": {
+    "NON_TARGET_GUEST": 513,
+    "UNKNOWN": 390,
+    "NON_TARGET_KNOWN": 165
+  },
+  "gold_validated": false,
+  "training_candidate_count": 0,
+  "promotion_decision": "DO_NOT_PROMOTE",
+  "output": "identity_results\\identity_mapping_eres2netv2_proxy.jsonl",
+  "policy": "Independent ERes2NetV2 remap uses source-disjoint auto-trusted hard negatives and the calibrated proxy operating point; it does not promote any S/A row."
+}

@@ -1,0 +1,19 @@
+{
+  "schema_version": "0.1.0",
+  "updated_at": "2026-09-11T11:56:18.992707+00:00",
+  "status": "S_A_REVIEW_CANDIDATES_PROXY_IDENTITY_PENDING",
+  "input": "conversations\\natural_conversations_family_mapped.jsonl",
+  "all_output": "datasets\\family_training_candidates_review.jsonl",
+  "s_a_output": "datasets\\family_s_a_candidates_review.jsonl",
+  "record_count": 199371,
+  "grade_counts": {
+    "Q": 42441,
+    "B": 97962,
+    "S": 57354,
+    "A": 1614
+  },
+  "s_a_review_candidate_count": 58968,
+  "training_candidate_count": 0,
+  "source_quality_flagged_count": 27,
+  "policy": "S/A here means review priority only; source-level ASR flags force Q, and no record is training-ready until proxy identity, transcript QA, dedupe, and final human review pass."
+}

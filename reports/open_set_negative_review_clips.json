@@ -1,0 +1,19 @@
+{
+  "schema_version": "0.1.0",
+  "created_at": "2026-09-11T04:29:09.577545+00:00",
+  "status": "CLIPS_PENDING_MANUAL_AUDIO_REVIEW",
+  "source_candidate_count": 453,
+  "clip_count": 845,
+  "bucket_counts": {
+    "game_voice": 13,
+    "guest": 10,
+    "singing": 822
+  },
+  "gold_label_count": 0,
+  "benchmark_ready_count": 0,
+  "output": "speaker_refs\\open_set_negative_review_clips.jsonl",
+  "skipped": {
+    "missing_diarization_or_audio_metadata": 26
+  },
+  "policy": "These are review clips, not negative gold. Metadata buckets must never be treated as speaker identity without audio-level validation."
+}

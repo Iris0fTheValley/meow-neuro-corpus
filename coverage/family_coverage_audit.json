@@ -1,0 +1,339 @@
+{
+  "schema_version": "0.1.0",
+  "updated_at": "2026-09-11T11:57:49.854850+00:00",
+  "status": "FAMILY_PROXY_COVERAGE_AUDIT_IDENTITY_FINAL_REVIEW_PENDING",
+  "window_count": 199371,
+  "source_count": 503,
+  "identity_turn_counts": {
+    "NEURO_FAMILY": 1601201,
+    "VEDAL": 494232,
+    "UNKNOWN": 634580
+  },
+  "grade_counts": {
+    "Q": 42441,
+    "B": 97962,
+    "S": 57354,
+    "A": 1614
+  },
+  "platform_window_counts": {
+    "youtube": 198018,
+    "bilibili": 909,
+    "twitch_archive": 444
+  },
+  "top_sources_by_window_count": [
+    {
+      "source_id": "tohNWnNlDKU",
+      "platform": "youtube",
+      "windows": 1493,
+      "family_turns": 8762,
+      "vedal_turns": 11705,
+      "unknown_turns": 0,
+      "grade_counts": {
+        "B": 1132,
+        "S": 361
+      }
+    },
+    {
+      "source_id": "VPOywcw8tXI",
+      "platform": "youtube",
+      "windows": 1489,
+      "family_turns": 8494,
+      "vedal_turns": 11918,
+      "unknown_turns": 0,
+      "grade_counts": {
+        "S": 314,
+        "B": 1175
+      }
+    },
+    {
+      "source_id": "VRxQcYeJUuI",
+      "platform": "youtube",
+      "windows": 1401,
+      "family_turns": 0,
+      "vedal_turns": 19202,
+      "unknown_turns": 3,
+      "grade_counts": {
+        "Q": 801,
+        "B": 600
+      }
+    },
+    {
+      "source_id": "MXmKOWVONts",
+      "platform": "youtube",
+      "windows": 1368,
+      "family_turns": 0,
+      "vedal_turns": 18742,
+      "unknown_turns": 6,
+      "grade_counts": {
+        "Q": 782,
+        "B": 586
+      }
+    },
+    {
+      "source_id": "pQnOBe5O1uE",
+      "platform": "youtube",
+      "windows": 1363,
+      "family_turns": 0,
+      "vedal_turns": 10647,
+      "unknown_turns": 8039,
+      "grade_counts": {
+        "Q": 779,
+        "B": 584
+      }
+    },
+    {
+      "source_id": "VpuL3yKYU-w",
+      "platform": "youtube",
+      "windows": 1312,
+      "family_turns": 0,
+      "vedal_turns": 8941,
+      "unknown_turns": 9037,
+      "grade_counts": {
+        "Q": 750,
+        "B": 562
+      }
+    },
+    {
+      "source_id": "Ji30eaFehQQ",
+      "platform": "youtube",
+      "windows": 1302,
+      "family_turns": 17817,
+      "vedal_turns": 0,
+      "unknown_turns": 39,
+      "grade_counts": {
+        "S": 731,
+        "B": 568,
+        "A": 3
+      }
+    },
+    {
+      "source_id": "Q47IvKkzV8M",
+      "platform": "youtube",
+      "windows": 1274,
+      "family_turns": 0,
+      "vedal_turns": 17466,
+      "unknown_turns": 6,
+      "grade_counts": {
+        "Q": 728,
+        "B": 546
+      }
+    },
+    {
+      "source_id": "X8qp4hr55hQ",
+      "platform": "youtube",
+      "windows": 1272,
+      "family_turns": 17416,
+      "vedal_turns": 0,
+      "unknown_turns": 18,
+      "grade_counts": {
+        "S": 717,
+        "B": 553,
+        "A": 2
+      }
+    },
+    {
+      "source_id": "WHD8lXuCE5s",
+      "platform": "youtube",
+      "windows": 1247,
+      "family_turns": 0,
+      "vedal_turns": 90,
+      "unknown_turns": 17004,
+      "grade_counts": {
+        "Q": 713,
+        "B": 534
+      }
+    },
+    {
+      "source_id": "o-qgT1zmoIM",
+      "platform": "youtube",
+      "windows": 1237,
+      "family_turns": 16956,
+      "vedal_turns": 0,
+      "unknown_turns": 0,
+      "grade_counts": {
+        "S": 692,
+        "B": 545
+      }
+    },
+    {
+      "source_id": "nw2EWbvVfA4",
+      "platform": "youtube",
+      "windows": 1233,
+      "family_turns": 16726,
+      "vedal_turns": 174,
+      "unknown_turns": 0,
+      "grade_counts": {
+        "S": 693,
+        "B": 540
+      }
+    },
+    {
+      "source_id": "uwAVUHIooNI",
+      "platform": "youtube",
+      "windows": 1212,
+      "family_turns": 0,
+      "vedal_turns": 1960,
+      "unknown_turns": 14652,
+      "grade_counts": {
+        "Q": 1212
+      }
+    },
+    {
+      "source_id": "7efSMKd6Oxc",
+      "platform": "youtube",
+      "windows": 1184,
+      "family_turns": 15371,
+      "vedal_turns": 858,
+      "unknown_turns": 0,
+      "grade_counts": {
+        "S": 655,
+        "B": 529
+      }
+    },
+    {
+      "source_id": "Z-kXB5jXcAA",
+      "platform": "youtube",
+      "windows": 1177,
+      "family_turns": 5872,
+      "vedal_turns": 10262,
+      "unknown_turns": 0,
+      "grade_counts": {
+        "S": 221,
+        "B": 906,
+        "Q": 50
+      }
+    },
+    {
+      "source_id": "mfOj0HDL4ac",
+      "platform": "youtube",
+      "windows": 1177,
+      "family_turns": 16127,
+      "vedal_turns": 0,
+      "unknown_turns": 6,
+      "grade_counts": {
+        "S": 666,
+        "B": 509,
+        "A": 2
+      }
+    },
+    {
+      "source_id": "vhAKoqHU1nI",
+      "platform": "youtube",
+      "windows": 1148,
+      "family_turns": 8223,
+      "vedal_turns": 7521,
+      "unknown_turns": 0,
+      "grade_counts": {
+        "S": 356,
+        "B": 785,
+        "Q": 7
+      }
+    },
+    {
+      "source_id": "X_4WBNz4P4Q",
+      "platform": "youtube",
+      "windows": 1143,
+      "family_turns": 14950,
+      "vedal_turns": 714,
+      "unknown_turns": 0,
+      "grade_counts": {
+        "B": 521,
+        "S": 622
+      }
+    },
+    {
+      "source_id": "OEOKm_d22zA",
+      "platform": "youtube",
+      "windows": 1112,
+      "family_turns": 15157,
+      "vedal_turns": 0,
+      "unknown_turns": 87,
+      "grade_counts": {
+        "S": 606,
+        "B": 499,
+        "A": 7
+      }
+    },
+    {
+      "source_id": "pNEK1wtLtoI",
+      "platform": "youtube",
+      "windows": 1104,
+      "family_turns": 15125,
+      "vedal_turns": 3,
+      "unknown_turns": 0,
+      "grade_counts": {
+        "S": 615,
+        "B": 489
+      }
+    },
+    {
+      "source_id": "GraI2RiQpAA",
+      "platform": "youtube",
+      "windows": 1094,
+      "family_turns": 14939,
+      "vedal_turns": 54,
+      "unknown_turns": 0,
+      "grade_counts": {
+        "S": 609,
+        "B": 485
+      }
+    },
+    {
+      "source_id": "9bT7aVXZCb0",
+      "platform": "youtube",
+      "windows": 1084,
+      "family_turns": 13747,
+      "vedal_turns": 0,
+      "unknown_turns": 1113,
+      "grade_counts": {
+        "B": 563,
+        "S": 370,
+        "A": 151
+      }
+    },
+    {
+      "source_id": "UJpxdHytJB0",
+      "platform": "youtube",
+      "windows": 1084,
+      "family_turns": 14860,
+      "vedal_turns": 0,
+      "unknown_turns": 0,
+      "grade_counts": {
+        "S": 597,
+        "B": 487
+      }
+    },
+    {
+      "source_id": "gCOFxilQH-k",
+      "platform": "youtube",
+      "windows": 1079,
+      "family_turns": 14780,
+      "vedal_turns": 0,
+      "unknown_turns": 9,
+      "grade_counts": {
+        "S": 600,
+        "B": 476,
+        "A": 3
+      }
+    },
+    {
+      "source_id": "DbNcG7_E9Jg",
+      "platform": "youtube",
+      "windows": 1067,
+      "family_turns": 13773,
+      "vedal_turns": 851,
+      "unknown_turns": 0,
+      "grade_counts": {
+        "S": 593,
+        "B": 474
+      }
+    }
+  ],
+  "training_candidate_count": 0,
+  "coverage_gaps": [
+    "semantic state/affect coverage is not yet annotated",
+    "negative OTHER coverage remains incomplete",
+    "proxy mapping still needs final gold review"
+  ],
+  "policy": "Coverage reports preserve unknown and do not infer identity from metadata."
+}

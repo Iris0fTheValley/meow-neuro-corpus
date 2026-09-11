@@ -1,0 +1,32 @@
+{
+  "source_id": "Ak7mzd3L7b0",
+  "method": "SpeechBrain ECAPA-TDNN embeddings + agglomerative clustering",
+  "device": "cuda",
+  "segments": 9,
+  "mean_embedding_seconds": 0.0353008555539418,
+  "p95_embedding_seconds": 0.14939902000187422,
+  "results": [
+    {
+      "n_clusters": 2,
+      "silhouette_cosine": 0.4799264669418335,
+      "cluster_sizes": {
+        "0": 5,
+        "1": 4
+      }
+    },
+    {
+      "n_clusters": 3,
+      "silhouette_cosine": 0.3271735906600952,
+      "cluster_sizes": {
+        "0": 4,
+        "1": 4,
+        "2": 1
+      }
+    }
+  ],
+  "limitations": [
+    "Silhouette is an unsupervised separation proxy, not speaker-label accuracy.",
+    "The benchmark intentionally leaves clusters anonymous; Neuro/Evil/Vedal mapping requires high-confidence reference clips and manual/metadata validation.",
+    "Music, TTS overlap, and synthetic voices may violate assumptions of ECAPA trained on human speech."
+  ]
+}
