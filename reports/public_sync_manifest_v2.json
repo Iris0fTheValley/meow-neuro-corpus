@@ -1,0 +1,36 @@
+{
+  "schema_version": "0.1.0",
+  "milestone": "v0.2-raw-recovery-v2-20260912",
+  "github": {
+    "repository": "Iris0fTheValley/meow-neuro-corpus",
+    "commit": "0b3a6250c5d0ee2d237f60e65c65d1948d9bb079",
+    "tag": "v0.2-raw-recovery-v2-20260912",
+    "remote_verified": true
+  },
+  "huggingface": {
+    "repository": "ID-BLUEBERRY/meow-neuro-corpus-v02-artifacts",
+    "revision": "03c62a7f52f4d9d010bfd6bf2884536abcfdfac0",
+    "path": "production_v2_recovered",
+    "remote_verified_entries": 10,
+    "public": true
+  },
+  "policy": {
+    "raw_media_uploaded": false,
+    "model_weights_uploaded": false,
+    "credentials_uploaded": false,
+    "training_candidate_promotion": false,
+    "ready_for_first_sft": false
+  },
+  "files": [
+    {"local_path": "datasets/meow_v02_sft_v1/production_v2_recovered/dataset_manifest.json", "remote_path": "production_v2_recovered/dataset_manifest.json", "size": 1141, "sha256": "f8f12922dee0795b4952c7a3aad0c033ab2ef8d9c9a6300f853258c0062f6b9a", "upload_status": "verified"},
+    {"local_path": "datasets/meow_v02_sft_v1/production_v2_recovered/final_delivery_report.json", "remote_path": "production_v2_recovered/final_delivery_report.json", "size": 1733, "sha256": "86255d741c257d3b63691b90ee116fd1f02b28df49dafd87a5bd10927c748cfb", "upload_status": "verified"},
+    {"local_path": "datasets/meow_v02_sft_v1/production_v2_recovered/quality_report.json", "remote_path": "production_v2_recovered/quality_report.json", "size": 2646, "sha256": "667abb1ee062f0fad22a5fed94439f497dea8799bfdd900c5e0b1ce2340db2dd", "upload_status": "verified"},
+    {"local_path": "datasets/meow_v02_sft_v1/production_v2_recovered/raw_cluster_recovery_audit.json", "remote_path": "production_v2_recovered/raw_cluster_recovery_audit.json", "size": 29382, "sha256": "9b1cc409ee00968a111341ae24fb538530a80c7a34828eb2684992ce6f857e30", "upload_status": "verified"},
+    {"local_path": "datasets/meow_v02_sft_v1/production_v2_recovered/rejection_funnel.json", "remote_path": "production_v2_recovered/rejection_funnel.json", "size": 1705, "sha256": "06ba2f47212373bd0de52105be8cb4108183c330556471d21a8cb38d40d6c964", "upload_status": "verified"},
+    {"local_path": "datasets/meow_v02_sft_v1/production_v2_recovered/sealed_eval.jsonl", "remote_path": "production_v2_recovered/sealed_eval.jsonl", "size": 1881377, "sha256": "65fa5227cc02e32690cc435e715fd40adf97ef87a13f5a6ad696e0abecd289bd", "upload_status": "verified"},
+    {"local_path": "datasets/meow_v02_sft_v1/production_v2_recovered/target_utterance_recovery_audit.jsonl", "remote_path": "production_v2_recovered/target_utterance_recovery_audit.jsonl", "size": 35216143, "sha256": "d2d6de1a6395fccc1133211fa41b5f88f172b3116e5ecd1ce11d7ec54b580bbe", "upload_status": "verified"},
+    {"local_path": "datasets/meow_v02_sft_v1/production_v2_recovered/train.jsonl", "remote_path": "production_v2_recovered/train.jsonl", "size": 24122148, "sha256": "049c38499b3d092e90444b97d39e4740e0f37b4c1678f18152ce113205e8e2be", "upload_status": "verified"},
+    {"local_path": "datasets/meow_v02_sft_v1/production_v2_recovered/validation_report.json", "remote_path": "production_v2_recovered/validation_report.json", "size": 750, "sha256": "da099eb55abead4da14e3f4a634a5d2cdb3985ae15f2ddaab471d5f1221e9dca", "upload_status": "verified"},
+    {"local_path": "datasets/meow_v02_sft_v1/production_v2_recovered/validation.jsonl", "remote_path": "production_v2_recovered/validation.jsonl", "size": 2116804, "sha256": "f9f2d459d7b6b341a55822803e7498f3bc9ea39574259a36f0dff8c66cfc3db0", "upload_status": "verified"}
+  ]
+}
