@@ -1,0 +1,81 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_status": "PRODUCTION_V2_RAW_RECOVERED_CANDIDATE",
+  "pipeline_version": "production-meow-v02-sft-v2-raw-recovery-2026-09-12",
+  "created_at": "2026-09-11T21:31:27.048801+00:00",
+  "sample_counts": {
+    "train": 21952,
+    "validation": 1902,
+    "sealed_eval": 1679
+  },
+  "total_samples": 25533,
+  "unique_sources": 67,
+  "unique_recording_clusters": 29,
+  "split_recording_clusters": {
+    "train": [
+      "rc_1e2247feb06a76e0",
+      "rc_1fe0139ad7c28fd8",
+      "rc_245e8e11e1f16fcf",
+      "rc_2a7e391a529c2b3c",
+      "rc_34579877a122d7e4",
+      "rc_3eb0a5fa2980ce3e",
+      "rc_517bae6b58df0c05",
+      "rc_53dd6be2ce86808c",
+      "rc_5b3efcd3980191e8",
+      "rc_649e9f6e08de1ffa",
+      "rc_69293762de347922",
+      "rc_8f43bb1669c4f568",
+      "rc_a326a58ecb66a11d",
+      "rc_bf3aa29412173097",
+      "rc_c63a35336867cabd",
+      "rc_c75f41ee7ed9d4aa",
+      "rc_e230d6b14232d26e",
+      "rc_e8c186bcbea92086",
+      "rc_f17bd5f3c2db8747",
+      "rc_f21e19ef365a0798",
+      "rc_f539557bf1522d87",
+      "rc_f5896167e9d29afe",
+      "rc_f975559973259cc9"
+    ],
+    "validation": [
+      "rc_535fa8871641f7dd",
+      "rc_88b31c79088f5ff0",
+      "rc_f1e1518c4db094e8"
+    ],
+    "sealed_eval": [
+      "rc_3baccde39d4db285",
+      "rc_5c8604f44422c8bb",
+      "rc_e8a873a9d7154004"
+    ]
+  },
+  "high_confidence_target_utterances_total": 82726,
+  "target_utterances_indexed_after_target_gates": 64260,
+  "target_utterances_with_recoverable_context": 25476,
+  "usable_target_response_rate": 0.308645,
+  "production_v1_samples": 3667,
+  "raw_recovered_rows_after_dedup": 25332,
+  "new_raw_unique_samples_over_v1": 21866,
+  "recovery_counts": {
+    "recovered_from_guest_context": 6507,
+    "recovered_by_new_turn_reconstruction": 10981,
+    "recovered_by_wider_timeline_search": 1389,
+    "recovered_from_old_UNKNOWN_or_unmapped_context": 15015
+  },
+  "unusable_target_reasons": {
+    "mirror_or_reupload_source": 109,
+    "target_speaker_confidence": 12892,
+    "no_recoverable_context": 38784,
+    "target_text_quality": 4940,
+    "target_transcript_or_overlap_flag": 634
+  },
+  "near_duplicate_removed": 49,
+  "recording_cluster_leakage": {
+    "train_validation": [],
+    "train_sealed_eval": [],
+    "validation_sealed_eval": []
+  },
+  "training_candidate_true_count": 0,
+  "promotion_status": "CANDIDATE_ONLY_NOT_PROMOTED",
+  "ready_for_first_sft": false,
+  "readiness_reason": "Raw recovery is independently validated but this phase forbids SFT promotion and chat-TTS identity closure remains open."
+}

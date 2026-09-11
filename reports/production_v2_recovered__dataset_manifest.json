@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_status": "PRODUCTION_V2_RAW_RECOVERED_CANDIDATE",
+  "pipeline_version": "production-meow-v02-sft-v2-raw-recovery-2026-09-12",
+  "files": {
+    "train": "train.jsonl",
+    "validation": "validation.jsonl",
+    "sealed_eval": "sealed_eval.jsonl",
+    "dataset_manifest": "dataset_manifest.json",
+    "quality_report": "quality_report.json",
+    "rejection_funnel": "rejection_funnel.json",
+    "validation_report": "validation_report.json",
+    "target_utterance_recovery_audit": "target_utterance_recovery_audit.jsonl",
+    "raw_cluster_recovery_audit": "raw_cluster_recovery_audit.json",
+    "final_delivery_report": "final_delivery_report.json"
+  },
+  "source_of_truth": {
+    "raw_timelines": "unique_timelines",
+    "identity_mapping": "identity_results\\identity_mapping_multimodal_fusion_proxy.jsonl",
+    "recording_clusters": "reports\\recording_content_clusters.jsonl"
+  },
+  "production_v1": "datasets\\meow_v02_sft_v1\\production",
+  "recording_cluster_disjoint": true,
+  "training_candidate_true_count": 0,
+  "promotion_status": "CANDIDATE_ONLY_NOT_PROMOTED"
+}

@@ -1,0 +1,85 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_status": "FINAL_DATASET_DELIVERY_SUMMARY",
+  "created_at": "2026-09-11T21:20:48.915580+00:00",
+  "high_precision_seed": {
+    "samples": 263,
+    "path": "datasets\\meow_v02_sft_v1\\high_precision_seed",
+    "status": "HIGH_PRECISION_SEED_ONLY"
+  },
+  "production": {
+    "train_samples": 3088,
+    "validation_samples": 332,
+    "sealed_eval_samples": 247,
+    "total_samples": 3667,
+    "unique_sources": 53,
+    "unique_recording_clusters": 24
+  },
+  "recovery": {
+    "recovered_from_UNKNOWN": 8507,
+    "recovered_by_ASR_alignment_repair": 0,
+    "recovered_by_turn_reconstruction": 11,
+    "recovered_by_segment_level_trimming": 261,
+    "recovered_missing_transcription_confidence": 13683
+  },
+  "rejects": {
+    "identity_rejects": 190682,
+    "context_rejects": 11253,
+    "tts_guest_rejects_explicit": 0,
+    "mirror_reupload_rejects": 9655,
+    "transcript_rejects": 13878,
+    "duplicate_rejects": 3102
+  },
+  "largest_remaining_rejection_causes": [
+    {
+      "reason": "identity_no_target",
+      "rows": 163505
+    },
+    {
+      "reason": "low_target_speaker_confidence",
+      "rows": 27177
+    },
+    {
+      "reason": "target_music_or_malformed_text",
+      "rows": 12176
+    },
+    {
+      "reason": "context_unrecoverable",
+      "rows": 11253
+    },
+    {
+      "reason": "mirror_or_reupload",
+      "rows": 9655
+    },
+    {
+      "reason": "production_quality_gate",
+      "rows": 8188
+    },
+    {
+      "reason": "exact_duplicate",
+      "rows": 3100
+    },
+    {
+      "reason": "target_overlap_or_transcript_flag",
+      "rows": 1691
+    }
+  ],
+  "validation": {
+    "production_validator": "PASS",
+    "recording_cluster_disjoint": true,
+    "recording_cluster_leakage": {
+      "train_validation": [],
+      "train_sealed_eval": [],
+      "validation_sealed_eval": []
+    },
+    "training_candidate_true_count": 0
+  },
+  "READY_FOR_FIRST_SFT": "NO",
+  "readiness_reason": "Production candidate is structurally validated and substantially broader than the seed, but this phase explicitly forbids SFT/promotion and chat-TTS identity contamination is not yet closed; remaining clusters without safe user context are not fabricated.",
+  "artifacts": {
+    "high_precision_seed": "datasets\\meow_v02_sft_v1\\high_precision_seed",
+    "production": "datasets\\meow_v02_sft_v1\\production",
+    "rejection_funnel": "datasets\\meow_v02_sft_v1\\production\\rejection_funnel.json",
+    "quality_report": "datasets\\meow_v02_sft_v1\\production\\quality_report.json"
+  }
+}

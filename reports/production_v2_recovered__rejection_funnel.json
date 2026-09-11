@@ -1,0 +1,54 @@
+{
+  "pipeline_version": "production-meow-v02-sft-v2-raw-recovery-2026-09-12",
+  "source": "unique_timelines raw corpus",
+  "search_horizons_seconds": [
+    10.0,
+    30.0,
+    60.0,
+    120.0
+  ],
+  "target_total": 82726,
+  "target_indexed_after_target_gates": 64260,
+  "target_with_recoverable_context": 25476,
+  "usable_target_response_rate": 0.308645,
+  "production_v1_samples": 3667,
+  "production_v2_samples": 25533,
+  "recovery_counts": {
+    "recovered_from_guest_context": 6507,
+    "recovered_by_new_turn_reconstruction": 10981,
+    "recovered_by_wider_timeline_search": 1389,
+    "recovered_from_old_UNKNOWN_or_unmapped_context": 15015
+  },
+  "unusable_target_reasons": {
+    "mirror_or_reupload_source": 109,
+    "target_speaker_confidence": 12892,
+    "no_recoverable_context": 38784,
+    "target_text_quality": 4940,
+    "target_transcript_or_overlap_flag": 634
+  },
+  "duplicate_removed": 49,
+  "final": {
+    "rows": 25533,
+    "sources": 67,
+    "recording_clusters": 29
+  },
+  "recording_cluster_leakage": {
+    "train_validation": [],
+    "train_sealed_eval": [],
+    "validation_sealed_eval": []
+  },
+  "non_mirror_clusters_without_recovery": [
+    "rc_019951c8cef69d07",
+    "rc_1d19166acae025a1",
+    "rc_2b464f4c00b71829",
+    "rc_2e11ee855464f03e",
+    "rc_40b11c428353e4ad",
+    "rc_8168f46eeddd1225",
+    "rc_a405ee9ef55ab623",
+    "rc_d4087f20b856de67",
+    "rc_db570e67ad5d0a99",
+    "rc_e99853b292d73803",
+    "rc_f6f138e6ecf126ed"
+  ],
+  "policy": "Assistant identity remains current HIGH/MEDIUM fusion only; context may be UNKNOWN, guest, Vedal, or TTS when clean, temporally connected, and not promoted as assistant."
+}

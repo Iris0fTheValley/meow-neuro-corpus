@@ -1,0 +1,892 @@
+{
+  "schema_version": "1.0.0",
+  "pipeline_version": "production-meow-v02-sft-v2-raw-recovery-2026-09-12",
+  "clusters": [
+    {
+      "canonical_recording_id": "rc_019951c8cef69d07",
+      "source_ids": [
+        "PVb0oqDXJTs"
+      ],
+      "target_utterances": 1245,
+      "recoverable_targets": 0,
+      "unusable_targets": 1245,
+      "preceding_speech_available_targets": 0,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "no_clean_preceding_non_target_context_within_120s": 929,
+        "target_speaker_confidence_below_0.65": 217,
+        "target_text_malformed_or_music_like": 99
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "NO_SAFE_CONTEXT"
+    },
+    {
+      "canonical_recording_id": "rc_1d19166acae025a1",
+      "source_ids": [
+        "oHwDDpEoRNs"
+      ],
+      "target_utterances": 1362,
+      "recoverable_targets": 0,
+      "unusable_targets": 1362,
+      "preceding_speech_available_targets": 0,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "target_text_malformed_or_music_like": 110,
+        "target_speaker_confidence_below_0.65": 261,
+        "no_clean_preceding_non_target_context_within_120s": 990,
+        "target_transcript_or_overlap_flag": 1
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "NO_SAFE_CONTEXT"
+    },
+    {
+      "canonical_recording_id": "rc_1e2247feb06a76e0",
+      "source_ids": [
+        "8BUuroRgtMs"
+      ],
+      "target_utterances": 565,
+      "recoverable_targets": 316,
+      "unusable_targets": 249,
+      "preceding_speech_available_targets": 316,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "target_speaker_confidence_below_0.65": 131,
+        "target_text_malformed_or_music_like": 118
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "RECOVERABLE"
+    },
+    {
+      "canonical_recording_id": "rc_1fe0139ad7c28fd8",
+      "source_ids": [
+        "IA-fveG3TF4",
+        "Sg8FwvOnzBk",
+        "T6UpGadBL9Q"
+      ],
+      "target_utterances": 3018,
+      "recoverable_targets": 925,
+      "unusable_targets": 2093,
+      "preceding_speech_available_targets": 954,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "target_text_malformed_or_music_like": 328,
+        "target_speaker_confidence_below_0.65": 560,
+        "target_transcript_or_overlap_flag": 6,
+        "no_clean_preceding_non_target_context_within_120s": 1199
+      },
+      "raw_timeline_available": true,
+      "source_count": 3,
+      "high_risk_mirror_or_reupload": false,
+      "status": "RECOVERABLE"
+    },
+    {
+      "canonical_recording_id": "rc_245e8e11e1f16fcf",
+      "source_ids": [
+        "-jwDs0n0R3o"
+      ],
+      "target_utterances": 200,
+      "recoverable_targets": 148,
+      "unusable_targets": 52,
+      "preceding_speech_available_targets": 155,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "target_speaker_confidence_below_0.65": 44,
+        "no_clean_preceding_non_target_context_within_120s": 7,
+        "target_text_malformed_or_music_like": 1
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "RECOVERABLE"
+    },
+    {
+      "canonical_recording_id": "rc_2a7e391a529c2b3c",
+      "source_ids": [
+        "SGdlU_38IIo"
+      ],
+      "target_utterances": 1570,
+      "recoverable_targets": 187,
+      "unusable_targets": 1383,
+      "preceding_speech_available_targets": 253,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "no_clean_preceding_non_target_context_within_120s": 1198,
+        "target_text_malformed_or_music_like": 104,
+        "target_speaker_confidence_below_0.65": 76,
+        "target_transcript_or_overlap_flag": 5
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "RECOVERABLE"
+    },
+    {
+      "canonical_recording_id": "rc_2b464f4c00b71829",
+      "source_ids": [
+        "cM6q2GESfcE"
+      ],
+      "target_utterances": 1131,
+      "recoverable_targets": 0,
+      "unusable_targets": 1131,
+      "preceding_speech_available_targets": 0,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "target_speaker_confidence_below_0.65": 165,
+        "no_clean_preceding_non_target_context_within_120s": 901,
+        "target_text_malformed_or_music_like": 64,
+        "target_transcript_or_overlap_flag": 1
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "NO_SAFE_CONTEXT"
+    },
+    {
+      "canonical_recording_id": "rc_2e11ee855464f03e",
+      "source_ids": [
+        "DDSgYtHfC6E"
+      ],
+      "target_utterances": 304,
+      "recoverable_targets": 0,
+      "unusable_targets": 304,
+      "preceding_speech_available_targets": 0,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "no_clean_preceding_non_target_context_within_120s": 232,
+        "target_speaker_confidence_below_0.65": 66,
+        "target_text_malformed_or_music_like": 3,
+        "target_transcript_or_overlap_flag": 3
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "NO_SAFE_CONTEXT"
+    },
+    {
+      "canonical_recording_id": "rc_34579877a122d7e4",
+      "source_ids": [
+        "pT_w4Iep6qI"
+      ],
+      "target_utterances": 246,
+      "recoverable_targets": 126,
+      "unusable_targets": 120,
+      "preceding_speech_available_targets": 144,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "no_clean_preceding_non_target_context_within_120s": 43,
+        "target_transcript_or_overlap_flag": 34,
+        "target_speaker_confidence_below_0.65": 30,
+        "target_text_malformed_or_music_like": 13
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "RECOVERABLE"
+    },
+    {
+      "canonical_recording_id": "rc_3baccde39d4db285",
+      "source_ids": [
+        "cZ3XGXBrrVU"
+      ],
+      "target_utterances": 721,
+      "recoverable_targets": 605,
+      "unusable_targets": 116,
+      "preceding_speech_available_targets": 621,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "no_clean_preceding_non_target_context_within_120s": 28,
+        "target_speaker_confidence_below_0.65": 84,
+        "target_text_malformed_or_music_like": 4
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "RECOVERABLE"
+    },
+    {
+      "canonical_recording_id": "rc_3eb0a5fa2980ce3e",
+      "source_ids": [
+        "BV1Zk4y147qt"
+      ],
+      "target_utterances": 9,
+      "recoverable_targets": 5,
+      "unusable_targets": 4,
+      "preceding_speech_available_targets": 5,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "no_clean_preceding_non_target_context_within_120s": 1,
+        "target_speaker_confidence_below_0.65": 3
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "RECOVERABLE"
+    },
+    {
+      "canonical_recording_id": "rc_40b11c428353e4ad",
+      "source_ids": [
+        "3vmpPKJpn70"
+      ],
+      "target_utterances": 1561,
+      "recoverable_targets": 0,
+      "unusable_targets": 1561,
+      "preceding_speech_available_targets": 0,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "target_speaker_confidence_below_0.65": 319,
+        "no_clean_preceding_non_target_context_within_120s": 1110,
+        "target_text_malformed_or_music_like": 131,
+        "target_transcript_or_overlap_flag": 1
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "NO_SAFE_CONTEXT"
+    },
+    {
+      "canonical_recording_id": "rc_517bae6b58df0c05",
+      "source_ids": [
+        "qlJmo9JPp2A"
+      ],
+      "target_utterances": 799,
+      "recoverable_targets": 385,
+      "unusable_targets": 414,
+      "preceding_speech_available_targets": 546,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "no_clean_preceding_non_target_context_within_120s": 292,
+        "target_transcript_or_overlap_flag": 3,
+        "target_speaker_confidence_below_0.65": 119
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "RECOVERABLE"
+    },
+    {
+      "canonical_recording_id": "rc_535fa8871641f7dd",
+      "source_ids": [
+        "z7Pteqy8kew"
+      ],
+      "target_utterances": 704,
+      "recoverable_targets": 617,
+      "unusable_targets": 87,
+      "preceding_speech_available_targets": 629,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "no_clean_preceding_non_target_context_within_120s": 23,
+        "target_text_malformed_or_music_like": 1,
+        "target_speaker_confidence_below_0.65": 62,
+        "target_transcript_or_overlap_flag": 1
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "RECOVERABLE"
+    },
+    {
+      "canonical_recording_id": "rc_53dd6be2ce86808c",
+      "source_ids": [
+        "lwAYSOfAz5M"
+      ],
+      "target_utterances": 541,
+      "recoverable_targets": 318,
+      "unusable_targets": 223,
+      "preceding_speech_available_targets": 318,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "target_text_malformed_or_music_like": 90,
+        "target_speaker_confidence_below_0.65": 133
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "RECOVERABLE"
+    },
+    {
+      "canonical_recording_id": "rc_5b3efcd3980191e8",
+      "source_ids": [
+        "I5ICo2gaGYo",
+        "VMQSffoo8IM",
+        "Vt7XYkLne1Y",
+        "xJiH_3u4kJ4"
+      ],
+      "target_utterances": 2235,
+      "recoverable_targets": 1610,
+      "unusable_targets": 625,
+      "preceding_speech_available_targets": 1752,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "target_speaker_confidence_below_0.65": 345,
+        "no_clean_preceding_non_target_context_within_120s": 244,
+        "target_transcript_or_overlap_flag": 23,
+        "target_text_malformed_or_music_like": 13
+      },
+      "raw_timeline_available": true,
+      "source_count": 4,
+      "high_risk_mirror_or_reupload": false,
+      "status": "RECOVERABLE"
+    },
+    {
+      "canonical_recording_id": "rc_5c8604f44422c8bb",
+      "source_ids": [
+        "E3U5YsX-Xfc"
+      ],
+      "target_utterances": 804,
+      "recoverable_targets": 570,
+      "unusable_targets": 234,
+      "preceding_speech_available_targets": 677,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "target_speaker_confidence_below_0.65": 125,
+        "target_transcript_or_overlap_flag": 2,
+        "no_clean_preceding_non_target_context_within_120s": 107
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "RECOVERABLE"
+    },
+    {
+      "canonical_recording_id": "rc_649e9f6e08de1ffa",
+      "source_ids": [
+        "dc8_a13Vesk"
+      ],
+      "target_utterances": 10,
+      "recoverable_targets": 2,
+      "unusable_targets": 8,
+      "preceding_speech_available_targets": 2,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "no_clean_preceding_non_target_context_within_120s": 2,
+        "target_transcript_or_overlap_flag": 5,
+        "target_text_malformed_or_music_like": 1
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "RECOVERABLE"
+    },
+    {
+      "canonical_recording_id": "rc_69293762de347922",
+      "source_ids": [
+        "-UyVqjxe9ek"
+      ],
+      "target_utterances": 593,
+      "recoverable_targets": 295,
+      "unusable_targets": 298,
+      "preceding_speech_available_targets": 338,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "target_transcript_or_overlap_flag": 20,
+        "target_speaker_confidence_below_0.65": 113,
+        "no_clean_preceding_non_target_context_within_120s": 163,
+        "target_text_malformed_or_music_like": 2
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "RECOVERABLE"
+    },
+    {
+      "canonical_recording_id": "rc_8168f46eeddd1225",
+      "source_ids": [
+        "7bAR-y8FOSg"
+      ],
+      "target_utterances": 1564,
+      "recoverable_targets": 0,
+      "unusable_targets": 1564,
+      "preceding_speech_available_targets": 0,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "target_text_malformed_or_music_like": 135,
+        "target_speaker_confidence_below_0.65": 273,
+        "no_clean_preceding_non_target_context_within_120s": 1155,
+        "target_transcript_or_overlap_flag": 1
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "NO_SAFE_CONTEXT"
+    },
+    {
+      "canonical_recording_id": "rc_88b31c79088f5ff0",
+      "source_ids": [
+        "uTKB2e-1HPQ"
+      ],
+      "target_utterances": 920,
+      "recoverable_targets": 652,
+      "unusable_targets": 268,
+      "preceding_speech_available_targets": 771,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "target_transcript_or_overlap_flag": 14,
+        "no_clean_preceding_non_target_context_within_120s": 129,
+        "target_speaker_confidence_below_0.65": 125
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "RECOVERABLE"
+    },
+    {
+      "canonical_recording_id": "rc_8f43bb1669c4f568",
+      "source_ids": [
+        "hT-p4XGNB8k"
+      ],
+      "target_utterances": 443,
+      "recoverable_targets": 298,
+      "unusable_targets": 145,
+      "preceding_speech_available_targets": 340,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "no_clean_preceding_non_target_context_within_120s": 70,
+        "target_speaker_confidence_below_0.65": 74,
+        "target_text_malformed_or_music_like": 1
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "RECOVERABLE"
+    },
+    {
+      "canonical_recording_id": "rc_a326a58ecb66a11d",
+      "source_ids": [
+        "soyb0qQJ78E"
+      ],
+      "target_utterances": 1262,
+      "recoverable_targets": 9,
+      "unusable_targets": 1253,
+      "preceding_speech_available_targets": 20,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "no_clean_preceding_non_target_context_within_120s": 1161,
+        "target_text_malformed_or_music_like": 65,
+        "target_speaker_confidence_below_0.65": 27
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "RECOVERABLE"
+    },
+    {
+      "canonical_recording_id": "rc_a405ee9ef55ab623",
+      "source_ids": [
+        "Lcx7fQNczo0",
+        "dPp6tG1nbtQ"
+      ],
+      "target_utterances": 2884,
+      "recoverable_targets": 0,
+      "unusable_targets": 2884,
+      "preceding_speech_available_targets": 0,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "target_text_malformed_or_music_like": 219,
+        "no_clean_preceding_non_target_context_within_120s": 2203,
+        "target_speaker_confidence_below_0.65": 459,
+        "target_transcript_or_overlap_flag": 3
+      },
+      "raw_timeline_available": true,
+      "source_count": 2,
+      "high_risk_mirror_or_reupload": false,
+      "status": "NO_SAFE_CONTEXT"
+    },
+    {
+      "canonical_recording_id": "rc_bf3aa29412173097",
+      "source_ids": [
+        "vhAKoqHU1nI"
+      ],
+      "target_utterances": 2741,
+      "recoverable_targets": 1857,
+      "unusable_targets": 884,
+      "preceding_speech_available_targets": 2120,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "no_clean_preceding_non_target_context_within_120s": 298,
+        "target_speaker_confidence_below_0.65": 573,
+        "target_text_malformed_or_music_like": 11,
+        "target_transcript_or_overlap_flag": 2
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "RECOVERABLE"
+    },
+    {
+      "canonical_recording_id": "rc_c63a35336867cabd",
+      "source_ids": [
+        "2Ys8HQp3bls"
+      ],
+      "target_utterances": 384,
+      "recoverable_targets": 343,
+      "unusable_targets": 41,
+      "preceding_speech_available_targets": 343,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "target_speaker_confidence_below_0.65": 35,
+        "target_text_malformed_or_music_like": 4,
+        "target_transcript_or_overlap_flag": 2
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "RECOVERABLE"
+    },
+    {
+      "canonical_recording_id": "rc_c75f41ee7ed9d4aa",
+      "source_ids": [
+        "tY_1vy-5sgM"
+      ],
+      "target_utterances": 452,
+      "recoverable_targets": 350,
+      "unusable_targets": 102,
+      "preceding_speech_available_targets": 359,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "target_speaker_confidence_below_0.65": 77,
+        "no_clean_preceding_non_target_context_within_120s": 22,
+        "target_text_malformed_or_music_like": 2,
+        "target_transcript_or_overlap_flag": 1
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "RECOVERABLE"
+    },
+    {
+      "canonical_recording_id": "rc_d4087f20b856de67",
+      "source_ids": [
+        "WcsJOkTDvOg"
+      ],
+      "target_utterances": 1238,
+      "recoverable_targets": 0,
+      "unusable_targets": 1238,
+      "preceding_speech_available_targets": 0,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "no_clean_preceding_non_target_context_within_120s": 944,
+        "target_text_malformed_or_music_like": 124,
+        "target_speaker_confidence_below_0.65": 170
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "NO_SAFE_CONTEXT"
+    },
+    {
+      "canonical_recording_id": "rc_db570e67ad5d0a99",
+      "source_ids": [
+        "joPOlqpV4s8"
+      ],
+      "target_utterances": 956,
+      "recoverable_targets": 0,
+      "unusable_targets": 956,
+      "preceding_speech_available_targets": 0,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "no_clean_preceding_non_target_context_within_120s": 679,
+        "target_speaker_confidence_below_0.65": 198,
+        "target_text_malformed_or_music_like": 77,
+        "target_transcript_or_overlap_flag": 2
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "NO_SAFE_CONTEXT"
+    },
+    {
+      "canonical_recording_id": "rc_e230d6b14232d26e",
+      "source_ids": [
+        "4NvFzxiD-tE",
+        "5E2Qmanm-IQ",
+        "5YGZKbhu3Og",
+        "73bCoDI_8ck",
+        "7IHN4lYOgOc",
+        "AIYaBYVX95o",
+        "CwA807CsD08",
+        "FeddkoNaK1c",
+        "HqLohwUgX84",
+        "Hz9XMb2kHJg",
+        "InGcTJOv15w",
+        "KSfhL8Gwq34",
+        "MTqTCHeORas",
+        "ORCpxwW89Co",
+        "OhrmbW9bEzg",
+        "PKMmBtPZQek",
+        "RSnIYKVU7dc",
+        "S6zgtOcT6t4",
+        "SLa06WhcpCg",
+        "_sDWrziA7Q0",
+        "bBs8SYMMjdY",
+        "bLMHeZ6Qmmk",
+        "bNSS40anhNk",
+        "bpmR3KItW3g",
+        "cZavF07ZE58",
+        "d2uwpHa4KdQ",
+        "dOirx_i9Xj4",
+        "fSiwGjhUx88",
+        "faJMooKnYac",
+        "fnSKQj-R5n4",
+        "fndCSqoZ_8k",
+        "iC2X7pu7B34",
+        "jS765dNaCDQ",
+        "kt_Zeb4b2eg",
+        "lUa_qO_6kv4",
+        "mTYUhjtP7y4",
+        "nL-C7Wv5fwk",
+        "oKoVicIkam0",
+        "roAtmTNzu4I",
+        "t1EkR9woRb8",
+        "tSTBe1s9zyk",
+        "ul4SEV_euH8"
+      ],
+      "target_utterances": 36554,
+      "recoverable_targets": 12655,
+      "unusable_targets": 23899,
+      "preceding_speech_available_targets": 13524,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "target_text_malformed_or_music_like": 2428,
+        "no_clean_preceding_non_target_context_within_120s": 14970,
+        "target_speaker_confidence_below_0.65": 6033,
+        "target_transcript_or_overlap_flag": 468
+      },
+      "raw_timeline_available": true,
+      "source_count": 42,
+      "high_risk_mirror_or_reupload": false,
+      "status": "RECOVERABLE"
+    },
+    {
+      "canonical_recording_id": "rc_e8a873a9d7154004",
+      "source_ids": [
+        "BpZtP8RA364"
+      ],
+      "target_utterances": 768,
+      "recoverable_targets": 505,
+      "unusable_targets": 263,
+      "preceding_speech_available_targets": 587,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "no_clean_preceding_non_target_context_within_120s": 120,
+        "target_speaker_confidence_below_0.65": 140,
+        "target_transcript_or_overlap_flag": 2,
+        "target_text_malformed_or_music_like": 1
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "RECOVERABLE"
+    },
+    {
+      "canonical_recording_id": "rc_e8c186bcbea92086",
+      "source_ids": [
+        "QT-6ltfZfdg"
+      ],
+      "target_utterances": 1420,
+      "recoverable_targets": 92,
+      "unusable_targets": 1328,
+      "preceding_speech_available_targets": 143,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "no_clean_preceding_non_target_context_within_120s": 1084,
+        "target_speaker_confidence_below_0.65": 214,
+        "target_text_malformed_or_music_like": 27,
+        "target_transcript_or_overlap_flag": 3
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "RECOVERABLE"
+    },
+    {
+      "canonical_recording_id": "rc_e99853b292d73803",
+      "source_ids": [
+        "T0IE_vJzTMc"
+      ],
+      "target_utterances": 1395,
+      "recoverable_targets": 0,
+      "unusable_targets": 1395,
+      "preceding_speech_available_targets": 0,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "no_clean_preceding_non_target_context_within_120s": 1011,
+        "target_speaker_confidence_below_0.65": 225,
+        "target_text_malformed_or_music_like": 158,
+        "target_transcript_or_overlap_flag": 1
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "NO_SAFE_CONTEXT"
+    },
+    {
+      "canonical_recording_id": "rc_f17bd5f3c2db8747",
+      "source_ids": [
+        "W-8ORRpJIC4"
+      ],
+      "target_utterances": 3467,
+      "recoverable_targets": 3,
+      "unusable_targets": 3464,
+      "preceding_speech_available_targets": 12,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "no_clean_preceding_non_target_context_within_120s": 3179,
+        "target_speaker_confidence_below_0.65": 122,
+        "target_text_malformed_or_music_like": 161,
+        "target_transcript_or_overlap_flag": 2
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "RECOVERABLE"
+    },
+    {
+      "canonical_recording_id": "rc_f1e1518c4db094e8",
+      "source_ids": [
+        "5BZUIFr7g4U",
+        "FsgVdTEhUnY",
+        "kJ1i5Bj9TqI"
+      ],
+      "target_utterances": 3905,
+      "recoverable_targets": 635,
+      "unusable_targets": 3270,
+      "preceding_speech_available_targets": 649,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "target_text_malformed_or_music_like": 289,
+        "no_clean_preceding_non_target_context_within_120s": 2263,
+        "target_transcript_or_overlap_flag": 5,
+        "target_speaker_confidence_below_0.65": 713
+      },
+      "raw_timeline_available": true,
+      "source_count": 3,
+      "high_risk_mirror_or_reupload": false,
+      "status": "RECOVERABLE"
+    },
+    {
+      "canonical_recording_id": "rc_f21e19ef365a0798",
+      "source_ids": [
+        "ic4d0661ePk"
+      ],
+      "target_utterances": 20,
+      "recoverable_targets": 15,
+      "unusable_targets": 5,
+      "preceding_speech_available_targets": 15,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "no_clean_preceding_non_target_context_within_120s": 1,
+        "target_speaker_confidence_below_0.65": 4
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "RECOVERABLE"
+    },
+    {
+      "canonical_recording_id": "rc_f539557bf1522d87",
+      "source_ids": [
+        "1CxTCk0I79w"
+      ],
+      "target_utterances": 854,
+      "recoverable_targets": 376,
+      "unusable_targets": 478,
+      "preceding_speech_available_targets": 657,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "target_transcript_or_overlap_flag": 8,
+        "target_speaker_confidence_below_0.65": 123,
+        "no_clean_preceding_non_target_context_within_120s": 342,
+        "target_text_malformed_or_music_like": 5
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "RECOVERABLE"
+    },
+    {
+      "canonical_recording_id": "rc_f5896167e9d29afe",
+      "source_ids": [
+        "o7TseDvrfp8"
+      ],
+      "target_utterances": 702,
+      "recoverable_targets": 2,
+      "unusable_targets": 700,
+      "preceding_speech_available_targets": 2,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "target_text_malformed_or_music_like": 26,
+        "target_transcript_or_overlap_flag": 8,
+        "no_clean_preceding_non_target_context_within_120s": 631,
+        "target_speaker_confidence_below_0.65": 35
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "RECOVERABLE"
+    },
+    {
+      "canonical_recording_id": "rc_f6f138e6ecf126ed",
+      "source_ids": [
+        "f1yHOeo6r5c"
+      ],
+      "target_utterances": 1311,
+      "recoverable_targets": 0,
+      "unusable_targets": 1311,
+      "preceding_speech_available_targets": 0,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "no_clean_preceding_non_target_context_within_120s": 975,
+        "target_text_malformed_or_music_like": 120,
+        "target_speaker_confidence_below_0.65": 213,
+        "target_transcript_or_overlap_flag": 3
+      },
+      "raw_timeline_available": true,
+      "source_count": 1,
+      "high_risk_mirror_or_reupload": false,
+      "status": "NO_SAFE_CONTEXT"
+    },
+    {
+      "canonical_recording_id": "rc_f975559973259cc9",
+      "source_ids": [
+        "GiRF7_T5FZs",
+        "qXOaqqtxMic",
+        "scUt5sDWObY",
+        "zaxmxPE6Mls"
+      ],
+      "target_utterances": 1868,
+      "recoverable_targets": 1575,
+      "unusable_targets": 293,
+      "preceding_speech_available_targets": 1646,
+      "chat_tts_context_targets": 0,
+      "failure_reasons": {
+        "target_speaker_confidence_below_0.65": 206,
+        "no_clean_preceding_non_target_context_within_120s": 78,
+        "target_text_malformed_or_music_like": 5,
+        "target_transcript_or_overlap_flag": 4
+      },
+      "raw_timeline_available": true,
+      "source_count": 4,
+      "high_risk_mirror_or_reupload": false,
+      "status": "RECOVERABLE"
+    }
+  ],
+  "non_mirror_clusters_without_recovery": [
+    "rc_019951c8cef69d07",
+    "rc_1d19166acae025a1",
+    "rc_2b464f4c00b71829",
+    "rc_2e11ee855464f03e",
+    "rc_40b11c428353e4ad",
+    "rc_8168f46eeddd1225",
+    "rc_a405ee9ef55ab623",
+    "rc_d4087f20b856de67",
+    "rc_db570e67ad5d0a99",
+    "rc_e99853b292d73803",
+    "rc_f6f138e6ecf126ed"
+  ]
+}
