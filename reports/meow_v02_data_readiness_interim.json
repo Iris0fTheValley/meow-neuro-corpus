@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1.0",
-  "updated_at": "2026-09-11T19:55:25.131095+00:00",
+  "updated_at": "2026-09-11T20:07:27.975233+00:00",
   "status": "CONTINUE_WORKING",
   "readiness": "NOT_READY_FOR_SFT",
   "stopping_conditions": {
@@ -228,7 +228,7 @@
     "identity_closure_chat_tts_stress_potential_family_accept_rate": 0.4,
     "identity_closure_chat_tts_stress_use_for_calibration": false,
     "identity_closure_chat_tts_rejection_layer_status": "CHAT_TTS_REJECTION_LAYER_AUDIT_COMPLETE_REJECT_ONLY",
-    "identity_closure_chat_tts_rejection_layer_version": "chat-tts-rejection-2026-09-12-v1",
+    "identity_closure_chat_tts_rejection_layer_version": "chat-tts-rejection-2026-09-12-v2",
     "identity_closure_chat_tts_rejection_candidate_cluster_count": 1068,
     "identity_closure_chat_tts_rejection_current_family_candidate_count": 145,
     "identity_closure_chat_tts_rejection_decision_counts": {
@@ -645,7 +645,7 @@
       "schema_version": "0.1.0",
       "artifact_status": "current",
       "canonical_for": "identity_closure_lineage_and_artifact_roles",
-      "generated_at": "2026-09-11T19:55:14.588841+00:00",
+      "generated_at": "2026-09-11T20:07:15.058905+00:00",
       "code_commit": "working-tree",
       "thresholds": {
         "current_operating": {
@@ -714,10 +714,10 @@
           "canonical_for": "multimodal_fusion_mapping",
           "path": "identity_results/identity_mapping_multimodal_fusion_proxy.jsonl",
           "schema_version": "0.1.0",
-          "generated_at": "2026-09-11T15:45:47.793654+00:00",
+          "generated_at": "2026-09-11T20:03:38.476891+00:00",
           "code_commit": "working-tree",
           "input_artifact_hashes": {
-            "self": "7a3ca590985b1254ed30e51fd3e381f441f60ba60a965ac5a6a9076812159fd7"
+            "self": "b1fd73a29e0a41a1c31fac797102df656213aa2f4629c034d9e5d10e37bc5235"
           }
         },
         "post_fusion_candidate_regrade": {
@@ -801,5 +801,149 @@
     "expand recurring guest candidates into independently verified cross-source acoustic prototypes",
     "evaluate ERes2NetV2/CAM++/ERes2Net on a larger source-disjoint non-target bank before remapping promotion",
     "verify recurring guest candidates per cluster and grow independent negative coverage before any S/A promotion"
-  ]
+  ],
+  "artifact_status": "current",
+  "canonical_for": "meow_v02_dynamic_readiness",
+  "current_operating_threshold": 0.163198,
+  "historical_benchmark_threshold": 0.1205,
+  "current_post_fusion_s_a_count": 8238,
+  "historical_pre_fusion_s_a_count": 58968,
+  "training_candidate_count": 0,
+  "derived_candidate_counts": {
+    "row_count": 199371,
+    "grade_counts": {
+      "Q": 102217,
+      "B": 88916,
+      "S": 7951,
+      "A": 287
+    },
+    "s_a_review_candidate_count": 8238,
+    "training_candidate_count": 0,
+    "source": "datasets\\family_training_candidates_fusion_review.jsonl"
+  },
+  "invariants": {
+    "candidate_report_matches_row_level": true,
+    "candidate_training_flags_zero": true,
+    "fusion_mapping_training_flags_zero": true,
+    "eres_mapping_training_flags_zero": true,
+    "recording_cluster_report_present": true,
+    "validation_boundary_report_present": true,
+    "lineage_complete": true
+  },
+  "training_gate_closed": true,
+  "lineage": {
+    "schema_version": "0.1.0",
+    "artifact_status": "current",
+    "canonical_for": "identity_closure_lineage_and_artifact_roles",
+    "generated_at": "2026-09-11T20:07:15.058905+00:00",
+    "code_commit": "working-tree",
+    "thresholds": {
+      "current_operating": {
+        "value": 0.163198,
+        "status": "current",
+        "source": "identity_results/identity_mapping_eres2netv2_proxy.jsonl"
+      },
+      "historical_benchmark": {
+        "value": 0.1205,
+        "status": "historical",
+        "source": "reports/identity_calibration_transfer_audit.json"
+      }
+    },
+    "candidate_counts": {
+      "current_post_fusion_s_a": {
+        "value": 8238,
+        "status": "derived_from_row_level_artifact",
+        "source": "datasets\\family_training_candidates_fusion_review.jsonl"
+      },
+      "historical_pre_fusion_s_a": {
+        "value": 58968,
+        "status": "historical",
+        "source": "reports/family_training_candidate_progress.json"
+      },
+      "training_candidate": {
+        "value": 0,
+        "status": "closed_by_invariant"
+      }
+    },
+    "nodes": {
+      "recording_content_clusters": {
+        "artifact_status": "current",
+        "canonical_for": "recording_content_clusters",
+        "path": "reports/recording_content_cluster_audit.json",
+        "schema_version": "0.1.0",
+        "generated_at": "2026-09-11T19:49:24.823453+00:00",
+        "code_commit": "working-tree",
+        "input_artifact_hashes": {
+          "self": "35dece02525da041638d7486f909f690fa6caabc92752d0c400cd75710dd311f"
+        }
+      },
+      "identity_validation_boundary": {
+        "artifact_status": "current",
+        "canonical_for": "identity_validation_boundary",
+        "path": "reports/identity_validation_boundary_audit.json",
+        "schema_version": "0.1.0",
+        "generated_at": "2026-09-11T19:55:01.591155+00:00",
+        "code_commit": "working-tree",
+        "input_artifact_hashes": {
+          "self": "1bcea1b9bd4036f7605abf30410661b08a6c143efa7999ba41534663bc2ef544"
+        }
+      },
+      "eres2netv2_cluster_remap": {
+        "artifact_status": "current",
+        "canonical_for": "eres2netv2_cluster_remap",
+        "path": "identity_results/identity_mapping_eres2netv2_proxy.jsonl",
+        "schema_version": "0.1.0",
+        "generated_at": "2026-09-11T15:09:12.385952+00:00",
+        "code_commit": "working-tree",
+        "input_artifact_hashes": {
+          "self": "7bb82adc92be8f605df789e1dc4b91fb44226846a670c947d8bc16955279027a"
+        }
+      },
+      "multimodal_fusion_mapping": {
+        "artifact_status": "current",
+        "canonical_for": "multimodal_fusion_mapping",
+        "path": "identity_results/identity_mapping_multimodal_fusion_proxy.jsonl",
+        "schema_version": "0.1.0",
+        "generated_at": "2026-09-11T20:03:38.476891+00:00",
+        "code_commit": "working-tree",
+        "input_artifact_hashes": {
+          "self": "b1fd73a29e0a41a1c31fac797102df656213aa2f4629c034d9e5d10e37bc5235"
+        }
+      },
+      "post_fusion_candidate_regrade": {
+        "artifact_status": "current",
+        "canonical_for": "post_fusion_candidate_regrade",
+        "path": "datasets/family_training_candidates_fusion_review.jsonl",
+        "schema_version": "0.1.0",
+        "generated_at": "2026-09-11T15:47:01.724033+00:00",
+        "code_commit": "working-tree",
+        "input_artifact_hashes": {
+          "self": "6fb2e2db0b60ec33f651095324b2257d6981b046e24a21a29284d5b317cede98"
+        }
+      },
+      "historical_benchmark_threshold": {
+        "artifact_status": "historical",
+        "canonical_for": null,
+        "path": "reports/identity_calibration_transfer_audit.json",
+        "schema_version": "0.1.0",
+        "generated_at": "2026-09-11T17:55:40.210881+00:00",
+        "code_commit": "historical-unknown",
+        "input_artifact_hashes": {
+          "self": "f4f64c2789b9f965fc29394c89fb25d43aa052a4bdbcf473a0e358e03b6304c5"
+        }
+      },
+      "historical_pre_fusion_candidate_report": {
+        "artifact_status": "historical",
+        "canonical_for": null,
+        "path": "reports/family_training_candidate_progress.json",
+        "schema_version": "0.1.0",
+        "generated_at": "2026-09-11T11:56:18.993707+00:00",
+        "code_commit": "historical-unknown",
+        "input_artifact_hashes": {
+          "self": "69de68f9475876e98b3495da05a977ec07c7a1107413c3dd49596f48228eb682"
+        }
+      }
+    },
+    "policy": "Historical artifacts are retained and explicitly non-canonical; downstream readiness must use current nodes and row-level derivation."
+  }
 }

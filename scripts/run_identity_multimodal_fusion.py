@@ -16,6 +16,7 @@ from manifest_tools import ROOT, read_jsonl, safe_name, write_json
 
 
 VERSION = "multimodal-fusion-proxy-2026-09-12-v2-chat-tts-rejection"
+SEMANTIC_CONFIRMATION_THRESHOLD = 0.35
 NUMERIC_STYLE = ("word_count", "content_word_count", "first_person_count", "second_person_count", "question_count", "hedge_count", "assertion_count", "repair_false_start_count", "address_count", "reaction_count")
 
 
@@ -52,8 +53,12 @@ def load_timelines() -> dict[str, dict[str, list[dict]]]:
 def aggregate_style(turns: list[dict]) -> dict:
     values = [style(turn.get("text") or "") for turn in turns if str(turn.get("text") or "").strip()]
     if not values:
-        return {key: 0.0 for key in NUMERIC_STYLE} | {"turn_count": 0}
-    return {key: round(sum(value[key] for value in values) / len(values), 6) for key in NUMERIC_STYLE} | {"turn_count": len(values)}
+        result = {key: 0.0 for key in NUMERIC_STYLE}
+        result["turn_count"] = 0
+        return result
+    result = {key: round(sum(value[key] for value in values) / len(values), 6) for key in NUMERIC_STYLE}
+    result["turn_count"] = len(values)
+    return result
 
 
 def style_similarity(features: dict, family_means: dict) -> float | None:
@@ -100,7 +105,6 @@ def main() -> None:
         guest_prior_ambiguity = bool(named_guests and explicit_family)
         audio_family = current == "NEURO_FAMILY" and margin >= 0.135 and (xmargin is None or float(xmargin) >= 0.0)
         eres_family = eres_identity == "NEURO_FAMILY"
-        eres_hard_non_target = eres_identity in {"NON_TARGET_KNOWN", "NON_TARGET_GUEST"}
         audio_consensus_family = audio_family and eres_family
         audio_vedal = current == "VEDAL" and margin <= -0.135 and (xmargin is None or float(xmargin) <= 0.0)
         tts_evidence = tts_rejection.get(key, {})
@@ -123,7 +127,7 @@ def main() -> None:
         elif guest_prior_ambiguity and audio_consensus_family:
             identity = "UNKNOWN"; confidence = "unknown"; reason = "explicit family and guest participant priors coexist; audio supports family but cluster-level guest assignment is unresolved, so high-precision fusion rejects promotion"
             conflicts["explicit_guest_family_ambiguity"] += 1
-        elif audio_consensus_family and explicit_family and not explicit_vedal and semantic_score is not None and semantic_score >= 0.35:
+        elif audio_consensus_family and explicit_family and not explicit_vedal and semantic_score is not None and semantic_score >= SEMANTIC_CONFIRMATION_THRESHOLD:
             identity = "NEURO_FAMILY_HIGH"; confidence = "high"; reason = "leave-source-out ECAPA/X-vector plus independent ERes2NetV2 consensus + explicit family participant prior + cluster style consistency"
         elif audio_consensus_family and not explicit_vedal:
             identity = "NEURO_FAMILY_MEDIUM"; confidence = "medium"; reason = "leave-source-out ECAPA/X-vector plus independent ERes2NetV2 consensus; participant prior or semantic role evidence incomplete"
@@ -142,7 +146,7 @@ def main() -> None:
             "identity": identity, "identity_confidence": confidence, "training_candidate": False,
             "fusion_status": "PROXY_RECOMMENDATION_NOT_GOLD", "reason": reason,
             "audio_evidence": {"proxy_identity": current, "family_margin": margin, "xvector_margin": xmargin, "ensemble_gate": audio_family or audio_vedal, "eres2netv2_identity": eres_identity, "eres2netv2_family_margin": eres_margin, "eres2netv2_consensus_family": eres_family},
-            "semantic_evidence": {"cluster_turn_count": features.get("turn_count"), "style_similarity_to_family": semantic_score, "bank_version": semantic.get("version")},
+            "semantic_evidence": {"cluster_turn_count": features.get("turn_count"), "style_similarity_to_family": semantic_score, "bank_version": semantic.get("version"), "confirmation_threshold": SEMANTIC_CONFIRMATION_THRESHOLD, "threshold_type": "heuristic_auxiliary_confirmation", "cannot_promote_without_independent_audio": True},
             "role_evidence": {"explicit_family_participant": explicit_family, "explicit_vedal_participant": explicit_vedal, "explicit_guest_labels": named_guests},
             "source_prior": {"possible": prior.get("possible", []), "confidence": prior.get("confidence"), "version": VERSION},
             "negative_guest_evidence": guest_candidates.get(key),

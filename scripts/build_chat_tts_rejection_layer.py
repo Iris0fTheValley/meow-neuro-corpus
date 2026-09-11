@@ -22,7 +22,7 @@ from manifest_tools import ROOT, read_jsonl, write_json
 
 
 MODEL = "iic/speech_eres2netv2_sv_zh-cn_16k-common"
-VERSION = "chat-tts-rejection-2026-09-12-v1"
+VERSION = "chat-tts-rejection-2026-09-12-v2"
 KEYWORDS = {"tts", "text to speech", "text-to-speech", "google translate", "donation", "donate", "chat", "voice", "read"}
 
 
@@ -123,7 +123,7 @@ def main() -> None:
         strong_reject = bool(high_acoustic and (explicit_event or repeated_voice))
         quarantine = bool(explicit_event)
         decision = "REJECT_NON_TARGET_TTS" if strong_reject else ("QUARANTINE_REVIEW" if quarantine else "NONE")
-        output.append({"record_id": row["record_id"], "source_id": row["source_id"], "cluster": row["cluster"], "fusion_identity": row["fusion_identity"], "chat_tts_prototype_similarity": round(sim, 6), "chat_tts_rejection_threshold_zero_family_anchor_false_reject": round(zero_family_reject_threshold, 6), "tts_interval_count": len(challenge), "tts_total_seconds": round(sum(float(x.get("end") or 0) - float(x.get("start") or 0) for x in challenge), 3), "event_keyword_hits": keyword_hits, "context_features": contexts, "source_prior": {"possible": prior.get("possible", []), "confidence": prior.get("confidence"), "metadata_text_hits": sorted({keyword for keyword in KEYWORDS if keyword in json.dumps(meta, ensure_ascii=False).casefold()})}, "repeated_chat_tts_voice_evidence": {"available": False, "reason": "unlabeled challenge bank; no cross-source voice identity is promoted from stress-only clips"}, "rejection_decision": decision, "rejection_is_promotion_only": True, "gold_validated": False, "provenance": {"model": MODEL, "version": VERSION, "stress_only_chat_tts": True, "family_anchor_false_reject_control": "max_family_anchor_similarity_plus_epsilon", "not_used_for_family_promotion": True}})
+        output.append({"record_id": row["record_id"], "source_id": row["source_id"], "cluster": row["cluster"], "fusion_identity": row["fusion_identity"], "chat_tts_prototype_similarity": round(sim, 6), "chat_tts_rejection_threshold_zero_family_anchor_false_reject": round(zero_family_reject_threshold, 6), "tts_interval_count": len(challenge), "tts_total_seconds": round(sum(float(x.get("end") or 0) - float(x.get("start") or 0) for x in challenge), 3), "event_keyword_hits": keyword_hits, "context_features": contexts, "source_prior": {"possible": prior.get("possible", []), "confidence": prior.get("confidence"), "metadata_text_hits": sorted({keyword for keyword in KEYWORDS if keyword in json.dumps(meta, ensure_ascii=False).casefold()})}, "repeated_chat_tts_voice_evidence": {"available": False, "reason": "unlabeled challenge bank; no cross-source voice identity is promoted from stress-only clips"}, "rejection_decision": decision, "rejection_only_layer": True, "can_promote_family": False, "can_recalibrate_family": False, "gold_validated": False, "provenance": {"model": MODEL, "version": VERSION, "stress_only_chat_tts": True, "family_anchor_false_reject_control": "max_family_anchor_similarity_plus_epsilon", "not_used_for_family_promotion": True}})
 
     output_path = ROOT / "identity_results" / "chat_tts_rejection_scores.jsonl"
     output_path.write_text("".join(json.dumps(row, ensure_ascii=False) + "\n" for row in output), encoding="utf-8")

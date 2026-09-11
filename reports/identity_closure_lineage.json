@@ -2,7 +2,7 @@
   "schema_version": "0.1.0",
   "artifact_status": "current",
   "canonical_for": "identity_closure_lineage_and_artifact_roles",
-  "generated_at": "2026-09-11T19:55:14.588841+00:00",
+  "generated_at": "2026-09-11T20:07:15.058905+00:00",
   "code_commit": "working-tree",
   "thresholds": {
     "current_operating": {
@@ -71,10 +71,10 @@
       "canonical_for": "multimodal_fusion_mapping",
       "path": "identity_results/identity_mapping_multimodal_fusion_proxy.jsonl",
       "schema_version": "0.1.0",
-      "generated_at": "2026-09-11T15:45:47.793654+00:00",
+      "generated_at": "2026-09-11T20:03:38.476891+00:00",
       "code_commit": "working-tree",
       "input_artifact_hashes": {
-        "self": "7a3ca590985b1254ed30e51fd3e381f441f60ba60a965ac5a6a9076812159fd7"
+        "self": "b1fd73a29e0a41a1c31fac797102df656213aa2f4629c034d9e5d10e37bc5235"
       }
     },
     "post_fusion_candidate_regrade": {

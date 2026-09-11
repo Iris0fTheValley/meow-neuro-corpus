@@ -1,8 +1,8 @@
 {
-  "schema_version": "0.1.0",
-  "created_at": "2026-09-11T15:45:04.362217+00:00",
+  "schema_version": "0.2.0",
+  "created_at": "2026-09-11T23:45:04.362217+08:00",
   "status": "CHAT_TTS_REJECTION_LAYER_AUDIT_COMPLETE_REJECT_ONLY",
-  "version": "chat-tts-rejection-2026-09-12-v1",
+  "version": "chat-tts-rejection-2026-09-12-v2",
   "model": "iic/speech_eres2netv2_sv_zh-cn_16k-common",
   "candidate_cluster_count": 1068,
   "current_family_candidate_count": 145,
@@ -35,5 +35,8 @@
   "family_candidate_reject_review_rows": [],
   "calibration_policy": "CHAT_TTS/OTHER_TTS layer is reject-only. Stress-only clips are not gold and cannot promote or recalibrate NEURO_FAMILY. Acoustic reject threshold is bounded by zero false reject on source-disjoint AUTO_TRUSTED family anchors.",
   "output": "identity_results\\chat_tts_rejection_scores.jsonl",
-  "promotion_decision": "DO_NOT_PROMOTE"
+  "promotion_decision": "DO_NOT_PROMOTE",
+  "rejection_only_layer": true,
+  "can_promote_family": false,
+  "can_recalibrate_family": false
 }

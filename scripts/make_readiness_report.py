@@ -259,6 +259,19 @@ def main() -> None:
             "verify recurring guest candidates per cluster and grow independent negative coverage before any S/A promotion",
         ],
     }
+    report.update({
+        "artifact_status": "current",
+        "canonical_for": "meow_v02_dynamic_readiness",
+        "current_operating_threshold": 0.163198,
+        "historical_benchmark_threshold": 0.1205,
+        "current_post_fusion_s_a_count": derived_candidates["s_a_review_candidate_count"],
+        "historical_pre_fusion_s_a_count": family_candidates.get("s_a_review_candidate_count", 0),
+        "training_candidate_count": training_candidate_count,
+        "derived_candidate_counts": derived_candidates,
+        "invariants": invariants,
+        "training_gate_closed": not prerequisites_pass,
+        "lineage": lineage,
+    })
     write_json(ROOT / "reports" / "meow_v02_data_readiness_interim.json", report)
     print(json.dumps({"status": report["status"], "readiness": report["readiness"], "trusted_clip_count": report["evidence"]["trusted_clip_count"], "natural_turn_sources": report["evidence"]["natural_turn_sources"], "training_candidate_count": training_candidate_count, "invariants": invariants}, ensure_ascii=True, indent=2))
 
