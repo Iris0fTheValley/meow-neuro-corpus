@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1.0",
-  "created_at": "2026-09-11T15:41:09.779175+00:00",
+  "created_at": "2026-09-11T15:42:54.173512+00:00",
   "videos_discovered": 970,
   "videos_minimal_pipeline_complete": 105,
   "videos_full_pipeline_complete": 515,
@@ -23,7 +23,7 @@
     "transcript_only": 2,
     "video_download_status:done": 1
   },
-  "disk_free_bytes": 108133629952,
+  "disk_free_bytes": 108132335616,
   "quality_gates": {
     "state": "CONTINUE_WORKING",
     "human_gold_is_promotion_blocker": false,
@@ -302,6 +302,20 @@
     "identity_closure_chat_tts_stress_clip_count": 140,
     "identity_closure_chat_tts_stress_potential_family_accept_rate": 0.4,
     "identity_closure_chat_tts_stress_use_for_calibration": false,
+    "identity_closure_chat_tts_rejection_layer_status": "CHAT_TTS_REJECTION_LAYER_AUDIT_COMPLETE_REJECT_ONLY",
+    "identity_closure_chat_tts_rejection_layer_version": "chat-tts-rejection-2026-09-12-v1",
+    "identity_closure_chat_tts_rejection_candidate_cluster_count": 1068,
+    "identity_closure_chat_tts_rejection_current_family_candidate_count": 148,
+    "identity_closure_chat_tts_rejection_decision_counts": {
+      "NONE": 979,
+      "QUARANTINE_REVIEW": 78,
+      "REJECT_NON_TARGET_TTS": 11
+    },
+    "identity_closure_chat_tts_rejection_family_decision_counts": {
+      "NONE": 148
+    },
+    "identity_closure_chat_tts_rejection_calibration_policy": "CHAT_TTS/OTHER_TTS layer is reject-only. Stress-only clips are not gold and cannot promote or recalibrate NEURO_FAMILY. Acoustic reject threshold is bounded by zero false reject on source-disjoint AUTO_TRUSTED family anchors.",
+    "identity_closure_chat_tts_rejection_promotion_effect": "REJECTION_ONLY_NO_FAMILY_PROMOTION",
     "identity_closure_hard_negative_bank_status": "SOURCE_DISJOINT_HARD_NEGATIVE_BANK_READY",
     "identity_closure_hard_negative_bank_record_count": 999,
     "identity_closure_hard_negative_auto_trusted_count": 19,

@@ -124,6 +124,8 @@ def main() -> None:
     fusion_candidates = json.loads(fusion_candidates_path.read_text(encoding="utf-8")) if fusion_candidates_path.exists() else {}
     chat_tts_stress_path = identity_closure_dir / "chat_tts_stress_test_report.json"
     chat_tts_stress = json.loads(chat_tts_stress_path.read_text(encoding="utf-8")) if chat_tts_stress_path.exists() else {}
+    chat_tts_rejection_path = ROOT / "reports" / "chat_tts_rejection_layer.json"
+    chat_tts_rejection = json.loads(chat_tts_rejection_path.read_text(encoding="utf-8")) if chat_tts_rejection_path.exists() else {}
     hard_negative_bank_path = identity_closure_dir / "hard_negative_validation_bank_report.json"
     hard_negative_bank = json.loads(hard_negative_bank_path.read_text(encoding="utf-8")) if hard_negative_bank_path.exists() else {}
     fusion_audio_audit_path = ROOT / "reports" / "identity_fusion_audio_consensus_audit.json"
@@ -278,6 +280,14 @@ def main() -> None:
             "identity_closure_chat_tts_stress_clip_count": chat_tts_stress.get("clip_count", 0),
             "identity_closure_chat_tts_stress_potential_family_accept_rate": chat_tts_stress.get("potential_family_accept_rate"),
             "identity_closure_chat_tts_stress_use_for_calibration": chat_tts_stress.get("use_for_calibration", False),
+            "identity_closure_chat_tts_rejection_layer_status": chat_tts_rejection.get("status", "missing"),
+            "identity_closure_chat_tts_rejection_layer_version": chat_tts_rejection.get("version"),
+            "identity_closure_chat_tts_rejection_candidate_cluster_count": chat_tts_rejection.get("candidate_cluster_count", 0),
+            "identity_closure_chat_tts_rejection_current_family_candidate_count": chat_tts_rejection.get("current_family_candidate_count", 0),
+            "identity_closure_chat_tts_rejection_decision_counts": chat_tts_rejection.get("decision_counts", {}),
+            "identity_closure_chat_tts_rejection_family_decision_counts": chat_tts_rejection.get("family_candidate_decisions", {}),
+            "identity_closure_chat_tts_rejection_calibration_policy": chat_tts_rejection.get("calibration_policy"),
+            "identity_closure_chat_tts_rejection_promotion_effect": "REJECTION_ONLY_NO_FAMILY_PROMOTION",
             "identity_closure_hard_negative_bank_status": hard_negative_bank.get("status", "missing"),
             "identity_closure_hard_negative_bank_record_count": hard_negative_bank.get("record_count", 0),
             "identity_closure_hard_negative_auto_trusted_count": hard_negative_bank.get("auto_trusted_named_guest_count", 0),
