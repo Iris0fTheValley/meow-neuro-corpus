@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1.0",
-  "created_at": "2026-09-11T15:37:26.518569+00:00",
+  "created_at": "2026-09-11T15:45:49.896645+00:00",
   "status": "FUSION_AUDIO_CONSENSUS_AUDIT_COMPLETE",
   "fusion_mapping_version": "MULTIMODAL_FUSION_PROXY_AUDIO_CONSENSUS_GATED",
   "independent_audio_model": "iic/speech_eres2netv2_sv_zh-cn_16k-common",
