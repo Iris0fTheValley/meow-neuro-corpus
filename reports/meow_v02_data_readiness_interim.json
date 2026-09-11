@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1.0",
-  "updated_at": "2026-09-11T15:47:03.732351+00:00",
+  "updated_at": "2026-09-11T19:55:25.131095+00:00",
   "status": "CONTINUE_WORKING",
   "readiness": "NOT_READY_FOR_SFT",
   "stopping_conditions": {
@@ -9,7 +9,9 @@
     "trusted_vedal_reference": "cross_source_auto_trusted_challenge_bank_expanding; human gold not required",
     "gold_validation_set": "AUTO_TRUSTED_source_disjoint_validation_allowed; HUMAN_VERIFIED_not_a_pipeline_prerequisite",
     "speaker_verification_precision": "audio-consensus-gated proxy active; expanded hard-negative stress audit pending; no 0/49 claim used as final proof",
-    "identity_mapping_backlog": "1068 clusters remapped with ERes2NetV2 consensus gate; expanded hard-negative precision audit pending",
+    "identity_mapping_backlog": "1068 clusters remapped with ERes2NetV2 consensus gate; recording/content split and independent-positive evidence audit pending",
+    "recording_content_split": "recording/content cluster audit present; overlap or insufficient independent positive evidence blocks closure",
+    "positive_validation": "INSUFFICIENT_EVIDENCE",
     "canonical_timelines": "partial_validation_tranche",
     "transcript_contamination": "source_specific_cleaning_plus_review_queues",
     "natural_turn_reconstruction": "partial_validation_tranche",
@@ -261,7 +263,7 @@
     },
     "family_mapped_conversation_count": 199371,
     "family_mapped_conversation_qa": "PASS",
-    "family_s_a_review_candidate_count": 58968,
+    "family_s_a_review_candidate_count": 8238,
     "family_training_candidate_qa": "PASS",
     "human_review_candidates": 87,
     "human_reviewed_count": 0,
@@ -269,6 +271,501 @@
     "natural_conversation_windows": 199371,
     "conversation_artifact_qa": "PASS",
     "training_candidate_count": 0,
+    "current_operating_threshold": 0.163198,
+    "historical_benchmark_threshold": 0.1205,
+    "current_post_fusion_s_a_count": 8238,
+    "historical_pre_fusion_s_a_count": 58968,
+    "derived_candidate_counts": {
+      "row_count": 199371,
+      "grade_counts": {
+        "Q": 102217,
+        "B": 88916,
+        "S": 7951,
+        "A": 287
+      },
+      "s_a_review_candidate_count": 8238,
+      "training_candidate_count": 0,
+      "source": "datasets\\family_training_candidates_fusion_review.jsonl"
+    },
+    "identity_validation_boundary": {
+      "schema_version": "0.1.0",
+      "artifact_status": "current",
+      "canonical_for": "identity_validation_boundary_and_independence_audit",
+      "generated_at": "2026-09-11T19:55:01.591154+00:00",
+      "code_commit": "working-tree",
+      "current_operating_threshold": 0.163198,
+      "historical_benchmark_threshold": 0.1205,
+      "recording_content_cluster_report": "reports\\recording_content_cluster_audit.json",
+      "split_independence": {
+        "anchor_source_count": 21,
+        "anchor_recording_cluster_count": 12,
+        "calibration_source_count": 24,
+        "calibration_recording_cluster_count": 10,
+        "validation_source_count": 4,
+        "validation_recording_cluster_count": 3,
+        "anchor_validation_overlap_clusters": [
+          "rc_24de3452cc4fdcaa",
+          "rc_a405ee9ef55ab623",
+          "rc_e230d6b14232d26e"
+        ],
+        "anchor_calibration_overlap_clusters": [
+          "rc_24de3452cc4fdcaa",
+          "rc_5b3efcd3980191e8",
+          "rc_69293762de347922",
+          "rc_a405ee9ef55ab623",
+          "rc_aa403da581ac881d",
+          "rc_c63a35336867cabd",
+          "rc_e230d6b14232d26e",
+          "rc_e2853f5be12ec4db",
+          "rc_f1e1518c4db094e8"
+        ],
+        "calibration_validation_overlap_clusters": [
+          "rc_24de3452cc4fdcaa",
+          "rc_a405ee9ef55ab623",
+          "rc_e230d6b14232d26e"
+        ],
+        "anchor_recording_clusters_disjoint_from_validation": false,
+        "anchor_recording_clusters_disjoint_from_calibration": false,
+        "calibration_recording_clusters_disjoint_from_validation": false,
+        "policy": "A recording/content cluster is the unit of independence; source_id alone is insufficient."
+      },
+      "family_positive_validation": {
+        "status": "INSUFFICIENT_EVIDENCE",
+        "candidate_reference_rows": 65,
+        "independent_rows_after_recording_cluster_exclusion": 0,
+        "independent_source_count": 0,
+        "independent_recording_cluster_count": 0,
+        "row_balanced": null,
+        "source_balanced": null,
+        "recording_cluster_balanced": null,
+        "confidence_interval": null,
+        "evidence_sufficiency": false,
+        "reason": "All existing provisional family reference clips fall inside anchor/calibration recording clusters; no independent positive gold/AUTO_TRUSTED slice is available."
+      },
+      "hard_negative_validation": {
+        "status": "STRESS_COVERAGE_EXPANDED_NO_GOLD_FPR",
+        "taxonomy": [
+          "chat_tts",
+          "guest",
+          "singing",
+          "game_voice"
+        ],
+        "metrics": {
+          "ecapa_voxceleb": {
+            "score_artifact": "speaker_refs\\open_set_challenge_scores_ecapa_calibrated.jsonl",
+            "label_status": "UNLABELED_CHALLENGE_ONLY",
+            "bucket_metrics": {
+              "chat_tts": {
+                "row_count": 146,
+                "row_accept_count": 68,
+                "row_accept_rate": 0.465753,
+                "row_wilson_95": [
+                  0.386756,
+                  0.546507
+                ],
+                "source_count": 84,
+                "source_balanced_rate": 0.511905,
+                "source_balanced_bootstrap_95": [
+                  0.40873,
+                  0.613095
+                ],
+                "recording_cluster_count": 36,
+                "recording_cluster_balanced_rate": 0.551639,
+                "recording_cluster_balanced_bootstrap_95": [
+                  0.409701,
+                  0.684906
+                ]
+              },
+              "game_voice": {
+                "row_count": 13,
+                "row_accept_count": 10,
+                "row_accept_rate": 0.769231,
+                "row_wilson_95": [
+                  0.497431,
+                  0.918206
+                ],
+                "source_count": 8,
+                "source_balanced_rate": 0.8125,
+                "source_balanced_bootstrap_95": [
+                  0.5,
+                  1.0
+                ],
+                "recording_cluster_count": 8,
+                "recording_cluster_balanced_rate": 0.8125,
+                "recording_cluster_balanced_bootstrap_95": [
+                  0.5,
+                  1.0
+                ]
+              },
+              "guest": {
+                "row_count": 10,
+                "row_accept_count": 6,
+                "row_accept_rate": 0.6,
+                "row_wilson_95": [
+                  0.31267,
+                  0.831822
+                ],
+                "source_count": 5,
+                "source_balanced_rate": 0.6,
+                "source_balanced_bootstrap_95": [
+                  0.3,
+                  0.9
+                ],
+                "recording_cluster_count": 5,
+                "recording_cluster_balanced_rate": 0.6,
+                "recording_cluster_balanced_bootstrap_95": [
+                  0.3,
+                  0.9
+                ]
+              },
+              "singing": {
+                "row_count": 822,
+                "row_accept_count": 577,
+                "row_accept_rate": 0.701946,
+                "row_wilson_95": [
+                  0.669796,
+                  0.732218
+                ],
+                "source_count": 412,
+                "source_balanced_rate": 0.70267,
+                "source_balanced_bootstrap_95": [
+                  0.662621,
+                  0.741505
+                ],
+                "recording_cluster_count": 95,
+                "recording_cluster_balanced_rate": 0.684856,
+                "recording_cluster_balanced_bootstrap_95": [
+                  0.603916,
+                  0.757262
+                ]
+              }
+            },
+            "false_positive_rate_claim_allowed": false
+          },
+          "xvector_voxceleb": {
+            "score_artifact": "speaker_refs\\open_set_challenge_scores_xvector_calibrated.jsonl",
+            "label_status": "UNLABELED_CHALLENGE_ONLY",
+            "bucket_metrics": {
+              "chat_tts": {
+                "row_count": 146,
+                "row_accept_count": 21,
+                "row_accept_rate": 0.143836,
+                "row_wilson_95": [
+                  0.096041,
+                  0.209893
+                ],
+                "source_count": 84,
+                "source_balanced_rate": 0.176587,
+                "source_balanced_bootstrap_95": [
+                  0.105159,
+                  0.255952
+                ],
+                "recording_cluster_count": 36,
+                "recording_cluster_balanced_rate": 0.156814,
+                "recording_cluster_balanced_bootstrap_95": [
+                  0.060363,
+                  0.270062
+                ]
+              },
+              "game_voice": {
+                "row_count": 13,
+                "row_accept_count": 10,
+                "row_accept_rate": 0.769231,
+                "row_wilson_95": [
+                  0.497431,
+                  0.918206
+                ],
+                "source_count": 8,
+                "source_balanced_rate": 0.8125,
+                "source_balanced_bootstrap_95": [
+                  0.5,
+                  1.0
+                ],
+                "recording_cluster_count": 8,
+                "recording_cluster_balanced_rate": 0.8125,
+                "recording_cluster_balanced_bootstrap_95": [
+                  0.5,
+                  1.0
+                ]
+              },
+              "guest": {
+                "row_count": 10,
+                "row_accept_count": 7,
+                "row_accept_rate": 0.7,
+                "row_wilson_95": [
+                  0.396773,
+                  0.892211
+                ],
+                "source_count": 5,
+                "source_balanced_rate": 0.7,
+                "source_balanced_bootstrap_95": [
+                  0.3,
+                  1.0
+                ],
+                "recording_cluster_count": 5,
+                "recording_cluster_balanced_rate": 0.7,
+                "recording_cluster_balanced_bootstrap_95": [
+                  0.3,
+                  1.0
+                ]
+              },
+              "singing": {
+                "row_count": 822,
+                "row_accept_count": 561,
+                "row_accept_rate": 0.682482,
+                "row_wilson_95": [
+                  0.649872,
+                  0.713394
+                ],
+                "source_count": 412,
+                "source_balanced_rate": 0.683252,
+                "source_balanced_bootstrap_95": [
+                  0.644417,
+                  0.722087
+                ],
+                "recording_cluster_count": 95,
+                "recording_cluster_balanced_rate": 0.6729,
+                "recording_cluster_balanced_bootstrap_95": [
+                  0.591169,
+                  0.74724
+                ]
+              }
+            },
+            "false_positive_rate_claim_allowed": false
+          },
+          "eres2netv2_chat_tts_current_threshold_readout": {
+            "score_artifact": "speaker_refs\\identity_closure\\chat_tts_stress_scores.jsonl",
+            "threshold": 0.163198,
+            "historical_proxy_threshold_not_used": 0.1205,
+            "label_status": "UNLABELED_CHALLENGE_ONLY",
+            "metrics": {
+              "row_count": 140,
+              "row_accept_count": 39,
+              "row_accept_rate": 0.278571,
+              "row_wilson_95": [
+                0.210985,
+                0.357985
+              ],
+              "source_count": 82,
+              "source_balanced_rate": 0.300813,
+              "source_balanced_bootstrap_95": [
+                0.207317,
+                0.394309
+              ],
+              "recording_cluster_count": 36,
+              "recording_cluster_balanced_rate": 0.332138,
+              "recording_cluster_balanced_bootstrap_95": [
+                0.195564,
+                0.466397
+              ]
+            },
+            "false_positive_rate_claim_allowed": false,
+            "interpretation": "stress acceptance only; this is not a gold FPR and cannot promote or recalibrate family."
+          }
+        },
+        "policy": "Observed stress acceptance is not false-positive rate while gold_label is null; no 0 observed FP claim is made."
+      },
+      "candidate_end_to_end_positive_slice": {
+        "status": "NOT_EVALUATED_INSUFFICIENT_INDEPENDENT_POSITIVE",
+        "positive_validation_rows": 0,
+        "positive_validation_sources": 0,
+        "positive_validation_recording_clusters": 0,
+        "proxy_family_pool_rows_not_used_as_validation": 49,
+        "policy": "A proxy identity mapping cannot validate itself; no end-to-end family retention metric is claimed until an independent positive slice exists."
+      },
+      "promotion_guard": {
+        "training_candidate_allowed": false,
+        "training_candidate_count": 0,
+        "threshold_changed": false,
+        "identity_mapping_changed": false,
+        "human_gold_required": false
+      },
+      "outputs": {
+        "split_manifest": "reports\\identity_validation_split_manifest.jsonl"
+      }
+    },
+    "recording_content_cluster_audit": {
+      "schema_version": "0.1.0",
+      "artifact_status": "current",
+      "canonical_for": "recording_content_cluster_assignments_and_split_independence_audit",
+      "generated_at": "2026-09-11T19:49:24.817333+00:00",
+      "code_commit": "working-tree",
+      "source_manifest": "manifest\\master_video_manifest.jsonl",
+      "source_count": 1007,
+      "recording_cluster_count": 594,
+      "cross_source_cluster_count": 35,
+      "high_risk_mirror_or_reupload_cluster_count": 3,
+      "join_evidence_counts": {
+        "exact:audio_fingerprint": 35,
+        "exact:duplicate_group": 3,
+        "strict_title_duration": 7
+      },
+      "split_audit": {
+        "anchor_source_count": 21,
+        "anchor_recording_cluster_count": 12,
+        "calibration_source_count": 24,
+        "calibration_recording_cluster_count": 10,
+        "validation_source_count": 4,
+        "validation_recording_cluster_count": 3,
+        "anchor_validation_overlap_clusters": [
+          "rc_24de3452cc4fdcaa",
+          "rc_a405ee9ef55ab623",
+          "rc_e230d6b14232d26e"
+        ],
+        "anchor_calibration_overlap_clusters": [
+          "rc_24de3452cc4fdcaa",
+          "rc_5b3efcd3980191e8",
+          "rc_69293762de347922",
+          "rc_a405ee9ef55ab623",
+          "rc_aa403da581ac881d",
+          "rc_c63a35336867cabd",
+          "rc_e230d6b14232d26e",
+          "rc_e2853f5be12ec4db",
+          "rc_f1e1518c4db094e8"
+        ],
+        "calibration_validation_overlap_clusters": [
+          "rc_24de3452cc4fdcaa",
+          "rc_a405ee9ef55ab623",
+          "rc_e230d6b14232d26e"
+        ],
+        "anchor_recording_clusters_disjoint_from_validation": false,
+        "anchor_recording_clusters_disjoint_from_calibration": false,
+        "calibration_recording_clusters_disjoint_from_validation": false,
+        "policy": "A recording/content cluster is the unit of independence; source_id alone is insufficient."
+      },
+      "policy": {
+        "identity_labels_unchanged": true,
+        "threshold_unchanged": true,
+        "training_candidate_promotion": "forbidden",
+        "unknown_and_ambiguous_clusters_retained": true
+      },
+      "output": "reports\\recording_content_clusters.jsonl"
+    },
+    "lineage": {
+      "schema_version": "0.1.0",
+      "artifact_status": "current",
+      "canonical_for": "identity_closure_lineage_and_artifact_roles",
+      "generated_at": "2026-09-11T19:55:14.588841+00:00",
+      "code_commit": "working-tree",
+      "thresholds": {
+        "current_operating": {
+          "value": 0.163198,
+          "status": "current",
+          "source": "identity_results/identity_mapping_eres2netv2_proxy.jsonl"
+        },
+        "historical_benchmark": {
+          "value": 0.1205,
+          "status": "historical",
+          "source": "reports/identity_calibration_transfer_audit.json"
+        }
+      },
+      "candidate_counts": {
+        "current_post_fusion_s_a": {
+          "value": 8238,
+          "status": "derived_from_row_level_artifact",
+          "source": "datasets\\family_training_candidates_fusion_review.jsonl"
+        },
+        "historical_pre_fusion_s_a": {
+          "value": 58968,
+          "status": "historical",
+          "source": "reports/family_training_candidate_progress.json"
+        },
+        "training_candidate": {
+          "value": 0,
+          "status": "closed_by_invariant"
+        }
+      },
+      "nodes": {
+        "recording_content_clusters": {
+          "artifact_status": "current",
+          "canonical_for": "recording_content_clusters",
+          "path": "reports/recording_content_cluster_audit.json",
+          "schema_version": "0.1.0",
+          "generated_at": "2026-09-11T19:49:24.823453+00:00",
+          "code_commit": "working-tree",
+          "input_artifact_hashes": {
+            "self": "35dece02525da041638d7486f909f690fa6caabc92752d0c400cd75710dd311f"
+          }
+        },
+        "identity_validation_boundary": {
+          "artifact_status": "current",
+          "canonical_for": "identity_validation_boundary",
+          "path": "reports/identity_validation_boundary_audit.json",
+          "schema_version": "0.1.0",
+          "generated_at": "2026-09-11T19:55:01.591155+00:00",
+          "code_commit": "working-tree",
+          "input_artifact_hashes": {
+            "self": "1bcea1b9bd4036f7605abf30410661b08a6c143efa7999ba41534663bc2ef544"
+          }
+        },
+        "eres2netv2_cluster_remap": {
+          "artifact_status": "current",
+          "canonical_for": "eres2netv2_cluster_remap",
+          "path": "identity_results/identity_mapping_eres2netv2_proxy.jsonl",
+          "schema_version": "0.1.0",
+          "generated_at": "2026-09-11T15:09:12.385952+00:00",
+          "code_commit": "working-tree",
+          "input_artifact_hashes": {
+            "self": "7bb82adc92be8f605df789e1dc4b91fb44226846a670c947d8bc16955279027a"
+          }
+        },
+        "multimodal_fusion_mapping": {
+          "artifact_status": "current",
+          "canonical_for": "multimodal_fusion_mapping",
+          "path": "identity_results/identity_mapping_multimodal_fusion_proxy.jsonl",
+          "schema_version": "0.1.0",
+          "generated_at": "2026-09-11T15:45:47.793654+00:00",
+          "code_commit": "working-tree",
+          "input_artifact_hashes": {
+            "self": "7a3ca590985b1254ed30e51fd3e381f441f60ba60a965ac5a6a9076812159fd7"
+          }
+        },
+        "post_fusion_candidate_regrade": {
+          "artifact_status": "current",
+          "canonical_for": "post_fusion_candidate_regrade",
+          "path": "datasets/family_training_candidates_fusion_review.jsonl",
+          "schema_version": "0.1.0",
+          "generated_at": "2026-09-11T15:47:01.724033+00:00",
+          "code_commit": "working-tree",
+          "input_artifact_hashes": {
+            "self": "6fb2e2db0b60ec33f651095324b2257d6981b046e24a21a29284d5b317cede98"
+          }
+        },
+        "historical_benchmark_threshold": {
+          "artifact_status": "historical",
+          "canonical_for": null,
+          "path": "reports/identity_calibration_transfer_audit.json",
+          "schema_version": "0.1.0",
+          "generated_at": "2026-09-11T17:55:40.210881+00:00",
+          "code_commit": "historical-unknown",
+          "input_artifact_hashes": {
+            "self": "f4f64c2789b9f965fc29394c89fb25d43aa052a4bdbcf473a0e358e03b6304c5"
+          }
+        },
+        "historical_pre_fusion_candidate_report": {
+          "artifact_status": "historical",
+          "canonical_for": null,
+          "path": "reports/family_training_candidate_progress.json",
+          "schema_version": "0.1.0",
+          "generated_at": "2026-09-11T11:56:18.993707+00:00",
+          "code_commit": "historical-unknown",
+          "input_artifact_hashes": {
+            "self": "69de68f9475876e98b3495da05a977ec07c7a1107413c3dd49596f48228eb682"
+          }
+        }
+      },
+      "policy": "Historical artifacts are retained and explicitly non-canonical; downstream readiness must use current nodes and row-level derivation."
+    },
+    "invariants": {
+      "candidate_report_matches_row_level": true,
+      "candidate_training_flags_zero": true,
+      "fusion_mapping_training_flags_zero": true,
+      "eres_mapping_training_flags_zero": true,
+      "recording_cluster_report_present": true,
+      "validation_boundary_report_present": true,
+      "lineage_complete": true
+    },
+    "training_gate_closed": true,
     "human_gold_is_promotion_blocker": false,
     "auto_trusted_anchor_calibration_enabled": true,
     "auto_trusted_anchor_policy": "source-disjoint multi-evidence anchors may calibrate and validate; HUMAN_VERIFIED is a higher evidence tier, not a prerequisite",

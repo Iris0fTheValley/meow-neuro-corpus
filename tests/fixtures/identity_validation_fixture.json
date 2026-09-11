@@ -1,0 +1,11 @@
+{
+  "clusters": [
+    {"recording_cluster_id": "rc_a", "source_ids": ["anchor_source"]},
+    {"recording_cluster_id": "rc_b", "source_ids": ["validation_source"]}
+  ],
+  "candidates": [
+    {"candidate_grade": "S", "training_candidate": false},
+    {"candidate_grade": "A", "training_candidate": false},
+    {"candidate_grade": "Q", "training_candidate": false}
+  ]
+}

@@ -3,12 +3,26 @@ from __future__ import annotations
 import json
 from datetime import datetime, timezone
 
+from derive_candidate_counts import derive_candidate_counts, iter_jsonl
 from manifest_tools import ROOT, write_json
 
 
 def load(path: str) -> dict:
     target = ROOT / path
     return json.loads(target.read_text(encoding="utf-8")) if target.exists() else {}
+
+
+def derive_mapping_counts(path: str) -> dict:
+    counts = {}
+    total = 0
+    training_true = 0
+    for row in iter_jsonl(ROOT / path):
+        total += 1
+        identity = str(row.get("identity") or "UNKNOWN")
+        counts[identity] = counts.get(identity, 0) + 1
+        if row.get("training_candidate") is True:
+            training_true += 1
+    return {"row_count": total, "identity_counts": counts, "training_candidate_count": training_true, "source": path}
 
 
 def main() -> None:
@@ -51,6 +65,28 @@ def main() -> None:
     hard_negative_bank = load("speaker_refs/identity_closure/hard_negative_validation_bank_report.json")
     chat_tts_rejection = load("reports/chat_tts_rejection_layer.json")
     fusion_audio_audit = load("reports/identity_fusion_audio_consensus_audit.json")
+    validation_boundary = load("reports/identity_validation_boundary_audit.json")
+    recording_clusters = load("reports/recording_content_cluster_audit.json")
+    lineage = load("reports/identity_closure_lineage.json")
+    derived_candidates = derive_candidate_counts()
+    derived_fusion_mapping = derive_mapping_counts("identity_results/identity_mapping_multimodal_fusion_proxy.jsonl")
+    derived_eres_mapping = derive_mapping_counts("identity_results/identity_mapping_eres2netv2_proxy.jsonl")
+    lineage_complete = bool(lineage) and all(
+        node.get("artifact_status") == "current"
+        for name, node in lineage.get("nodes", {}).items()
+        if name in {"recording_content_clusters", "identity_validation_boundary", "eres2netv2_cluster_remap", "multimodal_fusion_mapping", "post_fusion_candidate_regrade"}
+    )
+    invariants = {
+        "candidate_report_matches_row_level": derived_candidates["s_a_review_candidate_count"] == fusion_candidates.get("s_a_review_candidate_count"),
+        "candidate_training_flags_zero": derived_candidates["training_candidate_count"] == 0,
+        "fusion_mapping_training_flags_zero": derived_fusion_mapping["training_candidate_count"] == 0,
+        "eres_mapping_training_flags_zero": derived_eres_mapping["training_candidate_count"] == 0,
+        "recording_cluster_report_present": bool(recording_clusters),
+        "validation_boundary_report_present": bool(validation_boundary),
+        "lineage_complete": lineage_complete,
+    }
+    prerequisites_pass = all(invariants.values()) and validation_boundary.get("family_positive_validation", {}).get("evidence_sufficiency") is True
+    training_candidate_count = derived_candidates["training_candidate_count"] if prerequisites_pass else 0
     report = {
         "schema_version": "0.1.0",
         "updated_at": datetime.now(timezone.utc).isoformat(),
@@ -62,7 +98,9 @@ def main() -> None:
             "trusted_vedal_reference": "cross_source_auto_trusted_challenge_bank_expanding; human gold not required",
             "gold_validation_set": "AUTO_TRUSTED_source_disjoint_validation_allowed; HUMAN_VERIFIED_not_a_pipeline_prerequisite",
             "speaker_verification_precision": "audio-consensus-gated proxy active; expanded hard-negative stress audit pending; no 0/49 claim used as final proof",
-            "identity_mapping_backlog": "1068 clusters remapped with ERes2NetV2 consensus gate; expanded hard-negative precision audit pending",
+            "identity_mapping_backlog": "1068 clusters remapped with ERes2NetV2 consensus gate; recording/content split and independent-positive evidence audit pending",
+            "recording_content_split": "recording/content cluster audit present; overlap or insufficient independent positive evidence blocks closure",
+            "positive_validation": validation_boundary.get("family_positive_validation", {}).get("status", "missing"),
             "canonical_timelines": "partial_validation_tranche",
             "transcript_contamination": "source_specific_cleaning_plus_review_queues",
             "natural_turn_reconstruction": "partial_validation_tranche",
@@ -125,12 +163,12 @@ def main() -> None:
             "identity_closure_semantic_bank_status": semantic_bank.get("status", "missing"),
             "identity_closure_semantic_bank_record_count": len(semantic_bank.get("records", [])),
             "identity_closure_fusion_status": fusion.get("status", "missing"),
-            "identity_closure_fusion_cluster_count": fusion.get("cluster_count", 0),
-            "identity_closure_fusion_identity_counts": fusion.get("identity_counts", {}),
+            "identity_closure_fusion_cluster_count": derived_fusion_mapping["row_count"],
+            "identity_closure_fusion_identity_counts": derived_fusion_mapping["identity_counts"],
             "identity_closure_eres2netv2_remap_status": eres2netv2_remap.get("status", "missing"),
             "identity_closure_eres2netv2_remap_model": eres2netv2_remap.get("model"),
-            "identity_closure_eres2netv2_remap_cluster_count": eres2netv2_remap.get("query_cluster_count", 0),
-            "identity_closure_eres2netv2_remap_identity_counts": eres2netv2_remap.get("identity_counts", {}),
+            "identity_closure_eres2netv2_remap_cluster_count": derived_eres_mapping["row_count"],
+            "identity_closure_eres2netv2_remap_identity_counts": derived_eres_mapping["identity_counts"],
             "identity_closure_eres2netv2_remap_promotion_decision": eres2netv2_remap.get("promotion_decision", "DO_NOT_PROMOTE"),
             "identity_closure_eres2netv2_remap_training_candidate_count": eres2netv2_remap.get("training_candidate_count", 0),
             "identity_model_benchmark_status": model_benchmark.get("status", "missing"),
@@ -141,8 +179,8 @@ def main() -> None:
             } for name, value in (model_benchmark.get("models") or {}).items()},
             "identity_model_benchmark_promotion_decision": model_benchmark.get("promotion_decision", "DO_NOT_PROMOTE"),
             "identity_closure_fusion_candidate_status": fusion_candidates.get("status", "missing"),
-            "identity_closure_fusion_candidate_count": fusion_candidates.get("s_a_review_candidate_count", 0),
-            "identity_closure_fusion_training_candidate_count": fusion_candidates.get("training_candidate_count", 0),
+            "identity_closure_fusion_candidate_count": derived_candidates["s_a_review_candidate_count"],
+            "identity_closure_fusion_training_candidate_count": training_candidate_count,
             "identity_closure_chat_tts_stress_status": chat_tts_stress.get("status", "missing"),
             "identity_closure_chat_tts_stress_clip_count": chat_tts_stress.get("clip_count", 0),
             "identity_closure_chat_tts_stress_potential_family_accept_rate": chat_tts_stress.get("potential_family_accept_rate"),
@@ -168,14 +206,24 @@ def main() -> None:
             "family_mapping_identity_counts": family_mapping.get("identity_counts", {}),
             "family_mapped_conversation_count": family_conversations.get("record_count", 0),
             "family_mapped_conversation_qa": family_conversation_qa.get("status"),
-            "family_s_a_review_candidate_count": family_candidates.get("s_a_review_candidate_count", 0),
+            "family_s_a_review_candidate_count": derived_candidates["s_a_review_candidate_count"],
             "family_training_candidate_qa": family_candidates_qa.get("status"),
             "human_review_candidates": refs.get("candidate_count", 0),
             "human_reviewed_count": refs.get("reviewed_count", 0),
             "natural_turn_sources": len(natural.get("completed", [])),
             "natural_conversation_windows": conversations.get("window_count", 0),
             "conversation_artifact_qa": qa.get("status"),
-            "training_candidate_count": 0,
+            "training_candidate_count": training_candidate_count,
+            "current_operating_threshold": 0.163198,
+            "historical_benchmark_threshold": 0.1205,
+            "current_post_fusion_s_a_count": derived_candidates["s_a_review_candidate_count"],
+            "historical_pre_fusion_s_a_count": family_candidates.get("s_a_review_candidate_count", 0),
+            "derived_candidate_counts": derived_candidates,
+            "identity_validation_boundary": validation_boundary,
+            "recording_content_cluster_audit": recording_clusters,
+            "lineage": lineage,
+            "invariants": invariants,
+            "training_gate_closed": not prerequisites_pass,
             "human_gold_is_promotion_blocker": False,
             "auto_trusted_anchor_calibration_enabled": True,
             "auto_trusted_anchor_policy": "source-disjoint multi-evidence anchors may calibrate and validate; HUMAN_VERIFIED is a higher evidence tier, not a prerequisite",
@@ -212,7 +260,7 @@ def main() -> None:
         ],
     }
     write_json(ROOT / "reports" / "meow_v02_data_readiness_interim.json", report)
-    print(json.dumps({"status": report["status"], "readiness": report["readiness"], "trusted_clip_count": report["evidence"]["trusted_clip_count"], "natural_turn_sources": report["evidence"]["natural_turn_sources"], "training_candidate_count": 0}, ensure_ascii=True, indent=2))
+    print(json.dumps({"status": report["status"], "readiness": report["readiness"], "trusted_clip_count": report["evidence"]["trusted_clip_count"], "natural_turn_sources": report["evidence"]["natural_turn_sources"], "training_candidate_count": training_candidate_count, "invariants": invariants}, ensure_ascii=True, indent=2))
 
 
 if __name__ == "__main__":

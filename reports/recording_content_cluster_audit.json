@@ -1,0 +1,57 @@
+{
+  "schema_version": "0.1.0",
+  "artifact_status": "current",
+  "canonical_for": "recording_content_cluster_assignments_and_split_independence_audit",
+  "generated_at": "2026-09-11T19:49:24.817333+00:00",
+  "code_commit": "working-tree",
+  "source_manifest": "manifest\\master_video_manifest.jsonl",
+  "source_count": 1007,
+  "recording_cluster_count": 594,
+  "cross_source_cluster_count": 35,
+  "high_risk_mirror_or_reupload_cluster_count": 3,
+  "join_evidence_counts": {
+    "exact:audio_fingerprint": 35,
+    "exact:duplicate_group": 3,
+    "strict_title_duration": 7
+  },
+  "split_audit": {
+    "anchor_source_count": 21,
+    "anchor_recording_cluster_count": 12,
+    "calibration_source_count": 24,
+    "calibration_recording_cluster_count": 10,
+    "validation_source_count": 4,
+    "validation_recording_cluster_count": 3,
+    "anchor_validation_overlap_clusters": [
+      "rc_24de3452cc4fdcaa",
+      "rc_a405ee9ef55ab623",
+      "rc_e230d6b14232d26e"
+    ],
+    "anchor_calibration_overlap_clusters": [
+      "rc_24de3452cc4fdcaa",
+      "rc_5b3efcd3980191e8",
+      "rc_69293762de347922",
+      "rc_a405ee9ef55ab623",
+      "rc_aa403da581ac881d",
+      "rc_c63a35336867cabd",
+      "rc_e230d6b14232d26e",
+      "rc_e2853f5be12ec4db",
+      "rc_f1e1518c4db094e8"
+    ],
+    "calibration_validation_overlap_clusters": [
+      "rc_24de3452cc4fdcaa",
+      "rc_a405ee9ef55ab623",
+      "rc_e230d6b14232d26e"
+    ],
+    "anchor_recording_clusters_disjoint_from_validation": false,
+    "anchor_recording_clusters_disjoint_from_calibration": false,
+    "calibration_recording_clusters_disjoint_from_validation": false,
+    "policy": "A recording/content cluster is the unit of independence; source_id alone is insufficient."
+  },
+  "policy": {
+    "identity_labels_unchanged": true,
+    "threshold_unchanged": true,
+    "training_candidate_promotion": "forbidden",
+    "unknown_and_ambiguous_clusters_retained": true
+  },
+  "output": "reports\\recording_content_clusters.jsonl"
+}
