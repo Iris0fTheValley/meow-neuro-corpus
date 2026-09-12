@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_status": "SFT_SEMANTIC_CLOSURE_V2_CANDIDATE",
+  "pipeline_version": "sft-semantic-closure-v2-2026-09-12",
+  "files": {
+    "train": "train.jsonl",
+    "train_clean_full": "train_clean_full.jsonl",
+    "validation": "validation.jsonl",
+    "sealed_eval": "sealed_eval.jsonl",
+    "dataset_manifest": "dataset_manifest.json",
+    "quality_report": "quality_report.json",
+    "semantic_qa_report": "semantic_qa_report.json",
+    "dedup_audit": "dedup_audit.json",
+    "cluster_balance_report": "cluster_balance_report.json",
+    "rejection_funnel": "rejection_funnel.json",
+    "comparison_report": "comparison_report.json",
+    "validation_report": "validation_report.json"
+  },
+  "source_of_truth": {
+    "raw_timelines": "unique_timelines",
+    "identity_mapping": "identity_results\\identity_mapping_multimodal_fusion_proxy.jsonl",
+    "recording_clusters": "reports\\recording_content_clusters.jsonl",
+    "old_v1_lineage": "datasets\\meow_v02_sft_v1\\final_sft_candidate_v1"
+  },
+  "recording_cluster_disjoint": true,
+  "training_candidate_true_count": 0,
+  "promotion_status": "CANDIDATE_ONLY_NOT_PROMOTED"
+}

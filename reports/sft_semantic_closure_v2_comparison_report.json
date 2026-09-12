@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0.0",
+  "pipeline_version": "sft-semantic-closure-v2-2026-09-12",
+  "old_final_sft_candidate_v1": {
+    "input_rows": 4415,
+    "unique_context_anchors": 2593,
+    "final_train_rows": 4415,
+    "duplicate_prompt_rows": 2767,
+    "anchor_duplicate_count": 6,
+    "prefix_containment_count": 3257,
+    "target_turn_reuse_count": 0,
+    "recording_clusters": {
+      "rc_e230d6b14232d26e": 2555,
+      "rc_5b3efcd3980191e8": 306,
+      "rc_88b31c79088f5ff0": 590,
+      "rc_f975559973259cc9": 520,
+      "rc_e8a873a9d7154004": 440,
+      "rc_f17bd5f3c2db8747": 4
+    },
+    "largest_cluster_share": 0.578709,
+    "top_3_cluster_share": 0.830125
+  },
+  "new_semantic_clean_v2": {
+    "input_rows": 58915,
+    "unique_context_anchors": 11922,
+    "final_train_rows": 4733,
+    "duplicate_prompt_rows": 26,
+    "anchor_duplicate_count": 0,
+    "prefix_containment_count": 0,
+    "target_turn_reuse_count": 0,
+    "semantic_accept": 6724,
+    "semantic_repair": 5198,
+    "semantic_reject": 46958,
+    "asr_garbage_rejected": 421,
+    "local_re_asr_recovered": 0,
+    "recording_clusters": 29,
+    "train_recording_clusters": 25,
+    "validation_clusters": 2,
+    "sealed_clusters": 2,
+    "largest_train_cluster_share": 0.399958,
+    "top_3_train_cluster_share": 0.526516,
+    "recording_leakage": {
+      "train_validation": [],
+      "train_sealed_eval": [],
+      "validation_sealed_eval": []
+    },
+    "near_duplicate_leakage": 0,
+    "training_candidate_true_count": 0,
+    "ready_for_first_sft": false
+  },
+  "interpretation": "v2 models one observable context anchor to one response episode, rejects bad middle turns as boundaries, re-resolves all rows from raw timelines, and applies anchor/target/prefix/response-containment screens before split assignment."
+}

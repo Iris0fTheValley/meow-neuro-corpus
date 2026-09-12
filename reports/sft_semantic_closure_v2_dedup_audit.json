@@ -1,0 +1,118 @@
+{
+  "schema_version": "1.0.0",
+  "pipeline_version": "sft-semantic-closure-v2-2026-09-12",
+  "counts": {
+    "anchor_duplicate_count": 0,
+    "target_turn_reuse_count": 0,
+    "prefix_containment_count": 0,
+    "near_duplicate_group_count": 32,
+    "exact_message_duplicate_count": 2,
+    "removed_examples": [
+      {
+        "reason": "same_recording_response_token_containment",
+        "short_or_kept": "115eed0e1db17592bd7a",
+        "removed": "f558ee4f4b71dcbd54ca"
+      },
+      {
+        "reason": "same_recording_response_token_containment",
+        "short_or_kept": "17c5f8386e12b12c7718",
+        "removed": "87708dea1e7823eac658"
+      },
+      {
+        "reason": "same_recording_response_token_containment",
+        "short_or_kept": "e52f958ee8c80ba13e67",
+        "removed": "eece5fa0e6248f07f687"
+      },
+      {
+        "reason": "same_recording_response_token_containment",
+        "short_or_kept": "3a91aa6a1651bb423e5d",
+        "removed": "c48665ea2b4ec8444782"
+      },
+      {
+        "reason": "same_recording_response_token_containment",
+        "short_or_kept": "124efcd9663e45d15321",
+        "removed": "9a9f6f122cae8b349d0d"
+      },
+      {
+        "reason": "same_recording_response_token_containment",
+        "short_or_kept": "124efcd9663e45d15321",
+        "removed": "81799d608d7374c1cf50"
+      },
+      {
+        "reason": "same_recording_response_token_containment",
+        "short_or_kept": "124efcd9663e45d15321",
+        "removed": "8a0ca4d8154c3e6ff938"
+      },
+      {
+        "reason": "same_recording_response_token_containment",
+        "short_or_kept": "124efcd9663e45d15321",
+        "removed": "f79e7857a0c64e5d8961"
+      },
+      {
+        "reason": "same_recording_response_token_containment",
+        "short_or_kept": "124efcd9663e45d15321",
+        "removed": "90f962a1226e150a687c"
+      },
+      {
+        "reason": "same_recording_response_token_containment",
+        "short_or_kept": "124efcd9663e45d15321",
+        "removed": "a3359d4796a30a5e9c88"
+      },
+      {
+        "reason": "same_recording_response_token_containment",
+        "short_or_kept": "124efcd9663e45d15321",
+        "removed": "44fcef600976db7e7fd7"
+      },
+      {
+        "reason": "same_recording_response_token_containment",
+        "short_or_kept": "124efcd9663e45d15321",
+        "removed": "042ac52d38911e034047"
+      },
+      {
+        "reason": "same_recording_response_token_containment",
+        "short_or_kept": "1e58f66a346bf846b2b6",
+        "removed": "a14c25959f14ba863807"
+      },
+      {
+        "reason": "same_recording_response_token_containment",
+        "short_or_kept": "1e58f66a346bf846b2b6",
+        "removed": "3fe5236e0341421691f1"
+      },
+      {
+        "reason": "same_recording_response_token_containment",
+        "short_or_kept": "2ea9eb8e8cf6890b2fda",
+        "removed": "45532ca6d18657bc28ab"
+      },
+      {
+        "reason": "same_recording_response_token_containment",
+        "short_or_kept": "2ea9eb8e8cf6890b2fda",
+        "removed": "608f325ba6170adfba1f"
+      },
+      {
+        "reason": "same_recording_response_token_containment",
+        "short_or_kept": "439afa3d0d2338f81a53",
+        "removed": "9809a300d74158f43da5"
+      },
+      {
+        "reason": "same_recording_response_token_containment",
+        "short_or_kept": "2ea9eb8e8cf6890b2fda",
+        "removed": "9aa80795a3ac6e3660ac"
+      },
+      {
+        "reason": "same_recording_response_token_containment",
+        "short_or_kept": "2ea9eb8e8cf6890b2fda",
+        "removed": "d05247adbb702b06f664"
+      },
+      {
+        "reason": "same_recording_response_token_containment",
+        "short_or_kept": "edd6ae01211f1828968a",
+        "removed": "e65c532b2dfa21614d32"
+      }
+    ]
+  },
+  "target_turns_after_final": 11957,
+  "anchor_policy": "one example per canonical_recording_id + context_anchor_id + response_episode_id",
+  "target_policy": "one supervision use per target_turn_id",
+  "prefix_policy": "same recording and normalized prompt strict-prefix containment is rejected",
+  "near_duplicate_policy": "same-recording exact message and prefix screens; future validator performs token containment screen"
+}

@@ -32,3 +32,16 @@ All promotion decisions remain conservative until target-vs-non-target precision
 Reports record scorer/model, threshold, aggregation, reference-bank provenance, source splits, and promotion decisions. This snapshot is an identity-closure milestone and is **not ready for training**.
 
 The raw-corpus recovery pass produced `production_v2_recovered` and a stricter `final_sft_candidate_v1` candidate: 5,516 rows across 20 sources and 12 recording clusters, split-disjoint by recording cluster. The candidate passed the independent structural validator with zero exact duplicates, response collisions, suspicious rows, or split leakage. It remains review-only: `READY_FOR_FIRST_SFT=NO` and `training_candidate=true` count `0`.
+
+## SFT Semantic Closure v2
+
+The current published reconstruction milestone is `sft_semantic_closure_v2`. It is built from raw timeline evidence and the verified identity layer rather than inheriting legacy conversation rows. Each sample represents one observable context anchor and one coherent Neuro response episode; target turns cannot be reused across samples, and bad/uncertain intermediate turns form hard boundaries.
+
+- Candidate splits: `4,733` train / `1,558` validation / `1,499` sealed evaluation rows.
+- Full post-clean train-cluster set: `8,865` rows in `train_clean_full.jsonl`.
+- Coverage: `67` sources and `29` recording clusters; train/validation/sealed clusters are disjoint.
+- Independent validator: PASS; anchor duplicates `0`, target-turn reuse `0`, prefix containment `0`, recording leakage `0`.
+- Semantic QA: `6,724` accepted and `5,198` repaired candidates; raw reconstruction rejects are retained in the audit report.
+- The dataset is still candidate-only: `READY_FOR_FIRST_SFT=NO` and `training_candidate=true` count `0`.
+
+The v2 scripts and lightweight audit reports are published here for review. The structured JSONL artifacts are stored in the companion Hugging Face dataset repository. No raw media, model weights, caches, credentials, or source transcript files are included.

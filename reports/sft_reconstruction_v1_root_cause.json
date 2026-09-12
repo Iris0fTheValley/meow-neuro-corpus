@@ -1,0 +1,131 @@
+{
+  "schema_version": "1.0.0",
+  "artifact": "datasets\\meow_v02_sft_v1\\final_sft_candidate_v1\\train.jsonl",
+  "rows": 4415,
+  "unique_user_prompts": 2593,
+  "duplicate_prompt_groups": 945,
+  "rows_in_duplicate_prompt_groups": 2767,
+  "rows_in_duplicate_prompt_groups_fraction": 0.626727,
+  "context_anchor_duplicate_count": 6,
+  "target_turn_reuse_count": 0,
+  "prefix_containment_pair_count": 3257,
+  "prefix_containment_examples": [
+    {
+      "prompt": "i'm proud of my pirate ship.",
+      "short_sample_id": "00a8490aa0f464383694",
+      "long_sample_id": "5702cc6b025661d47b2e"
+    },
+    {
+      "prompt": "i'm proud of my pirate ship.",
+      "short_sample_id": "00a8490aa0f464383694",
+      "long_sample_id": "93a2095648b59cc3aed1"
+    },
+    {
+      "prompt": "i'm proud of my pirate ship.",
+      "short_sample_id": "00a8490aa0f464383694",
+      "long_sample_id": "df7fffeced84938990fe"
+    },
+    {
+      "prompt": "i'm proud of my pirate ship.",
+      "short_sample_id": "5702cc6b025661d47b2e",
+      "long_sample_id": "93a2095648b59cc3aed1"
+    },
+    {
+      "prompt": "i'm proud of my pirate ship.",
+      "short_sample_id": "5702cc6b025661d47b2e",
+      "long_sample_id": "df7fffeced84938990fe"
+    },
+    {
+      "prompt": "i'm proud of my pirate ship.",
+      "short_sample_id": "93a2095648b59cc3aed1",
+      "long_sample_id": "df7fffeced84938990fe"
+    },
+    {
+      "prompt": "filtered.",
+      "short_sample_id": "18afb909ab116bd2806d",
+      "long_sample_id": "7a41f32236e52c045571"
+    },
+    {
+      "prompt": "filtered.",
+      "short_sample_id": "2103b1d582ab48c5da50",
+      "long_sample_id": "60636c25b8992a3d783e"
+    },
+    {
+      "prompt": "filtered.",
+      "short_sample_id": "2103b1d582ab48c5da50",
+      "long_sample_id": "641d0e76a1a5d9073220"
+    },
+    {
+      "prompt": "filtered.",
+      "short_sample_id": "3471e135696809c5b7fc",
+      "long_sample_id": "2103b1d582ab48c5da50"
+    },
+    {
+      "prompt": "filtered.",
+      "short_sample_id": "3471e135696809c5b7fc",
+      "long_sample_id": "60636c25b8992a3d783e"
+    },
+    {
+      "prompt": "filtered.",
+      "short_sample_id": "3471e135696809c5b7fc",
+      "long_sample_id": "641d0e76a1a5d9073220"
+    },
+    {
+      "prompt": "filtered.",
+      "short_sample_id": "45b46b10ad5d569a9e09",
+      "long_sample_id": "2a084dc004aeeb14a9c0"
+    },
+    {
+      "prompt": "filtered.",
+      "short_sample_id": "576a135ea7041fcbf5fa",
+      "long_sample_id": "2a084dc004aeeb14a9c0"
+    },
+    {
+      "prompt": "filtered.",
+      "short_sample_id": "576a135ea7041fcbf5fa",
+      "long_sample_id": "45b46b10ad5d569a9e09"
+    },
+    {
+      "prompt": "filtered.",
+      "short_sample_id": "576a135ea7041fcbf5fa",
+      "long_sample_id": "cabfbbd2196189b8b138"
+    },
+    {
+      "prompt": "filtered.",
+      "short_sample_id": "5a2da6bf34996d983b21",
+      "long_sample_id": "18afb909ab116bd2806d"
+    },
+    {
+      "prompt": "filtered.",
+      "short_sample_id": "5a2da6bf34996d983b21",
+      "long_sample_id": "7a41f32236e52c045571"
+    },
+    {
+      "prompt": "filtered.",
+      "short_sample_id": "60636c25b8992a3d783e",
+      "long_sample_id": "641d0e76a1a5d9073220"
+    },
+    {
+      "prompt": "filtered.",
+      "short_sample_id": "8dce5efbfab22ef74edb",
+      "long_sample_id": "73368ce5aa1760cdac11"
+    }
+  ],
+  "recording_cluster_rows": {
+    "rc_e230d6b14232d26e": 2555,
+    "rc_5b3efcd3980191e8": 306,
+    "rc_88b31c79088f5ff0": 590,
+    "rc_f975559973259cc9": 520,
+    "rc_e8a873a9d7154004": 440,
+    "rc_f17bd5f3c2db8747": 4
+  },
+  "largest_cluster_share": 0.578709,
+  "top_3_cluster_share": 0.830125,
+  "root_causes": [
+    "target_turn_independent_sample_generation",
+    "same_role_target_concatenation_without_response_episode_boundary",
+    "bad_or_uncertain_middle_turns_skipped_as_transparent",
+    "exact_message_and_response-only_deduplication",
+    "rank_based_cluster_split_and_concentration"
+  ]
+}

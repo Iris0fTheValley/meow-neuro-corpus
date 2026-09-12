@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0.0",
+  "pipeline_version": "sft-semantic-closure-v2-2026-09-12",
+  "stages": [
+    {
+      "stage": "raw_family_target_utterances",
+      "rows": 110454,
+      "removed_rows": 0
+    },
+    {
+      "stage": "identity_text_mirror_gates",
+      "rows": 58915,
+      "removed_rows": 51539
+    },
+    {
+      "stage": "raw_context_episode_reconstruction",
+      "rows": 11922,
+      "removed_rows": 46958
+    },
+    {
+      "stage": "anchor_target_prefix_dedup",
+      "rows": 11922,
+      "removed_rows": 2
+    },
+    {
+      "stage": "recommended_train_after_concentration_control",
+      "rows": 4733,
+      "removed_rows": 4132
+    },
+    {
+      "stage": "validation",
+      "rows": 1558,
+      "removed_rows": 0
+    },
+    {
+      "stage": "sealed_eval",
+      "rows": 1499,
+      "removed_rows": 0
+    }
+  ],
+  "gate_counts": {
+    "target_after_identity_and_text_gates": 58915,
+    "assistant_identity_below_0.70": 22756,
+    "mirror_or_reupload": 27728,
+    "target_bad_boundary": 634,
+    "target_transcript_quality": 421
+  },
+  "rejection_reasons": {
+    "independent_target_without_observable_trigger": 46014,
+    "no_clean_context_anchor": 847,
+    "bad_middle_turn_boundary": 41,
+    "no_preceding_context": 45,
+    "target_continuation_without_new_observable_trigger": 11
+  },
+  "recording_cluster_leakage": {
+    "train_validation": [],
+    "train_sealed_eval": [],
+    "validation_sealed_eval": []
+  },
+  "legacy_rows": {
+    "policy": "all legacy rows must re-resolve through raw timeline; no legacy row is directly inherited",
+    "old_v1_rows_seen": 5516,
+    "old_v2_rows_seen": 25533,
+    "directly_inherited": 0
+  }
+}
