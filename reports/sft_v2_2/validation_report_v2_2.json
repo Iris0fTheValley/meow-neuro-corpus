@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_status": "VALIDATED_SFT_SEMANTIC_VERIFIED_V2_2",
+  "sample_counts": {
+    "train": 6705,
+    "validation": 1043,
+    "sealed_eval": 1043
+  },
+  "schema_errors": [],
+  "duplicate_context_anchor_count": 0,
+  "target_turn_reuse_count": 0,
+  "global_exact_duplicate_count": 0,
+  "same_anchor_prefix_ladder_count": 0,
+  "recording_family_leakage": {
+    "train_validation": [],
+    "train_sealed_eval": [],
+    "validation_sealed_eval": []
+  },
+  "cross_split_strong_overlap_count": 0,
+  "cross_split_strong_overlap_examples": [],
+  "quality_layers": {
+    "structural": true,
+    "semantic": true,
+    "transcript": true,
+    "episode": true,
+    "recording_independence": true
+  },
+  "training_candidate_true_count": 0,
+  "pass": true
+}

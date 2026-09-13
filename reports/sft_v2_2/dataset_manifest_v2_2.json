@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0.0",
+  "artifact_status": "SFT_SEMANTIC_VERIFIED_V2_2_CANDIDATE",
+  "pipeline_version": "sft-v2.2-semantic-verified-2026-09-13",
+  "files": {
+    "structural_candidates": "structural_candidates_v2_2.jsonl",
+    "semantic_verified_candidates": "semantic_verified_candidates_v2_2.jsonl",
+    "train": "train.jsonl",
+    "train_clean_full": "train_clean_full.jsonl",
+    "validation": "validation.jsonl",
+    "sealed_eval": "sealed_eval.jsonl",
+    "semantic_judge_results": "semantic_judge_results_v2_2.jsonl",
+    "episode_reconstruction_audit": "episode_reconstruction_audit_v2_2.jsonl",
+    "recording_overlap_edges": "recording_overlap_edges_v2_2.jsonl",
+    "recording_cluster_repair": "recording_cluster_repair_v2_2.json",
+    "global_dedup_audit": "global_dedup_audit_v2_2.json",
+    "quality_report": "quality_report_v2_2.json",
+    "rejection_funnel": "rejection_funnel_v2_2.json"
+  },
+  "source_of_truth": {
+    "raw_timelines": "unique_timelines",
+    "fusion": "identity_results/identity_mapping_multimodal_fusion_proxy.jsonl",
+    "incremental_delta": "reports/sft_v2_2_incremental_delta.json"
+  },
+  "training_candidate_true_count": 0,
+  "ready_for_first_sft": false
+}

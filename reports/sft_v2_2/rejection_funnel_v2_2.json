@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0.0",
+  "pipeline_version": "sft-v2.2-semantic-verified-2026-09-13",
+  "stages": [
+    {
+      "stage": "structural_candidates_v2_2",
+      "rows": 17810,
+      "removed_rows": 0
+    },
+    {
+      "stage": "semantic_relation_and_episode_judge",
+      "rows": 12830,
+      "removed_rows": 4980
+    },
+    {
+      "stage": "recording_overlap_repair",
+      "rows": 12830,
+      "removed_rows": 0,
+      "cross_cluster_overlap_pairs": 121
+    },
+    {
+      "stage": "global_dedup",
+      "rows": 12701,
+      "removed_rows": 129
+    },
+    {
+      "stage": "final_train",
+      "rows": 6705,
+      "removed_rows": 3910
+    },
+    {
+      "stage": "validation",
+      "rows": 1043,
+      "removed_rows": 0
+    },
+    {
+      "stage": "sealed_eval",
+      "rows": 1043,
+      "removed_rows": 0
+    }
+  ],
+  "rejection_reasons": {
+    "schema_or_turn_selection_invalid": 397,
+    "semantic_relation_rejected": 99,
+    "HIDDEN_TRIGGER": 1,
+    "missing_json_object": 1,
+    "SEMANTIC_RELATION_UNCLEAR_NO_OBSERVABLE_TEXTUAL_LINK": 4155,
+    "RESPONSE_EPISODE_INDEPENDENT_SPEECH_ACT": 327
+  }
+}

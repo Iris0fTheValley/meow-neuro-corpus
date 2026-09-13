@@ -1,0 +1,234 @@
+{
+  "schema_version": "1.0.0",
+  "pipeline_version": "sft-v2.2-semantic-verified-2026-09-13",
+  "strong_merge_edges": 83,
+  "all_overlap_edges": 121,
+  "recording_families": [
+    {
+      "recording_family_id": "rf_09490aa5a2401f8b",
+      "canonical_recording_ids": [
+        "rc_517bae6b58df0c05"
+      ],
+      "merge_edge_count": 0
+    },
+    {
+      "recording_family_id": "rf_09d3c81a199f62c0",
+      "canonical_recording_ids": [
+        "rc_f1e1518c4db094e8"
+      ],
+      "merge_edge_count": 0
+    },
+    {
+      "recording_family_id": "rf_1e682ccd0fafe9e6",
+      "canonical_recording_ids": [
+        "rc_53dd6be2ce86808c"
+      ],
+      "merge_edge_count": 0
+    },
+    {
+      "recording_family_id": "rf_3d9db1e5b8f83e1d",
+      "canonical_recording_ids": [
+        "rc_f17bd5f3c2db8747"
+      ],
+      "merge_edge_count": 0
+    },
+    {
+      "recording_family_id": "rf_420d59ab572afdcb",
+      "canonical_recording_ids": [
+        "rc_535fa8871641f7dd"
+      ],
+      "merge_edge_count": 0
+    },
+    {
+      "recording_family_id": "rf_4ad19426b46363d5",
+      "canonical_recording_ids": [
+        "rc_1fe0139ad7c28fd8"
+      ],
+      "merge_edge_count": 0
+    },
+    {
+      "recording_family_id": "rf_5163b626993efbe7",
+      "canonical_recording_ids": [
+        "rc_3baccde39d4db285"
+      ],
+      "merge_edge_count": 0
+    },
+    {
+      "recording_family_id": "rf_52b83f6bcab92924",
+      "canonical_recording_ids": [
+        "rc_bf3aa29412173097"
+      ],
+      "merge_edge_count": 0
+    },
+    {
+      "recording_family_id": "rf_54fe0a0a081de3a3",
+      "canonical_recording_ids": [
+        "rc_e8c186bcbea92086"
+      ],
+      "merge_edge_count": 0
+    },
+    {
+      "recording_family_id": "rf_5600ceb09f4f26ec",
+      "canonical_recording_ids": [
+        "rc_a326a58ecb66a11d"
+      ],
+      "merge_edge_count": 0
+    },
+    {
+      "recording_family_id": "rf_5840cc9951227e26",
+      "canonical_recording_ids": [
+        "rc_245e8e11e1f16fcf",
+        "rc_24de3452cc4fdcaa",
+        "rc_e230d6b14232d26e",
+        "rc_f975559973259cc9"
+      ],
+      "merge_edge_count": 83
+    },
+    {
+      "recording_family_id": "rf_7338d46b571e7a57",
+      "canonical_recording_ids": [
+        "rc_e2853f5be12ec4db"
+      ],
+      "merge_edge_count": 0
+    },
+    {
+      "recording_family_id": "rf_76f3dc9c29c7159a",
+      "canonical_recording_ids": [
+        "rc_3eb0a5fa2980ce3e"
+      ],
+      "merge_edge_count": 0
+    },
+    {
+      "recording_family_id": "rf_7d070da1b4a1b9f6",
+      "canonical_recording_ids": [
+        "rc_f21e19ef365a0798"
+      ],
+      "merge_edge_count": 0
+    },
+    {
+      "recording_family_id": "rf_7f256013faf17115",
+      "canonical_recording_ids": [
+        "rc_5c8604f44422c8bb"
+      ],
+      "merge_edge_count": 0
+    },
+    {
+      "recording_family_id": "rf_7f91dd642919f51e",
+      "canonical_recording_ids": [
+        "rc_2a7e391a529c2b3c"
+      ],
+      "merge_edge_count": 0
+    },
+    {
+      "recording_family_id": "rf_853d58e781b42bbb",
+      "canonical_recording_ids": [
+        "rc_69293762de347922"
+      ],
+      "merge_edge_count": 0
+    },
+    {
+      "recording_family_id": "rf_87a00ccf89d916a1",
+      "canonical_recording_ids": [
+        "rc_8f43bb1669c4f568"
+      ],
+      "merge_edge_count": 0
+    },
+    {
+      "recording_family_id": "rf_8bc74b06cf447bfe",
+      "canonical_recording_ids": [
+        "rc_f539557bf1522d87"
+      ],
+      "merge_edge_count": 0
+    },
+    {
+      "recording_family_id": "rf_8c2bba02a7ab6f77",
+      "canonical_recording_ids": [
+        "rc_88b31c79088f5ff0"
+      ],
+      "merge_edge_count": 0
+    },
+    {
+      "recording_family_id": "rf_9210a5c4cbd20622",
+      "canonical_recording_ids": [
+        "rc_5b3efcd3980191e8"
+      ],
+      "merge_edge_count": 0
+    },
+    {
+      "recording_family_id": "rf_93ad1915fbc1b19b",
+      "canonical_recording_ids": [
+        "rc_e8a873a9d7154004"
+      ],
+      "merge_edge_count": 0
+    },
+    {
+      "recording_family_id": "rf_af98f8a26adf2de3",
+      "canonical_recording_ids": [
+        "rc_1e2247feb06a76e0"
+      ],
+      "merge_edge_count": 0
+    },
+    {
+      "recording_family_id": "rf_b227a57e31acca52",
+      "canonical_recording_ids": [
+        "rc_c75f41ee7ed9d4aa"
+      ],
+      "merge_edge_count": 0
+    },
+    {
+      "recording_family_id": "rf_c93685f2227890bf",
+      "canonical_recording_ids": [
+        "rc_34579877a122d7e4"
+      ],
+      "merge_edge_count": 0
+    },
+    {
+      "recording_family_id": "rf_d21995b9175e2f77",
+      "canonical_recording_ids": [
+        "rc_4d95a7b8b387a08b"
+      ],
+      "merge_edge_count": 0
+    },
+    {
+      "recording_family_id": "rf_d957161e723a5697",
+      "canonical_recording_ids": [
+        "rc_c63a35336867cabd"
+      ],
+      "merge_edge_count": 0
+    }
+  ],
+  "cluster_to_family": {
+    "rc_1e2247feb06a76e0": "rf_af98f8a26adf2de3",
+    "rc_1fe0139ad7c28fd8": "rf_4ad19426b46363d5",
+    "rc_245e8e11e1f16fcf": "rf_5840cc9951227e26",
+    "rc_24de3452cc4fdcaa": "rf_5840cc9951227e26",
+    "rc_e230d6b14232d26e": "rf_5840cc9951227e26",
+    "rc_f975559973259cc9": "rf_5840cc9951227e26",
+    "rc_2a7e391a529c2b3c": "rf_7f91dd642919f51e",
+    "rc_34579877a122d7e4": "rf_c93685f2227890bf",
+    "rc_3baccde39d4db285": "rf_5163b626993efbe7",
+    "rc_3eb0a5fa2980ce3e": "rf_76f3dc9c29c7159a",
+    "rc_4d95a7b8b387a08b": "rf_d21995b9175e2f77",
+    "rc_517bae6b58df0c05": "rf_09490aa5a2401f8b",
+    "rc_535fa8871641f7dd": "rf_420d59ab572afdcb",
+    "rc_53dd6be2ce86808c": "rf_1e682ccd0fafe9e6",
+    "rc_5b3efcd3980191e8": "rf_9210a5c4cbd20622",
+    "rc_5c8604f44422c8bb": "rf_7f256013faf17115",
+    "rc_69293762de347922": "rf_853d58e781b42bbb",
+    "rc_88b31c79088f5ff0": "rf_8c2bba02a7ab6f77",
+    "rc_8f43bb1669c4f568": "rf_87a00ccf89d916a1",
+    "rc_a326a58ecb66a11d": "rf_5600ceb09f4f26ec",
+    "rc_bf3aa29412173097": "rf_52b83f6bcab92924",
+    "rc_c63a35336867cabd": "rf_d957161e723a5697",
+    "rc_c75f41ee7ed9d4aa": "rf_b227a57e31acca52",
+    "rc_e2853f5be12ec4db": "rf_7338d46b571e7a57",
+    "rc_e8a873a9d7154004": "rf_93ad1915fbc1b19b",
+    "rc_e8c186bcbea92086": "rf_54fe0a0a081de3a3",
+    "rc_f17bd5f3c2db8747": "rf_3d9db1e5b8f83e1d",
+    "rc_f1e1518c4db094e8": "rf_09d3c81a199f62c0",
+    "rc_f21e19ef365a0798": "rf_7d070da1b4a1b9f6",
+    "rc_f539557bf1522d87": "rf_8bc74b06cf447bfe"
+  },
+  "policy": "only long contiguous overlap or high containment merges; weak/common short phrases remain separate",
+  "pairwise_edges_preserved": true
+}

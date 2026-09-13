@@ -1,0 +1,261 @@
+{
+  "global_exact_message_duplicate_count": 11,
+  "global_response_containment_count": 118,
+  "removed_examples": [
+    {
+      "reason": "global_exact_message_duplicate",
+      "kept": "2660de7fdf6d4828bad6",
+      "removed": "3256fdcce239f7f8b2d0"
+    },
+    {
+      "reason": "global_exact_message_duplicate",
+      "kept": "1063f9624f293fde25a4",
+      "removed": "666b54f1ad472d3d3ec2"
+    },
+    {
+      "reason": "global_exact_message_duplicate",
+      "kept": "36a1ebf018e4d52668eb",
+      "removed": "69a112bbf3d607787a43"
+    },
+    {
+      "reason": "global_exact_message_duplicate",
+      "kept": "46119c66988669be4d74",
+      "removed": "69f5337f0d7295bfa86c"
+    },
+    {
+      "reason": "global_exact_message_duplicate",
+      "kept": "37c079382e906cccfeda",
+      "removed": "9470cb1967309f9b3898"
+    },
+    {
+      "reason": "global_exact_message_duplicate",
+      "kept": "75c3b75b63ad6d2e8af9",
+      "removed": "9daea9cb31060aea1872"
+    },
+    {
+      "reason": "global_exact_message_duplicate",
+      "kept": "00750e87c4c6ddcb85f4",
+      "removed": "aaf1a1b73220d679fc1a"
+    },
+    {
+      "reason": "global_exact_message_duplicate",
+      "kept": "2e367ebd33b1b79eae78",
+      "removed": "cb577ea023b5113b8058"
+    },
+    {
+      "reason": "global_exact_message_duplicate",
+      "kept": "8c27d700d3f2cb24169c",
+      "removed": "cf770e964d88e2a1f1f8"
+    },
+    {
+      "reason": "global_exact_message_duplicate",
+      "kept": "83bc7825c2729d8cacdd",
+      "removed": "d28ad4ae78b37b5aa515"
+    },
+    {
+      "reason": "global_exact_message_duplicate",
+      "kept": "df3cc38293923a135b4e",
+      "removed": "f2c4e18eed2ee685eeb8"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "8529e72542f210deeb69",
+      "removed": "9268cdaf718fecd8cba5"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "cfda6331651444bd3d74",
+      "removed": "f5a654f8ef0db8ea3601"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "579b8d80b7c648e8e52c",
+      "removed": "a70217ce4fe1fc141f8a"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "5632ee68f451269e81be",
+      "removed": "e81d76abbbcce2946f72"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "902b4b66e8be0914b744",
+      "removed": "f6bf2a7e5f84fa88d9eb"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "9cac78f3373478700987",
+      "removed": "0b0f073561d046ca123a"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "b8093d0b0d6da2e14a48",
+      "removed": "337cc0ecf3b30b860c86"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "00d1dea1b663b891b381",
+      "removed": "41bcb1b464379b0137a6"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "2ea9eb8e8cf6890b2fda",
+      "removed": "45532ca6d18657bc28ab"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "2fdcd7544b4e81c86118",
+      "removed": "51a2c5c6426c3d30cb14"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "2ea9eb8e8cf6890b2fda",
+      "removed": "608f325ba6170adfba1f"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "61935e51acdaa2b0450f",
+      "removed": "7519e1de156bb62c4f5b"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "2ea9eb8e8cf6890b2fda",
+      "removed": "8a998ae567498539f60e"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "2ea9eb8e8cf6890b2fda",
+      "removed": "8c90124b39d383b6b6c8"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "2ea9eb8e8cf6890b2fda",
+      "removed": "9aa80795a3ac6e3660ac"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "6e106bf0822d41fb589f",
+      "removed": "aedbbb994b87b690b99c"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "2ea9eb8e8cf6890b2fda",
+      "removed": "d05247adbb702b06f664"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "2ea9eb8e8cf6890b2fda",
+      "removed": "dfa4ccfc0c54fb67a23e"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "e3454334360ed1ae66bb",
+      "removed": "ee397315ba879a6fc39e"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "2ea9eb8e8cf6890b2fda",
+      "removed": "ef8fbc2abd82ffa3fa06"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "1be3653f98d71c80ab24",
+      "removed": "2f5301de124342a4fe72"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "3b2cd6c0511b4aa4cc62",
+      "removed": "606ba8a42ab45aa7c3dd"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "14b0c0fbcb792c23f4bd",
+      "removed": "a47371868d29458ededb"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "0da4dc33e9c7be547f44",
+      "removed": "c5a2cf53a93ff58e495c"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "6ef83fa7c7006c74dcc8",
+      "removed": "c7d2c244e0109216f991"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "d0aef210e4715ecfaed7",
+      "removed": "d18295d69cfaf27cd771"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "1003341faf18c516670c",
+      "removed": "db8b061f44b8a61036b3"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "6651901abfbc6f3b6a02",
+      "removed": "de63d7d2c4494b49e019"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "838e0d3ac239dac4f577",
+      "removed": "efeb5772f4e658ab5387"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "e8af8aefa1449be39b0e",
+      "removed": "264e627a0d02973bc609"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "70e16b40d2fb147d99eb",
+      "removed": "72b1167ef6fb035c9688"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "64a5a45707fa21c0ce8b",
+      "removed": "7508d4e633eb64f82513"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "66836dd7ad66c7338b38",
+      "removed": "754dbf1e18469eda8fef"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "29c062bedf091e335fc5",
+      "removed": "84f6e560e2821ae2c0a1"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "1afcefeb829764adbfb9",
+      "removed": "86bfd70f63b08c36e491"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "8a251c1f2b66697c68b3",
+      "removed": "94146e8a56681d6a1106"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "4e0ab4db8b840ea0b8c3",
+      "removed": "a0d167b6430f4024b942"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "67b16c1b13d7803b023a",
+      "removed": "ad9735e8c0bc259d3cbe"
+    },
+    {
+      "reason": "global_response_containment",
+      "kept": "4795225f51105cc35133",
+      "removed": "b3ee84d121cc9f65cb51"
+    }
+  ],
+  "target_turn_reuse_count": 0,
+  "duplicate_context_anchor_count": 0,
+  "prefix_ladder_count": 0,
+  "rows_before": 12830,
+  "rows_after": 12701
+}

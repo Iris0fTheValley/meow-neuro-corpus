@@ -45,3 +45,28 @@ The current published reconstruction milestone is `sft_semantic_closure_v2`. It 
 - The dataset is still candidate-only: `READY_FOR_FIRST_SFT=NO` and `training_candidate=true` count `0`.
 
 The v2 scripts and lightweight audit reports are published here for review. The structured JSONL artifacts are stored in the companion Hugging Face dataset repository. No raw media, model weights, caches, credentials, or source transcript files are included.
+
+## Incremental SFT reconstruction v2.2
+
+The latest canonical-timeline refresh is published as review-only derived
+artifacts in the companion [Hugging Face dataset](https://huggingface.co/datasets/ID-BLUEBERRY/meow-neuro-corpus-v02-artifacts), under `sft_v2_2_semantic_verified/`.
+
+- Structural candidates: `17,810`
+- Model semantic accepted before independent guard: `17,312`
+- Semantic-verified candidates after the independent context/episode guard: `12,830`
+- Recommended train / validation / sealed evaluation: `6,705 / 1,043 / 1,043`
+- Coverage: `64` sources and `27` underlying recording families
+- Target-turn reuse, prefix ladder, and cross-split content leakage: `0`
+- `training_candidate=true`: `0`
+- Readiness: `NOT_READY_FOR_SFT`
+
+The independent guard is intentionally conservative: it rejects candidate
+contexts with no observable textual trigger and rejects multi-segment episodes
+whose later fragment looks like a new speech act. The v2.2 artifacts remain
+candidates for external review; they do not authorize SFT promotion.
+
+The v2.2 incremental inventory and reconstruction scripts are in `scripts/`,
+with lightweight reports in `reports/sft_v2_2/`. Large JSONL artifacts,
+semantic-judge evidence, provenance and split manifests are stored on Hugging
+Face. Raw video/audio, media slices, model weights, caches and credentials are
+not published.
