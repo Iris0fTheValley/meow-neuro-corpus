@@ -56,6 +56,38 @@ def validated(**kwargs):
 
 
 class SemanticClosureStateTests(unittest.TestCase):
+    def continuation_request(self, **continuation_overrides):
+        base_target = {
+            "identity": "NEURO_FAMILY_HIGH",
+            "speaker": "n",
+            "speaker_confidence": 0.95,
+            "text_qa": "PASS",
+            "asr_quality": "PASS",
+        }
+        continuation = {
+            **base_target,
+            "turn_id": "n2",
+            "text": "and this continues",
+            "_start": 2.1,
+            "_end": 3.0,
+            "timestamp": {"start": 2.1, "end": 3.0},
+            **continuation_overrides,
+        }
+        timeline = {"_turns": [
+            {"turn_id": "c1", "identity": "OTHER", "speaker": "u", "speaker_confidence": 0.95, "text": "prompt", "text_qa": "PASS", "asr_quality": "PASS", "_start": 0.0, "_end": 1.0, "timestamp": {"start": 0.0, "end": 1.0}},
+            {**base_target, "turn_id": "n1", "text": "answer", "_start": 1.1, "_end": 2.0, "timestamp": {"start": 1.1, "end": 2.0}},
+            continuation,
+        ]}
+        row = {
+            "sample_id": "s",
+            "source_id": "src",
+            "identity": "NEURO_FAMILY_HIGH",
+            "context_turn_ids": ["c1"],
+            "target_turn_ids": ["n1"],
+            "episode_boundary": {"response_gap_policy_seconds": 3.0},
+        }
+        return closure.build_request(row, timeline, {})["request"]
+
     def test_direct_response_requires_two_agreeing_semantic_judges(self):
         primary = validated()
         pending = closure.resolve_semantic_state("s", primary, None)
@@ -142,6 +174,41 @@ class SemanticClosureStateTests(unittest.TestCase):
         self.assertEqual(seed, [0])
         self.assertEqual(offered, ["n2"])
         self.assertTrue(risks[0].startswith("RISK_MERGE_"))
+
+    def test_text_qa_failed_continuation_is_not_offered_to_judge(self):
+        value = self.continuation_request(text_qa="FAIL")
+        self.assertEqual(value["candidate_target_turn_ids"], ["n1"])
+        self.assertEqual(value["possible_continuation_fragments"], [])
+
+    def test_low_confidence_continuation_is_not_offered_to_judge(self):
+        value = self.continuation_request(speaker_confidence=0.69)
+        self.assertEqual(value["candidate_target_turn_ids"], ["n1"])
+        self.assertEqual(value["possible_continuation_fragments"], [])
+
+    def test_asr_review_continuation_is_not_offered_to_judge(self):
+        value = self.continuation_request(asr_quality="REVIEW")
+        self.assertEqual(value["candidate_target_turn_ids"], ["n1"])
+        self.assertEqual(value["possible_continuation_fragments"], [])
+
+    def test_clean_continuation_is_offered_but_not_machine_merged(self):
+        value = self.continuation_request()
+        self.assertEqual(value["candidate_target_turn_ids"], ["n1", "n2"])
+        self.assertEqual([turn["turn_id"] for turn in value["possible_continuation_fragments"]], ["n2"])
+        self.assertEqual(value["current_target_turn_ids"], ["n1"])
+
+    def test_other_hard_ineligible_continuations_are_not_offered(self):
+        cases = {
+            "identity": {"identity": "OTHER"},
+            "speaker": {"speaker": "different"},
+            "bad_boundary": {"overlap": True},
+            "event_boundary": {"event_boundary": True},
+            "temporal_bound": {"_start": 5.1, "timestamp": {"start": 5.1, "end": 6.0}},
+        }
+        for name, overrides in cases.items():
+            with self.subTest(name=name):
+                value = self.continuation_request(**overrides)
+                self.assertEqual(value["candidate_target_turn_ids"], ["n1"])
+                self.assertEqual(value["possible_continuation_fragments"], [])
 
     def test_selected_continuation_cannot_bypass_asr_gate(self):
         row = {"source_id": "src", "target_turn_ids": ["n1"], "transcript_qa": {"status": "STRUCTURAL_PASS"}}

@@ -143,6 +143,14 @@ continuations must independently pass speaker, identity, confidence, ASR,
 text-quality, and hard-boundary gates. `SELF_CONTINUATION` remains a diagnostic
 relation but is not accepted as an ordinary user-to-assistant training pair.
 
+The same deterministic target-turn eligibility gate now runs before a possible
+continuation is exposed to either semantic pass. It uses the structural
+response-gap policy and rejects identity/speaker mismatch, low speaker
+confidence, text or ASR failure, bad transcript boundaries, and event
+boundaries. Final materialization repeats this gate as defense in depth; the
+semantic passes decide only whether an already eligible fragment belongs to the
+same response episode.
+
 ### Compatibility boundary
 
 Interaction artifacts retain schema `2.0.0`, but pipeline version `v2.3.1`

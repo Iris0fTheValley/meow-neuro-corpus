@@ -22,6 +22,7 @@ STRICT_PROMPT_VERSION = "interaction-strict-v2.3-p1"
 ADJUDICATION_PROMPT_VERSION = "interaction-adjudication-v2.3-p1"
 
 TARGETS = {"NEURO_FAMILY_HIGH", "NEURO_FAMILY_MEDIUM"}
+MIN_TARGET_SPEAKER_CONFIDENCE = 0.70
 ALLOWED_RELATIONS = {
     "DIRECT_RESPONSE",
     "CONTEXTUAL_RESPONSE",
@@ -94,6 +95,62 @@ def snapshot(turn: dict[str, Any]) -> dict[str, Any]:
         "asr_quality": turn.get("asr_quality"),
         "text": str(turn.get("text") or "")[:600],
     }
+
+
+def _hard_bad_boundary(turn: dict[str, Any]) -> bool:
+    return any(
+        bool(turn.get(key))
+        for key in (
+            "_bad_boundary",
+            "bad_boundary",
+            "uncertain_transcription",
+            "suspicious_transcription",
+            "overlap",
+            "malformed",
+        )
+    )
+
+
+def target_turn_hard_eligibility(
+    turn: dict[str, Any],
+    *,
+    expected_speaker: Any,
+    expected_identity: Any,
+    continuation: bool,
+) -> tuple[bool, str]:
+    """Apply the deterministic target evidence gate before semantic judgement.
+
+    The same helper is used again by final materialization. Semantic judgement
+    may decide episode membership, but it cannot upgrade raw training evidence.
+    """
+    identity = str(turn.get("identity") or "UNKNOWN")
+    if identity not in TARGETS or (expected_identity and identity != str(expected_identity)):
+        return False, "TARGET_IDENTITY_INELIGIBLE"
+    if str(turn.get("speaker") or "") != str(expected_speaker or ""):
+        return False, "TARGET_SPEAKER_MISMATCH"
+    try:
+        confidence = float(turn.get("speaker_confidence") or 0.0)
+    except (TypeError, ValueError):
+        confidence = 0.0
+    if confidence < MIN_TARGET_SPEAKER_CONFIDENCE:
+        return False, "TARGET_SPEAKER_CONFIDENCE_LOW"
+    if turn.get("text_qa") != "PASS":
+        return False, "TARGET_TEXT_QA_FAIL"
+    if turn.get("asr_quality") == "REVIEW":
+        return False, "TARGET_ASR_REVIEW"
+    if _hard_bad_boundary(turn):
+        return False, "TARGET_BAD_BOUNDARY"
+    if continuation and turn.get("event_boundary"):
+        return False, "TARGET_EVENT_BOUNDARY"
+    return True, "TARGET_MACHINE_ELIGIBLE"
+
+
+def response_gap_limit(row: dict[str, Any]) -> float:
+    """Use the structural response-gap policy; preserve 4s for old fixtures."""
+    try:
+        return max(0.0, float((row.get("episode_boundary") or {}).get("response_gap_policy_seconds", 4.0)))
+    except (TypeError, ValueError):
+        return 4.0
 
 
 def _safe_context_turn(turn: dict[str, Any], next_turn: dict[str, Any], max_gap: float) -> bool:
@@ -210,19 +267,21 @@ def build_request(
     positions = {str(turn.get("turn_id")): index for index, turn in enumerate(turns)}
     last_target = max(positions[value] for value in target_ids)
     candidate_target_ids = list(target_ids)
+    expected_speaker = by_id[target_ids[-1]].get("speaker")
+    expected_identity = row.get("identity") or by_id[target_ids[-1]].get("identity")
+    continuation_gap_limit = response_gap_limit(row)
     cursor = last_target + 1
     while cursor < len(turns) and len(candidate_target_ids) < len(target_ids) + 3:
         turn = turns[cursor]
         previous = turns[cursor - 1]
-        gap = float(turn.get("_start", cursor)) - float(previous.get("_end", cursor - 1))
-        if (
-            turn.get("identity") not in TARGETS
-            or turn.get("speaker") != by_id[target_ids[-1]].get("speaker")
-            or turn.get("_bad_boundary")
-            or turn.get("event_boundary")
-            or turn.get("asr_quality") == "REVIEW"
-            or gap > 4.0
-        ):
+        gap = max(0.0, float(turn.get("_start", cursor)) - float(previous.get("_end", cursor - 1)))
+        eligible, _ = target_turn_hard_eligibility(
+            turn,
+            expected_speaker=expected_speaker,
+            expected_identity=expected_identity,
+            continuation=True,
+        )
+        if not eligible or previous.get("event_boundary") or gap > continuation_gap_limit:
             break
         candidate_target_ids.append(str(turn.get("turn_id")))
         cursor += 1
@@ -421,17 +480,31 @@ def materialize_verified(row: dict[str, Any], closure: dict[str, Any], timeline:
     if context_indices != list(range(min(context_indices), max(context_indices) + 1)) or target_indices != list(range(min(target_indices), max(target_indices) + 1)) or max(context_indices) >= min(target_indices):
         return None
 
-    def bad(turn: dict[str, Any]) -> bool:
-        return any(bool(turn.get(key)) for key in ("_bad_boundary", "bad_boundary", "uncertain_transcription", "suspicious_transcription", "overlap", "malformed"))
-
-    if any(bad(turn) or turn.get("text_qa") != "PASS" or turn.get("asr_quality") == "REVIEW" for turn in context + target) or any(turn.get("identity") in TARGETS for turn in context):
+    if any(_hard_bad_boundary(turn) or turn.get("text_qa") != "PASS" or turn.get("asr_quality") == "REVIEW" for turn in context) or any(turn.get("identity") in TARGETS for turn in context):
         return None
     assistant_speakers = {str(turn.get("speaker") or "") for turn in target}
     assistant_identities = {str(turn.get("identity") or "UNKNOWN") for turn in target}
     if len(assistant_speakers) != 1 or len(assistant_identities) != 1 or not assistant_identities.issubset(TARGETS) or (row.get("identity") and str(row.get("identity")) not in assistant_identities):
         return None
+    expected_speaker = target[0].get("speaker")
+    expected_identity = row.get("identity") or target[0].get("identity")
+    if any(
+        not target_turn_hard_eligibility(
+            turn,
+            expected_speaker=expected_speaker,
+            expected_identity=expected_identity,
+            continuation=index > 0,
+        )[0]
+        for index, turn in enumerate(target)
+    ):
+        return None
     confidences = [float(turn.get("speaker_confidence") or 0.0) for turn in target]
-    if not confidences or min(confidences) < 0.70 or any(turn.get("event_boundary") for turn in target[1:]):
+    continuation_gap_limit = response_gap_limit(row)
+    if not confidences or any(
+        max(0.0, float(target[index].get("_start", index)) - float(target[index - 1].get("_end", index - 1))) > continuation_gap_limit
+        or target[index - 1].get("event_boundary")
+        for index in range(1, len(target))
+    ):
         return None
 
     def evidence_snapshot(turn: dict[str, Any], role: str) -> dict[str, Any]:
@@ -449,7 +522,7 @@ def materialize_verified(row: dict[str, Any], closure: dict[str, Any], timeline:
             "asr_quality": turn.get("asr_quality"),
             "asr_quality_reasons": turn.get("asr_quality_reasons") or [],
             "asr_metrics": turn.get("asr_metadata") or {},
-            "boundary": {"bad_boundary": bad(turn), "event_boundary": bool(turn.get("event_boundary")), "gap_from_previous": round(float(turn.get("_gap_from_previous") or 0.0), 3)},
+            "boundary": {"bad_boundary": _hard_bad_boundary(turn), "event_boundary": bool(turn.get("event_boundary")), "gap_from_previous": round(float(turn.get("_gap_from_previous") or 0.0), 3)},
         }
 
     transcript_turns = [evidence_snapshot(turn, "context") for turn in context] + [evidence_snapshot(turn, "target") for turn in target]

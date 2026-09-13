@@ -2,10 +2,10 @@
   "schema_version": "2.0.0",
   "pipeline_version": "sft-interaction-closure-v2.3.1-2026-09-13",
   "artifact_status": "ARCHITECTURE_REGRESSION_VALIDATED",
-  "generated_at": "2026-09-13T15:19:45.769154+00:00",
+  "generated_at": "2026-09-13T16:33:22.552965+00:00",
   "scope": "unit, synthetic regression, and existing lightweight v2.2 report evidence; no production model or corpus rerun",
   "tests": {
-    "run": 52,
+    "run": 57,
     "failures": 0,
     "errors": 0,
     "pass": true
@@ -40,8 +40,11 @@
     "TRAIN_SAMPLING_SEPARATION": "PASS",
     "SEALED_SPLIT_LINEAGE": "PASS",
     "SAMPLING_POLICY_SPLIT_AUTHORITY": "PASS",
+    "CONTINUATION_CANDIDATE_MACHINE_ELIGIBILITY": "PASS",
+    "MATERIALIZER_HARD_GATE_DEFENSE_IN_DEPTH": "PASS",
     "TARGET_REUSE_REGRESSION_FIXTURES": 0,
-    "PREFIX_LADDER_REGRESSION_FIXTURES": 0
+    "PREFIX_LADDER_REGRESSION_FIXTURES": 0,
+    "ARCHITECTURE_FROZEN": true
   },
   "production_gates": {
     "SEMANTIC_PRIMARY_COVERAGE": "NOT_YET_VALIDATED",

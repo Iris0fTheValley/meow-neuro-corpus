@@ -66,8 +66,11 @@ def main() -> None:
             "TRAIN_SAMPLING_SEPARATION": "PASS" if result.wasSuccessful() else "FAIL",
             "SEALED_SPLIT_LINEAGE": "PASS" if result.wasSuccessful() else "FAIL",
             "SAMPLING_POLICY_SPLIT_AUTHORITY": "PASS" if result.wasSuccessful() else "FAIL",
+            "CONTINUATION_CANDIDATE_MACHINE_ELIGIBILITY": "PASS" if result.wasSuccessful() else "FAIL",
+            "MATERIALIZER_HARD_GATE_DEFENSE_IN_DEPTH": "PASS" if result.wasSuccessful() else "FAIL",
             "TARGET_REUSE_REGRESSION_FIXTURES": 0,
             "PREFIX_LADDER_REGRESSION_FIXTURES": 0,
+            "ARCHITECTURE_FROZEN": result.wasSuccessful(),
         },
         "production_gates": {
             "SEMANTIC_PRIMARY_COVERAGE": "NOT_YET_VALIDATED",
