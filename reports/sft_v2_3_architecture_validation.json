@@ -1,0 +1,48 @@
+{
+  "schema_version": "2.0.0",
+  "pipeline_version": "sft-interaction-closure-v2.3-2026-09-13",
+  "artifact_status": "ARCHITECTURE_REGRESSION_VALIDATED",
+  "generated_at": "2026-09-13T13:23:50.914684+00:00",
+  "scope": "unit, synthetic regression, and existing lightweight v2.2 report evidence; no production model or corpus rerun",
+  "tests": {
+    "run": 40,
+    "failures": 0,
+    "errors": 0,
+    "pass": true
+  },
+  "existing_artifact_baseline": {
+    "status": "HISTORICAL_V2_2_NOT_REINTERPRETED_AS_V2_3",
+    "structural_candidates": 17810,
+    "target_reuse": 0,
+    "prefix_ladder": 0,
+    "recording_family_leakage": {
+      "train_validation": [],
+      "train_sealed_eval": [],
+      "validation_sealed_eval": []
+    },
+    "primary_accepts_before_legacy_heuristic_guard": 17312,
+    "legacy_heuristic_hard_rejects": 4482
+  },
+  "architecture_gates": {
+    "IDENTITY_CLOSURE": "UNCHANGED_COMPATIBLE",
+    "STRUCTURAL_INVARIANTS": "PASS",
+    "SEMANTIC_STATE_MACHINE": "PASS",
+    "BOUNDED_CONTEXT_AND_EPISODE_SELECTION": "PASS",
+    "HEURISTIC_AUTHORITY": "ROUTING_EVIDENCE_ONLY",
+    "TRANSCRIPT_REWRITE_PROHIBITION": "PASS",
+    "RECORDING_BRIDGE_AUDIT": "PASS",
+    "HARD_DEDUP_SCOPE": "RECORDING_PROVENANCE_AWARE",
+    "INDEPENDENT_BEHAVIOR_REPETITION": "PRESERVED",
+    "VERIFIED_POOL_ARCHITECTURE": "PASS",
+    "TRAIN_SAMPLING_SEPARATION": "PASS"
+  },
+  "production_gates": {
+    "SEMANTIC_PRIMARY_COVERAGE": "NOT_YET_VALIDATED",
+    "SEMANTIC_STRICT_OR_EQUIVALENT_VERIFICATION": "NOT_YET_VALIDATED",
+    "UNRESOLVED_HIGH_RISK_SAMPLES": "NOT_YET_COUNTED",
+    "JUDGE_CONFLICTS": "NOT_YET_COUNTED",
+    "VERIFIED_POOL": "NOT_YET_CONSTRUCTED",
+    "CROSS_SPLIT_RECORDING_LEAKAGE": "NOT_YET_VALIDATED",
+    "READY": false
+  }
+}

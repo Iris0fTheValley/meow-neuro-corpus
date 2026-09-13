@@ -30,6 +30,8 @@ FUNNEL = OUT_DIR / "structural_reconstruction_funnel.json"
 TARGETS = {"NEURO_FAMILY_HIGH", "NEURO_FAMILY_MEDIUM"}
 BAD_KEYS = ("uncertain_transcription", "suspicious_transcription", "overlap", "malformed")
 GARBAGE = {"filtered", "heart", "underscore", "subtitle", "[music]", "[applause]"}
+STRUCTURAL_SCHEMA_VERSION = "2.0.0"
+STRUCTURAL_PIPELINE_VERSION = "sft-v2.2-structural-seed-v2-2026-09-13"
 
 
 def norm(value: Any) -> str:
@@ -200,6 +202,9 @@ def prepare_timeline(source_id: str, payload: dict[str, Any], fusion: dict[tuple
         turn = dict(raw)
         mapped = fusion.get((source_id, str(turn.get("speaker") or ""))) or {}
         turn["identity"] = str(mapped.get("identity") or turn.get("identity") or "UNKNOWN")
+        turn["_identity_mapping_id"] = mapped.get("mapping_id")
+        turn["_identity_fusion_status"] = mapped.get("fusion_status")
+        turn["_identity_source_prior_version"] = (mapped.get("source_prior") or {}).get("version")
         turn["_index"] = index
         turn["_start"], turn["_end"] = bounds(turn, float(index))
         turn["text_qa"], turn["text_qa_reasons"] = text_quality(turn.get("text"))
@@ -255,6 +260,21 @@ def response_continuation(previous: dict[str, Any], current: dict[str, Any], max
     if gap <= 0.55 and len(prev_text.split()) <= 8:
         return True, "MERGE_TIGHT_FRAGMENT"
     return False, "SPLIT_NEW_SPEECH_ACT"
+
+
+def structural_response_seed(turns: list[dict[str, Any]], target_index: int, max_gap: float) -> tuple[list[int], list[str], list[str]]:
+    """Keep Layer-A target singular and expose continuation only as evidence."""
+    offered: list[str] = []
+    risks: list[str] = []
+    cursor = target_index + 1
+    while cursor < len(turns) and len(offered) < 3 and turns[cursor].get("identity") in TARGETS:
+        can_merge, reason = response_continuation(turns[cursor - 1], turns[cursor], max_gap)
+        offered.append(str(turns[cursor].get("turn_id")))
+        risks.append(("RISK_MERGE_" if can_merge else "RISK_SPLIT_") + reason)
+        if not can_merge:
+            break
+        cursor += 1
+    return [target_index], offered, risks
 
 
 def build(args: argparse.Namespace) -> dict[str, Any]:
@@ -313,16 +333,11 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
             if failure:
                 reason_counts[failure] += 1
                 continue
-            target_indices = [index]
-            continuation_reasons: list[str] = []
-            cursor = index + 1
-            while cursor < len(turns) and turns[cursor].get("identity") in TARGETS:
-                can_merge, reason = response_continuation(turns[target_indices[-1]], turns[cursor], response_gap)
-                if not can_merge:
-                    break
-                target_indices.append(cursor)
-                continuation_reasons.append(reason)
-                cursor += 1
+            # Layer A is a single-turn response seed. Adjacent target speech is
+            # exposed later inside the bounded semantic envelope; the
+            # structural continuation heuristic is retained only as routing
+            # evidence and cannot merge an episode by itself.
+            target_indices, offered_continuation_turn_ids, continuation_reasons = structural_response_seed(turns, index, response_gap)
             context_turns = [turns[i] for i in context_indices]
             target_turns = [turns[i] for i in target_indices]
             if any(turn.get("speaker") == target.get("speaker") for turn in context_turns):
@@ -353,6 +368,10 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
                     "assistant_confidence": min(float(turn.get("speaker_confidence") or 0.0) for turn in target_turns),
                     "context_identities": [str(turn.get("identity") or "UNKNOWN") for turn in context_turns],
                     "context_speakers": [str(turn.get("speaker") or "") for turn in context_turns],
+                    "identity_mapping_id": target.get("_identity_mapping_id"),
+                    "identity_fusion_status": target.get("_identity_fusion_status"),
+                    "identity_source_prior_version": target.get("_identity_source_prior_version"),
+                    "interaction_semantics_cannot_change_identity": True,
                 },
                 "identity": target.get("identity"),
                 "identity_confidence": "high" if target.get("identity") == "NEURO_FAMILY_HIGH" else "medium",
@@ -372,12 +391,15 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
                     "response_gap_policy_seconds": response_gap,
                     "continuation_reasons": continuation_reasons,
                     "candidate_response_turn_ids": target_ids,
+                    "offered_continuation_turn_ids": offered_continuation_turn_ids,
+                    "heuristic_authority": "ROUTING_EVIDENCE_ONLY",
                 },
                 "recovery": {"recovered_from_previous_reject": old_recovery, "source_state": "CURRENT_CANONICAL_TIMELINE"},
                 "source_metadata": {"title": title, "participants": (manifest.get(source_id) or {}).get("participants") or []},
                 "training_candidate": False,
                 "evaluation_only": False,
-                "pipeline_version": "sft-v2.2-structural-2026-09-13",
+                "artifact_schema_version": STRUCTURAL_SCHEMA_VERSION,
+                "pipeline_version": STRUCTURAL_PIPELINE_VERSION,
             })
             per_source[source_id] += 1
     # Deterministic uniqueness gates are applied before writing Layer A. They
@@ -401,8 +423,8 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         for row in unique:
             handle.write(json.dumps(row, ensure_ascii=False) + "\n")
     report = {
-        "schema_version": "1.0.0",
-        "pipeline_version": "sft-v2.2-structural-2026-09-13",
+        "schema_version": STRUCTURAL_SCHEMA_VERSION,
+        "pipeline_version": STRUCTURAL_PIPELINE_VERSION,
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "input": {"timeline_files": len(timelines), "fusion_rows": len(fusion), "old_structural_rows": sum(1 for _ in read_jsonl(OLD_STRUCTURAL))},
         "policy": {"assistant_identities": sorted(TARGETS), "context_identities": "any_clean_observable_non_target_or_unknown", "old_artifacts_untouched": True},
