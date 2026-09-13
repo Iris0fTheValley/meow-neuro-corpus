@@ -283,27 +283,46 @@ SYSTEM_PROMPT = (
 )
 
 
-def call_judge(request_payload: dict[str, Any], model: str = JUDGE_MODEL, endpoint: str = "http://127.0.0.1:1234/v1/chat/completions") -> dict[str, Any]:
-    body = {
-        "model": model,
-        "messages": [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": json.dumps(request_payload, ensure_ascii=False)},
-        ],
-        "reasoning": "off",
-        "temperature": 0,
-        "max_output_tokens": 192,
-        "stream": False,
-        "chat_template_kwargs": {"enable_thinking": False},
-    }
+def call_judge(request_payload: dict[str, Any], model: str = JUDGE_MODEL, endpoint: str = "http://127.0.0.1:1234/v1/completions") -> dict[str, Any]:
+    # The OpenAI-compatible chat endpoint does not forward Qwen GGUF chat
+    # template variables. Render the same template explicitly with an empty
+    # think block so the requested JSON is emitted without hidden reasoning.
+    if endpoint.rstrip("/").endswith("/completions"):
+        prompt = (
+            "<|im_start|>system\n"
+            + SYSTEM_PROMPT
+            + "<|im_end|>\n<|im_start|>user\n"
+            + json.dumps(request_payload, ensure_ascii=False)
+            + "<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n"
+        )
+        body = {
+            "model": model,
+            "prompt": prompt,
+            "temperature": 0,
+            "max_tokens": 256,
+            "stop": ["<|im_end|>"],
+            "stream": False,
+        }
+    else:
+        body = {
+            "model": model,
+            "messages": [
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": json.dumps(request_payload, ensure_ascii=False)},
+            ],
+            "temperature": 0,
+            "max_tokens": 256,
+            "stream": False,
+        }
     encoded = json.dumps(body, ensure_ascii=False).encode("utf-8")
     request = Request(endpoint, data=encoded, headers={"Content-Type": "application/json; charset=utf-8"}, method="POST")
     try:
         with urlopen(request, timeout=180) as response:
             raw = response.read().decode("utf-8")
         payload = json.loads(raw)
-        message = payload.get("choices", [{}])[0].get("message", {})
-        content = str(message.get("content") or "")
+        choice = payload.get("choices", [{}])[0]
+        message = choice.get("message", {})
+        content = str(choice.get("text") or message.get("content") or "")
         parsed = parse_json_object(content)
         return {"status": "COMPLETED" if parsed else "PARSE_ERROR", "model": model, "raw_content": content, "parsed": parsed, "usage": payload.get("usage", {})}
     except (HTTPError, URLError, TimeoutError, json.JSONDecodeError, OSError) as exc:
@@ -771,7 +790,7 @@ def main() -> None:
     for name in ("prepare", "judge"):
         command = sub.add_parser(name)
         command.add_argument("--model", default=JUDGE_MODEL)
-    sub.choices["judge"].add_argument("--endpoint", default="http://127.0.0.1:1234/v1/chat/completions")
+    sub.choices["judge"].add_argument("--endpoint", default="http://127.0.0.1:1234/v1/completions")
     sub.choices["judge"].add_argument("--restart", action="store_true")
     sub.choices["judge"].add_argument("--limit", type=int)
     sub.choices["judge"].add_argument("--workers", type=int, default=2)

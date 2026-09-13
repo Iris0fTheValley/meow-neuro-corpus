@@ -263,7 +263,7 @@ def main() -> None:
     parser.add_argument("--primary-model", default="", help="expected primary model when routing/status checks another stage")
     parser.add_argument("--strict-model", default="", help="expected strict model for status")
     parser.add_argument("--adjudication-model", default="", help="expected adjudication model for status")
-    parser.add_argument("--endpoint", default="http://127.0.0.1:1234/v1/chat/completions")
+    parser.add_argument("--endpoint", default="http://127.0.0.1:1234/v1/completions")
     parser.add_argument("--structural", default=str(STRUCTURAL))
     parser.add_argument("--requests", default=str(REQUESTS))
     parser.add_argument("--results", default="")
