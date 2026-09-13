@@ -18,7 +18,8 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "datasets" / "meow_v02_sft_v2_2_semantic_verified"
 STRUCTURAL = OUT / "structural_candidates_v2_2.jsonl"
 REQUESTS = OUT / "interaction_judge_requests_v2_3.jsonl"
-MODEL_DEFAULT = "qwen35-9b-persona-epoch4-nothink"
+MODEL_SOURCE_PATH = r"J:\AI friend\MEOW Qwen3.5\Qwen3.8-27B-EfficientThink-SimPO-Q4-LynnStyle.gguf"
+MODEL_DEFAULT = "qwen3.8-27b-efficientthink-simpo-lynnstyle"
 
 sys.path.insert(0, str(ROOT / "scripts"))
 import build_sft_v2_2_structural_candidates as structural_core  # noqa: E402
