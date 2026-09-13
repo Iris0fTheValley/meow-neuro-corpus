@@ -16,6 +16,8 @@ import sft_interaction_semantic_closure as closure
 import build_sft_v2_2_structural_candidates as structural
 import build_sft_v2_2_train_views as views
 import finalize_sft_v2_2 as finalizer
+import run_sft_v2_2_semantic_judge as judge_workflow
+import validate_sft_v2_2 as pool_validator
 
 
 def judgement(
@@ -141,6 +143,22 @@ class SemanticClosureStateTests(unittest.TestCase):
         self.assertEqual(offered, ["n2"])
         self.assertTrue(risks[0].startswith("RISK_MERGE_"))
 
+    def test_selected_continuation_cannot_bypass_asr_gate(self):
+        row = {"source_id": "src", "target_turn_ids": ["n1"], "transcript_qa": {"status": "STRUCTURAL_PASS"}}
+        semantic = {"state": "VERIFIED", "final_decision": judgement(context=("c1",), target=("n1", "n2"), episode="MERGE_CONTINUATION")}
+        base = {"text_qa": "PASS", "asr_quality": "PASS", "speaker_confidence": 0.95, "speaker": "n", "identity": "NEURO_FAMILY_HIGH"}
+        timeline = {"_turns": [
+            {**base, "turn_id": "c1", "_index": 0, "_start": 0, "_end": 1, "text": "prompt", "identity": "OTHER", "speaker": "u", "timestamp": {"start": 0, "end": 1}},
+            {**base, "turn_id": "n1", "_index": 1, "_start": 1, "_end": 2, "text": "answer", "timestamp": {"start": 1, "end": 2}},
+            {**base, "turn_id": "n2", "_index": 2, "_start": 2, "_end": 3, "text": "bad continuation", "asr_quality": "REVIEW", "timestamp": {"start": 2, "end": 3}},
+        ]}
+        self.assertIsNone(closure.materialize_verified(row, semantic, timeline))
+
+    def test_self_continuation_is_not_a_verified_user_response_pair(self):
+        primary = validated(relation="SELF_CONTINUATION")
+        strict = validated(relation="SELF_CONTINUATION")
+        self.assertEqual(closure.resolve_semantic_state("s", primary, strict)["state"], "AMBIGUOUS")
+
 
 class DedupAndRecordingTests(unittest.TestCase):
     def row(self, sample, family_source, response, *, cluster=None, context="c", target="n"):
@@ -208,9 +226,21 @@ class DedupAndRecordingTests(unittest.TestCase):
         ]
         repair = closure.repair_recording_families(values, edges, max_component_size=2)
         self.assertTrue(any(edge["decision"] == "QUARANTINED_COMPONENT_BRIDGE" for edge in repair["quarantined_edges"]))
+        self.assertTrue(repair["split_exclusion_relations"])
+        repaired_rows = [{**row, "recording_family_id": repair["cluster_to_family"][row["canonical_recording_id"]]} for row in values]
+        assignments, _ = views.derive_split_authority(repaired_rows, repair, None)
+        relation = repair["split_exclusion_relations"][0]
+        self.assertEqual(assignments[relation["family_a"]], assignments[relation["family_b"]])
 
 
 class CorpusSelectionTests(unittest.TestCase):
+    def repair(self, family_members, relations=None):
+        return {
+            "schema_version": closure.SCHEMA_VERSION,
+            "recording_families": [{"recording_family_id": family, "canonical_recording_ids": members} for family, members in family_members.items()],
+            "split_exclusion_relations": relations or [],
+        }
+
     def test_recording_families_are_split_before_sampling(self):
         rows = []
         for family_index in range(8):
@@ -224,14 +254,43 @@ class CorpusSelectionTests(unittest.TestCase):
         self.assertFalse({row["recording_family_id"] for row in selected} & sealed_families)
         self.assertLessEqual(max(Counter(row["recording_family_id"] for row in selected).values()), 1)
 
-    def test_persisted_sealed_assignment_is_reused(self):
-        rows = [{"recording_family_id": f"f-{index}"} for index in range(7)]
+    def test_old_sealed_lineage_survives_family_id_change(self):
+        rows = [{"recording_family_id": "new-family", "canonical_recording_id": member} for member in ("A", "B", "C")]
+        existing = {"schema_version": views.SAMPLING_SCHEMA_VERSION, "split_authority_version": views.SPLIT_AUTHORITY_VERSION, "member_assignments": {"A": "sealed_eval", "B": "sealed_eval"}}
+        assignment, authority = views.derive_split_authority(rows, self.repair({"new-family": ["A", "B", "C"]}), existing)
+        self.assertEqual(assignment["new-family"], "sealed_eval")
+        self.assertEqual(authority["member_assignments"]["C"], "sealed_eval")
+
+    def test_train_and_sealed_lineage_merge_is_explicit_conflict(self):
+        rows = [{"recording_family_id": "merged", "canonical_recording_id": member} for member in ("A", "B")]
+        existing = {"schema_version": views.SAMPLING_SCHEMA_VERSION, "split_authority_version": views.SPLIT_AUTHORITY_VERSION, "member_assignments": {"A": "train", "B": "sealed_eval"}}
+        assignment, authority = views.derive_split_authority(rows, self.repair({"merged": ["A", "B"]}), existing)
+        self.assertEqual(assignment["merged"], "quarantine")
+        self.assertEqual(authority["status"], "SPLIT_LINEAGE_CONFLICT")
+
+    def test_quarantined_strong_bridge_cannot_cross_split(self):
+        rows = [{"recording_family_id": "fa", "canonical_recording_id": "A"}, {"recording_family_id": "fb", "canonical_recording_id": "B"}]
+        relation = {"family_a": "fa", "family_b": "fb", "must_share_partition": True, "reason": "ELIGIBLE_STRONG_EDGE_QUARANTINED_ONLY_FOR_COMPONENT_SIZE"}
+        assignment, _ = views.derive_split_authority(rows, self.repair({"fa": ["A"], "fb": ["B"]}, [relation]), None)
+        self.assertEqual(assignment["fa"], assignment["fb"])
+
+    def test_weak_quarantine_does_not_create_split_constraint(self):
+        groups = views._constraint_groups({"fa", "fb"}, [])
+        self.assertEqual({frozenset(group) for group in groups}, {frozenset({"fa"}), frozenset({"fb"})})
+
+    def test_sampling_policies_reuse_one_dataset_split_authority(self):
         with tempfile.TemporaryDirectory() as directory:
-            manifest = Path(directory) / "view_manifest.json"
-            manifest.write_text(json.dumps({"families": {"train": ["f-0"], "validation": ["f-1"], "sealed_eval": ["f-2"]}}), encoding="utf-8")
-            assignment, reused = views.stable_family_splits(rows, manifest, 0.08, 0.08)
-        self.assertTrue(reused)
-        self.assertEqual(assignment["f-2"], "sealed_eval")
+            root = Path(directory)
+            pool_path, repair_path, authority_path = root / "pool.jsonl", root / "repair.json", root / "split_authority.json"
+            rows = [{"sample_id": f"s-{index}", "recording_family_id": f"f-{index}", "canonical_recording_id": f"c-{index}", "artifact_schema_version": closure.SCHEMA_VERSION, "verified_pool_status": "VERIFIED_HARD_DEDUPED", "sampling_eligibility": "ELIGIBLE", "semantic_qa": {"confidence": 0.95}, "transcript_quality": "PASS"} for index in range(7)]
+            pool_path.write_text("".join(json.dumps(row) + "\n" for row in rows), encoding="utf-8")
+            repair_path.write_text(json.dumps(self.repair({f"f-{index}": [f"c-{index}"] for index in range(7)})), encoding="utf-8")
+            def args(policy):
+                return Namespace(pool=str(pool_path), output=str(root / policy), policy=policy, max_per_family=1, validation_share=0.08, sealed_share=0.08, recording_repair=str(repair_path), split_authority=str(authority_path))
+            natural = views.build(args("natural_frequency"))
+            balanced = views.build(args("recording_balanced"))
+        self.assertEqual(natural["split_authority"], balanced["split_authority"])
+        self.assertEqual(natural["families"]["sealed_eval"], balanced["families"]["sealed_eval"])
 
 
 class FinalizerIntegrationTests(unittest.TestCase):
@@ -248,10 +307,10 @@ class FinalizerIntegrationTests(unittest.TestCase):
                 "sample_id": "s1",
                 "source_id": "src",
                 "canonical_recording_id": "recording",
-                "context_turn_ids": ["c1"],
-                "context_anchor_id": "c1",
+                "context_turn_ids": ["c2", "c3"],
+                "context_anchor_id": "c3",
                 "target_turn_ids": ["n1"],
-                "speaker_evidence": {"assistant_speaker": "speaker-neuro", "context_speakers": ["speaker-user"]},
+                "speaker_evidence": {"assistant_speaker": "speaker-neuro", "context_speakers": ["speaker-user-2", "speaker-user-3"]},
                 "identity": "NEURO_FAMILY_HIGH",
                 "transcript_qa": {"status": "STRUCTURAL_PASS", "turns": []},
                 "messages": [{"role": "user", "content": "old prompt"}, {"role": "assistant", "content": "old response"}],
@@ -260,15 +319,20 @@ class FinalizerIntegrationTests(unittest.TestCase):
             }
             request_value = {"schema_version": closure.SCHEMA_VERSION, "risk_features": {"flags": []}}
             request_hash = closure.payload_sha256(request_value)
-            decision = validated()
-            request_row = {"sample_id": "s1", "request": request_value, "request_sha256": request_hash}
-            primary = {"schema_version": closure.SCHEMA_VERSION, "sample_id": "s1", "stage": "primary", "request_sha256": request_hash, "validated": decision}
-            strict = {"schema_version": closure.SCHEMA_VERSION, "sample_id": "s1", "stage": "strict", "request_sha256": request_hash, "validated": decision}
+            decision = {"valid": True, "accepted": True, **judgement(context=("c1", "c2", "c3"), target=("n1", "n2"), episode="MERGE_CONTINUATION")}
+            request_row = {"sample_id": "s1", "request": request_value, "request_sha256": request_hash, "artifact_schema_version": closure.SCHEMA_VERSION, "pipeline_version": closure.PIPELINE_VERSION}
+            primary = {"schema_version": closure.SCHEMA_VERSION, "pipeline_version": closure.PIPELINE_VERSION, "sample_id": "s1", "stage": "primary", "request_sha256": request_hash, "judge_prompt_version": closure.PRIMARY_PROMPT_VERSION, "judge_model": "fixture", "validated": decision}
+            strict = {"schema_version": closure.SCHEMA_VERSION, "pipeline_version": closure.PIPELINE_VERSION, "sample_id": "s1", "stage": "strict", "request_sha256": request_hash, "judge_prompt_version": closure.STRICT_PROMPT_VERSION, "judge_model": "fixture", "validated": decision}
             for path, value in ((structural_path, row), (requests_path, request_row), (primary_path, primary), (strict_path, strict)):
                 path.write_text(json.dumps(value) + "\n", encoding="utf-8")
+            def turn(turn_id, text, index, identity, speaker, confidence=0.95):
+                return {"turn_id": turn_id, "text": text, "timestamp": {"start": index, "end": index + 0.9}, "_start": index, "_end": index + 0.9, "_index": index, "identity": identity, "speaker": speaker, "speaker_confidence": confidence, "text_qa": "PASS", "asr_quality": "PASS", "asr_metadata": {"avg_logprob": -0.2}}
             timeline = {"_turns": [
-                {"turn_id": "c1", "text": "observable prompt", "timestamp": {"start": 1, "end": 2}, "identity": "OTHER", "speaker": "speaker-user"},
-                {"turn_id": "n1", "text": "observed response", "timestamp": {"start": 2, "end": 3}, "identity": "NEURO_FAMILY_HIGH", "speaker": "speaker-neuro"},
+                turn("c1", "extended observable setup", 0, "OTHER", "speaker-user-1"),
+                turn("c2", "observable prompt", 1, "OTHER", "speaker-user-2"),
+                turn("c3", "more context", 2, "OTHER", "speaker-user-3"),
+                turn("n1", "observed response", 3, "NEURO_FAMILY_HIGH", "speaker-neuro"),
+                turn("n2", "and continuation", 4, "NEURO_FAMILY_HIGH", "speaker-neuro", 0.91),
             ]}
             fusion = {("src", "speaker-neuro"): {"identity": "NEURO_FAMILY_HIGH", "mapping_id": "src:speaker-neuro", "fusion_status": "PROXY", "audio_evidence": {"ensemble_gate": True}, "semantic_evidence": {"cannot_promote_without_independent_audio": True}}}
             args = Namespace(output=str(output), structural=str(structural_path), requests=str(requests_path), primary=str(primary_path), strict=str(strict_path), adjudication=str(adjudication_path), allow_partial=False, min_recording_edge_support=2, max_recording_component_size=8)
@@ -278,8 +342,88 @@ class FinalizerIntegrationTests(unittest.TestCase):
             pool_rows = list(pool)
             self.assertEqual(result["status"], "FINALIZED")
             self.assertEqual(len(pool_rows), 1)
-            self.assertEqual(pool_rows[0]["messages"][0]["content"], "observable prompt")
+            final_row = pool_rows[0]
+            self.assertEqual(final_row["context_turn_ids"], ["c1", "c2", "c3"])
+            self.assertEqual(final_row["target_turn_ids"], ["n1", "n2"])
+            self.assertEqual(final_row["raw_timeline_indices"], [0, 1, 2, 3, 4])
+            self.assertEqual(final_row["transcript_qa"]["final_turn_ids"], ["c1", "c2", "c3", "n1", "n2"])
+            self.assertEqual(final_row["speaker_evidence"]["context_speakers"], ["speaker-user-1", "speaker-user-2", "speaker-user-3"])
+            self.assertEqual(final_row["speaker_evidence"]["assistant_turn_confidences"], [0.95, 0.91])
+            self.assertEqual([turn["turn_id"] for turn in final_row["boundary_provenance"]["turns"]], ["c1", "c2", "c3", "n1", "n2"])
+            validation = pool_validator.validate(Namespace(dataset=str(output), pool=str(output / "verified_interaction_pool_v2_3.jsonl"), views="", split_authority=str(output / "split_authority_v2_3.json"), report=str(output / "targeted_validation.json")))
+            self.assertEqual(validation["gates"]["SEMANTIC_PROVENANCE_REMATERIALIZATION"], "PASS")
+            self.assertEqual(validation["provenance_alignment_errors"], [])
             self.assertFalse((output / "train.jsonl").exists())
+
+
+class JudgeResumeTests(unittest.TestCase):
+    def request_row(self, digest="new-hash"):
+        return {"sample_id": "s1", "request_sha256": digest, "request": {"schema_version": closure.SCHEMA_VERSION, **request()}}
+
+    def result_row(self, digest="new-hash", stage="primary", model=judge_workflow.MODEL_DEFAULT):
+        return {
+            "sample_id": "s1",
+            "request_sha256": digest,
+            "schema_version": closure.SCHEMA_VERSION,
+            "pipeline_version": closure.PIPELINE_VERSION,
+            "stage": stage,
+            "judge_prompt_version": judge_workflow.PROMPT_VERSIONS[stage],
+            "judge_model": model,
+            "validated": {"valid": True, "accepted": True},
+        }
+
+    def test_stale_request_hash_requires_rerun(self):
+        compatible, reason = judge_workflow.result_compatibility(self.result_row("old-hash"), self.request_row(), "primary", judge_workflow.MODEL_DEFAULT)
+        self.assertFalse(compatible)
+        self.assertEqual(reason, "STALE_REQUEST_SHA256")
+
+    def test_compatible_result_resumes(self):
+        compatible, reason = judge_workflow.result_compatibility(self.result_row(), self.request_row(), "primary", judge_workflow.MODEL_DEFAULT)
+        self.assertTrue(compatible)
+        self.assertEqual(reason, "COMPATIBLE")
+
+    def test_strict_routing_rejects_stale_primary(self):
+        required = judge_workflow.strict_required_sample_ids([self.request_row()], {"s1": self.result_row("old-hash")}, judge_workflow.MODEL_DEFAULT)
+        self.assertEqual(required, set())
+
+    def test_status_reports_stale_as_rerun_required(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            request_path = root / "requests.jsonl"
+            request_path.write_text(json.dumps(self.request_row()) + "\n", encoding="utf-8")
+            (root / "interaction_judge_primary_results_v2_3.jsonl").write_text(json.dumps(self.result_row("old-hash")) + "\n", encoding="utf-8")
+            args = Namespace(requests=str(request_path), model=judge_workflow.MODEL_DEFAULT, primary_model="", strict_model="", adjudication_model="")
+            with patch.object(judge_workflow, "OUT", root):
+                report = judge_workflow.status(args)
+        self.assertEqual(report["stages"]["primary"]["stale_or_invalid"], 1)
+        self.assertEqual(report["stages"]["primary"]["rerun_required"], 1)
+
+    def _judge_args(self, root, request_path, result_path):
+        return Namespace(stage="primary", requests=str(request_path), sample_ids="", sample_ids_file="", max_items=0, results=str(result_path), fresh=False, retry_invalid=False, model=judge_workflow.MODEL_DEFAULT, primary_model="", endpoint="unused", max_attempts=1, sleep=0.0)
+
+    def test_judge_reruns_stale_result_and_latest_overrides_it(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            request_path, result_path = root / "requests.jsonl", root / "results.jsonl"
+            request_path.write_text(json.dumps(self.request_row()) + "\n", encoding="utf-8")
+            result_path.write_text(json.dumps(self.result_row("old-hash")) + "\n", encoding="utf-8")
+            with patch.object(judge_workflow, "OUT", root), patch.object(judge_workflow.v21, "call_judge", return_value={"parsed": judgement()}) as call:
+                report = judge_workflow.judge(self._judge_args(root, request_path, result_path))
+            latest = judge_workflow.latest_results(result_path)["s1"]
+        self.assertEqual(call.call_count, 1)
+        self.assertEqual(report["stale_rerun"], 1)
+        self.assertEqual(latest["request_sha256"], "new-hash")
+
+    def test_judge_skips_compatible_cached_result(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            request_path, result_path = root / "requests.jsonl", root / "results.jsonl"
+            request_path.write_text(json.dumps(self.request_row()) + "\n", encoding="utf-8")
+            result_path.write_text(json.dumps(self.result_row()) + "\n", encoding="utf-8")
+            with patch.object(judge_workflow, "OUT", root), patch.object(judge_workflow.v21, "call_judge") as call:
+                report = judge_workflow.judge(self._judge_args(root, request_path, result_path))
+        self.assertEqual(call.call_count, 0)
+        self.assertEqual(report["skipped_existing"], 1)
 
 
 if __name__ == "__main__":

@@ -1,11 +1,11 @@
 {
   "schema_version": "2.0.0",
-  "pipeline_version": "sft-interaction-closure-v2.3-2026-09-13",
+  "pipeline_version": "sft-interaction-closure-v2.3.1-2026-09-13",
   "artifact_status": "ARCHITECTURE_REGRESSION_VALIDATED",
-  "generated_at": "2026-09-13T13:23:50.914684+00:00",
+  "generated_at": "2026-09-13T15:19:45.769154+00:00",
   "scope": "unit, synthetic regression, and existing lightweight v2.2 report evidence; no production model or corpus rerun",
   "tests": {
-    "run": 40,
+    "run": 52,
     "failures": 0,
     "errors": 0,
     "pass": true
@@ -27,14 +27,21 @@
     "IDENTITY_CLOSURE": "UNCHANGED_COMPATIBLE",
     "STRUCTURAL_INVARIANTS": "PASS",
     "SEMANTIC_STATE_MACHINE": "PASS",
+    "STALE_JUDGE_RESULT_INVALIDATION": "PASS",
     "BOUNDED_CONTEXT_AND_EPISODE_SELECTION": "PASS",
+    "SEMANTIC_PROVENANCE_REMATERIALIZATION": "PASS",
     "HEURISTIC_AUTHORITY": "ROUTING_EVIDENCE_ONLY",
     "TRANSCRIPT_REWRITE_PROHIBITION": "PASS",
     "RECORDING_BRIDGE_AUDIT": "PASS",
+    "RECORDING_BRIDGE_SPLIT_ISOLATION": "PASS",
     "HARD_DEDUP_SCOPE": "RECORDING_PROVENANCE_AWARE",
     "INDEPENDENT_BEHAVIOR_REPETITION": "PRESERVED",
     "VERIFIED_POOL_ARCHITECTURE": "PASS",
-    "TRAIN_SAMPLING_SEPARATION": "PASS"
+    "TRAIN_SAMPLING_SEPARATION": "PASS",
+    "SEALED_SPLIT_LINEAGE": "PASS",
+    "SAMPLING_POLICY_SPLIT_AUTHORITY": "PASS",
+    "TARGET_REUSE_REGRESSION_FIXTURES": 0,
+    "PREFIX_LADDER_REGRESSION_FIXTURES": 0
   },
   "production_gates": {
     "SEMANTIC_PRIMARY_COVERAGE": "NOT_YET_VALIDATED",

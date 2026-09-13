@@ -74,7 +74,7 @@ not published.
 The published v2.2 counts above are a historical review snapshot. The current
 code evolves that same canonical-timeline path with the
 [interaction semantic closure v2.3 architecture](docs/interaction_semantic_closure_v2_3.md):
-primary acceptance requires independent strict verification, disagreement is
+primary acceptance requires a separate strict semantic pass, disagreement is
 an explicit state, context/episode selection is limited to supplied raw turn
 IDs, recording repair quarantines weak bridges, and hard dedup is recording- and
 provenance-aware. Quality-closed interactions now form a distinct verified pool;

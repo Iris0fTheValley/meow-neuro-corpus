@@ -53,7 +53,8 @@ def write_json(path: Path, value: dict) -> None:
 
 
 def _assert_result_schema(values: dict[str, dict], label: str) -> None:
-    incompatible = [sample_id for sample_id, row in values.items() if row.get("schema_version") != closure.SCHEMA_VERSION or row.get("stage") != label]
+    prompt_versions = {"primary": closure.PRIMARY_PROMPT_VERSION, "strict": closure.STRICT_PROMPT_VERSION, "adjudication": closure.ADJUDICATION_PROMPT_VERSION}
+    incompatible = [sample_id for sample_id, row in values.items() if row.get("schema_version") != closure.SCHEMA_VERSION or row.get("pipeline_version") != closure.PIPELINE_VERSION or row.get("stage") != label or row.get("judge_prompt_version") != prompt_versions[label] or not row.get("judge_model")]
     if incompatible:
         raise SystemExit(f"{label} contains {len(incompatible)} legacy/incompatible rows; rerun the v2.3 {label} stage")
 
@@ -72,6 +73,16 @@ def _identity_provenance(row: dict[str, Any], fusion: dict[tuple[str, str], dict
         "semantic_cannot_promote_without_audio": (result.get("semantic_evidence") or {}).get("cannot_promote_without_independent_audio"),
         "identity_unchanged_by_interaction_closure": True,
     }
+
+
+def _annotate_timeline(timeline: dict[str, Any]) -> None:
+    previous_end = None
+    for index, turn in enumerate(timeline.get("_turns") or []):
+        turn["text_qa"], turn["text_qa_reasons"] = structural_core.text_quality(turn.get("text"))
+        turn["asr_quality"], turn["asr_quality_reasons"], turn["asr_metadata"] = structural_core.raw_asr_quality(turn)
+        turn["_bad_boundary"] = structural_core.bad_boundary(turn)
+        turn["_gap_from_previous"] = 0.0 if previous_end is None else max(0.0, float(turn.get("_start", index)) - previous_end)
+        previous_end = float(turn.get("_end", index))
 
 
 def finalize(args: argparse.Namespace) -> dict:
@@ -96,7 +107,7 @@ def finalize(args: argparse.Namespace) -> dict:
         request_row = requests.get(sample_id) or {}
         request = request_row.get("request") or {}
         request_hash = request_row.get("request_sha256")
-        if request.get("schema_version") != closure.SCHEMA_VERSION or not request_hash or request_hash != closure.payload_sha256(request):
+        if request_row.get("artifact_schema_version") != closure.SCHEMA_VERSION or request_row.get("pipeline_version") != closure.PIPELINE_VERSION or request.get("schema_version") != closure.SCHEMA_VERSION or not request_hash or request_hash != closure.payload_sha256(request):
             decisions.append({"schema_version": closure.SCHEMA_VERSION, "pipeline_version": closure.PIPELINE_VERSION, "sample_id": sample_id, "state": "MISSING_INVALID_EVIDENCE", "reason_code": "REQUEST_MISSING_VERSION_OR_HASH_INVALID", "risk_features": request.get("risk_features") or {}})
             continue
         evidence = []
@@ -118,6 +129,8 @@ def finalize(args: argparse.Namespace) -> dict:
 
     fusion = legacy_core.load_fusion()
     timelines = legacy_core.load_timelines({str(row.get("source_id")) for row in rows}, fusion)
+    for timeline in timelines.values():
+        _annotate_timeline(timeline)
     by_decision = {str(row.get("sample_id")): row for row in decisions}
     verified = []
     materialization_failures = []
@@ -205,6 +218,7 @@ def finalize(args: argparse.Namespace) -> dict:
             "recording_family_repair": "recording_family_repair_v2_3.json",
             "hard_dedup_audit": "hard_dedup_audit_v2_3.json",
             "verified_pool": "verified_interaction_pool_v2_3.jsonl",
+            "split_authority_next_stage": "split_authority_v2_3.json",
             "quality": "interaction_closure_quality_v2_3.json",
             "status": "interaction_closure_status_v2_3.json",
         },

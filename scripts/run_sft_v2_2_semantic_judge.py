@@ -33,7 +33,7 @@ SYSTEM_PROMPTS = {
         "Never infer identity, invent hidden events, or rewrite transcript. Return exactly one JSON object matching output_schema."
     ),
     "strict": (
-        "You are an independent strict interaction verifier. Diagnostic preceding/following turns cannot substitute for selected context. "
+        "You are a separate strict interaction verifier. Diagnostic preceding/following turns cannot substitute for selected context. "
         "Suspected chat, donation, UI, or visual triggers must be HIDDEN_TRIGGER_SUSPECTED or UNCLEAR. "
         "Merge only grammatical or unmistakable same-thought continuation. Select only legal ids, never rewrite transcript, and return one JSON object."
     ),
@@ -73,6 +73,28 @@ def run_path(stage: str) -> Path:
 
 def latest_results(path: Path) -> dict[str, dict]:
     return {str(row.get("sample_id")): row for row in load_rows(path)}
+
+
+def result_compatibility(result: dict | None, request_row: dict, stage: str, model: str) -> tuple[bool, str]:
+    """Return whether a cached result is valid for this exact stage request."""
+    if not result:
+        return False, "MISSING"
+    expected = {
+        "sample_id": str(request_row.get("sample_id")),
+        "request_sha256": request_row.get("request_sha256"),
+        "schema_version": closure.SCHEMA_VERSION,
+        "pipeline_version": closure.PIPELINE_VERSION,
+        "stage": stage,
+        "judge_prompt_version": PROMPT_VERSIONS[stage],
+        "judge_model": model,
+    }
+    for key, value in expected.items():
+        actual = str(result.get(key)) if key == "sample_id" else result.get(key)
+        if actual != value:
+            return False, f"STALE_{key.upper()}"
+    if not (result.get("validated") or {}).get("valid"):
+        return False, "INVALID_RESULT"
+    return True, "COMPATIBLE"
 
 
 def _annotate_timeline(timeline: dict) -> None:
@@ -134,13 +156,25 @@ def _selected_requests(args: argparse.Namespace, requests: list[dict]) -> list[d
     return requests[: args.max_items] if args.max_items else requests
 
 
+def strict_required_sample_ids(requests: list[dict], primary_results: dict[str, dict], expected_model: str) -> set[str]:
+    request_by_id = {str(row.get("sample_id")): row for row in requests}
+    return {
+        sample_id
+        for sample_id, row in primary_results.items()
+        if sample_id in request_by_id
+        and result_compatibility(row, request_by_id[sample_id], "primary", expected_model)[0]
+        and (row.get("validated") or {}).get("accepted")
+    }
+
+
 def judge(args: argparse.Namespace) -> dict:
     stage = args.stage
     available = list(load_rows(Path(args.requests)))
     targeted = bool(args.sample_ids or args.sample_ids_file)
     if stage == "strict" and not targeted:
         primary_results = latest_results(result_path("primary"))
-        required = {sample_id for sample_id, row in primary_results.items() if (row.get("validated") or {}).get("accepted")}
+        expected_primary_model = args.primary_model or args.model
+        required = strict_required_sample_ids(available, primary_results, expected_primary_model)
         available = [row for row in available if str(row.get("sample_id")) in required]
     selected = _selected_requests(args, available)
     destination = Path(args.results) if args.results else result_path(stage)
@@ -158,12 +192,14 @@ def judge(args: argparse.Namespace) -> dict:
             for item in selected:
                 sample_id = str(item.get("sample_id"))
                 prior = existing.get(sample_id)
-                if prior and not args.retry_invalid:
+                compatible, cache_reason = result_compatibility(prior, item, stage, args.model)
+                if compatible:
                     counters["skipped_existing"] += 1
                     continue
-                if prior and args.retry_invalid and (prior.get("validated") or {}).get("valid"):
-                    counters["skipped_valid"] += 1
-                    continue
+                if prior and cache_reason.startswith("STALE_"):
+                    counters["stale_rerun"] += 1
+                elif prior:
+                    counters["invalid_rerun"] += 1
                 request_payload = dict(item.get("request") or {})
                 if request_payload.get("schema_version") != closure.SCHEMA_VERSION:
                     counters["invalid_request_schema"] += 1
@@ -194,18 +230,26 @@ def judge(args: argparse.Namespace) -> dict:
 
 def status(args: argparse.Namespace) -> dict:
     requests = list(load_rows(Path(args.requests)))
+    request_by_id = {str(row.get("sample_id")): row for row in requests}
     requested = {str(row.get("sample_id")) for row in requests}
     report = {"schema_version": closure.SCHEMA_VERSION, "pipeline_version": closure.PIPELINE_VERSION, "requests": len(requests), "stages": {}}
     primary_values = latest_results(result_path("primary"))
-    strict_required = {sample_id for sample_id, row in primary_values.items() if (row.get("validated") or {}).get("accepted")}
+    primary_model = args.primary_model or args.model
+    strict_model = args.strict_model or args.model
+    adjudication_model = args.adjudication_model or args.model
+    strict_required = strict_required_sample_ids(requests, primary_values, primary_model)
     decision_rows = latest_results(OUT / "interaction_closure_decisions_v2_3.jsonl")
     adjudication_required = {sample_id for sample_id, row in decision_rows.items() if row.get("state") == "JUDGE_CONFLICT"}
     required_by_stage = {"primary": requested, "strict": strict_required, "adjudication": adjudication_required}
+    model_by_stage = {"primary": primary_model, "strict": strict_model, "adjudication": adjudication_model}
     for stage in ("primary", "strict", "adjudication"):
         values = latest_results(result_path(stage))
-        valid = {sample_id for sample_id, row in values.items() if (row.get("validated") or {}).get("valid")}
         required = required_by_stage[stage]
-        report["stages"][stage] = {"required": len(required), "valid": len(valid & required), "invalid": len((set(values) - valid) & required), "missing": len(required - set(values))}
+        compatible = {sample_id for sample_id in required if result_compatibility(values.get(sample_id), request_by_id.get(sample_id, {}), stage, model_by_stage[stage])[0]}
+        stale = {sample_id for sample_id in required if sample_id in values and not result_compatibility(values.get(sample_id), request_by_id.get(sample_id, {}), stage, model_by_stage[stage])[0]}
+        missing = required - set(values)
+        stale_reasons = Counter(result_compatibility(values.get(sample_id), request_by_id.get(sample_id, {}), stage, model_by_stage[stage])[1] for sample_id in stale)
+        report["stages"][stage] = {"required": len(required), "valid_current": len(compatible), "stale_or_invalid": len(stale), "stale_reason_counts": dict(stale_reasons), "stale_examples": sorted(stale)[:50], "missing": len(missing), "missing_examples": sorted(missing)[:50], "rerun_required": len(stale | missing)}
     write_json(OUT / "interaction_judge_execution_status_v2_3.json", report)
     return report
 
@@ -215,6 +259,9 @@ def main() -> None:
     parser.add_argument("command", choices=["prepare", "judge", "status"])
     parser.add_argument("--stage", choices=["primary", "strict", "adjudication"], default="primary")
     parser.add_argument("--model", default=MODEL_DEFAULT)
+    parser.add_argument("--primary-model", default="", help="expected primary model when routing/status checks another stage")
+    parser.add_argument("--strict-model", default="", help="expected strict model for status")
+    parser.add_argument("--adjudication-model", default="", help="expected adjudication model for status")
     parser.add_argument("--endpoint", default="http://127.0.0.1:1234/v1/chat/completions")
     parser.add_argument("--structural", default=str(STRUCTURAL))
     parser.add_argument("--requests", default=str(REQUESTS))

@@ -16,7 +16,7 @@ from typing import Any, Iterable
 
 
 SCHEMA_VERSION = "2.0.0"
-PIPELINE_VERSION = "sft-interaction-closure-v2.3-2026-09-13"
+PIPELINE_VERSION = "sft-interaction-closure-v2.3.1-2026-09-13"
 PRIMARY_PROMPT_VERSION = "interaction-primary-v2.3-p1"
 STRICT_PROMPT_VERSION = "interaction-strict-v2.3-p1"
 ADJUDICATION_PROMPT_VERSION = "interaction-adjudication-v2.3-p1"
@@ -31,7 +31,7 @@ ALLOWED_RELATIONS = {
     "WRONG_CONTEXT",
     "UNCLEAR",
 }
-ACCEPT_RELATIONS = {"DIRECT_RESPONSE", "CONTEXTUAL_RESPONSE", "GAME_STATE_RESPONSE", "SELF_CONTINUATION"}
+ACCEPT_RELATIONS = {"DIRECT_RESPONSE", "CONTEXTUAL_RESPONSE", "GAME_STATE_RESPONSE"}
 ALLOWED_EPISODES = {
     "KEEP_CURRENT",
     "MERGE_CONTINUATION",
@@ -389,11 +389,11 @@ def resolve_semantic_state(
     if not s.get("valid"):
         return {**provenance, "state": "MISSING_INVALID_EVIDENCE", "reason_code": "STRICT_INVALID"}
     if p.get("accepted") and s.get("accepted") and _same_selection(p, s):
-        return {**provenance, "state": "VERIFIED", "reason_code": "INDEPENDENT_JUDGES_AGREE", "final_decision": s}
+        return {**provenance, "state": "VERIFIED", "reason_code": "SEMANTIC_PASSES_AGREE", "final_decision": s}
     if not p.get("accepted") and not s.get("accepted"):
         if _explicit_reject(p) and _explicit_reject(s) and p.get("relation") == s.get("relation"):
-            return {**provenance, "state": "REJECTED", "reason_code": "INDEPENDENT_JUDGES_AGREE_REJECT", "final_decision": s}
-        return {**provenance, "state": "AMBIGUOUS", "reason_code": "INDEPENDENT_JUDGES_NON_ACCEPT", "final_decision": s}
+            return {**provenance, "state": "REJECTED", "reason_code": "SEMANTIC_PASSES_AGREE_REJECT", "final_decision": s}
+        return {**provenance, "state": "AMBIGUOUS", "reason_code": "SEMANTIC_PASSES_NON_ACCEPT", "final_decision": s}
     if a:
         if not a.get("valid"):
             return {**provenance, "state": "MISSING_INVALID_EVIDENCE", "reason_code": "ADJUDICATION_INVALID"}
@@ -416,6 +416,43 @@ def materialize_verified(row: dict[str, Any], closure: dict[str, Any], timeline:
         return None
     context = [by_id[value] for value in context_ids]
     target = [by_id[value] for value in target_ids]
+    context_indices = [int(turn.get("_index", -1)) for turn in context]
+    target_indices = [int(turn.get("_index", -1)) for turn in target]
+    if context_indices != list(range(min(context_indices), max(context_indices) + 1)) or target_indices != list(range(min(target_indices), max(target_indices) + 1)) or max(context_indices) >= min(target_indices):
+        return None
+
+    def bad(turn: dict[str, Any]) -> bool:
+        return any(bool(turn.get(key)) for key in ("_bad_boundary", "bad_boundary", "uncertain_transcription", "suspicious_transcription", "overlap", "malformed"))
+
+    if any(bad(turn) or turn.get("text_qa") != "PASS" or turn.get("asr_quality") == "REVIEW" for turn in context + target) or any(turn.get("identity") in TARGETS for turn in context):
+        return None
+    assistant_speakers = {str(turn.get("speaker") or "") for turn in target}
+    assistant_identities = {str(turn.get("identity") or "UNKNOWN") for turn in target}
+    if len(assistant_speakers) != 1 or len(assistant_identities) != 1 or not assistant_identities.issubset(TARGETS) or (row.get("identity") and str(row.get("identity")) not in assistant_identities):
+        return None
+    confidences = [float(turn.get("speaker_confidence") or 0.0) for turn in target]
+    if not confidences or min(confidences) < 0.70 or any(turn.get("event_boundary") for turn in target[1:]):
+        return None
+
+    def evidence_snapshot(turn: dict[str, Any], role: str) -> dict[str, Any]:
+        return {
+            "turn_id": str(turn.get("turn_id")),
+            "role": role,
+            "raw_timeline_index": int(turn.get("_index", -1)),
+            "text": str(turn.get("text") or "").strip(),
+            "timestamp": turn.get("timestamp"),
+            "speaker": turn.get("speaker"),
+            "identity": turn.get("identity", "UNKNOWN"),
+            "speaker_confidence": turn.get("speaker_confidence"),
+            "text_qa": turn.get("text_qa"),
+            "text_qa_reasons": turn.get("text_qa_reasons") or [],
+            "asr_quality": turn.get("asr_quality"),
+            "asr_quality_reasons": turn.get("asr_quality_reasons") or [],
+            "asr_metrics": turn.get("asr_metadata") or {},
+            "boundary": {"bad_boundary": bad(turn), "event_boundary": bool(turn.get("event_boundary")), "gap_from_previous": round(float(turn.get("_gap_from_previous") or 0.0), 3)},
+        }
+
+    transcript_turns = [evidence_snapshot(turn, "context") for turn in context] + [evidence_snapshot(turn, "target") for turn in target]
     result = dict(row)
     result["messages"] = [
         {"role": "user", "content": "\n".join(str(turn.get("text") or "").strip() for turn in context)},
@@ -425,7 +462,36 @@ def materialize_verified(row: dict[str, Any], closure: dict[str, Any], timeline:
     result["context_anchor_id"] = context_ids[-1]
     result["target_turn_ids"] = target_ids
     result["response_episode_id"] = hashlib.sha256((str(row.get("source_id")) + "|" + "|".join(target_ids)).encode()).hexdigest()[:20]
-    result["timestamps"] = {"start": (context[0].get("timestamp") or {}).get("start"), "end": (target[-1].get("timestamp") or {}).get("end")}
+    result["raw_timeline_indices"] = context_indices + target_indices
+    result["timestamps"] = {"start": float(context[0].get("_start", (context[0].get("timestamp") or {}).get("start"))), "end": float(target[-1].get("_end", (target[-1].get("timestamp") or {}).get("end")))}
+    result["speaker_evidence"] = {
+        "assistant_speaker": next(iter(assistant_speakers)),
+        "assistant_identity": next(iter(assistant_identities)),
+        "assistant_confidence": min(confidences),
+        "assistant_turn_speakers": [str(turn.get("speaker") or "") for turn in target],
+        "assistant_turn_identities": [str(turn.get("identity") or "UNKNOWN") for turn in target],
+        "assistant_turn_confidences": confidences,
+        "context_speakers": [str(turn.get("speaker") or "") for turn in context],
+        "context_identities": [str(turn.get("identity") or "UNKNOWN") for turn in context],
+        "materialized_from_final_turn_selection": True,
+        "interaction_semantics_cannot_change_identity": True,
+    }
+    result["transcript_qa"] = {
+        "status": "STRUCTURAL_PASS",
+        "source": "CURRENT_CANONICAL_TIMELINE",
+        "context_turn_ids": context_ids,
+        "target_turn_ids": target_ids,
+        "final_turn_ids": context_ids + target_ids,
+        "turns": transcript_turns,
+        "all_selected_turns_machine_usable": True,
+        "llm_did_not_rewrite_transcript": True,
+    }
+    result["boundary_provenance"] = {
+        "context_turn_ids": context_ids,
+        "target_turn_ids": target_ids,
+        "turns": [{"turn_id": turn["turn_id"], **turn["boundary"]} for turn in transcript_turns],
+        "materialized_from_final_turn_selection": True,
+    }
     result["semantic_closure"] = closure
     result["semantic_qa"] = {"status": "VERIFIED", **{key: decision.get(key) for key in ("relation", "episode_decision", "confidence", "context_complete", "response_complete", "transcript_usable", "reason")}}
     result["episode_reconstruction"] = {
@@ -437,7 +503,7 @@ def materialize_verified(row: dict[str, Any], closure: dict[str, Any], timeline:
     result["semantic_quality"] = "PASS"
     result["context_integrity"] = "PASS"
     result["response_episode_integrity"] = "PASS"
-    result["transcript_quality"] = "PASS" if decision.get("transcript_usable") and (row.get("transcript_qa") or {}).get("status") == "STRUCTURAL_PASS" else "REVIEW"
+    result["transcript_quality"] = "PASS" if decision.get("transcript_usable") else "REVIEW"
     result["pipeline_version"] = PIPELINE_VERSION
     result["artifact_schema_version"] = SCHEMA_VERSION
     result["training_candidate"] = False
@@ -516,6 +582,21 @@ def repair_recording_families(
         family_id = "rf_" + hashlib.sha256("|".join(members).encode()).hexdigest()[:16]
         cluster_to_family.update({member: family_id for member in members})
         families.append({"recording_family_id": family_id, "canonical_recording_ids": members})
+    split_exclusion_relations = []
+    for edge in quarantined:
+        if edge.get("decision") != "QUARANTINED_COMPONENT_BRIDGE" or not edge.get("eligible"):
+            continue
+        family_a = cluster_to_family[str(edge["cluster_a"])]
+        family_b = cluster_to_family[str(edge["cluster_b"])]
+        if family_a != family_b:
+            split_exclusion_relations.append({
+                "family_a": family_a,
+                "family_b": family_b,
+                "cluster_a": edge["cluster_a"],
+                "cluster_b": edge["cluster_b"],
+                "reason": "ELIGIBLE_STRONG_EDGE_QUARANTINED_ONLY_FOR_COMPONENT_SIZE",
+                "must_share_partition": True,
+            })
     return {
         "schema_version": SCHEMA_VERSION,
         "pipeline_version": PIPELINE_VERSION,
@@ -524,6 +605,7 @@ def repair_recording_families(
         "cluster_pair_evidence": candidates,
         "accepted_merge_edges": accepted,
         "quarantined_edges": quarantined,
+        "split_exclusion_relations": split_exclusion_relations,
         "recording_families": sorted(families, key=lambda value: value["recording_family_id"]),
         "cluster_to_family": cluster_to_family,
     }
