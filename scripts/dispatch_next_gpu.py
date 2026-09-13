@@ -118,6 +118,11 @@ if __name__ == "__main__":
             for row in rows:
                 if row.get("audio_download_status") != "done" or not row.get("audio_path"):
                     continue
+                audio_path = ROOT / str(row["audio_path"])
+                if not audio_path.is_file() or audio_path.name.endswith(".part"):
+                    # A stale manifest row must not monopolize the GPU slot.
+                    # Leave it for alternate-source/download recovery instead.
+                    continue
                 if row.get("diarization_status") == "done":
                     continue
                 asr_path = row.get("asr_path")
