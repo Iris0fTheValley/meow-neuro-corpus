@@ -170,6 +170,11 @@ def copy_public_file(source: Path, target: Path, redact_text: bool) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--stage-root", required=True)
+    parser.add_argument(
+        "--github-only",
+        action="store_true",
+        help="Build only the sanitized GitHub stage; skip the large Hugging Face mirror stage.",
+    )
     args = parser.parse_args()
     stage_root = Path(args.stage_root).resolve()
     github_stage = stage_root / "github"
@@ -179,6 +184,7 @@ def main() -> None:
     started = datetime.now(timezone.utc).isoformat()
     entries = []
     changed_during_copy = []
+    allowed_destinations = {"github"} if args.github_only else {"github", "huggingface"}
 
     files = sorted(path for path in ROOT.rglob("*") if path.is_file() and ".git" not in path.parts)
     for source in files:
@@ -199,7 +205,7 @@ def main() -> None:
             "category": decision["category"],
             "redacted_copy": bool(decision.get("redact", False)),
         }
-        if decision.get("destination"):
+        if decision.get("destination") in allowed_destinations:
             prefix = decision.get("remote_prefix")
             remote_rel = Path(prefix) / rel if prefix else rel
             if decision.get("redact"):

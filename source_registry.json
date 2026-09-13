@@ -55,8 +55,9 @@
       "url": "https://www.youtube.com/@Neuro-samaUnofficialVODs",
       "uploader": "Neuro-sama Unofficial VODs",
       "priority": "critical",
-      "discovery_status": "seeded",
-      "notes": "Community-reported broad VOD coverage; needs systematic enumeration and duplicate checking."
+      "discovery_status": "expanded_with_local_exclusion",
+      "candidate_ids_added": ["g_42DeF3M4c", "KrewAZFiC9U", "P71_puSNqPI", "Hq66j7OzKjQ", "BcGH4r0Eec4", "aM4YeGKWDGI", "8olfsxovUl0"],
+      "notes": "Community-reported broad VOD coverage; newly enumerated public full VODs were checked against local source IDs and stream dates, with high-priority easy-separation entries favored."
     },
     {
       "source_id": "yt_neuroverse_unofficial_vods",
@@ -585,6 +586,174 @@
       "priority": "medium",
       "discovery_status": "discovered_from_web_search",
       "notes": "Public collaborator-side stream metadata confirming alternate provenance for the 2026-09-10 D&D charity stream; use for date/title/duration matching only unless an openly accessible media source is verified."
+    },
+    {
+      "source_id": "yt_cecils_archive",
+      "platform": "youtube",
+      "kind": "fan_fullstream_archive",
+      "name": "Cecil's Archive",
+      "url": "https://www.youtube.com/watch?v=TzuGsJa1zb4",
+      "uploader": "Cecil's Archive",
+      "priority": "high",
+      "discovery_status": "discovered_from_yt_search",
+      "notes": "Public archive lead containing an Evil Neuro birthday VOD; enumerate only public media and preserve uploader attribution."
+    },
+    {
+      "source_id": "yt_filian_vod_archives",
+      "platform": "youtube",
+      "kind": "collaborator_vod_archive",
+      "name": "filian VOD archives",
+      "url": "https://www.youtube.com/@filianVODarchives",
+      "uploader": "filian VOD archives",
+      "priority": "high",
+      "discovery_status": "discovered_from_yt_search",
+      "notes": "Collaborator-side public VOD archive with long Neuro/Vedal/Filian recordings; use alternate POV for provenance and speaker validation."
+    },
+    {
+      "source_id": "yt_camila_vods",
+      "platform": "youtube",
+      "kind": "collaborator_vod_archive",
+      "name": "camila VODs",
+      "url": "https://www.youtube.com/@camilavods",
+      "uploader": "camila VODs",
+      "priority": "high",
+      "discovery_status": "discovered_from_yt_search",
+      "notes": "Collaborator-side public VOD archive; retain long tea-party and Neuro/Vedal interaction leads with source attribution."
+    },
+    {
+      "source_id": "yt_layna_vods",
+      "platform": "youtube",
+      "kind": "collaborator_vod_archive",
+      "name": "Layna VODs",
+      "url": "https://www.youtube.com/@LaynaLazarVODs",
+      "uploader": "Layna VODs",
+      "priority": "high",
+      "discovery_status": "discovered_from_yt_search",
+      "notes": "Collaborator-side public archive with long IRL and cooking recordings; preserve visual-context and alternate-provenance metadata."
+    },
+    {
+      "source_id": "yt_crelly_vods",
+      "platform": "youtube",
+      "kind": "collaborator_vod_archive",
+      "name": "Crelly VODs, I guess",
+      "url": "https://www.youtube.com/@crellyvodsmhm",
+      "uploader": "Crelly VODs, I guess",
+      "priority": "medium",
+      "discovery_status": "discovered_from_yt_search",
+      "notes": "Collaborator-side long-form Minecraft VOD lead; preserve multi-POV and game-context labels."
+    },
+    {
+      "source_id": "yt_nihmune_vods",
+      "platform": "youtube",
+      "kind": "collaborator_vod_archive",
+      "name": "Nihmune VODs",
+      "url": "https://www.youtube.com/watch?v=xHUVHENIpAQ",
+      "uploader": "Nihmune VODs",
+      "priority": "high",
+      "discovery_status": "discovered_from_yt_search",
+      "notes": "Public collaborator-side VOD lead containing Neuro/Evil/Numi multi-speaker advice content; preserve alternate provenance and speaker mapping."
+    },
+    {
+      "source_id": "bilibili_minato_neko_archive",
+      "platform": "bilibili",
+      "kind": "fan_fullstream_archive",
+      "name": "minato-neko early Neuro-sama archive",
+      "url": "https://www.bilibili.com/video/BV1yY411Q71m/",
+      "uploader": "minato-neko",
+      "priority": "high",
+      "discovery_status": "discovered_from_web_search",
+      "notes": "Public six-hour early 2023 Minecraft replay; verify original Twitch provenance and preserve uploader attribution."
+    },
+    {
+      "source_id": "bilibili_hotchicken606",
+      "platform": "bilibili",
+      "kind": "human_subtitle_editor",
+      "name": "HotChicken606 Neuro/Evil subtitles",
+      "url": "https://www.bilibili.com/video/BV1aijuzBEAs/",
+      "uploader": "HotChicken606",
+      "priority": "medium",
+      "discovery_status": "discovered_from_web_search",
+      "notes": "Public human-subtitled Neuro/Evil edit; use for transcript/alignment evidence with training_candidate=false unless original context is acquired."
+    },
+    {
+      "source_id": "bilibili_yan_eye_neuro",
+      "platform": "bilibili",
+      "kind": "developer_stream_subtitles",
+      "name": "鸦の眼 Neuro/Vedal developer recap",
+      "url": "https://www.bilibili.com/video/BV16TeUzrEbi/",
+      "uploader": "鸦の眼",
+      "priority": "medium",
+      "discovery_status": "discovered_from_web_search",
+      "notes": "Public Chinese developer-stream excerpt; preserve attribution and use for alternate transcript/source matching."
+    },
+    {
+      "source_id": "bilibili_shiliuye_neuro_stanley",
+      "platform": "bilibili",
+      "kind": "human_subtitle_editor",
+      "name": "十六夜咲汐 Neuro/Vedal Stanley Parable edit",
+      "url": "https://www.bilibili.com/video/BV1EG411k7s2/",
+      "uploader": "十六夜咲汐",
+      "priority": "medium",
+      "discovery_status": "discovered_from_web_search",
+      "notes": "Public human-subtitled edited segment with original Twitch provenance in description; retain as alternate evidence, not standalone full-stream training."
+    },
+    {
+      "source_id": "bilibili_virtualgamer_archive",
+      "platform": "bilibili",
+      "kind": "fan_fullstream_archive",
+      "name": "虚拟Gamer Neuro/Vedal replay archive",
+      "url": "https://www.bilibili.com/video/BV1uTYrzvERG/",
+      "uploader": "虚拟Gamer",
+      "priority": "high",
+      "discovery_status": "discovered_from_web_search",
+      "notes": "Public multi-hour replay with official-channel attribution; use as alternate full-stream source and preserve provenance."
+    },
+    {
+      "source_id": "bilibili_shiqingju_neuro_replays",
+      "platform": "bilibili",
+      "kind": "community_fullstream_archive",
+      "name": "是青桔哦 Neuro/Vedal replay archive",
+      "url": "https://www.bilibili.com/video/BV14qDFYLEL3/",
+      "uploader": "是青桔哦",
+      "priority": "high",
+      "discovery_status": "discovered_from_web_search",
+      "notes": "Public long replays with Chinese/English context and multiple 2024 entries; retain source attribution and deduplicate against official uploads."
+    },
+    {
+      "source_id": "bilibili_xisaier_neuro_evil_replays",
+      "platform": "bilibili",
+      "kind": "translated_fullstream_archive",
+      "name": "西塞尔是只喵 Neuro/Evil recordings",
+      "url": "https://www.bilibili.com/video/BV1THyMBjEqY/",
+      "uploader": "西塞尔是只喵",
+      "priority": "high",
+      "discovery_status": "discovered_from_web_search",
+      "candidate_ids_added": ["BV16Y4y1o7eg", "BV1rY411S7Fs", "BV1BD4y1K7bR", "BV1Ad4y1n7Bz", "BV16z4y1j7Ed", "BV1RjPfznEKi", "BV1SjT56VE8Y", "BV1B5LJ6bErv", "BV1N4SrBSEQJ", "BV1PFx7zqEdT", "BV1Si546YE9h", "BV1SPt46aEEq", "BV1n1Es6WEKo", "BV1ohQsBfEBy"],
+      "notes": "Public long translated Evil/Neuro recordings and index pages; newly enumerated candidates are marked by speaker layout/separation priority. Subtitles are machine-translated unless verified, so preserve raw attribution and do not treat as gold."
+    },
+    {
+      "source_id": "internet_archive_twitchstreams_neuro_leads",
+      "platform": "internet_archive",
+      "kind": "public_twitch_recording_archive",
+      "name": "Internet Archive Twitch streams: Neuro/Evil leads",
+      "url": "https://archive.org/search?query=Neuro-sama",
+      "uploader": "Internet Archive public collections",
+      "priority": "high",
+      "discovery_status": "expanded_with_media_verification",
+      "candidate_identifiers": ["v1918741879", "v1994147686", "twitch-vod-v2431132244", "twitch-vod-v2756121083"],
+      "notes": "Public archive search yielded verified direct media for an Evil solo stream, Evil/Anny collab, Neuro/Filian collab, and Evil/Numi collab; metadata-only items remain discovery leads and are not acquired until media is verified."
+    },
+    {
+      "source_id": "internet_archive_vedal987_early_vods",
+      "platform": "internet_archive",
+      "kind": "public_twitch_recording_archive",
+      "name": "Internet Archive Vedal/Neuro early VOD mirrors",
+      "url": "https://archive.org/search?query=title%3A%22Neuro-sama%22+AND+mediatype%3Amovies",
+      "uploader": "Internet Archive public collections / vedal987 mirrors",
+      "priority": "high",
+      "discovery_status": "expanded_with_media_verification",
+      "candidate_identifiers": ["neuro-sama-1801850472", "neuro-sama-1853031772", "neuro-sama-1878026663", "neuro-sama-collabs-2", "onigirien-1743854500"],
+      "notes": "Verified direct MP4 media for long 2023 Neuro/Filian, Neuro/Miyune, Evil/Numi, Neuro/Cottontail and Neuro/OniGiri collabs. Acquisition is audio-only, one archive job at a time, with hash/fingerprint deduplication and explicit easy-separation priority fields."
     }
   ]
 }

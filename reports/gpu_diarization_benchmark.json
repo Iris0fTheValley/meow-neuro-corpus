@@ -1,0 +1,40 @@
+{
+  "backend": "speechbrain-ecapa-voxceleb",
+  "device": "cuda",
+  "model_load_seconds": 0.27665470002102666,
+  "window_seconds": 600.0,
+  "runs": [
+    {
+      "source_id": "S8piSUUq43U",
+      "audio_duration_seconds": 600.0,
+      "wall_time_seconds": 1.361490400013281,
+      "real_time_factor": 0.0022691506666888015,
+      "decode_time_seconds": 0.8909878999984358,
+      "embedding_time_seconds": 0.4705025000148453,
+      "embedding_count": 82,
+      "vram_peak_mib_torch_reserved": 3580
+    },
+    {
+      "source_id": "MnsrybitPPo",
+      "audio_duration_seconds": 600.0,
+      "wall_time_seconds": 1.1336537000024691,
+      "real_time_factor": 0.0018894228333374485,
+      "decode_time_seconds": 0.9024425999959931,
+      "embedding_time_seconds": 0.23121110000647604,
+      "embedding_count": 89,
+      "vram_peak_mib_torch_reserved": 3580
+    },
+    {
+      "source_id": "BV1K2ygYtEGY",
+      "audio_duration_seconds": 600.0,
+      "wall_time_seconds": 0.7065795000235084,
+      "real_time_factor": 0.0011776325000391807,
+      "decode_time_seconds": 0.31742050001048483,
+      "embedding_time_seconds": 0.3891590000130236,
+      "embedding_count": 178,
+      "vram_peak_mib_torch_reserved": 3580
+    }
+  ],
+  "median_rtf": 0.0018894228333374485,
+  "quality_note": "Uses the production random-access audio path and existing timestamped ASR segments; speaker labels remain anonymous."
+}
