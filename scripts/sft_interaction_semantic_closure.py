@@ -372,7 +372,7 @@ def _edit_distance_at_most_one(left: str, right: str) -> bool:
 def _normalize_selection_id(value: str, offered: list[str]) -> tuple[str, dict[str, str] | None]:
     """Map only an unambiguous identifier typo back to an offered raw turn id."""
     value = str(value)
-    offered = [str(item) for item in offered]
+    offered = list(dict.fromkeys(str(item) for item in offered))
     if value in offered:
         return value, None
     casefold_matches = [item for item in offered if item.casefold() == value.casefold()]
