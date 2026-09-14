@@ -356,7 +356,7 @@ def judge(args: argparse.Namespace) -> dict:
     finally:
         v21.SYSTEM_PROMPT = previous_prompt
     result = {"schema_version": closure.SCHEMA_VERSION, "pipeline_version": closure.PIPELINE_VERSION, "status": "COMPLETED", "stage": stage, "selected": len(selected), **dict(counters), "model": args.model, "prompt_version": PROMPT_VERSIONS[stage], "results": str(destination), "completed_at": datetime.now(timezone.utc).isoformat()}
-    write_json(run_path(stage), result)
+    write_json(Path(args.run_report) if args.run_report else run_path(stage), result)
     return result
 
 
@@ -410,6 +410,7 @@ def main() -> None:
     parser.add_argument("--structural", default=str(STRUCTURAL))
     parser.add_argument("--requests", default=str(REQUESTS))
     parser.add_argument("--results", default="")
+    parser.add_argument("--run-report", default="", help="per-worker run report path; keeps sharded workers from sharing the canonical report")
     parser.add_argument("--primary-results", default="", help="primary result artifact for quarantine lifecycle")
     parser.add_argument("--quarantine", default="", help="terminal primary quarantine artifact")
     parser.add_argument("--fresh", action="store_true", help="explicitly discard only the selected stage result file")
