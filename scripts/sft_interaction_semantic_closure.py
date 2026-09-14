@@ -347,6 +347,55 @@ def parse_json_object(value: str) -> dict[str, Any] | None:
     return None
 
 
+def _edit_distance_at_most_one(left: str, right: str) -> bool:
+    """Recognize only a single source-prefix typo; never fuzzy-match turns."""
+    left, right = str(left), str(right)
+    if abs(len(left) - len(right)) > 1:
+        return False
+    if len(left) == len(right):
+        return sum(a != b for a, b in zip(left, right)) <= 1
+    if len(left) > len(right):
+        left, right = right, left
+    index_left = index_right = differences = 0
+    while index_left < len(left) and index_right < len(right):
+        if left[index_left] == right[index_right]:
+            index_left += 1
+            index_right += 1
+            continue
+        differences += 1
+        if differences > 1:
+            return False
+        index_right += 1
+    return True
+
+
+def _normalize_selection_id(value: str, offered: list[str]) -> tuple[str, dict[str, str] | None]:
+    """Map only an unambiguous identifier typo back to an offered raw turn id."""
+    value = str(value)
+    offered = [str(item) for item in offered]
+    if value in offered:
+        return value, None
+    casefold_matches = [item for item in offered if item.casefold() == value.casefold()]
+    if len(casefold_matches) == 1:
+        target = casefold_matches[0]
+        return target, {"from": value, "to": target, "method": "CASEFOLD_UNIQUE"}
+    marker = ":turn:"
+    if marker not in value:
+        return value, None
+    value_prefix, value_turn = value.rsplit(marker, 1)
+    suffix_matches = []
+    for item in offered:
+        if marker not in item:
+            continue
+        prefix, turn = item.rsplit(marker, 1)
+        if turn == value_turn and _edit_distance_at_most_one(value_prefix.casefold(), prefix.casefold()):
+            suffix_matches.append(item)
+    if len(suffix_matches) == 1:
+        target = suffix_matches[0]
+        return target, {"from": value, "to": target, "method": "UNIQUE_TURN_SUFFIX_PREFIX_TYPO"}
+    return value, None
+
+
 def validate_judgement(result: dict[str, Any], request: dict[str, Any]) -> dict[str, Any]:
     parsed = result.get("parsed") if isinstance(result, dict) and "parsed" in result else result
     if not isinstance(parsed, dict):
@@ -362,6 +411,22 @@ def validate_judgement(result: dict[str, Any], request: dict[str, Any]) -> dict[
     options = [[str(value) for value in option] for option in request.get("allowed_context_selections") or []]
     offered_target = [str(value) for value in request.get("candidate_target_turn_ids") or []]
     current_target = [str(value) for value in request.get("current_target_turn_ids") or []]
+    normalizations = []
+    offered_context = [value for option in options for value in option]
+    normalized_context = []
+    for value in selected_context:
+        normalized, note = _normalize_selection_id(value, offered_context)
+        normalized_context.append(normalized)
+        if note:
+            normalizations.append(note)
+    normalized_target = []
+    for value in selected_target:
+        normalized, note = _normalize_selection_id(value, offered_target)
+        normalized_target.append(normalized)
+        if note:
+            normalizations.append(note)
+    selected_context = normalized_context
+    selected_target = normalized_target
     target_prefix = selected_target == offered_target[: len(selected_target)] and selected_target[: len(current_target)] == current_target
     forbidden_rewrite_fields = {"corrected_transcript", "rewritten_transcript", "context_text", "response_text"} & set(parsed)
     schema_valid = (
@@ -387,6 +452,8 @@ def validate_judgement(result: dict[str, Any], request: dict[str, Any]) -> dict[
         "selected_target_turn_ids": selected_target,
         "reason": str(parsed.get("reason") or "")[:500],
     }
+    if normalizations:
+        evidence["selection_id_normalizations"] = normalizations
     if not schema_valid:
         reason = "transcript_rewrite_forbidden" if forbidden_rewrite_fields else "schema_or_bounded_turn_selection_invalid"
         return {"valid": False, "accepted": False, **evidence, "reason": reason}
