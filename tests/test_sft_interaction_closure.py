@@ -493,5 +493,92 @@ class JudgeResumeTests(unittest.TestCase):
         self.assertEqual(report["skipped_existing"], 1)
 
 
+class TerminalQuarantineLifecycleTests(unittest.TestCase):
+    def invalid_result(self, sample_id="bad", digest="digest", completed_at="now"):
+        return {
+            "sample_id": sample_id,
+            "request_sha256": digest,
+            "schema_version": closure.SCHEMA_VERSION,
+            "pipeline_version": closure.PIPELINE_VERSION,
+            "stage": "primary",
+            "judge_prompt_version": closure.PRIMARY_PROMPT_VERSION,
+            "judge_model": judge_workflow.MODEL_DEFAULT,
+            "validated": {"valid": False, "accepted": False, "reason": "illegal_context_selection"},
+            "raw": {"parsed": {"selected_context_turn_ids": ["illegal"]}},
+            "attempts": 3,
+            "completed_at": completed_at,
+        }
+
+    def valid_result(self, sample_id="good", digest="digest"):
+        value = self.invalid_result(sample_id, digest)
+        value["validated"] = {"valid": True, "accepted": True}
+        return value
+
+    def test_persistent_invalid_exhausts_retry_budget_to_terminal_quarantine(self):
+        history = [self.invalid_result(completed_at=str(index)) for index in range(6)]
+        lifecycle = judge_workflow.invalid_lifecycle(history[-1], history, retry_budget=5, terminal_eligible=True)
+        self.assertEqual(lifecycle["state"], "TERMINAL_INVALID_QUARANTINED")
+        self.assertEqual(lifecycle["retry_count"], 5)
+
+    def test_terminal_quarantine_artifact_preserves_evidence(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            request_value = {"schema_version": closure.SCHEMA_VERSION, "allowed_context_selections": [["c1"]]}
+            request = {"sample_id": "bad", "request": request_value, "request_sha256": closure.payload_sha256(request_value)}
+            result_path = root / "primary.jsonl"
+            result_path.write_text("".join(json.dumps(self.invalid_result("bad", request["request_sha256"], str(index))) + "\n" for index in range(6)), encoding="utf-8")
+            requests_path = root / "requests.jsonl"
+            requests_path.write_text(json.dumps(request) + "\n", encoding="utf-8")
+            args = Namespace(requests=str(requests_path), primary_results=str(result_path), quarantine=str(root / "quarantine.jsonl"), sample_ids="bad", sample_ids_file="", retry_budget=5)
+            with patch.object(judge_workflow, "OUT", root):
+                report = judge_workflow.quarantine(args)
+            artifact = json.loads((root / "quarantine.jsonl").read_text(encoding="utf-8").strip())
+        self.assertEqual(report["terminal_quarantined"], 1)
+        self.assertEqual(artifact["state"], "TERMINAL_INVALID_QUARANTINED")
+        self.assertEqual(artifact["sample_id"], "bad")
+        self.assertEqual(artifact["request_sha256"], request["request_sha256"])
+        self.assertEqual(artifact["retry_count"], 5)
+        self.assertEqual(len(artifact["retry_history"]), 6)
+        self.assertIn("latest_raw_result", artifact)
+
+    def test_terminal_quarantine_never_enters_strict(self):
+        requests = [{"sample_id": "bad", "request_sha256": "digest"}, {"sample_id": "good", "request_sha256": "digest"}]
+        required = judge_workflow.strict_required_sample_ids(requests, {"bad": self.invalid_result("bad"), "good": self.valid_result("good")}, judge_workflow.MODEL_DEFAULT, {"bad"})
+        self.assertEqual(required, {"good"})
+
+    def test_other_valid_accepted_primary_samples_still_route_to_strict(self):
+        requests = [{"sample_id": "good", "request_sha256": "digest"}]
+        required = judge_workflow.strict_required_sample_ids(requests, {"good": self.valid_result("good")}, judge_workflow.MODEL_DEFAULT, {"bad"})
+        self.assertEqual(required, {"good"})
+
+    def test_quarantined_sample_never_enters_verified_pool(self):
+        quarantine = {"state": "TERMINAL_INVALID_QUARANTINED", "sample_id": "bad", "request_sha256": "digest"}
+        decision = closure.resolve_semantic_state("bad", self.invalid_result("bad"), None, quarantine=quarantine)
+        self.assertEqual(decision["state"], "TERMINAL_INVALID_QUARANTINED")
+        self.assertIsNone(closure.materialize_verified({"sample_id": "bad"}, decision, {"_turns": []}))
+
+    def test_terminal_quarantine_is_counted_without_blocking_primary_coverage(self):
+        quarantine = {"state": "TERMINAL_INVALID_QUARANTINED", "sample_id": "bad", "request_sha256": "digest"}
+        decision = closure.resolve_semantic_state("bad", self.invalid_result("bad"), None, quarantine=quarantine)
+        report = closure.closure_status_report([decision], 1)
+        self.assertEqual(report["terminal_quarantined"], 1)
+        self.assertEqual(report["primary_terminal_quarantined"], 1)
+        self.assertTrue(report["primary_coverage_pass"])
+        self.assertTrue(report["complete"])
+
+    def test_illegal_context_selection_is_never_coerced(self):
+        result = closure.validate_judgement(judgement(context=("p1",)), request())
+        self.assertFalse(result["valid"])
+        self.assertNotIn("selected_context_turn_ids", result.get("selection_id_normalizations", {}))
+
+    def test_retryable_invalid_blocks_until_retry_budget_is_exhausted(self):
+        history = [self.invalid_result(completed_at=str(index)) for index in range(5)]
+        lifecycle = judge_workflow.invalid_lifecycle(history[-1], history, retry_budget=5, terminal_eligible=True)
+        self.assertEqual(lifecycle["state"], "RETRYABLE_INVALID")
+        decision = closure.resolve_semantic_state("bad", history[-1], None)
+        report = closure.closure_status_report([decision], 1)
+        self.assertFalse(report["primary_coverage_pass"])
+
+
 if __name__ == "__main__":
     unittest.main()

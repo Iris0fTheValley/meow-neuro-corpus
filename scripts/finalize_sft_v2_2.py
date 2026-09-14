@@ -97,6 +97,8 @@ def finalize(args: argparse.Namespace) -> dict:
         raise SystemExit(f"structural artifact has {len(incompatible_structural)} legacy/incompatible rows; rebuild Layer A")
     requests = latest(request_path)
     primary, strict, adjudication = latest(Path(args.primary)), latest(Path(args.strict)), latest(Path(args.adjudication))
+    quarantine_path = Path(getattr(args, "quarantine", "")) if getattr(args, "quarantine", "") else out / "interaction_judge_primary_quarantine_v2_3.jsonl"
+    quarantined = {sample_id: value for sample_id, value in latest(quarantine_path).items() if value.get("state") == "TERMINAL_INVALID_QUARANTINED"}
     _assert_result_schema(primary, "primary")
     _assert_result_schema(strict, "strict")
     _assert_result_schema(adjudication, "adjudication")
@@ -110,13 +112,16 @@ def finalize(args: argparse.Namespace) -> dict:
         if request_row.get("artifact_schema_version") != closure.SCHEMA_VERSION or request_row.get("pipeline_version") != closure.PIPELINE_VERSION or request.get("schema_version") != closure.SCHEMA_VERSION or not request_hash or request_hash != closure.payload_sha256(request):
             decisions.append({"schema_version": closure.SCHEMA_VERSION, "pipeline_version": closure.PIPELINE_VERSION, "sample_id": sample_id, "state": "MISSING_INVALID_EVIDENCE", "reason_code": "REQUEST_MISSING_VERSION_OR_HASH_INVALID", "risk_features": request.get("risk_features") or {}})
             continue
+        quarantine_row = quarantined.get(sample_id)
+        if quarantine_row and quarantine_row.get("request_sha256") != request_hash:
+            quarantine_row = None
         evidence = []
         for value in (primary.get(sample_id), strict.get(sample_id), adjudication.get(sample_id)):
             if value and value.get("request_sha256") != request_hash:
                 evidence.append({**value, "validated": {"valid": False, "accepted": False, "reason": "request_hash_mismatch"}})
             else:
                 evidence.append(value)
-        decisions.append(closure.resolve_semantic_state(sample_id, evidence[0], evidence[1], evidence[2], risk=request.get("risk_features") or {}))
+        decisions.append(closure.resolve_semantic_state(sample_id, evidence[0], evidence[1], evidence[2], risk=request.get("risk_features") or {}, quarantine=quarantine_row))
     write_jsonl(out / "interaction_closure_decisions_v2_3.jsonl", decisions)
     status = closure.closure_status_report(decisions, len(rows))
     status["generated_at"] = datetime.now(timezone.utc).isoformat()
@@ -186,6 +191,11 @@ def finalize(args: argparse.Namespace) -> dict:
         "judge_conflicts": status["judge_conflicts"],
         "ambiguous": status["ambiguous"],
         "missing_or_invalid_evidence": status["missing_or_invalid_evidence"],
+        "terminal_quarantined": status["terminal_quarantined"],
+        "primary_valid": status["primary_valid"],
+        "primary_accepted": status["primary_accepted"],
+        "primary_rejected_nonaccepted": status["primary_rejected_nonaccepted"],
+        "primary_terminal_quarantined": status["primary_terminal_quarantined"],
         "semantic_verified_before_hard_dedup": len(verified),
         "verified_pool_rows": len(pool),
         "recording_pairwise_edges": len(pairwise_edges),
@@ -211,6 +221,7 @@ def finalize(args: argparse.Namespace) -> dict:
             "primary_results": Path(args.primary).name,
             "strict_results": Path(args.strict).name,
             "adjudication_results": Path(args.adjudication).name,
+            "primary_quarantine": quarantine_path.name,
             "closure_decisions": "interaction_closure_decisions_v2_3.jsonl",
             "judge_conflicts": "interaction_judge_conflicts_v2_3.jsonl",
             "ambiguous": "interaction_ambiguous_v2_3.jsonl",
@@ -240,6 +251,7 @@ def main() -> None:
     parser.add_argument("--primary", default=str(DEFAULT_OUT / "interaction_judge_primary_results_v2_3.jsonl"))
     parser.add_argument("--strict", default=str(DEFAULT_OUT / "interaction_judge_strict_results_v2_3.jsonl"))
     parser.add_argument("--adjudication", default=str(DEFAULT_OUT / "interaction_judge_adjudication_results_v2_3.jsonl"))
+    parser.add_argument("--quarantine", default="", help="terminal primary quarantine artifact")
     parser.add_argument("--allow-partial", action="store_true", help="build a labelled partial pool while leaving readiness false")
     parser.add_argument("--min-recording-edge-support", type=int, default=2)
     parser.add_argument("--max-recording-component-size", type=int, default=8)

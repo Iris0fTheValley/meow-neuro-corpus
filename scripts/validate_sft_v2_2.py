@@ -56,6 +56,9 @@ def validate(args: argparse.Namespace) -> dict:
     status = load_json(dataset / "interaction_closure_status_v2_3.json")
     dedup = load_json(dataset / "hard_dedup_audit_v2_3.json")
     repair = load_json(dataset / "recording_family_repair_v2_3.json")
+    quarantine_rows = rows(dataset / "interaction_judge_primary_quarantine_v2_3.jsonl")
+    terminal_quarantine_ids = {str(row.get("sample_id")) for row in quarantine_rows if row.get("state") == "TERMINAL_INVALID_QUARANTINED"}
+    invalid_quarantine_rows = [row.get("sample_id") for row in quarantine_rows if row.get("state") != "TERMINAL_INVALID_QUARANTINED"]
     split_authority_path = Path(args.split_authority)
     split_authority = load_json(split_authority_path)
     schema_errors = []
@@ -129,12 +132,14 @@ def validate(args: argparse.Namespace) -> dict:
 
     state_counts = Counter(str(row.get("state") or "UNKNOWN") for row in decisions)
     conflict_rows_in_pool = [row.get("sample_id") for row in pool if (row.get("semantic_closure") or {}).get("state") == "JUDGE_CONFLICT"]
+    quarantine_in_pool = sorted(terminal_quarantine_ids & {str(row.get("sample_id")) for row in pool})
     views = Path(args.views) if args.views else None
-    view_report = {"status": "NOT_YET_VALIDATED", "family_leakage": {}, "sealed_eval_in_train": [], "split_constraint_violations": [], "lineage_errors": []}
+    view_report = {"status": "NOT_YET_VALIDATED", "family_leakage": {}, "sealed_eval_in_train": [], "split_constraint_violations": [], "lineage_errors": [], "terminal_quarantine_in_views": []}
     if views and views.exists():
         train_files = list(views.glob("train_*.jsonl"))
-        train = rows(train_files[0]) if train_files else []
+        train = [row for path in train_files for row in rows(path)]
         validation, sealed = rows(views / "validation.jsonl"), rows(views / "sealed_eval.jsonl")
+        view_ids = {str(row.get("sample_id")) for row in train + validation + sealed}
         families = {"train": {str(row.get("recording_family_id")) for row in train}, "validation": {str(row.get("recording_family_id")) for row in validation}, "sealed_eval": {str(row.get("recording_family_id")) for row in sealed}}
         leakage = {"train_validation": sorted(families["train"] & families["validation"]), "train_sealed_eval": sorted(families["train"] & families["sealed_eval"]), "validation_sealed_eval": sorted(families["validation"] & families["sealed_eval"])}
         sealed_ids = {str(row.get("sample_id")) for row in sealed}
@@ -150,13 +155,16 @@ def validate(args: argparse.Namespace) -> dict:
         manifest = load_json(views / "view_manifest.json")
         authority_reference_ok = manifest.get("split_authority_version") == split_authority.get("split_authority_version") and Path(str(manifest.get("split_authority") or "")) == split_authority_path
         valid_view = not any(leakage.values()) and not sealed_ids & train_ids and not constraint_violations and not lineage_errors and split_authority.get("status") == "ACTIVE" and authority_reference_ok
-        view_report = {"status": "PASS" if valid_view else "FAIL", "counts": {"train": len(train), "validation": len(validation), "sealed_eval": len(sealed)}, "family_leakage": leakage, "sealed_eval_in_train": sorted(sealed_ids & train_ids), "split_constraint_violations": constraint_violations, "lineage_errors": lineage_errors, "split_authority_status": split_authority.get("status"), "shared_split_authority_reference": authority_reference_ok}
+        quarantine_in_views = sorted(terminal_quarantine_ids & view_ids)
+        valid_view = valid_view and not quarantine_in_views
+        view_report = {"status": "PASS" if valid_view else "FAIL", "counts": {"train": len(train), "validation": len(validation), "sealed_eval": len(sealed)}, "family_leakage": leakage, "sealed_eval_in_train": sorted(sealed_ids & train_ids), "split_constraint_violations": constraint_violations, "lineage_errors": lineage_errors, "terminal_quarantine_in_views": quarantine_in_views, "split_authority_status": split_authority.get("status"), "shared_split_authority_reference": authority_reference_ok}
 
     gates = {
         "IDENTITY_CLOSURE": "PASS" if not any(error.get("reason") == "IDENTITY_PROVENANCE_MISSING" for error in schema_errors) else "FAIL",
         "STRUCTURAL_INVARIANTS": "PASS" if not schema_errors and not provenance_alignment_errors and not target_reuse and not duplicate_anchor and not prefix_ladders else "FAIL",
         "SEMANTIC_PRIMARY_COVERAGE": "PASS" if status.get("primary_coverage_pass") else "PARTIAL",
         "SEMANTIC_STRICT_OR_EQUIVALENT_VERIFICATION": "PASS" if status.get("strict_or_equivalent_verification_pass") else "PARTIAL",
+        "TERMINAL_QUARANTINE_EXCLUSION": "PASS" if not quarantine_in_pool and not invalid_quarantine_rows and not view_report.get("terminal_quarantine_in_views") else "FAIL",
         "JUDGE_CONFLICTS": "PASS" if not conflict_rows_in_pool else "FAIL",
         "TRANSCRIPT_RISK_PROVENANCE": "PASS" if not any(error.get("reason") == "TRANSCRIPT_EVIDENCE_NOT_PASS" for error in schema_errors) else "FAIL",
         "SEMANTIC_PROVENANCE_REMATERIALIZATION": "PASS" if not provenance_alignment_errors else "FAIL",
@@ -179,6 +187,10 @@ def validate(args: argparse.Namespace) -> dict:
         "artifact_status": "VALIDATED_INTERACTION_CLOSURE_ARCHITECTURE",
         "sample_counts": {"decisions": len(decisions), "verified_pool": len(pool)},
         "semantic_state_counts": dict(state_counts),
+        "terminal_quarantined": len(terminal_quarantine_ids),
+        "terminal_quarantine_ids": sorted(terminal_quarantine_ids),
+        "terminal_quarantine_in_pool": quarantine_in_pool,
+        "invalid_quarantine_rows": invalid_quarantine_rows,
         "unresolved_high_risk_samples": status.get("unresolved_high_risk_samples"),
         "judge_conflicts": status.get("judge_conflicts"),
         "schema_errors": schema_errors[:100],

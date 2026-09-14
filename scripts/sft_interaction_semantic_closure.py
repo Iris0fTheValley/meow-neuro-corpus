@@ -42,7 +42,7 @@ ALLOWED_EPISODES = {
     "UNCLEAR",
 }
 ACCEPT_EPISODES = {"KEEP_CURRENT", "MERGE_CONTINUATION"}
-FINAL_STATES = {"VERIFIED", "REJECTED", "AMBIGUOUS", "JUDGE_CONFLICT", "MISSING_INVALID_EVIDENCE"}
+FINAL_STATES = {"VERIFIED", "REJECTED", "AMBIGUOUS", "JUDGE_CONFLICT", "MISSING_INVALID_EVIDENCE", "TERMINAL_INVALID_QUARANTINED"}
 
 _STOPWORDS = set(
     "the a an and or but if then than to of in on at for from with as is are was were be been being i you he she it we they this that those these do did does can could would should will may might have has had not no yes just really very like my your our their his her its how what why when where who please tell explain imagine guess".split()
@@ -488,6 +488,7 @@ def resolve_semantic_state(
     adjudication: dict[str, Any] | None = None,
     *,
     risk: dict[str, Any] | None = None,
+    quarantine: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Resolve model evidence without allowing a heuristic to be the judge."""
     p = (primary or {}).get("validated") if primary and "validated" in primary else primary
@@ -502,6 +503,13 @@ def resolve_semantic_state(
         "strict": strict,
         "adjudication": adjudication,
     }
+    if quarantine and quarantine.get("state") == "TERMINAL_INVALID_QUARANTINED":
+        return {
+            **provenance,
+            "state": "TERMINAL_INVALID_QUARANTINED",
+            "reason_code": "PRIMARY_INVALID_TERMINAL_QUARANTINED",
+            "quarantine": quarantine,
+        }
     if not p:
         return {**provenance, "state": "PENDING_PRIMARY", "reason_code": "PRIMARY_MISSING"}
     if not p.get("valid"):
@@ -880,6 +888,18 @@ def closure_status_report(decisions: list[dict[str, Any]], structural_count: int
     terminal = sum(counts[state] for state in FINAL_STATES)
     primary_invalid = sum(value.get("reason_code") == "PRIMARY_INVALID" for value in decisions)
     strict_invalid = sum(value.get("reason_code") == "STRICT_INVALID" for value in decisions)
+    primary_valid = 0
+    primary_accepted = 0
+    primary_rejected_nonaccepted = 0
+    for value in decisions:
+        primary = value.get("primary") or {}
+        validated = primary.get("validated") if isinstance(primary, dict) else {}
+        if validated and validated.get("valid"):
+            primary_valid += 1
+            if validated.get("accepted"):
+                primary_accepted += 1
+            else:
+                primary_rejected_nonaccepted += 1
     unresolved_states = {"PENDING_PRIMARY", "PENDING_STRICT", "JUDGE_CONFLICT", "AMBIGUOUS", "MISSING_INVALID_EVIDENCE"}
     return {
         "schema_version": SCHEMA_VERSION,
@@ -891,7 +911,12 @@ def closure_status_report(decisions: list[dict[str, Any]], structural_count: int
         "judge_conflicts": counts["JUDGE_CONFLICT"],
         "ambiguous": counts["AMBIGUOUS"],
         "missing_or_invalid_evidence": counts["MISSING_INVALID_EVIDENCE"],
+        "terminal_quarantined": counts["TERMINAL_INVALID_QUARANTINED"],
         "unresolved_high_risk_samples": sum(1 for value in decisions if value.get("state") in unresolved_states and ((value.get("risk_features") or {}).get("flags"))),
+        "primary_valid": primary_valid,
+        "primary_accepted": primary_accepted,
+        "primary_rejected_nonaccepted": primary_rejected_nonaccepted,
+        "primary_terminal_quarantined": counts["TERMINAL_INVALID_QUARANTINED"],
         "primary_invalid": primary_invalid,
         "strict_invalid": strict_invalid,
         "primary_coverage_pass": not counts["PENDING_PRIMARY"] and not primary_invalid,
