@@ -299,7 +299,9 @@ def call_judge(request_payload: dict[str, Any], model: str = JUDGE_MODEL, endpoi
             "model": model,
             "prompt": prompt,
             "temperature": 0,
-            "max_tokens": 256,
+            # Keep enough room for the bounded evidence decision JSON. The
+            # no-think transport otherwise truncates valid objects mid-string.
+            "max_tokens": 512,
             "stop": ["<|im_end|>"],
             "stream": False,
         }
@@ -311,7 +313,7 @@ def call_judge(request_payload: dict[str, Any], model: str = JUDGE_MODEL, endpoi
                 {"role": "user", "content": json.dumps(request_payload, ensure_ascii=False)},
             ],
             "temperature": 0,
-            "max_tokens": 256,
+            "max_tokens": 512,
             "stream": False,
         }
     encoded = json.dumps(body, ensure_ascii=False).encode("utf-8")
