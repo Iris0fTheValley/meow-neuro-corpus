@@ -17,7 +17,7 @@ if not (ROOT / "datasets").exists() and (Path(__file__).resolve().parents[3] / "
     ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_DATASET = ROOT / "datasets" / "meow_v02_sft_v2_2_semantic_verified"
 sys.path.insert(0, str(ROOT / "scripts"))
-sys.path.insert(0, str(SCRIPT_DIR))
+sys.path.insert(1, str(SCRIPT_DIR))
 
 import build_sft_v2_2_train_views as legacy_views  # noqa: E402
 import sft_interaction_semantic_closure as semantic  # noqa: E402
@@ -90,4 +90,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

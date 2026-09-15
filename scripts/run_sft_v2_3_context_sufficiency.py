@@ -24,7 +24,7 @@ if not (ROOT / "datasets").exists() and (Path(__file__).resolve().parents[3] / "
     ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_DATASET = ROOT / "datasets" / "meow_v02_sft_v2_2_semantic_verified"
 sys.path.insert(0, str(ROOT / "scripts"))
-sys.path.insert(0, str(SCRIPT_DIR))
+sys.path.insert(1, str(SCRIPT_DIR))
 
 import sft_interaction_semantic_closure as semantic  # noqa: E402
 import sft_semantic_verified_v2_1 as judge_core  # noqa: E402

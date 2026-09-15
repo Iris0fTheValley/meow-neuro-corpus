@@ -14,7 +14,7 @@ if not (ROOT / "datasets").exists() and (Path(__file__).resolve().parents[3] / "
     ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_DATASET = ROOT / "datasets" / "meow_v02_sft_v2_2_semantic_verified"
 sys.path.insert(0, str(ROOT / "scripts"))
-sys.path.insert(0, str(SCRIPT_DIR))
+sys.path.insert(1, str(SCRIPT_DIR))
 
 import validate_sft_v2_2 as core_validator  # noqa: E402
 import validate_sft_v2_3_context_sufficiency as context_validator  # noqa: E402
@@ -78,4 +78,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
