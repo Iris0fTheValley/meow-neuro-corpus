@@ -21,6 +21,7 @@ REQUESTS = OUT / "interaction_judge_requests_v2_3.jsonl"
 MODEL_SOURCE_PATH = r"J:\AI friend\MEOW Qwen3.5\Qwen3.8-27B-EfficientThink-SimPO-Q4-LynnStyle.gguf"
 MODEL_DEFAULT = "qwen3.8-27b-efficientthink-simpo-lynnstyle"
 PRIMARY_QUARANTINE_FILENAME = "interaction_judge_primary_quarantine_v2_3.jsonl"
+STRICT_QUARANTINE_FILENAME = "interaction_judge_strict_quarantine_v2_3.jsonl"
 
 # These ids were explicitly reviewed by the production operator after the
 # bounded retry budget was exhausted.  They are the only primary invalids that
@@ -91,6 +92,10 @@ def quarantine_path() -> Path:
     return OUT / PRIMARY_QUARANTINE_FILENAME
 
 
+def strict_quarantine_path() -> Path:
+    return OUT / STRICT_QUARANTINE_FILENAME
+
+
 def run_path(stage: str) -> Path:
     return OUT / f"interaction_judge_{stage}_run_v2_3.json"
 
@@ -138,23 +143,31 @@ def _sample_ids_arg(args: argparse.Namespace) -> set[str]:
 
 
 def quarantine(args: argparse.Namespace) -> dict:
-    """Write explicit terminal primary invalids to a fail-closed artifact."""
+    """Write explicitly reviewed terminal invalids to a fail-closed artifact."""
+    stage = str(getattr(args, "stage", "primary") or "primary")
+    if stage not in {"primary", "strict"}:
+        raise SystemExit("quarantine supports only primary or strict stage")
     requests = {str(row.get("sample_id")): row for row in load_rows(Path(args.requests))}
-    primary_path = Path(args.primary_results) if args.primary_results else result_path("primary")
-    primary = latest_results(primary_path)
+    source_path = Path(args.primary_results) if stage == "primary" and args.primary_results else result_path(stage)
+    source = latest_results(source_path)
     requested_ids = _sample_ids_arg(args) or set(REVIEWED_TERMINAL_PRIMARY_INVALID_IDS)
+    if stage == "strict" and not _sample_ids_arg(args):
+        requested_ids = set()
     retry_budget = max(0, int(args.retry_budget))
     rows = []
     skipped = []
     for sample_id in sorted(requested_ids):
         request_row = requests.get(sample_id)
-        current = primary.get(sample_id)
-        history = result_history(primary_path, sample_id)
+        current = source.get(sample_id)
+        history = result_history(source_path, sample_id)
         lifecycle = invalid_lifecycle(
             current,
             history,
             retry_budget=retry_budget,
-            terminal_eligible=sample_id in REVIEWED_TERMINAL_PRIMARY_INVALID_IDS or bool(_sample_ids_arg(args)),
+            terminal_eligible=(
+                (stage == "primary" and (sample_id in REVIEWED_TERMINAL_PRIMARY_INVALID_IDS or bool(_sample_ids_arg(args))))
+                or (stage == "strict" and bool(_sample_ids_arg(args)))
+            ),
         )
         if not request_row or not current or lifecycle["state"] != "TERMINAL_INVALID_QUARANTINED":
             skipped.append({"sample_id": sample_id, "state": lifecycle["state"], "retry_count": lifecycle["retry_count"]})
@@ -165,6 +178,7 @@ def quarantine(args: argparse.Namespace) -> dict:
                 "pipeline_version": closure.PIPELINE_VERSION,
                 "artifact_status": "TERMINAL_INVALID_QUARANTINED",
                 "state": "TERMINAL_INVALID_QUARANTINED",
+                "stage": stage,
                 "sample_id": sample_id,
                 "request_sha256": request_row.get("request_sha256"),
                 "invalid_reason": (current.get("validated") or {}).get("reason") or "invalid_result",
@@ -185,7 +199,7 @@ def quarantine(args: argparse.Namespace) -> dict:
                 "quarantined_at": datetime.now(timezone.utc).isoformat(),
             }
         )
-    destination = Path(args.quarantine) if args.quarantine else quarantine_path()
+    destination = Path(args.quarantine) if args.quarantine else (quarantine_path() if stage == "primary" else strict_quarantine_path())
     existing = load_terminal_quarantine(destination)
     existing.update({str(row["sample_id"]): row for row in rows})
     write_jsonl(destination, [existing[sample_id] for sample_id in sorted(existing)])
@@ -201,7 +215,7 @@ def quarantine(args: argparse.Namespace) -> dict:
         "sample_ids": sorted(row["sample_id"] for row in rows),
         "completed_at": datetime.now(timezone.utc).isoformat(),
     }
-    write_json(OUT / "interaction_judge_primary_quarantine_run_v2_3.json", report)
+    write_json(OUT / f"interaction_judge_{stage}_quarantine_run_v2_3.json", report)
     return report
 
 
@@ -307,6 +321,7 @@ def judge(args: argparse.Namespace) -> dict:
         primary_results = latest_results(result_path("primary"))
         expected_primary_model = args.primary_model or args.model
         required = strict_required_sample_ids(available, primary_results, expected_primary_model, set(load_terminal_quarantine()))
+        required -= set(load_terminal_quarantine(strict_quarantine_path()))
         available = [row for row in available if str(row.get("sample_id")) in required]
     selected = _selected_requests(args, available)
     destination = Path(args.results) if args.results else result_path(stage)
@@ -356,7 +371,8 @@ def judge(args: argparse.Namespace) -> dict:
     finally:
         v21.SYSTEM_PROMPT = previous_prompt
     result = {"schema_version": closure.SCHEMA_VERSION, "pipeline_version": closure.PIPELINE_VERSION, "status": "COMPLETED", "stage": stage, "selected": len(selected), **dict(counters), "model": args.model, "prompt_version": PROMPT_VERSIONS[stage], "results": str(destination), "completed_at": datetime.now(timezone.utc).isoformat()}
-    write_json(Path(args.run_report) if args.run_report else run_path(stage), result)
+    run_report = getattr(args, "run_report", "")
+    write_json(Path(run_report) if run_report else run_path(stage), result)
     return result
 
 
@@ -369,8 +385,9 @@ def status(args: argparse.Namespace) -> dict:
     primary_model = args.primary_model or args.model
     strict_model = args.strict_model or args.model
     adjudication_model = args.adjudication_model or args.model
-    terminal_quarantine = load_terminal_quarantine()
-    strict_required = strict_required_sample_ids(requests, primary_values, primary_model, set(terminal_quarantine))
+    primary_quarantine = load_terminal_quarantine()
+    strict_quarantine = load_terminal_quarantine(strict_quarantine_path())
+    strict_required = strict_required_sample_ids(requests, primary_values, primary_model, set(primary_quarantine))
     decision_rows = latest_results(OUT / "interaction_closure_decisions_v2_3.jsonl")
     adjudication_required = {sample_id for sample_id, row in decision_rows.items() if row.get("state") == "JUDGE_CONFLICT"}
     required_by_stage = {"primary": requested, "strict": strict_required, "adjudication": adjudication_required}
@@ -381,10 +398,14 @@ def status(args: argparse.Namespace) -> dict:
         compatible = {sample_id for sample_id in required if result_compatibility(values.get(sample_id), request_by_id.get(sample_id, {}), stage, model_by_stage[stage])[0]}
         stale = {sample_id for sample_id in required if sample_id in values and not result_compatibility(values.get(sample_id), request_by_id.get(sample_id, {}), stage, model_by_stage[stage])[0]}
         missing = required - set(values)
-        quarantined = (required & set(terminal_quarantine)) if stage == "primary" else set()
+        quarantine_ids = set(primary_quarantine) if stage == "primary" else set(strict_quarantine) if stage == "strict" else set()
+        quarantined = required & quarantine_ids
         if stage == "primary":
-            quarantined = set(sample_id for sample_id in terminal_quarantine if sample_id in required)
+            quarantined = set(sample_id for sample_id in primary_quarantine if sample_id in required)
             stale = stale - quarantined
+        elif stage == "strict":
+            stale = stale - quarantined
+        missing = (required - set(values)) - quarantined
         valid_accepted = {sample_id for sample_id in compatible if (values.get(sample_id) or {}).get("validated", {}).get("accepted")}
         valid_nonaccepted = compatible - valid_accepted
         stale_reasons = Counter(result_compatibility(values.get(sample_id), request_by_id.get(sample_id, {}), stage, model_by_stage[stage])[1] for sample_id in stale)
@@ -394,6 +415,8 @@ def status(args: argparse.Namespace) -> dict:
             report["stages"][stage]["primary_accepted"] = len(valid_accepted)
             report["stages"][stage]["primary_rejected_nonaccepted"] = len(valid_nonaccepted)
             report["stages"][stage]["primary_terminal_quarantined"] = len(quarantined)
+        if stage == "strict":
+            report["stages"][stage]["strict_terminal_quarantined"] = len(quarantined)
     write_json(OUT / "interaction_judge_execution_status_v2_3.json", report)
     return report
 
@@ -412,7 +435,7 @@ def main() -> None:
     parser.add_argument("--results", default="")
     parser.add_argument("--run-report", default="", help="per-worker run report path; keeps sharded workers from sharing the canonical report")
     parser.add_argument("--primary-results", default="", help="primary result artifact for quarantine lifecycle")
-    parser.add_argument("--quarantine", default="", help="terminal primary quarantine artifact")
+    parser.add_argument("--quarantine", default="", help="terminal quarantine artifact for the selected stage")
     parser.add_argument("--fresh", action="store_true", help="explicitly discard only the selected stage result file")
     parser.add_argument("--retry-invalid", action="store_true")
     parser.add_argument("--sample-ids", default="")

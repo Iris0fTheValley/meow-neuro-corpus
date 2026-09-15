@@ -57,8 +57,11 @@ def validate(args: argparse.Namespace) -> dict:
     dedup = load_json(dataset / "hard_dedup_audit_v2_3.json")
     repair = load_json(dataset / "recording_family_repair_v2_3.json")
     quarantine_rows = rows(dataset / "interaction_judge_primary_quarantine_v2_3.jsonl")
-    terminal_quarantine_ids = {str(row.get("sample_id")) for row in quarantine_rows if row.get("state") == "TERMINAL_INVALID_QUARANTINED"}
-    invalid_quarantine_rows = [row.get("sample_id") for row in quarantine_rows if row.get("state") != "TERMINAL_INVALID_QUARANTINED"]
+    strict_quarantine_arg = getattr(args, "strict_quarantine", "")
+    strict_quarantine_rows = rows(Path(strict_quarantine_arg) if strict_quarantine_arg else dataset / "interaction_judge_strict_quarantine_v2_3.jsonl")
+    all_quarantine_rows = quarantine_rows + strict_quarantine_rows
+    terminal_quarantine_ids = {str(row.get("sample_id")) for row in all_quarantine_rows if row.get("state") == "TERMINAL_INVALID_QUARANTINED"}
+    invalid_quarantine_rows = [row.get("sample_id") for row in all_quarantine_rows if row.get("state") != "TERMINAL_INVALID_QUARANTINED"]
     split_authority_path = Path(args.split_authority)
     split_authority = load_json(split_authority_path)
     schema_errors = []
@@ -215,6 +218,7 @@ def main() -> None:
     parser.add_argument("--pool", default=str(DEFAULT_DATASET / "verified_interaction_pool_v2_3.jsonl"))
     parser.add_argument("--views", default="")
     parser.add_argument("--split-authority", default=str(DEFAULT_DATASET / "split_authority_v2_3.json"))
+    parser.add_argument("--strict-quarantine", default="", help="terminal strict quarantine artifact")
     parser.add_argument("--report", default="")
     args = parser.parse_args()
     print(json.dumps(validate(args), ensure_ascii=False, indent=2))

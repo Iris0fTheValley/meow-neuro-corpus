@@ -541,6 +541,28 @@ class TerminalQuarantineLifecycleTests(unittest.TestCase):
         self.assertEqual(len(artifact["retry_history"]), 6)
         self.assertIn("latest_raw_result", artifact)
 
+    def test_strict_terminal_quarantine_is_explicit_and_fail_closed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            request_value = {"schema_version": closure.SCHEMA_VERSION, "allowed_context_selections": [["c1"]]}
+            request = {"sample_id": "bad", "request": request_value, "request_sha256": closure.payload_sha256(request_value)}
+            strict_result = self.invalid_result("bad", request["request_sha256"])
+            strict_result["stage"] = "strict"
+            strict_result["judge_prompt_version"] = closure.STRICT_PROMPT_VERSION
+            strict_path = root / "interaction_judge_strict_results_v2_3.jsonl"
+            strict_path.write_text("".join(json.dumps({**strict_result, "completed_at": str(index)}) + "\n" for index in range(3)), encoding="utf-8")
+            requests_path = root / "requests.jsonl"
+            requests_path.write_text(json.dumps(request) + "\n", encoding="utf-8")
+            args = Namespace(stage="strict", requests=str(requests_path), primary_results="", quarantine=str(root / "strict_quarantine.jsonl"), sample_ids="bad", sample_ids_file="", retry_budget=2)
+            with patch.object(judge_workflow, "OUT", root):
+                report = judge_workflow.quarantine(args)
+            artifact = json.loads((root / "strict_quarantine.jsonl").read_text(encoding="utf-8").strip())
+        decision = closure.resolve_semantic_state("bad", self.valid_result("bad"), self.invalid_result("bad"), quarantine=artifact)
+        self.assertEqual(report["terminal_quarantined"], 1)
+        self.assertEqual(artifact["stage"], "strict")
+        self.assertEqual(decision["state"], "TERMINAL_INVALID_QUARANTINED")
+        self.assertEqual(decision["reason_code"], "STRICT_INVALID_TERMINAL_QUARANTINED")
+
     def test_terminal_quarantine_never_enters_strict(self):
         requests = [{"sample_id": "bad", "request_sha256": "digest"}, {"sample_id": "good", "request_sha256": "digest"}]
         required = judge_workflow.strict_required_sample_ids(requests, {"bad": self.invalid_result("bad"), "good": self.valid_result("good")}, judge_workflow.MODEL_DEFAULT, {"bad"})

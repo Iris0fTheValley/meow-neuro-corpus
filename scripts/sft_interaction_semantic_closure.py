@@ -504,10 +504,11 @@ def resolve_semantic_state(
         "adjudication": adjudication,
     }
     if quarantine and quarantine.get("state") == "TERMINAL_INVALID_QUARANTINED":
+        quarantine_stage = str(quarantine.get("stage") or "primary").upper()
         return {
             **provenance,
             "state": "TERMINAL_INVALID_QUARANTINED",
-            "reason_code": "PRIMARY_INVALID_TERMINAL_QUARANTINED",
+            "reason_code": f"{quarantine_stage}_INVALID_TERMINAL_QUARANTINED",
             "quarantine": quarantine,
         }
     if not p:
@@ -901,6 +902,16 @@ def closure_status_report(decisions: list[dict[str, Any]], structural_count: int
             else:
                 primary_rejected_nonaccepted += 1
     unresolved_states = {"PENDING_PRIMARY", "PENDING_STRICT", "JUDGE_CONFLICT", "AMBIGUOUS", "MISSING_INVALID_EVIDENCE"}
+    primary_terminal_quarantined = sum(
+        value.get("state") == "TERMINAL_INVALID_QUARANTINED"
+        and str(value.get("reason_code") or "").startswith("PRIMARY_")
+        for value in decisions
+    )
+    strict_terminal_quarantined = sum(
+        value.get("state") == "TERMINAL_INVALID_QUARANTINED"
+        and str(value.get("reason_code") or "").startswith("STRICT_")
+        for value in decisions
+    )
     return {
         "schema_version": SCHEMA_VERSION,
         "pipeline_version": PIPELINE_VERSION,
@@ -916,7 +927,8 @@ def closure_status_report(decisions: list[dict[str, Any]], structural_count: int
         "primary_valid": primary_valid,
         "primary_accepted": primary_accepted,
         "primary_rejected_nonaccepted": primary_rejected_nonaccepted,
-        "primary_terminal_quarantined": counts["TERMINAL_INVALID_QUARANTINED"],
+        "primary_terminal_quarantined": primary_terminal_quarantined,
+        "strict_terminal_quarantined": strict_terminal_quarantined,
         "primary_invalid": primary_invalid,
         "strict_invalid": strict_invalid,
         "primary_coverage_pass": not counts["PENDING_PRIMARY"] and not primary_invalid,
