@@ -95,6 +95,10 @@ def build_trajectory_candidate(pool_row: dict[str, Any], timeline: dict[str, Any
     context_ids = [str(value) for value in pool_row.get("context_turn_ids") or []]
     target_ids = [str(value) for value in pool_row.get("target_turn_ids") or []]
     turns = list((timeline or {}).get("_turns") or [])
+    try:
+        max_gap_seconds = max(0.0, float((pool_row.get("episode_boundary") or {}).get("context_gap_policy_seconds", max_gap_seconds)))
+    except (TypeError, ValueError):
+        max_gap_seconds = 8.0
     by_id = {str(turn.get("turn_id")): turn for turn in turns}
     base = {
         "status": "PENDING_TRAJECTORY_REVIEW",
