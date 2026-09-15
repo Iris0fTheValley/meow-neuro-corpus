@@ -79,3 +79,6 @@ an explicit state, context/episode selection is limited to supplied raw turn
 IDs, recording repair quarantines weak bridges, and hard dedup is recording- and
 provenance-aware. Quality-closed interactions now form a distinct verified pool;
 train data is a versioned sampling view rather than the finalizer's only output.
+Selected-context sufficiency is a downstream gate: only `SELF_CONTAINED` rows
+enter interaction train views; incomplete rows remain bounded trajectory
+candidates and unsupported relations remain quarantined.

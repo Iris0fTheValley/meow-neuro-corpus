@@ -136,6 +136,24 @@ validation/evaluation partitions, then applies one of
 `natural_frequency`, `recording_balanced`, or `high_precision` to train-only
 rows. Sealed evaluation never participates in sampling or tuning.
 
+## Selected-context sufficiency closure
+
+After recording repair, hard dedup, and verified-pool construction, the
+`run_sft_v2_3_context_sufficiency.py` stage evaluates only rows whose semantic
+state is `VERIFIED`. Its judge input contains exactly the final materialized
+`selected_context` and `selected_target`; diagnostic turns, timeline
+neighbors, source metadata, and alternate context options are not exposed.
+
+Results are resumable by request and materialization hashes. `SELF_CONTAINED`
+rows become the only input to `build_sft_v2_3_train_views.py`. `CONTEXT_INCOMPLETE`
+rows retain their original semantic truth and are written as bounded
+`trajectory_candidate` records with `CONTEXT_RECONSTRUCTION_ONLY` eligibility;
+they are never promoted directly to an interaction or train view.
+`UNSUPPORTED_RELATION` rows go to the unsupported quarantine artifact. The
+context validator checks partition exclusivity, exact selected-ID alignment,
+zero diagnostic exposure, and trajectory-candidate isolation before views are
+built.
+
 After semantic boundary selection, messages, raw timeline indices, timestamps,
 speaker/identity/confidence arrays, transcript/ASR snapshots, and boundary
 provenance are all rematerialized from the canonical timeline. Selected target
