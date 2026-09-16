@@ -75,6 +75,8 @@ Production code then instantiates `audio_evidence.pipeline.AudioEvidencePipeline
 
 The CLI implements bounded planning only. Bounded validation is the Python API `audio_evidence.validation.validate_artifacts`; no CLI validate command is advertised.
 
+The repository production sidecar is executed with `scripts/run_audio_evidence_production.py`. It consumes the frozen verified interaction pool, existing GPU-produced ECAPA/Whisper canonical artifacts, and the confirmed enrollment bank, then writes a versioned run under `datasets/meow_v02_sft_v2_2_semantic_verified/audio_reconstruction_v1/`. `scripts/finalize_audio_evidence_production.py` materializes the four production views and reports.
+
 There is intentionally no command that scans all interactions. A production Agent must pass an explicit bounded interaction list, pin every model revision, and stop if enrollment confirmation or authority hashes fail.
 
 ## Verification performed
