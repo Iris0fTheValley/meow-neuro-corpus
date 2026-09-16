@@ -18,6 +18,7 @@ class ContractError(ValueError):
 
 
 class Timebase(str, Enum):
+    WINDOW_LOCAL_SECONDS = "WINDOW_LOCAL_SECONDS"
     RECORDING_SECONDS = "SECONDS_FROM_RECORDING_START"
 
 
@@ -34,13 +35,46 @@ class Interval:
     timebase: Timebase = Timebase.RECORDING_SECONDS
 
     def __post_init__(self) -> None:
-        if self.timebase != Timebase.RECORDING_SECONDS:
+        if not isinstance(self.timebase, Timebase):
             raise ContractError("unknown timebase")
         if self.start < 0 or self.end <= self.start:
             raise ContractError("interval must be non-negative and strictly increasing")
 
     def to_dict(self) -> Dict[str, Any]:
         return {"start": self.start, "end": self.end, "timebase": self.timebase.value}
+
+
+TIMEBASE_NORMALIZATION_VERSION = "window-local-to-recording-v1"
+
+
+def interval_from_dict(value: Dict[str, Any]) -> Interval:
+    try:
+        timebase = Timebase(str(value["timebase"]))
+        return Interval(float(value["start"]), float(value["end"]), timebase)
+    except (KeyError, TypeError, ValueError) as exc:
+        raise ContractError("interval has an unknown or incomplete timebase") from exc
+
+
+def to_recording_interval(interval: Interval, planned_window: Interval) -> Interval:
+    """Normalize a bounded-window interval into recording-global seconds."""
+    if planned_window.timebase != Timebase.RECORDING_SECONDS:
+        raise ContractError("planned window must use recording-global seconds")
+    if interval.timebase == Timebase.WINDOW_LOCAL_SECONDS:
+        duration = planned_window.end - planned_window.start
+        if interval.end > duration:
+            raise ContractError("window-local interval lies outside the planned bounded interval")
+        normalized = Interval(
+            planned_window.start + interval.start,
+            planned_window.start + interval.end,
+            Timebase.RECORDING_SECONDS,
+        )
+    elif interval.timebase == Timebase.RECORDING_SECONDS:
+        normalized = interval
+    else:  # Defensive for objects constructed outside the dataclass contract.
+        raise ContractError("unknown timebase")
+    if normalized.start < planned_window.start or normalized.end > planned_window.end:
+        raise ContractError("recording-global interval lies outside the planned bounded interval")
+    return normalized
 
 
 @dataclass(frozen=True)

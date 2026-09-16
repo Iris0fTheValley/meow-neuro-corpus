@@ -50,16 +50,19 @@ def _remove_stale_lock(lock: Path, stale_after_seconds: float) -> bool:
         return False
 
 
-def _acquire_lock(lock: Path, stale_after_seconds: float, purpose: str) -> None:
-    for attempt in range(2):
+def _acquire_lock(lock: Path, stale_after_seconds: float, purpose: str, *, wait_timeout_seconds: float = 0.0, poll_seconds: float = 0.01) -> None:
+    deadline = time.monotonic() + wait_timeout_seconds
+    while True:
         try:
             lock.mkdir()
             (lock / "owner.json").write_text(json.dumps({"pid": os.getpid(), "created_at": time.time(), "purpose": purpose}, sort_keys=True), encoding="utf-8")
             return
         except FileExistsError:
-            if attempt == 0 and _remove_stale_lock(lock, stale_after_seconds):
+            if _remove_stale_lock(lock, stale_after_seconds):
                 continue
-            raise ContractError("lock is active or cannot be recovered safely: %s" % lock)
+            if time.monotonic() >= deadline:
+                raise ContractError("lock is active or cannot be recovered safely: %s" % lock)
+            time.sleep(poll_seconds)
 
 
 def _release_lock(lock: Path) -> None:
@@ -72,9 +75,11 @@ def _release_lock(lock: Path) -> None:
 class EvidenceCache:
     """Content-addressed, atomic cache with a per-key inter-process lock."""
 
-    def __init__(self, root: Path, *, stale_lock_seconds: float = 3600.0) -> None:
+    def __init__(self, root: Path, *, stale_lock_seconds: float = 3600.0, lock_wait_seconds: float = 30.0, lock_poll_seconds: float = 0.01) -> None:
         self.root = root
         self.stale_lock_seconds = stale_lock_seconds
+        self.lock_wait_seconds = lock_wait_seconds
+        self.lock_poll_seconds = lock_poll_seconds
         self.root.mkdir(parents=True, exist_ok=True)
 
     @staticmethod
@@ -97,24 +102,39 @@ class EvidenceCache:
         directory = self.root / stage
         directory.mkdir(parents=True, exist_ok=True)
         lock = directory / (key + ".lockdir")
-        _acquire_lock(lock, self.stale_lock_seconds, "cache:%s:%s" % (stage, key))
+        _acquire_lock(lock, self.stale_lock_seconds, "cache:%s:%s" % (stage, key), wait_timeout_seconds=self.lock_wait_seconds, poll_seconds=self.lock_poll_seconds)
+        try:
+            self._write_unlocked(stage, key, payload, directory)
+        finally:
+            _release_lock(lock)
+
+    def _write_unlocked(self, stage: str, key: str, payload: Any, directory: Path) -> None:
         path = directory / (key + ".json")
-        temporary = directory / (key + ".%s.tmp" % os.getpid())
+        temporary = directory / (key + ".%s.%s.tmp" % (os.getpid(), id(payload)))
         try:
             temporary.write_text(json.dumps({"cache_key": key, "stage": stage, "payload": payload}, ensure_ascii=False, sort_keys=True), encoding="utf-8")
             os.replace(str(temporary), str(path))
         finally:
             if temporary.exists():
                 temporary.unlink()
-            _release_lock(lock)
 
     def get_or_compute(self, stage: str, key: str, function: Callable[[], Any]):
         cached = self.get(stage, key)
         if cached is not None:
             return cached, True
-        payload = function()
-        self.put(stage, key, payload)
-        return payload, False
+        directory = self.root / stage
+        directory.mkdir(parents=True, exist_ok=True)
+        lock = directory / (key + ".lockdir")
+        _acquire_lock(lock, self.stale_lock_seconds, "cache:%s:%s" % (stage, key), wait_timeout_seconds=self.lock_wait_seconds, poll_seconds=self.lock_poll_seconds)
+        try:
+            cached = self.get(stage, key)
+            if cached is not None:
+                return cached, True
+            payload = function()
+            self._write_unlocked(stage, key, payload, directory)
+            return payload, False
+        finally:
+            _release_lock(lock)
 
 
 class CheckpointStore:

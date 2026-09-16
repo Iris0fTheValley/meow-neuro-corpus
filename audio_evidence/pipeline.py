@@ -13,22 +13,54 @@ from .adapters import (
     TargetSpeakerExtractionAdapter,
 )
 from .cache import CheckpointStore, EvidenceCache
-from .contracts import AUDIO_EVIDENCE_SCHEMA_VERSION, PIPELINE_VERSION, ActivitySegment, AlignmentUnit, DiarizationTurn, Interval, ModelProvenance, Timebase, TranscriptHypothesis
+from .contracts import AUDIO_EVIDENCE_SCHEMA_VERSION, PIPELINE_VERSION, TIMEBASE_NORMALIZATION_VERSION, ActivitySegment, AlignmentUnit, ContractError, DiarizationTurn, Interval, ModelProvenance, Timebase, TranscriptHypothesis, interval_from_dict, to_recording_interval
 from .enrollment import EnrollmentBank
-from .routing import AmbiguityRouter
+from .routing import AmbiguityRouter, TargetActivityPolicy
 from .transcript import automatic_text_resolution, detect_disagreement
 
 
-def _activity_from_dict(value: Dict[str, Any]) -> ActivitySegment:
+def _activity_from_dict(value: Dict[str, Any], planned_window: Interval) -> ActivitySegment:
     from .contracts import ModelProvenance
     model = value["model"]
-    return ActivitySegment(Interval(float(value["start"]), float(value["end"]), Timebase(value["timebase"])), float(value["target_probability"]), ModelProvenance(**model), str(value["enrollment_id"]))
+    interval = to_recording_interval(interval_from_dict(value), planned_window)
+    if interval.timebase != Timebase.RECORDING_SECONDS:
+        raise ContractError("canonical target activity was not normalized to recording-global time")
+    return ActivitySegment(interval, float(value["target_probability"]), ModelProvenance(**model), str(value["enrollment_id"]))
 
 
-def _diarization_from_dict(value: Dict[str, Any]) -> DiarizationTurn:
+def _diarization_from_dict(value: Dict[str, Any], planned_window: Interval) -> DiarizationTurn:
     from .contracts import ModelProvenance
     model = value["model"]
-    return DiarizationTurn(Interval(float(value["start"]), float(value["end"]), Timebase(value["timebase"])), str(value["speaker_cluster"]), bool(value["overlap"]), ModelProvenance(**model), bool(value.get("exclusive")))
+    interval = to_recording_interval(interval_from_dict(value), planned_window)
+    if interval.timebase != Timebase.RECORDING_SECONDS:
+        raise ContractError("canonical diarization was not normalized to recording-global time")
+    return DiarizationTurn(interval, str(value["speaker_cluster"]), bool(value["overlap"]), ModelProvenance(**model), bool(value.get("exclusive")))
+
+
+def _normalize_timed_value(value: Dict[str, Any], planned_window: Interval) -> Dict[str, Any]:
+    source = interval_from_dict(value)
+    normalized = to_recording_interval(source, planned_window)
+    if source.timebase == Timebase.RECORDING_SECONDS and value.get("source_timebase") and value.get("timebase_conversion"):
+        # A cache hit already contains the canonicalized artifact. Bounds are
+        # still revalidated above, but its original adapter coordinate metadata
+        # must not be replaced with an identity conversion.
+        try:
+            original_timebase = Timebase(str(value["source_timebase"]))
+            conversion = value["timebase_conversion"]
+            expected_offset = planned_window.start if original_timebase == Timebase.WINDOW_LOCAL_SECONDS else 0.0
+            if conversion.get("version") != TIMEBASE_NORMALIZATION_VERSION or float(conversion.get("offset_seconds")) != expected_offset:
+                raise ContractError("cached timebase conversion provenance is stale or inconsistent")
+        except (KeyError, TypeError, ValueError) as exc:
+            raise ContractError("cached timebase conversion provenance is invalid") from exc
+        return dict(value)
+    result = dict(value)
+    result.update(normalized.to_dict())
+    result["source_timebase"] = source.timebase.value
+    result["timebase_conversion"] = {
+        "version": TIMEBASE_NORMALIZATION_VERSION,
+        "offset_seconds": planned_window.start if source.timebase == Timebase.WINDOW_LOCAL_SECONDS else 0.0,
+    }
+    return result
 
 
 class AudioEvidencePipeline:
@@ -50,11 +82,21 @@ class AudioEvidencePipeline:
     ) -> None:
         self.bank, self.cache, self.checkpoint = bank, cache, checkpoint
         self.activity, self.diarization, self.asr, self.aligner, self.tse = activity, diarization, asr, aligner, tse
-        self.router = router or AmbiguityRouter()
+        activity_policy = None
+        if activity is not None:
+            parameters = activity.provenance.parameters
+            if "target_activity_threshold" not in parameters or not parameters.get("target_activity_threshold_version"):
+                raise ContractError("target activity adapter requires a versioned target_activity_threshold in model provenance")
+            activity_policy = TargetActivityPolicy(float(parameters["target_activity_threshold"]), str(parameters["target_activity_threshold_version"]))
+        if router is not None and router.target_activity_policy != activity_policy:
+            raise ContractError("router target activity policy must match adapter model provenance")
+        self.router = router or AmbiguityRouter(activity_policy)
         self.allow_synthetic = allow_synthetic
 
     def _cached(self, stage: str, window: Dict[str, Any], revision: str, parameters: Dict[str, Any], enrollment_revision: str, function):
-        key = self.cache.key(str(window["audio_checksum"]), dict(window["merged_interval"]), revision, parameters, enrollment_revision)
+        cache_parameters = dict(parameters)
+        cache_parameters["timebase_normalization_version"] = TIMEBASE_NORMALIZATION_VERSION
+        key = self.cache.key(str(window["audio_checksum"]), dict(window["merged_interval"]), revision, cache_parameters, enrollment_revision)
         payload, hit = self.cache.get_or_compute(stage, key, function)
         self.checkpoint.record(str(window["window_id"]), stage, key)
         return payload, hit
@@ -79,24 +121,26 @@ class AudioEvidencePipeline:
         activity_values: List[Dict[str, Any]] = []
         if self.activity is not None:
             try:
-                activity_values, cache_hits["target_activity"] = self._cached("target_activity", window, self.activity.provenance.revision, self.activity.provenance.parameters, enrollment_cache_revision, lambda: [item.to_dict() for item in self.activity.detect(audio, enrollment)])
+                activity_values, cache_hits["target_activity"] = self._cached("target_activity", window, self.activity.provenance.revision, self.activity.provenance.parameters, enrollment_cache_revision, lambda: [_normalize_timed_value(item.to_dict(), bounded_interval) for item in self.activity.detect(audio, enrollment)])
+                activity_values = [_normalize_timed_value(item, bounded_interval) for item in activity_values]
                 stage_status["target_activity"] = "AVAILABLE"
             except AdapterUnavailable:
                 stage_status["target_activity"] = "UNAVAILABLE"
         else:
             stage_status["target_activity"] = "UNAVAILABLE"
-        activity = [_activity_from_dict(item) for item in activity_values]
+        activity = [_activity_from_dict(item, bounded_interval) for item in activity_values]
 
         diarization_values: List[Dict[str, Any]] = []
         if self.diarization is not None:
             try:
-                diarization_values, cache_hits["diarization"] = self._cached("diarization", window, self.diarization.provenance.revision, self.diarization.provenance.parameters, enrollment_cache_revision, lambda: [item.to_dict() for item in self.diarization.diarize(audio)])
+                diarization_values, cache_hits["diarization"] = self._cached("diarization", window, self.diarization.provenance.revision, self.diarization.provenance.parameters, enrollment_cache_revision, lambda: [_normalize_timed_value(item.to_dict(), bounded_interval) for item in self.diarization.diarize(audio)])
+                diarization_values = [_normalize_timed_value(item, bounded_interval) for item in diarization_values]
                 stage_status["diarization"] = "AVAILABLE"
             except AdapterUnavailable:
                 stage_status["diarization"] = "UNAVAILABLE"
         else:
             stage_status["diarization"] = "UNAVAILABLE"
-        diarization = [_diarization_from_dict(item) for item in diarization_values]
+        diarization = [_diarization_from_dict(item, bounded_interval) for item in diarization_values]
         route = self.router.decide(activity, diarization, severe_background=severe_background, speaker_ambiguity=speaker_ambiguity, force_tse=force_tse)
 
         asr_audio = audio
@@ -146,15 +190,17 @@ class AudioEvidencePipeline:
         else:
             stage_status["asr"] = "UNAVAILABLE" if not route.use_tse else "UNRESOLVED"
         alignment: List[AlignmentUnit] = []
+        alignment_values: List[Dict[str, Any]] = []
         if hypothesis is not None and self.aligner is not None:
             try:
                 alignment_parameters = dict(self.aligner.provenance.parameters)
                 alignment_parameters.update({"source_audio_checksum": asr_audio.checksum, "text_sha256": hashlib.sha256(hypothesis.text.encode("utf-8")).hexdigest()})
                 alignment_values, cache_hits["alignment"] = self._cached(
                     "alignment", window, self.aligner.provenance.revision, alignment_parameters, enrollment_cache_revision,
-                    lambda: [item.to_dict() for item in self.aligner.align(asr_audio, hypothesis.text)],
+                    lambda: [_normalize_timed_value(item.to_dict(), bounded_interval) for item in self.aligner.align(asr_audio, hypothesis.text)],
                 )
-                alignment = [AlignmentUnit(str(item["text"]), Interval(float(item["start"]), float(item["end"]), Timebase(item["timebase"])), item.get("confidence")) for item in alignment_values]
+                alignment_values = [_normalize_timed_value(item, bounded_interval) for item in alignment_values]
+                alignment = [AlignmentUnit(str(item["text"]), to_recording_interval(interval_from_dict(item), bounded_interval), item.get("confidence")) for item in alignment_values]
                 stage_status["alignment"] = "AVAILABLE"
             except AdapterUnavailable:
                 stage_status["alignment"] = "UNAVAILABLE"
@@ -181,10 +227,12 @@ class AudioEvidencePipeline:
                 # evidence, not a silent per-turn transcript replacement.
                 new_text = old.get("new_asr_hypothesis")
             overlapping_diarization = [item for item in diarization if min(turn_end, item.interval.end) > max(turn_start, item.interval.start)]
+            turn_diarization = [item for item in diarization_values if min(turn_end, float(item["end"])) > max(turn_start, float(item["start"]))]
             speaker_cluster = old.get("speaker_cluster")
             if speaker_cluster is None and overlapping_diarization:
                 speaker_cluster = max(overlapping_diarization, key=lambda item: min(turn_end, item.interval.end) - max(turn_start, item.interval.start)).speaker_cluster
-            turn_activity = [item.to_dict() for item in activity if min(turn_end, item.interval.end) > max(turn_start, item.interval.start)]
+            turn_activity = [item for item in activity_values if min(turn_end, float(item["end"])) > max(turn_start, float(item["start"]))]
+            turn_alignment_values = [item for item in alignment_values if turn_start <= (float(item["start"]) + float(item["end"])) / 2.0 <= turn_end]
             disagreement = []
             disagreement_value = None
             if new_text is not None:
@@ -209,12 +257,13 @@ class AudioEvidencePipeline:
                 "role": old.get("role"),
                 "speaker_cluster": speaker_cluster,
                 "target_activity_evidence": turn_activity,
+                "diarization_evidence": turn_diarization,
                 "identity_evidence": old.get("identity_evidence"),
                 "identity": old.get("identity"),
                 "old_transcript": old_text,
                 "new_asr_hypothesis": new_text,
                 "optional_tse_asr_hypothesis": new_text if tse_source and hypothesis else None,
-                "alignment": [item.to_dict() for item in turn_alignment] if turn_alignment else None,
+                "alignment": turn_alignment_values if turn_alignment_values else None,
                 "overlap_state": "OVERLAP" if any(item.overlap for item in overlapping_diarization) else "NO_OVERLAP_EVIDENCE",
                 "source_audio": window["source_audio"],
                 "source_interval": dict(interval),

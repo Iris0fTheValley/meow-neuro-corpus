@@ -5,7 +5,7 @@
   "type": "object",
   "required": [
     "schema_version", "recording_id", "canonical_recording_id", "recording_family_id", "audio_turn_id", "start", "end", "timebase",
-    "speaker_cluster", "target_activity_evidence", "identity_evidence", "old_transcript",
+    "speaker_cluster", "target_activity_evidence", "diarization_evidence", "identity_evidence", "old_transcript",
     "new_asr_hypothesis", "optional_tse_asr_hypothesis", "alignment", "overlap_state",
     "source_audio", "source_interval", "model_provenance", "enrollment_provenance",
     "disagreement_flags", "old_transcript_overwritten", "text_resolution_state", "text_authority",
@@ -22,6 +22,7 @@
     "timebase": {"const": "SECONDS_FROM_RECORDING_START"},
     "speaker_cluster": {"type": ["string", "null"]},
     "target_activity_evidence": {"type": "array"},
+    "diarization_evidence": {"type": "array"},
     "identity_evidence": {"type": ["object", "null"]},
     "old_transcript": {"type": ["string", "null"]},
     "new_asr_hypothesis": {"type": ["string", "null"]},

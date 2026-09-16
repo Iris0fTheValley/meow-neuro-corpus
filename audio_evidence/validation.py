@@ -4,7 +4,7 @@ from collections import Counter, defaultdict
 import re
 from typing import Any, Dict, Iterable, List, Optional
 
-from .contracts import AUDIO_EVIDENCE_SCHEMA_VERSION, Timebase, canonical_sha256
+from .contracts import AUDIO_EVIDENCE_SCHEMA_VERSION, TIMEBASE_NORMALIZATION_VERSION, Timebase, canonical_sha256
 from .enrollment import EnrollmentBank, VerificationStatus
 
 
@@ -101,6 +101,22 @@ def validate_artifacts(
             inside_source = False
         if not inside_source:
             _fail(gates, errors, "TIMESTAMP_TIMEBASE_CONSISTENT", sample, "timeline turn is outside or detached from its bounded source interval")
+        for evidence_field in ("target_activity_evidence", "diarization_evidence", "alignment"):
+            for item in turn.get(evidence_field) or []:
+                try:
+                    item_inside = (
+                        item.get("timebase") == Timebase.RECORDING_SECONDS.value
+                        and float(source_interval["start"]) <= float(item["start"]) < float(item["end"]) <= float(source_interval["end"])
+                    )
+                    source_timebase = Timebase(str(item["source_timebase"]))
+                    conversion = item["timebase_conversion"]
+                    expected_offset = float(source_interval["start"]) if source_timebase == Timebase.WINDOW_LOCAL_SECONDS else 0.0
+                    conversion_valid = conversion.get("version") == TIMEBASE_NORMALIZATION_VERSION and float(conversion.get("offset_seconds")) == expected_offset
+                except (KeyError, TypeError, ValueError):
+                    item_inside = False
+                    conversion_valid = False
+                if not item_inside or not conversion_valid:
+                    _fail(gates, errors, "TIMESTAMP_TIMEBASE_CONSISTENT", sample, "%s is not normalized and bounded in recording-global time" % evidence_field)
         turn_authority = (str(turn.get("recording_id")), str(turn.get("canonical_recording_id")), str(turn.get("recording_family_id")))
         if turn.get("window_id") and window_recordings.get(str(turn.get("window_id"))) != turn_authority:
             _fail(gates, errors, "AUDIO_INTERVAL_NO_CROSS_RECORDING", sample, "window and turn recording disagree")

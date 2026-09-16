@@ -5,6 +5,8 @@ import json
 import os
 import sys
 import tempfile
+import threading
+import time
 import unittest
 from pathlib import Path
 
@@ -18,7 +20,7 @@ from audio_evidence.adapters import (  # noqa: E402
 from audio_evidence.cache import CheckpointStore, EvidenceCache  # noqa: E402
 from audio_evidence.contracts import (  # noqa: E402
     ActivitySegment, AlignmentUnit, ContractError, DiarizationTurn, Interval,
-    ModelProvenance, TranscriptHypothesis,
+    ModelProvenance, Timebase, TranscriptHypothesis, interval_from_dict, to_recording_interval,
 )
 from audio_evidence.enrollment import (  # noqa: E402
     EnrollmentBank, EnrollmentReference, VerificationEvidence, VerificationMethod,
@@ -29,7 +31,7 @@ from audio_evidence.materialization import (  # noqa: E402
 )
 from audio_evidence.pipeline import AudioEvidencePipeline  # noqa: E402
 from audio_evidence.planning import AudioWindowPlanner, WindowRequest  # noqa: E402
-from audio_evidence.routing import AmbiguityRouter, RouteReason  # noqa: E402
+from audio_evidence.routing import AmbiguityRouter, RouteReason, TargetActivityPolicy  # noqa: E402
 from audio_evidence.transcript import TranscriptDisagreement, detect_disagreement  # noqa: E402
 from audio_evidence.validation import validate_artifacts  # noqa: E402
 from scripts.run_audio_evidence_v1 import build_parser  # noqa: E402
@@ -187,10 +189,42 @@ class PlannerAndCacheTests(unittest.TestCase):
             key1 = cache.key(SHA, Interval(0, 1).to_dict(), "model-r1", {"x": 1}, "enr-r1")
             key2 = cache.key(SHA, Interval(0, 1).to_dict(), "model-r2", {"x": 1}, "enr-r1")
             self.assertNotEqual(key1, key2)
+            threshold_key = cache.key(SHA, Interval(0, 1).to_dict(), "model-r1", {"target_activity_threshold": 0.8, "target_activity_threshold_version": "frozen-v1"}, "enr-r1")
+            other_threshold_key = cache.key(SHA, Interval(0, 1).to_dict(), "model-r1", {"target_activity_threshold": 0.9, "target_activity_threshold_version": "frozen-v1"}, "enr-r1")
+            self.assertNotEqual(threshold_key, other_threshold_key)
             calls = []
             self.assertEqual(cache.get_or_compute("asr", key1, lambda: calls.append(1) or {"x": 1})[1], False)
             self.assertEqual(cache.get_or_compute("asr", key1, lambda: calls.append(2) or {"x": 2})[1], True)
             self.assertEqual(calls, [1])
+
+    def test_concurrent_cache_miss_computes_expensive_value_once(self):
+        with tempfile.TemporaryDirectory() as directory:
+            cache = EvidenceCache(Path(directory), lock_wait_seconds=2.0)
+            key = cache.key(SHA, Interval(0, 1).to_dict(), "model-r1", {}, "enr-r1")
+            barrier = threading.Barrier(2)
+            calls = 0
+            calls_lock = threading.Lock()
+            results = []
+
+            def compute():
+                nonlocal calls
+                with calls_lock:
+                    calls += 1
+                time.sleep(0.05)
+                return {"value": "computed"}
+
+            def worker():
+                barrier.wait()
+                results.append(cache.get_or_compute("asr", key, compute))
+
+            threads = [threading.Thread(target=worker) for _ in range(2)]
+            for thread in threads:
+                thread.start()
+            for thread in threads:
+                thread.join()
+            self.assertEqual(calls, 1)
+            self.assertEqual(sorted(hit for _, hit in results), [False, True])
+            self.assertTrue(all(value == {"value": "computed"} for value, _ in results))
 
     def test_stale_cache_and_checkpoint_locks_recover_but_live_lock_fails(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -231,7 +265,7 @@ class RoutingAndTranscriptTests(unittest.TestCase):
         overlap = [DiarizationTurn(Interval(0, 1), "S0", True, self.model)]
         activity_model = ModelProvenance("target_activity", "mock", "r1")
         activity = [ActivitySegment(Interval(0.2, 0.8), 0.9, activity_model, "enr-1")]
-        self.assertEqual(AmbiguityRouter().decide(activity, overlap).reason_code, RouteReason.TARGET_OVERLAP)
+        self.assertEqual(AmbiguityRouter(TargetActivityPolicy(0.8, "fixture-v1")).decide(activity, overlap).reason_code, RouteReason.TARGET_OVERLAP)
 
     def test_sequential_speakers_do_not_trigger_tse(self):
         activity_model = ModelProvenance("target_activity", "mock", "r1")
@@ -240,9 +274,34 @@ class RoutingAndTranscriptTests(unittest.TestCase):
             DiarizationTurn(Interval(0, 1), "S0", False, self.model),
             DiarizationTurn(Interval(2, 3), "S1", False, self.model),
         ]
-        decision = AmbiguityRouter().decide(activity, sequential)
+        decision = AmbiguityRouter(TargetActivityPolicy(0.8, "fixture-v1")).decide(activity, sequential)
         self.assertFalse(decision.use_tse)
         self.assertEqual(decision.reason_code, RouteReason.CLEAN_SINGLE_SPEAKER)
+
+    def test_threshold_filters_low_probability_but_routes_high_confidence_overlap(self):
+        activity_model = ModelProvenance("target_activity", "mock", "r1")
+        overlap = [DiarizationTurn(Interval(0, 1), "S0", True, self.model)]
+        router = AmbiguityRouter(TargetActivityPolicy(0.8, "frozen-routing-v1"))
+        low = router.decide([ActivitySegment(Interval(0.2, 0.8), 0.2, activity_model, "enr-1")], overlap)
+        high = router.decide([ActivitySegment(Interval(0.2, 0.8), 0.9, activity_model, "enr-1")], overlap)
+        self.assertFalse(low.use_tse)
+        self.assertEqual(high.reason_code, RouteReason.TARGET_OVERLAP)
+        self.assertEqual(high.to_dict()["target_activity_policy"], {"threshold": 0.8, "version": "frozen-routing-v1"})
+
+    def test_activity_without_explicit_threshold_fails_closed(self):
+        activity_model = ModelProvenance("target_activity", "mock", "r1")
+        with self.assertRaisesRegex(ContractError, "explicit versioned"):
+            AmbiguityRouter().decide([ActivitySegment(Interval(0, 1), 0.9, activity_model, "enr-1")], [])
+        with self.assertRaises(ContractError):
+            TargetActivityPolicy(0.0, "invalid-zero-threshold")
+
+    def test_timebase_conversion_and_unknown_timebase_fail_closed(self):
+        planned = Interval(1800, 1860)
+        self.assertEqual(to_recording_interval(Interval(5, 10, Timebase.WINDOW_LOCAL_SECONDS), planned), Interval(1805, 1810))
+        with self.assertRaises(ContractError):
+            to_recording_interval(Interval(59, 61, Timebase.WINDOW_LOCAL_SECONDS), planned)
+        with self.assertRaises(ContractError):
+            interval_from_dict({"start": 5, "end": 10, "timebase": "FRAMES"})
 
     def test_transcript_disagreement_classes(self):
         self.assertEqual(detect_disagreement("hello there", "hello there"), TranscriptDisagreement.MATCH)
@@ -331,7 +390,7 @@ class IntegrationSmokeTests(unittest.TestCase):
         counts = counts if counts is not None else {}
         def count(name):
             counts[name] = counts.get(name, 0) + 1
-        activity_model = ModelProvenance("target_activity", "nomo-pvad-mock", "r1")
+        activity_model = ModelProvenance("target_activity", "nomo-pvad-mock", "r1", {"target_activity_threshold": 0.8, "target_activity_threshold_version": "fixture-v1"})
         diar_model = ModelProvenance("diarization", "pyannote-community-1-mock", "r1")
         asr_model = ModelProvenance("asr", "qwen3-asr-mock", "r1")
         align_model = ModelProvenance("alignment", "qwen3-aligner-mock", "r1")
@@ -364,7 +423,7 @@ class IntegrationSmokeTests(unittest.TestCase):
         bank = EnrollmentBank("test-bank", "test-r1")
         bank.add(confirmed_reference(synthetic=True))
         observed = []
-        activity_model = ModelProvenance("target_activity", "mock", "r1")
+        activity_model = ModelProvenance("target_activity", "mock", "r1", {"target_activity_threshold": 0.8, "target_activity_threshold_version": "fixture-v1"})
         activity = CallableTargetActivityAdapter(activity_model, lambda audio, enr: observed.append(audio.interval.to_dict()) or [ActivitySegment(audio.interval, 0.99, activity_model, enr.enrollment_id)])
         planner = AudioWindowPlanner()
         plan = planner.merge([planner.request_from_interaction(interaction())])
@@ -388,6 +447,39 @@ class IntegrationSmokeTests(unittest.TestCase):
             self.assertEqual(result["route"]["reason_code"], "TARGET_OVERLAP")
             self.assertEqual(result["turns"][0]["tse_source"]["enrollment_id"], "enr-1")
 
+    def test_window_local_adapter_times_are_normalized_to_recording_global(self):
+        bank = EnrollmentBank("test-bank", "test-r1")
+        bank.add(confirmed_reference(synthetic=True))
+        activity_model = ModelProvenance("target_activity", "mock-pvad", "r1", {"target_activity_threshold": 0.8, "target_activity_threshold_version": "frozen-fixture-v1"})
+        diar_model = ModelProvenance("diarization", "mock-diar", "r1")
+        asr_model = ModelProvenance("asr", "mock-asr", "r1")
+        align_model = ModelProvenance("alignment", "mock-align", "r1")
+        local = Interval(5, 10, Timebase.WINDOW_LOCAL_SECONDS)
+        activity = CallableTargetActivityAdapter(activity_model, lambda audio, enr: [ActivitySegment(local, 0.95, activity_model, enr.enrollment_id)])
+        diar = CallableDiarizationAdapter(diar_model, lambda audio: [DiarizationTurn(local, "S0", False, diar_model)])
+        asr = CallableASRAdapter(asr_model, lambda audio: TranscriptHypothesis("bounded words", asr_model, audio.uri))
+        align = CallableForcedAlignmentAdapter(align_model, lambda audio, text: [AlignmentUnit("bounded words", local, 0.9)])
+        window = window_fixture(1800, 1860)
+        with tempfile.TemporaryDirectory() as directory:
+            pipeline = AudioEvidencePipeline(bank, EvidenceCache(Path(directory) / "cache"), CheckpointStore(Path(directory) / "cp.json"), activity=activity, diarization=diar, tse=None, asr=asr, aligner=align, allow_synthetic=True)
+            result = pipeline.process_window(window, "enr-1", [{"audio_turn_id": "t4", "old_transcript": "bounded words", "start": 1800, "end": 1860}])
+        turn = result["turns"][0]
+        for field in ("target_activity_evidence", "diarization_evidence", "alignment"):
+            self.assertEqual((turn[field][0]["start"], turn[field][0]["end"]), (1805.0, 1810.0), field)
+            self.assertEqual(turn[field][0]["timebase"], "SECONDS_FROM_RECORDING_START")
+            self.assertEqual(turn[field][0]["source_timebase"], "WINDOW_LOCAL_SECONDS")
+            self.assertEqual(turn[field][0]["timebase_conversion"]["offset_seconds"], 1800.0)
+
+    def test_pipeline_rejects_adapter_interval_outside_bounded_window(self):
+        bank = EnrollmentBank("test-bank", "test-r1")
+        bank.add(confirmed_reference(synthetic=True))
+        activity_model = ModelProvenance("target_activity", "mock", "r1", {"target_activity_threshold": 0.8, "target_activity_threshold_version": "fixture-v1"})
+        activity = CallableTargetActivityAdapter(activity_model, lambda audio, enr: [ActivitySegment(Interval(59, 61, Timebase.WINDOW_LOCAL_SECONDS), 0.9, activity_model, enr.enrollment_id)])
+        with tempfile.TemporaryDirectory() as directory:
+            pipeline = AudioEvidencePipeline(bank, EvidenceCache(Path(directory) / "cache"), CheckpointStore(Path(directory) / "cp.json"), activity=activity, diarization=None, tse=None, asr=None, aligner=None, allow_synthetic=True)
+            with self.assertRaisesRegex(ContractError, "outside"):
+                pipeline.process_window(window_fixture(1800, 1860), "enr-1", [{"audio_turn_id": "t4", "old_transcript": "old", "start": 1800, "end": 1860}])
+
     def test_validator_accepts_complete_role_preserving_chain(self):
         bank = EnrollmentBank("bank", "r1")
         bank.add(confirmed_reference())
@@ -400,7 +492,7 @@ class IntegrationSmokeTests(unittest.TestCase):
                 "start": float(index), "end": float(index + 1), "timebase": "SECONDS_FROM_RECORDING_START", "role": source["role"], "identity": source["identity"],
                 "source_interval": Interval(0, 4).to_dict(),
                 "old_transcript": source["old_transcript"], "new_asr_hypothesis": source["old_transcript"], "alignment": None,
-                "speaker_cluster": "S0", "target_activity_evidence": [{"x": 1}], "enrollment_provenance": {"enrollment_id": "enr-1"},
+                "speaker_cluster": "S0", "target_activity_evidence": [{"start": float(index), "end": float(index + 1), "timebase": "SECONDS_FROM_RECORDING_START", "source_timebase": "SECONDS_FROM_RECORDING_START", "timebase_conversion": {"version": "window-local-to-recording-v1", "offset_seconds": 0.0}}], "diarization_evidence": [], "enrollment_provenance": {"enrollment_id": "enr-1"},
                 "model_provenance": {"diarization": {"revision": "r1"}}, "asr_source": {"audio_checksum": SHA},
                 "disagreement_flags": ["MATCH"], "old_transcript_overwritten": False,
                 "text_resolution_state": "RESOLVED", "text_authority": "NEW_ASR", "resolved_text": source["old_transcript"],
