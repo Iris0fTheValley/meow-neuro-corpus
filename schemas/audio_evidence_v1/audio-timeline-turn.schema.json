@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "meow://schemas/audio-evidence/1.0.0/timeline-turn",
+  "title": "M.E.O.W. canonical audio evidence timeline turn",
+  "type": "object",
+  "required": [
+    "schema_version", "recording_id", "audio_turn_id", "start", "end", "timebase",
+    "speaker_cluster", "target_activity_evidence", "identity_evidence", "old_transcript",
+    "new_asr_hypothesis", "optional_tse_asr_hypothesis", "alignment", "overlap_state",
+    "source_audio", "source_interval", "model_provenance", "enrollment_provenance",
+    "disagreement_flags", "old_transcript_overwritten"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "recording_id": {"type": "string", "minLength": 1},
+    "audio_turn_id": {"type": "string", "minLength": 1},
+    "start": {"type": "number", "minimum": 0},
+    "end": {"type": "number", "exclusiveMinimum": 0},
+    "timebase": {"const": "SECONDS_FROM_RECORDING_START"},
+    "speaker_cluster": {"type": ["string", "null"]},
+    "target_activity_evidence": {"type": "array"},
+    "identity_evidence": {"type": ["object", "null"]},
+    "old_transcript": {"type": ["string", "null"]},
+    "new_asr_hypothesis": {"type": ["string", "null"]},
+    "optional_tse_asr_hypothesis": {"type": ["string", "null"]},
+    "alignment": {"type": ["array", "null"]},
+    "overlap_state": {"type": "string"},
+    "source_audio": {"type": "string", "minLength": 1},
+    "source_interval": {"type": "object"},
+    "model_provenance": {"type": "object"},
+    "enrollment_provenance": {"type": "object"},
+    "disagreement_flags": {"type": "array"},
+    "old_transcript_overwritten": {"const": false}
+  }
+}

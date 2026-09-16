@@ -1,5 +1,7 @@
 # M.E.O.W. Neuro Corpus v0.2 — identity closure snapshot
 
+The non-destructive speaker-conditioned audio evidence sidecar is documented in [docs/audio_evidence_v1.md](docs/audio_evidence_v1.md). It adds confirmed-enrollment trust, isolated speech-model adapters, role-preserving multi-turn materialization, selective loss masks, and cache/resume without changing v2.3 semantic or split authority.
+
 This public snapshot contains the reproducibility layer for the M.E.O.W. v0.2 Neuro/Evil Neuro corpus. It intentionally contains code, schemas, lightweight reports, provenance and derived identity indices only. It does not redistribute raw VOD video/audio, model weights, caches, credentials, or third-party source transcripts.
 
 ## Current status

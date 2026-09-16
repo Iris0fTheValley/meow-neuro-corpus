@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "meow://schemas/enrollment-bank/1.0.0/reference",
+  "title": "M.E.O.W. confirmed target enrollment reference",
+  "type": "object",
+  "required": [
+    "enrollment_id", "target_identity", "source_recording", "source_interval",
+    "source_provenance", "verification_method", "verification_evidence",
+    "verification_status", "audio_quality", "overlap_status", "duration",
+    "embedding_backend", "embedding_revision", "checksum", "raw_audio_uri"
+  ],
+  "properties": {
+    "enrollment_id": {"type": "string", "minLength": 1},
+    "target_identity": {"enum": ["NEURO", "EVIL_NEURO", "NEURO_FAMILY"]},
+    "source_recording": {"type": "string", "minLength": 1},
+    "source_interval": {"$ref": "#/$defs/interval"},
+    "source_provenance": {"type": "object", "minProperties": 1},
+    "verification_method": {"enum": ["HUMAN_GOLD", "EXISTING_IDENTITY_PLUS_INDEPENDENT", "MULTI_EVIDENCE_CONSENSUS", "SYNTHETIC_FIXTURE"]},
+    "verification_evidence": {"type": "array", "minItems": 1, "items": {"type": "object", "required": ["evidence_id", "authority_domain", "source_artifact", "decision", "revision"]}},
+    "verification_status": {"const": "CONFIRMED_TARGET"},
+    "audio_quality": {"type": "object", "required": ["speaker_boundary_clear", "identity_conflict", "hard_negative_collision"]},
+    "overlap_status": {"const": "NO_OVERLAP_CONFIRMED"},
+    "duration": {"type": "number", "exclusiveMinimum": 0},
+    "embedding_backend": {"type": "string", "minLength": 1},
+    "embedding_revision": {"type": "string", "minLength": 1},
+    "checksum": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"},
+    "raw_audio_uri": {"type": "string", "minLength": 1},
+    "embedding_uri": {"type": ["string", "null"]},
+    "target_subtype": {"type": ["string", "null"]},
+    "family_group": {"const": "NEURO_FAMILY"}
+  },
+  "$defs": {
+    "interval": {
+      "type": "object",
+      "required": ["start", "end", "timebase"],
+      "properties": {
+        "start": {"type": "number", "minimum": 0},
+        "end": {"type": "number", "exclusiveMinimum": 0},
+        "timebase": {"const": "SECONDS_FROM_RECORDING_START"}
+      }
+    }
+  }
+}

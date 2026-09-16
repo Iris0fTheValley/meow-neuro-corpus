@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "meow://schemas/role-preserving-materialization/1.0.0/sample",
+  "title": "M.E.O.W. role-preserving selectively supervised sample",
+  "type": "object",
+  "required": [
+    "schema_version", "materialization_version", "sample_id", "target_turn_id", "recording_id",
+    "canonical_recording_id", "recording_family_id", "messages", "context_turn_ids",
+    "target_turn_ids", "source_state", "source_sampling_eligibility", "final_view_membership",
+    "final_view_membership_authority", "supervision_state", "semantic_truth_ref",
+    "semantic_truth_sha256", "split_authority_ref", "split_authority_sha256", "synthetic_prompt"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "materialization_version": {"const": "role-preserving-materialization-v1"},
+    "messages": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["role", "content", "supervise", "source_turn_ids"],
+        "properties": {
+          "role": {"enum": ["user", "assistant"]},
+          "content": {"type": "string", "minLength": 1},
+          "supervise": {"type": "boolean"},
+          "source_turn_ids": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+        }
+      }
+    },
+    "final_view_membership": {"enum": ["IN_TRAIN", "IN_VALIDATION", "IN_SEALED_EVAL", "EXCLUDED"]},
+    "final_view_membership_authority": {"const": "FINAL_VIEW_MEMBERSHIP"},
+    "supervision_state": {"enum": ["FINAL_TARGET_ONLY", "NO_SUPERVISION"]},
+    "synthetic_prompt": {"const": false}
+  }
+}
