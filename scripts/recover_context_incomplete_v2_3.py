@@ -206,6 +206,7 @@ def recover(args: argparse.Namespace) -> tuple[list[dict[str, Any]], list[dict[s
     recovered: list[dict[str, Any]] = []
     unresolved: list[dict[str, Any]] = []
     reason_counts: Counter[str] = Counter()
+    blocking_reason_counts: Counter[str] = Counter()
     rule_counts: Counter[str] = Counter()
     for source in sorted(incomplete, key=lambda r: str(r.get("sample_id"))):
         sid = str(source.get("sample_id"))
@@ -238,12 +239,14 @@ def recover(args: argparse.Namespace) -> tuple[list[dict[str, Any]], list[dict[s
         max_gap = max(0.0, max_gap)
         relation = str(((source.get("semantic_qa") or {}).get("relation") or ((source.get("semantic_closure") or {}).get("final_decision") or {}).get("relation") or "")).upper()
         candidates_for_row: list[dict[str, Any]] = []
+        row_failures: list[str] = []
         for window in WINDOWS:
             start = max(0, min(cpos) - max(0, window - len(cpos)))
             if start >= min(cpos):
                 continue
             ok, failure = legal_segment(turns, start, max(cpos), target_speaker, max_gap)
             if not ok:
+                row_failures.append(failure)
                 rule_counts[f"window_{window}_{failure}"] += 1
                 continue
             segment = turns[start : max(cpos) + 1]
@@ -254,7 +257,15 @@ def recover(args: argparse.Namespace) -> tuple[list[dict[str, Any]], list[dict[s
             candidates_for_row.append({"window": window, "start": start, "turns": segment, "evidence": evidence, "score": score})
         if not candidates_for_row:
             reason_counts["no_legal_bounded_context"] += 1
-            unresolved.append({"sample_id": sid, "reason": "no_legal_bounded_context", "source_id": source.get("source_id"), "base_context_turn_ids": context_ids})
+            # Keep the aggregate state simple for downstream agents, while
+            # recording which canonical hard boundary prevented recovery.
+            priority = {"identity_boundary": 0, "identity_unreliable_boundary": 1,
+                        "hard_or_event_boundary": 2, "event_boundary": 3,
+                        "text_qa_failure": 4, "asr_review": 5, "temporal_gap": 6}
+            dominant = sorted(set(row_failures), key=lambda x: (priority.get(x, 99), x))[0] if row_failures else "unknown"
+            blocking_reason_counts[dominant] += 1
+            unresolved.append({"sample_id": sid, "reason": "no_legal_bounded_context", "blocking_reason": dominant,
+                               "blocking_reasons": sorted(set(row_failures)), "source_id": source.get("source_id"), "base_context_turn_ids": context_ids})
             continue
         viable = [c for c in candidates_for_row if c["evidence"]["has_observable_evidence"] or relation in ACCEPTED_RELATIONS]
         if not viable:
@@ -302,6 +313,7 @@ def recover(args: argparse.Namespace) -> tuple[list[dict[str, Any]], list[dict[s
         "recovered": len(recovered),
         "unresolved": len(unresolved),
         "reason_counts": dict(reason_counts),
+        "unresolved_blocking_reason_counts": dict(blocking_reason_counts),
         "rule_counts": dict(rule_counts),
         "canonical_timelines_loaded": len(timelines),
         "semantic_judge_calls": 0,
