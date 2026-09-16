@@ -28,6 +28,7 @@ sys.path.insert(1, str(SCRIPT_DIR))
 
 import sft_interaction_semantic_closure as semantic  # noqa: E402
 import sft_semantic_verified_v2_1 as judge_core  # noqa: E402
+import build_sft_v2_2_structural_candidates as structural_core  # noqa: E402
 
 CONTEXT_SUFFICIENCY_VERSION = "context-sufficiency-v1-2026-09-16"
 PROMPT_VERSION = "context-sufficiency-v2.3-p1"
@@ -88,6 +89,27 @@ def _minimal_turn(turn: dict[str, Any]) -> dict[str, str]:
 
 def _recovery_bad_boundary(turn: dict[str, Any]) -> bool:
     return any(bool(turn.get(key)) for key in ("bad_boundary", "_bad_boundary", "uncertain_transcription", "suspicious_transcription", "overlap", "malformed"))
+
+
+def _annotate_recovery_timeline(timeline: dict[str, Any]) -> None:
+    """Apply the frozen structural QA gates before bounded recovery selection.
+
+    ``load_timelines`` returns canonical raw turns, not the derived text/ASR
+    quality fields used by structural reconstruction.  Recovery must use the
+    same machine evidence as the final materializer; otherwise a raw ASR
+    review turn could be promoted merely because the semantic judge selected
+    it.  This mirrors the existing finalizer annotation, without rewriting any
+    transcript text or identity assignment.
+    """
+    previous_end = None
+    for index, turn in enumerate(timeline.get("_turns") or []):
+        turn["text_qa"], turn["text_qa_reasons"] = structural_core.text_quality(turn.get("text"))
+        turn["asr_quality"], turn["asr_quality_reasons"], turn["asr_metadata"] = structural_core.raw_asr_quality(turn)
+        turn["_bad_boundary"] = structural_core.bad_boundary(turn)
+        start = float(turn.get("_start", index))
+        end = float(turn.get("_end", index))
+        turn["_gap_from_previous"] = 0.0 if previous_end is None else max(0.0, start - previous_end)
+        previous_end = end
 
 
 def build_trajectory_candidate(pool_row: dict[str, Any], timeline: dict[str, Any] | None, *, max_recovery_turns: int = 4, max_gap_seconds: float = 8.0) -> dict[str, Any]:
@@ -442,6 +464,8 @@ def materialize(args: argparse.Namespace) -> dict[str, Any]:
         try:
             fusion = judge_core.load_fusion()
             timeline_by_source = judge_core.load_timelines({str(row.get("source_id")) for row in source_pool}, fusion)
+            for timeline in timeline_by_source.values():
+                _annotate_recovery_timeline(timeline)
         except (OSError, ValueError, json.JSONDecodeError):
             timeline_by_source = {}
     pool_ids = set(source_by_id)
