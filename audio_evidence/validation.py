@@ -13,7 +13,7 @@ GATE_NAMES = (
     "NO_CIRCULAR_ENROLLMENT_BOOTSTRAP", "ENROLLMENT_NO_UNRESOLVED_OVERLAP", "AUDIO_WINDOW_PROVENANCE",
     "AUDIO_INTERVAL_NO_CROSS_RECORDING", "TIMESTAMP_TIMEBASE_CONSISTENT", "TARGET_ACTIVITY_EVIDENCE_TRACEABLE",
     "DIARIZATION_TRACEABLE", "TSE_SOURCE_TRACEABLE", "ASR_SOURCE_TRACEABLE", "ALIGNMENT_SOURCE_TRACEABLE",
-    "TRANSCRIPT_DISAGREEMENT_RECORDED", "NO_SILENT_TRANSCRIPT_OVERWRITE", "ROLE_PRESERVING_CONTEXT",
+    "TRANSCRIPT_DISAGREEMENT_RECORDED", "TEXT_AUTHORITY_RESOLVED", "NO_SILENT_TRANSCRIPT_OVERWRITE", "ROLE_PRESERVING_CONTEXT",
     "HISTORICAL_ASSISTANT_MASKED", "HISTORICAL_ASSISTANT_LOSS_LEAKAGE", "TARGET_REUSE", "PREFIX_LADDER",
     "NO_SYNTHETIC_PROMPT", "TRAIN_AUTHORITY_CONSISTENT", "SPLIT_AUTHORITY_PRESERVED", "SEMANTIC_TRUTH_UNCHANGED",
 )
@@ -39,6 +39,12 @@ def validate_artifacts(
     materialized = list(materialized)
     gates = {name: "PASS" for name in GATE_NAMES}
     errors: List[Dict[str, Any]] = []
+    if expected_semantic_hashes is None:
+        gates["SEMANTIC_TRUTH_UNCHANGED"] = "NOT_CHECKED"
+        errors.append({"gate": "SEMANTIC_TRUTH_UNCHANGED", "sample_id": None, "reason": "expected semantic authority hashes were not supplied"})
+    if expected_split_hash is None:
+        gates["SPLIT_AUTHORITY_PRESERVED"] = "NOT_CHECKED"
+        errors.append({"gate": "SPLIT_AUTHORITY_PRESERVED", "sample_id": None, "reason": "expected split authority hash was not supplied"})
     if not bank.references:
         _fail(gates, errors, "ENROLLMENT_SOURCE_CONFIRMED", None, "enrollment bank is empty")
     for reference in bank.references.values():
@@ -60,9 +66,11 @@ def validate_artifacts(
     window_recordings = {}
     for window in windows:
         sample = window.get("window_id")
-        if not window.get("source_audio") or not window.get("recording_id") or not window.get("merged_interval"):
+        if not window.get("source_audio") or not window.get("audio_checksum") or not window.get("recording_id") or not window.get("canonical_recording_id") or not window.get("recording_family_id") or not window.get("merged_interval"):
             _fail(gates, errors, "AUDIO_WINDOW_PROVENANCE", sample, "missing source mapping")
-        window_recordings[str(sample)] = str(window.get("recording_id"))
+        elif len(str(window.get("audio_checksum"))) != 64:
+            _fail(gates, errors, "AUDIO_WINDOW_PROVENANCE", sample, "source audio checksum is not SHA-256")
+        window_recordings[str(sample)] = (str(window.get("recording_id")), str(window.get("canonical_recording_id")), str(window.get("recording_family_id")))
         interval = window.get("merged_interval") or {}
         if interval.get("timebase") != Timebase.RECORDING_SECONDS.value:
             _fail(gates, errors, "TIMESTAMP_TIMEBASE_CONSISTENT", sample, "unknown timebase")
@@ -72,9 +80,11 @@ def validate_artifacts(
         except (TypeError, ValueError):
             _fail(gates, errors, "AUDIO_INTERVAL_NO_CROSS_RECORDING", sample, "invalid/reversed interval")
     evidence_turn_ids = set()
+    timeline_by_id = {}
     for turn in timeline:
         sample = turn.get("audio_turn_id")
         evidence_turn_ids.add(str(sample))
+        timeline_by_id[str(sample)] = turn
         if turn.get("schema_version") != AUDIO_EVIDENCE_SCHEMA_VERSION:
             _fail(gates, errors, "AUDIO_WINDOW_PROVENANCE", sample, "timeline schema mismatch")
         if turn.get("timebase") != Timebase.RECORDING_SECONDS.value:
@@ -84,7 +94,15 @@ def validate_artifacts(
                 raise ValueError
         except (TypeError, ValueError):
             _fail(gates, errors, "TIMESTAMP_TIMEBASE_CONSISTENT", sample, "timeline interval is missing or reversed")
-        if turn.get("window_id") and window_recordings.get(str(turn.get("window_id"))) != str(turn.get("recording_id")):
+        source_interval = turn.get("source_interval") or {}
+        try:
+            inside_source = source_interval.get("timebase") == Timebase.RECORDING_SECONDS.value and float(source_interval["start"]) <= float(turn["start"]) < float(turn["end"]) <= float(source_interval["end"])
+        except (KeyError, TypeError, ValueError):
+            inside_source = False
+        if not inside_source:
+            _fail(gates, errors, "TIMESTAMP_TIMEBASE_CONSISTENT", sample, "timeline turn is outside or detached from its bounded source interval")
+        turn_authority = (str(turn.get("recording_id")), str(turn.get("canonical_recording_id")), str(turn.get("recording_family_id")))
+        if turn.get("window_id") and window_recordings.get(str(turn.get("window_id"))) != turn_authority:
             _fail(gates, errors, "AUDIO_INTERVAL_NO_CROSS_RECORDING", sample, "window and turn recording disagree")
         if turn.get("target_activity_evidence") and not turn.get("enrollment_provenance"):
             _fail(gates, errors, "TARGET_ACTIVITY_EVIDENCE_TRACEABLE", sample, "activity lacks enrollment trace")
@@ -100,6 +118,10 @@ def validate_artifacts(
             _fail(gates, errors, "ALIGNMENT_SOURCE_TRACEABLE", sample, "alignment has no source transcript")
         if turn.get("new_asr_hypothesis") is not None and not turn.get("disagreement_flags"):
             _fail(gates, errors, "TRANSCRIPT_DISAGREEMENT_RECORDED", sample, "old/new comparison absent")
+        if turn.get("text_resolution_state") not in {"RESOLVED", "UNRESOLVED"}:
+            _fail(gates, errors, "TEXT_AUTHORITY_RESOLVED", sample, "text resolution state missing")
+        if turn.get("text_resolution_state") == "RESOLVED" and (not turn.get("text_authority") or not turn.get("resolved_text") or not turn.get("text_resolution_provenance")):
+            _fail(gates, errors, "TEXT_AUTHORITY_RESOLVED", sample, "resolved text lacks authority/provenance")
         if turn.get("old_transcript") and turn.get("old_transcript_overwritten"):
             _fail(gates, errors, "NO_SILENT_TRANSCRIPT_OVERWRITE", sample, "old transcript was mutated")
     supervised_targets = defaultdict(list)
@@ -112,6 +134,20 @@ def validate_artifacts(
             _fail(gates, errors, "ROLE_PRESERVING_CONTEXT", sample, "invalid role sequence")
         if any(not message.get("source_turn_ids") or (evidence_turn_ids and any(str(turn_id) not in evidence_turn_ids for turn_id in message.get("source_turn_ids") or [])) for message in messages):
             _fail(gates, errors, "ROLE_PRESERVING_CONTEXT", sample, "message is not traceable to timeline turns")
+        for message in messages:
+            source_turns = [timeline_by_id.get(str(turn_id)) for turn_id in message.get("source_turn_ids") or []]
+            source_turns = [turn for turn in source_turns if turn is not None]
+            if source_turns and any(turn.get("text_resolution_state") != "RESOLVED" for turn in source_turns):
+                _fail(gates, errors, "TEXT_AUTHORITY_RESOLVED", sample, "materialized message references unresolved text evidence")
+            if source_turns and str(message.get("content") or "") != "\n".join(str(turn.get("resolved_text") or "") for turn in source_turns):
+                _fail(gates, errors, "TEXT_AUTHORITY_RESOLVED", sample, "materialized text differs from resolved timeline authority")
+            if source_turns and any(
+                str(turn.get("recording_id")) != str(row.get("recording_id"))
+                or str(turn.get("canonical_recording_id")) != str(row.get("canonical_recording_id"))
+                or str(turn.get("recording_family_id")) != str(row.get("recording_family_id"))
+                for turn in source_turns
+            ):
+                _fail(gates, errors, "ROLE_PRESERVING_CONTEXT", sample, "materialized message crosses recording authority")
         supervised = [message for message in messages if message.get("supervise")]
         if len(supervised) != (0 if row.get("supervision_state") == "NO_SUPERVISION" else 1) or (supervised and supervised[0] is not messages[-1]):
             _fail(gates, errors, "HISTORICAL_ASSISTANT_LOSS_LEAKAGE", sample, "supervision is not restricted to final target")
@@ -127,9 +163,13 @@ def validate_artifacts(
         prompt_signatures[(row.get("recording_id"), tuple(row.get("context_turn_ids") or []))].append((sample, target, target_text))
         if row.get("final_view_membership_authority") != "FINAL_VIEW_MEMBERSHIP" or row.get("legacy_field_semantics") != "SOURCE_SAMPLING_ELIGIBILITY_ONLY":
             _fail(gates, errors, "TRAIN_AUTHORITY_CONSISTENT", sample, "membership authority/legacy semantics ambiguous")
-        if expected_semantic_hashes is not None and row.get("semantic_truth_sha256") != expected_semantic_hashes.get(sample):
+        if not row.get("semantic_truth_ref") or not row.get("semantic_truth_sha256"):
+            _fail(gates, errors, "SEMANTIC_TRUTH_UNCHANGED", sample, "semantic authority reference/hash missing")
+        elif expected_semantic_hashes is not None and row.get("semantic_truth_sha256") != expected_semantic_hashes.get(sample):
             _fail(gates, errors, "SEMANTIC_TRUTH_UNCHANGED", sample, "semantic truth reference changed")
-        if expected_split_hash is not None and row.get("split_authority_sha256") != expected_split_hash:
+        if not row.get("split_authority_ref") or not row.get("split_authority_sha256"):
+            _fail(gates, errors, "SPLIT_AUTHORITY_PRESERVED", sample, "split authority reference/hash missing")
+        elif expected_split_hash is not None and row.get("split_authority_sha256") != expected_split_hash:
             _fail(gates, errors, "SPLIT_AUTHORITY_PRESERVED", sample, "split authority reference changed")
     for key, samples in supervised_targets.items():
         if len(samples) > 1:

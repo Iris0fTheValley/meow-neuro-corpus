@@ -27,16 +27,24 @@ class RouteDecision:
 
 
 class AmbiguityRouter:
-    def decide(self, activity: List[ActivitySegment], diarization: List[DiarizationTurn], *, severe_background: bool = False, force_tse: bool = False) -> RouteDecision:
+    @staticmethod
+    def _overlaps(left, right) -> bool:
+        return min(left.end, right.end) > max(left.start, right.start)
+
+    def decide(self, activity: List[ActivitySegment], diarization: List[DiarizationTurn], *, severe_background: bool = False, speaker_ambiguity: bool = False, force_tse: bool = False) -> RouteDecision:
         if force_tse:
             return RouteDecision(True, RouteReason.EXPLICIT_SMOKE_TEST_OVERRIDE, "explicit architecture smoke-test override")
         if severe_background:
             return RouteDecision(True, RouteReason.SEVERE_BACKGROUND_SPEECH, "upstream evidence marked severe background speech")
-        if any(turn.overlap for turn in diarization):
-            return RouteDecision(True, RouteReason.TARGET_OVERLAP, "diarization reports overlap in the planned window")
-        clusters = {turn.speaker_cluster for turn in diarization}
-        if len(clusters) > 1 and activity:
-            return RouteDecision(True, RouteReason.MULTI_SPEAKER_CONFLICT, "multiple generic clusters coexist with target activity")
-        if not activity and len(clusters) > 1:
-            return RouteDecision(True, RouteReason.DIARIZATION_CONFLICT, "target activity unavailable and multiple clusters are present")
+        if speaker_ambiguity:
+            return RouteDecision(True, RouteReason.DIARIZATION_CONFLICT, "upstream evidence marks target speaker assignment ambiguous")
+        target_intervals = [item.interval for item in activity if item.target_probability > 0.0]
+        if any(turn.overlap and any(self._overlaps(turn.interval, target) for target in target_intervals) for turn in diarization):
+            return RouteDecision(True, RouteReason.TARGET_OVERLAP, "overlap evidence intersects target-speaker activity")
+        for index, left in enumerate(diarization):
+            for right in diarization[index + 1:]:
+                if left.speaker_cluster == right.speaker_cluster or not self._overlaps(left.interval, right.interval):
+                    continue
+                if any(self._overlaps(left.interval, target) and self._overlaps(right.interval, target) for target in target_intervals):
+                    return RouteDecision(True, RouteReason.MULTI_SPEAKER_CONFLICT, "simultaneous anonymous speakers intersect target activity")
         return RouteDecision(False, RouteReason.CLEAN_SINGLE_SPEAKER, "raw waveform is the default ASR path")

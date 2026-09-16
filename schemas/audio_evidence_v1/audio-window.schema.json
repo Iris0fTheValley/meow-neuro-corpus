@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "meow://schemas/audio-evidence/1.0.0/window",
+  "title": "M.E.O.W. bounded audio evidence window",
+  "type": "object",
+  "required": [
+    "window_id", "recording_id", "canonical_recording_id", "recording_family_id",
+    "source_audio", "audio_checksum", "merged_interval", "sample_ids", "policy_version"
+  ],
+  "properties": {
+    "window_id": {"type": "string", "minLength": 1},
+    "recording_id": {"type": "string", "minLength": 1},
+    "canonical_recording_id": {"type": "string", "minLength": 1},
+    "recording_family_id": {"type": "string", "minLength": 1},
+    "source_audio": {"type": "string", "minLength": 1},
+    "audio_checksum": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"},
+    "merged_interval": {
+      "type": "object",
+      "required": ["start", "end", "timebase"],
+      "properties": {
+        "start": {"type": "number", "minimum": 0},
+        "end": {"type": "number", "exclusiveMinimum": 0},
+        "timebase": {"const": "SECONDS_FROM_RECORDING_START"}
+      }
+    },
+    "sample_ids": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "policy_version": {"const": "audio-window-planner-v1"}
+  }
+}

@@ -9,11 +9,72 @@ from typing import Any, Callable, Dict
 from .contracts import ContractError, canonical_sha256
 
 
+def _pid_is_alive(pid: int) -> bool:
+    if pid <= 0:
+        return False
+    if os.name == "nt":
+        try:
+            import ctypes
+            process_query_limited_information = 0x1000
+            handle = ctypes.windll.kernel32.OpenProcess(process_query_limited_information, False, pid)
+            if not handle:
+                return False
+            ctypes.windll.kernel32.CloseHandle(handle)
+            return True
+        except (AttributeError, OSError):
+            # Fail safe: an uncertain owner is treated as alive, so its lock
+            # is never reclaimed merely because liveness could not be proved.
+            return True
+    try:
+        os.kill(pid, 0)
+    except OSError:
+        return False
+    return True
+
+
+def _remove_stale_lock(lock: Path, stale_after_seconds: float) -> bool:
+    """Recover only an expired lock whose recorded owner is no longer alive."""
+    try:
+        metadata_path = lock / "owner.json"
+        metadata = json.loads(metadata_path.read_text(encoding="utf-8")) if metadata_path.exists() else {}
+        created_at = float(metadata.get("created_at", lock.stat().st_mtime))
+        pid = int(metadata.get("pid", -1))
+        expired = time.time() - created_at >= stale_after_seconds
+        if not expired or _pid_is_alive(pid):
+            return False
+        if metadata_path.exists():
+            metadata_path.unlink()
+        lock.rmdir()
+        return True
+    except (OSError, ValueError, TypeError, json.JSONDecodeError):
+        return False
+
+
+def _acquire_lock(lock: Path, stale_after_seconds: float, purpose: str) -> None:
+    for attempt in range(2):
+        try:
+            lock.mkdir()
+            (lock / "owner.json").write_text(json.dumps({"pid": os.getpid(), "created_at": time.time(), "purpose": purpose}, sort_keys=True), encoding="utf-8")
+            return
+        except FileExistsError:
+            if attempt == 0 and _remove_stale_lock(lock, stale_after_seconds):
+                continue
+            raise ContractError("lock is active or cannot be recovered safely: %s" % lock)
+
+
+def _release_lock(lock: Path) -> None:
+    metadata = lock / "owner.json"
+    if metadata.exists():
+        metadata.unlink()
+    lock.rmdir()
+
+
 class EvidenceCache:
     """Content-addressed, atomic cache with a per-key inter-process lock."""
 
-    def __init__(self, root: Path) -> None:
+    def __init__(self, root: Path, *, stale_lock_seconds: float = 3600.0) -> None:
         self.root = root
+        self.stale_lock_seconds = stale_lock_seconds
         self.root.mkdir(parents=True, exist_ok=True)
 
     @staticmethod
@@ -36,10 +97,7 @@ class EvidenceCache:
         directory = self.root / stage
         directory.mkdir(parents=True, exist_ok=True)
         lock = directory / (key + ".lockdir")
-        try:
-            lock.mkdir()
-        except FileExistsError:
-            raise ContractError("cache key is already being written by another worker")
+        _acquire_lock(lock, self.stale_lock_seconds, "cache:%s:%s" % (stage, key))
         path = directory / (key + ".json")
         temporary = directory / (key + ".%s.tmp" % os.getpid())
         try:
@@ -48,7 +106,7 @@ class EvidenceCache:
         finally:
             if temporary.exists():
                 temporary.unlink()
-            lock.rmdir()
+            _release_lock(lock)
 
     def get_or_compute(self, stage: str, key: str, function: Callable[[], Any]):
         cached = self.get(stage, key)
@@ -60,8 +118,9 @@ class EvidenceCache:
 
 
 class CheckpointStore:
-    def __init__(self, path: Path) -> None:
+    def __init__(self, path: Path, *, stale_lock_seconds: float = 3600.0) -> None:
         self.path = path
+        self.stale_lock_seconds = stale_lock_seconds
 
     def load(self) -> Dict[str, Any]:
         if not self.path.exists():
@@ -71,10 +130,7 @@ class CheckpointStore:
     def record(self, window_id: str, stage: str, cache_key: str) -> None:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         lock = self.path.with_suffix(self.path.suffix + ".lockdir")
-        try:
-            lock.mkdir()
-        except FileExistsError:
-            raise ContractError("checkpoint is already being updated by another worker")
+        _acquire_lock(lock, self.stale_lock_seconds, "checkpoint:%s" % self.path.name)
         temporary = self.path.with_suffix(self.path.suffix + ".%s.tmp" % os.getpid())
         try:
             value = self.load()
@@ -84,4 +140,4 @@ class CheckpointStore:
         finally:
             if temporary.exists():
                 temporary.unlink()
-            lock.rmdir()
+            _release_lock(lock)

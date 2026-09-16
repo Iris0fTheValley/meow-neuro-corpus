@@ -5,6 +5,7 @@ from enum import Enum
 from typing import Any, Dict, Iterable, List
 
 from .contracts import ContractError, MATERIALIZATION_VERSION, canonical_sha256
+from .transcript import TextAuthority, TextResolutionState
 
 
 class FinalViewMembership(str, Enum):
@@ -47,9 +48,32 @@ def materialize_role_preserving(
     recording_ids = {str(turn.get("recording_id")) for turn in selected}
     if len(recording_ids) != 1 or "" in recording_ids:
         raise ContractError("cross-recording context is forbidden")
+    interaction_recording = str(interaction.get("recording_id") or "")
+    interaction_canonical = str(interaction.get("canonical_recording_id") or "")
+    interaction_family = str(interaction.get("recording_family_id") or "")
+    if not all((interaction_recording, interaction_canonical, interaction_family)):
+        raise ContractError("interaction recording authority is incomplete")
+    if recording_ids != {interaction_recording}:
+        raise ContractError("selected timeline recording does not match interaction recording authority")
+    if {str(turn.get("canonical_recording_id") or "") for turn in selected} != {interaction_canonical}:
+        raise ContractError("selected timeline canonical recording does not match interaction authority")
+    if {str(turn.get("recording_family_id") or "") for turn in selected} != {interaction_family}:
+        raise ContractError("selected timeline recording family does not match split authority")
     messages = []
     for turn_id, turn in zip(selected_turn_ids, selected):
-        text = str(turn.get("new_asr_hypothesis") or turn.get("old_transcript") or "").strip()
+        if turn.get("text_resolution_state") != TextResolutionState.RESOLVED.value:
+            raise ContractError("selected turn text evidence is unresolved")
+        try:
+            TextAuthority(str(turn.get("text_authority")))
+        except ValueError:
+            raise ContractError("selected turn has no explicit text authority")
+        resolution = turn.get("text_resolution_provenance") or {}
+        unresolved_flags = {"MAJOR_TRANSCRIPT_CONFLICT", "BOUNDARY_CHANGE", "SPEAKER_ASSIGNMENT_CHANGE", "MINOR_TEXT_CHANGE", "MISSING_OLD_SPEECH", "MISSING_NEW_SPEECH"}
+        active_disagreements = unresolved_flags & set(turn.get("disagreement_flags") or [])
+        resolved_disagreements = set(resolution.get("resolved_disagreements") or [])
+        if active_disagreements and (resolution.get("status") != "RESOLVED" or not active_disagreements.issubset(resolved_disagreements)):
+            raise ContractError("unresolved transcript disagreement cannot enter materialization")
+        text = str(turn.get("resolved_text") or "").strip()
         if not text:
             raise ContractError("selected turn has no text evidence; no synthetic prompt may be inserted")
         role = role_for_turn(turn)

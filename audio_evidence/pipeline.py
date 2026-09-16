@@ -16,7 +16,7 @@ from .cache import CheckpointStore, EvidenceCache
 from .contracts import AUDIO_EVIDENCE_SCHEMA_VERSION, PIPELINE_VERSION, ActivitySegment, AlignmentUnit, DiarizationTurn, Interval, ModelProvenance, Timebase, TranscriptHypothesis
 from .enrollment import EnrollmentBank
 from .routing import AmbiguityRouter
-from .transcript import detect_disagreement
+from .transcript import automatic_text_resolution, detect_disagreement
 
 
 def _activity_from_dict(value: Dict[str, Any]) -> ActivitySegment:
@@ -59,13 +59,20 @@ class AudioEvidencePipeline:
         self.checkpoint.record(str(window["window_id"]), stage, key)
         return payload, hit
 
-    def process_window(self, window: Dict[str, Any], enrollment_id: str, old_turns: List[Dict[str, Any]], *, force_tse: bool = False, severe_background: bool = False) -> Dict[str, Any]:
+    def process_window(self, window: Dict[str, Any], enrollment_id: str, old_turns: List[Dict[str, Any]], *, force_tse: bool = False, severe_background: bool = False, speaker_ambiguity: bool = False) -> Dict[str, Any]:
         enrollment = self.bank.confirmed(enrollment_id, allow_synthetic=self.allow_synthetic)
         enrollment_cache_revision = "%s:%s:%s:%s" % (self.bank.revision, enrollment.enrollment_id, enrollment.checksum, enrollment.embedding_revision)
         interval = window.get("merged_interval") or {}
         if interval.get("timebase") != Timebase.RECORDING_SECONDS.value:
             raise ValueError("unknown timebase")
-        audio = AudioInput(str(window["source_audio"]), str(window["audio_checksum"]), str(window["recording_id"]))
+        bounded_interval = Interval(float(interval["start"]), float(interval["end"]), Timebase(interval["timebase"]))
+        audio = AudioInput(str(window["source_audio"]), str(window["audio_checksum"]), str(window["recording_id"]), bounded_interval)
+        source_turns = old_turns or [{"audio_turn_id": "window:" + str(window["window_id"]), "start": interval["start"], "end": interval["end"], "old_transcript": None, "speaker_cluster": None}]
+        for old in source_turns:
+            turn_start = float(old.get("start", interval["start"]))
+            turn_end = float(old.get("end", interval["end"]))
+            if turn_start < bounded_interval.start or turn_end > bounded_interval.end or turn_end <= turn_start:
+                raise ValueError("timeline turn must lie inside the exact planned audio interval")
         stage_status: Dict[str, str] = {}
         cache_hits: Dict[str, bool] = {}
 
@@ -90,7 +97,7 @@ class AudioEvidencePipeline:
         else:
             stage_status["diarization"] = "UNAVAILABLE"
         diarization = [_diarization_from_dict(item) for item in diarization_values]
-        route = self.router.decide(activity, diarization, severe_background=severe_background, force_tse=force_tse)
+        route = self.router.decide(activity, diarization, severe_background=severe_background, speaker_ambiguity=speaker_ambiguity, force_tse=force_tse)
 
         asr_audio = audio
         tse_source = None
@@ -104,7 +111,13 @@ class AudioEvidencePipeline:
                         enrollment_cache_revision,
                         lambda: self._audio_to_dict(self.tse.extract(audio, enrollment)),
                     )
-                    extracted = AudioInput(**extracted_value)
+                    extracted_interval = extracted_value["interval"]
+                    extracted = AudioInput(
+                        str(extracted_value["uri"]), str(extracted_value["checksum"]), str(extracted_value["recording_id"]),
+                        Interval(float(extracted_interval["start"]), float(extracted_interval["end"]), Timebase(extracted_interval["timebase"])),
+                    )
+                    if extracted.recording_id != audio.recording_id or extracted.interval != audio.interval:
+                        raise ValueError("TSE output must preserve the exact planned recording interval")
                     asr_audio = extracted
                     stage_status["tse"] = "AVAILABLE"
                     tse_source = {"source_audio_checksum": audio.checksum, "output_audio_checksum": extracted.checksum, "enrollment_id": enrollment.enrollment_id, "model": self.tse.provenance.to_dict()}
@@ -149,7 +162,6 @@ class AudioEvidencePipeline:
             stage_status["alignment"] = "UNAVAILABLE"
 
         turns = []
-        source_turns = old_turns or [{"audio_turn_id": "window:" + str(window["window_id"]), "start": interval["start"], "end": interval["end"], "old_transcript": None, "speaker_cluster": None}]
         multiple_source_turns = len(source_turns) > 1
         for index, old in enumerate(source_turns):
             turn_id = str(old.get("audio_turn_id") or old.get("turn_id") or (str(window["window_id"]) + ":" + str(index)))
@@ -174,14 +186,21 @@ class AudioEvidencePipeline:
                 speaker_cluster = max(overlapping_diarization, key=lambda item: min(turn_end, item.interval.end) - max(turn_start, item.interval.start)).speaker_cluster
             turn_activity = [item.to_dict() for item in activity if min(turn_end, item.interval.end) > max(turn_start, item.interval.start)]
             disagreement = []
+            disagreement_value = None
             if new_text is not None:
-                disagreement = [detect_disagreement(old_text, new_text).value]
+                disagreement_value = detect_disagreement(old_text, new_text)
+                disagreement = [disagreement_value.value]
             elif hypothesis is not None and multiple_source_turns:
                 disagreement = ["BOUNDARY_CHANGE"]
+                from .transcript import TranscriptDisagreement
+                disagreement_value = TranscriptDisagreement.BOUNDARY_CHANGE
+            text_resolution = automatic_text_resolution(old_text, new_text, disagreement_value)
             turns.append({
                 "schema_version": AUDIO_EVIDENCE_SCHEMA_VERSION,
                 "pipeline_version": PIPELINE_VERSION,
                 "recording_id": window["recording_id"],
+                "canonical_recording_id": window["canonical_recording_id"],
+                "recording_family_id": window["recording_family_id"],
                 "audio_turn_id": turn_id,
                 "window_id": window["window_id"],
                 "start": turn_start,
@@ -210,6 +229,7 @@ class AudioEvidencePipeline:
                 "enrollment_provenance": {"bank_id": self.bank.bank_id, "bank_revision": self.bank.revision, "enrollment_id": enrollment.enrollment_id, "source_checksum": enrollment.checksum},
                 "disagreement_flags": disagreement,
                 "old_transcript_overwritten": False,
+                **text_resolution,
             })
         return {
             "window_id": window["window_id"], "route": route.to_dict(), "stage_status": stage_status,
@@ -219,4 +239,4 @@ class AudioEvidencePipeline:
 
     @staticmethod
     def _audio_to_dict(audio: AudioInput) -> Dict[str, Any]:
-        return {"uri": audio.uri, "checksum": audio.checksum, "recording_id": audio.recording_id}
+        return {"uri": audio.uri, "checksum": audio.checksum, "recording_id": audio.recording_id, "interval": audio.interval.to_dict()}

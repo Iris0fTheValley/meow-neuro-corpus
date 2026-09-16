@@ -4,15 +4,18 @@
   "title": "M.E.O.W. canonical audio evidence timeline turn",
   "type": "object",
   "required": [
-    "schema_version", "recording_id", "audio_turn_id", "start", "end", "timebase",
+    "schema_version", "recording_id", "canonical_recording_id", "recording_family_id", "audio_turn_id", "start", "end", "timebase",
     "speaker_cluster", "target_activity_evidence", "identity_evidence", "old_transcript",
     "new_asr_hypothesis", "optional_tse_asr_hypothesis", "alignment", "overlap_state",
     "source_audio", "source_interval", "model_provenance", "enrollment_provenance",
-    "disagreement_flags", "old_transcript_overwritten"
+    "disagreement_flags", "old_transcript_overwritten", "text_resolution_state", "text_authority",
+    "resolved_text", "text_resolution_provenance"
   ],
   "properties": {
     "schema_version": {"const": "1.0.0"},
     "recording_id": {"type": "string", "minLength": 1},
+    "canonical_recording_id": {"type": "string", "minLength": 1},
+    "recording_family_id": {"type": "string", "minLength": 1},
     "audio_turn_id": {"type": "string", "minLength": 1},
     "start": {"type": "number", "minimum": 0},
     "end": {"type": "number", "exclusiveMinimum": 0},
@@ -30,6 +33,10 @@
     "model_provenance": {"type": "object"},
     "enrollment_provenance": {"type": "object"},
     "disagreement_flags": {"type": "array"},
-    "old_transcript_overwritten": {"const": false}
+    "old_transcript_overwritten": {"const": false},
+    "text_resolution_state": {"enum": ["RESOLVED", "UNRESOLVED"]},
+    "text_authority": {"type": ["string", "null"], "enum": ["OLD_TRANSCRIPT", "NEW_ASR", "ADJUDICATED_TEXT", null]},
+    "resolved_text": {"type": ["string", "null"]},
+    "text_resolution_provenance": {"type": ["object", "null"]}
   }
 }

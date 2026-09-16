@@ -15,6 +15,52 @@ class TranscriptDisagreement(str, Enum):
     MAJOR_TRANSCRIPT_CONFLICT = "MAJOR_TRANSCRIPT_CONFLICT"
 
 
+class TextAuthority(str, Enum):
+    OLD_TRANSCRIPT = "OLD_TRANSCRIPT"
+    NEW_ASR = "NEW_ASR"
+    ADJUDICATED_TEXT = "ADJUDICATED_TEXT"
+
+
+class TextResolutionState(str, Enum):
+    RESOLVED = "RESOLVED"
+    UNRESOLVED = "UNRESOLVED"
+
+
+UNRESOLVED_BY_DEFAULT = {
+    TranscriptDisagreement.MINOR_TEXT_CHANGE,
+    TranscriptDisagreement.MISSING_OLD_SPEECH,
+    TranscriptDisagreement.MISSING_NEW_SPEECH,
+    TranscriptDisagreement.BOUNDARY_CHANGE,
+    TranscriptDisagreement.SPEAKER_ASSIGNMENT_CHANGE,
+    TranscriptDisagreement.MAJOR_TRANSCRIPT_CONFLICT,
+}
+
+
+def automatic_text_resolution(old_text: Optional[str], new_text: Optional[str], disagreement: Optional[TranscriptDisagreement]):
+    """Resolve only unambiguous evidence; everything else requires adjudication."""
+    old_value, new_value = str(old_text or "").strip(), str(new_text or "").strip()
+    if old_value and not new_value and disagreement is None:
+        return {
+            "text_resolution_state": TextResolutionState.RESOLVED.value,
+            "text_authority": TextAuthority.OLD_TRANSCRIPT.value,
+            "resolved_text": old_value,
+            "text_resolution_provenance": {"status": "RESOLVED", "resolver": "EXISTING_TRANSCRIPT_AUTHORITY", "revision": "audio-evidence-v1"},
+        }
+    if old_value and new_value and disagreement == TranscriptDisagreement.MATCH:
+        return {
+            "text_resolution_state": TextResolutionState.RESOLVED.value,
+            "text_authority": TextAuthority.NEW_ASR.value,
+            "resolved_text": new_value,
+            "text_resolution_provenance": {"status": "RESOLVED", "resolver": "EXACT_OLD_NEW_MATCH", "revision": "audio-evidence-v1"},
+        }
+    return {
+        "text_resolution_state": TextResolutionState.UNRESOLVED.value,
+        "text_authority": None,
+        "resolved_text": None,
+        "text_resolution_provenance": None,
+    }
+
+
 def _tokens(text: Optional[str]):
     return re.findall(r"[a-z0-9']+", str(text or "").lower())
 

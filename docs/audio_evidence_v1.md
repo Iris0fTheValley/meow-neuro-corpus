@@ -25,7 +25,7 @@ The sidecar leaves those historical files untouched and supplies corrected contr
 
 `EnrollmentReference` records the exact source recording and interval, immutable source provenance, verification method and evidence, quality and overlap state, embedding producer/revision, raw audio URI, and SHA-256. `EnrollmentBank.add` accepts only `CONFIRMED_TARGET` references whose identity is `NEURO`, `EVIL_NEURO`, or `NEURO_FAMILY`.
 
-Gold confirmation requires a human/known-official authority domain. Existing-identity confirmation requires all three independent domains: frozen existing identity authority, source provenance, and clean single-speaker evidence. The reference must also have a clear speaker boundary, no identity conflict, no hard-negative collision, and `NO_OVERLAP_CONFIRMED`. No new threshold is invented; evidence points to the repository's frozen calibration artifacts and revisions.
+Gold confirmation requires a human/known-official authority domain. Existing-identity confirmation requires all three independent domains: frozen existing identity authority, source provenance, and clean single-speaker evidence. Every evidence item has a structured decision and must be `SUPPORTS_CONFIRMATION`; rejected or inconclusive evidence cannot satisfy confirmation merely by naming an accepted authority domain. The reference must also have a clear speaker boundary, no identity conflict, no hard-negative collision, and `NO_OVERLAP_CONFIRMED`. No new threshold is invented; evidence points to the repository's frozen calibration artifacts and revisions.
 
 The constructor rejects pVAD, new diarization, TSE, new ASR, semantic/persona content, or enrollment-similarity evidence as a confirmation authority. This makes circular bootstrap structurally invalid. Rejected, unverified, guest, unknown, contaminated, and unresolved-overlap references cannot enter the bank. Synthetic references are explicitly test-only, cannot carry a published embedding URI, and require an opt-in on the pipeline.
 
@@ -37,11 +37,11 @@ Activity is evidence, not identity truth. Generic clusters are never renamed Neu
 
 ## Planning, routing, and evidence timeline
 
-`AudioWindowPlanner` consumes only supplied interactions. It validates one recording-relative seconds timebase, requires source audio and lineage identifiers, deterministically merges overlapping/adjacent intervals within one recording/source, and emits reversible sample-to-window mappings. It has no corpus-wide default.
+`AudioWindowPlanner` consumes only supplied interactions. It validates one recording-relative seconds timebase, requires source audio SHA-256 and lineage identifiers, deterministically merges overlapping/adjacent intervals within one recording/source/checksum, and emits reversible sample-to-window mappings. Its window artifact is the direct pipeline input. Every adapter receives an `AudioInput` containing the exact merged interval, so a source URI can never imply whole-recording inference. It has no corpus-wide default.
 
-`AmbiguityRouter` sends clean single-speaker audio directly to ASR. TSE is selected only for overlap, multi-speaker/activity conflict, diarization conflict, severe background speech, or an explicit smoke-test override; each decision has a reason code.
+`AmbiguityRouter` sends clean audio directly to ASR. TSE is selected only when overlap intersects target activity, simultaneous anonymous speakers intersect target activity, speaker assignment is explicitly ambiguous, background speech is severe, or a smoke test explicitly overrides routing. Different speakers appearing sequentially in one window do not trigger TSE.
 
-The timeline schema stores old transcript and new ASR separately, plus optional TSE ASR, alignment, activity, anonymous cluster, existing identity evidence, overlap, source interval/audio, model/enrollment provenance, and disagreement flags. New ASR never mutates the old transcript.
+The timeline schema stores old transcript and new ASR separately, plus optional TSE ASR, alignment, activity, anonymous cluster, existing identity evidence, overlap, source interval/audio, model/enrollment provenance, and disagreement flags. It also records `text_resolution_state`, explicit `text_authority`, `resolved_text`, and resolution provenance. New ASR never mutates the old transcript, and unresolved boundary/speaker/major/minor/missing-speech disagreements cannot enter materialization.
 
 Unavailable pVAD/diarization/ASR/aligner is explicit. A hard route without TSE becomes unresolved and is not silently sent through raw ASR. Missing alignment never manufactures word timestamps.
 
@@ -55,11 +55,11 @@ Dedup and validation key target reuse on `(recording_id, target_turn_id)`. Reusi
 
 New rows retain `source_state`, `source_sampling_eligibility`, and `legacy_training_candidate`. `legacy_field_semantics=SOURCE_SAMPLING_ELIGIBILITY_ONLY` prevents that old flag from claiming final authority. `final_view_membership` is the sole membership decision and requires `final_view_membership_authority=FINAL_VIEW_MEMBERSHIP`. `supervision_state` is separate.
 
-Every row carries immutable semantic and split authority references/hashes. Validation compares them with expected v2.3 hashes. New ASR text is not an input to recording lineage or split assignment.
+Every row carries immutable semantic and split authority references/hashes. Production validation requires the expected v2.3 hashes; omitting either produces `NOT_CHECKED` and blocks final pass. New ASR text is not an input to recording lineage or split assignment. Selected timeline recording, canonical recording, and recording family must all equal the interaction authority.
 
 ## Cache, checkpoint, and parallel safety
 
-All expensive stages—target activity, diarization, TSE, ASR, and alignment—use a content-addressed key over audio SHA-256, exact interval/timebase, model revision, parameters, and enrollment-bank revision. Derived waveform/text checksums are included where relevant. Cache writes use a per-key lock directory and atomic replacement; workers never append to a shared JSONL. Checkpoints are atomically replaced and make bounded runs resumable. Revision changes produce a new key instead of trusting stale output.
+All expensive stages—target activity, diarization, TSE, ASR, and alignment—use a content-addressed key over audio SHA-256, exact interval/timebase, model revision, parameters, and enrollment-bank revision. Derived waveform/text checksums are included where relevant. Cache writes use a per-key lock directory and atomic replacement; workers never append to a shared JSONL. Locks contain owner PID/time metadata. An expired lock is recovered only when its owner is provably dead; uncertain or live owners remain fail-closed. Checkpoints use the same recovery rule. Revision changes produce a new key instead of trusting stale output.
 
 ## Production entry points
 
@@ -70,6 +70,8 @@ python scripts/run_audio_evidence_v1.py plan --interactions input.jsonl --output
 ```
 
 Production code then instantiates `audio_evidence.pipeline.AudioEvidencePipeline` with environment-specific named adapters, an `EnrollmentBank` loaded only from confirmed references, `EvidenceCache`, and `CheckpointStore`. Process planned windows, persist timeline turns, call `materialize_role_preserving`, and gate the result with `validate_artifacts` using frozen semantic and split authority hashes.
+
+The CLI implements bounded planning only. Bounded validation is the Python API `audio_evidence.validation.validate_artifacts`; no CLI validate command is advertised.
 
 There is intentionally no command that scans all interactions. A production Agent must pass an explicit bounded interaction list, pin every model revision, and stop if enrollment confirmation or authority hashes fail.
 

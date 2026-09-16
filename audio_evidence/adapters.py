@@ -17,6 +17,14 @@ class AudioInput:
     uri: str
     checksum: str
     recording_id: str
+    interval: Any
+
+    def __post_init__(self) -> None:
+        from .contracts import ContractError, Interval
+        if not self.uri or not self.recording_id or len(self.checksum) != 64:
+            raise ContractError("audio input requires URI, recording id, and SHA-256")
+        if not isinstance(self.interval, Interval):
+            raise ContractError("audio input must carry its exact bounded interval")
 
 
 class TargetActivityAdapter(ABC):

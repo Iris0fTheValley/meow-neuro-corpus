@@ -18,6 +18,7 @@ class WindowRequest:
     canonical_recording_id: str
     recording_family_id: str
     source_audio: str
+    audio_checksum: str
     requested: Interval
 
 
@@ -28,6 +29,7 @@ class MergedWindow:
     canonical_recording_id: str
     recording_family_id: str
     source_audio: str
+    audio_checksum: str
     interval: Interval
     sample_ids: List[str]
 
@@ -38,6 +40,7 @@ class MergedWindow:
             "canonical_recording_id": self.canonical_recording_id,
             "recording_family_id": self.recording_family_id,
             "source_audio": self.source_audio,
+            "audio_checksum": self.audio_checksum,
             "merged_interval": self.interval.to_dict(),
             "sample_ids": self.sample_ids,
             "policy_version": WINDOW_POLICY_VERSION,
@@ -64,13 +67,15 @@ class AudioWindowPlanner:
         except ValueError:
             raise ContractError("unknown timebase")
         target_ids = [str(value) for value in row.get("target_turn_ids") or []]
-        required = ["sample_id", "recording_id", "canonical_recording_id", "recording_family_id", "source_audio"]
+        required = ["sample_id", "recording_id", "canonical_recording_id", "recording_family_id", "source_audio", "source_audio_checksum"]
         if any(not row.get(name) for name in required) or not target_ids:
             raise ContractError("audio window request lacks stable linkage or source audio mapping")
+        if len(str(row["source_audio_checksum"])) != 64:
+            raise ContractError("source audio checksum must be SHA-256")
         return WindowRequest(
             sample_id=str(row["sample_id"]), target_turn_id=target_ids[-1], recording_id=str(row["recording_id"]),
             canonical_recording_id=str(row["canonical_recording_id"]), recording_family_id=str(row["recording_family_id"]),
-            source_audio=str(row["source_audio"]), requested=interval,
+            source_audio=str(row["source_audio"]), audio_checksum=str(row["source_audio_checksum"]), requested=interval,
         )
 
     def merge(self, requests: Iterable[WindowRequest]) -> Dict[str, Any]:
@@ -83,14 +88,14 @@ class AudioWindowPlanner:
             if not items:
                 return
             first = items[0]
-            if any((item.recording_id, item.canonical_recording_id, item.recording_family_id, item.source_audio) != (first.recording_id, first.canonical_recording_id, first.recording_family_id, first.source_audio) for item in items):
+            if any((item.recording_id, item.canonical_recording_id, item.recording_family_id, item.source_audio, item.audio_checksum) != (first.recording_id, first.canonical_recording_id, first.recording_family_id, first.source_audio, first.audio_checksum) for item in items):
                 raise ContractError("merged audio interval crossed a recording/provenance boundary")
             start = min(item.requested.start for item in items)
             end = max(item.requested.end for item in items)
-            identity = "%s|%s|%.6f|%.6f|%s" % (first.recording_id, first.source_audio, start, end, WINDOW_POLICY_VERSION)
+            identity = "%s|%s|%s|%.6f|%.6f|%s" % (first.recording_id, first.source_audio, first.audio_checksum, start, end, WINDOW_POLICY_VERSION)
             window_id = "aw_" + hashlib.sha256(identity.encode("utf-8")).hexdigest()[:20]
             sample_ids = sorted({item.sample_id for item in items})
-            windows.append(MergedWindow(window_id, first.recording_id, first.canonical_recording_id, first.recording_family_id, first.source_audio, Interval(start, end), sample_ids))
+            windows.append(MergedWindow(window_id, first.recording_id, first.canonical_recording_id, first.recording_family_id, first.source_audio, first.audio_checksum, Interval(start, end), sample_ids))
             for item in items:
                 mappings.append({"sample_id": item.sample_id, "target_turn_id": item.target_turn_id, "requested_interval": item.requested.to_dict(), "window_id": window_id})
 
@@ -99,7 +104,7 @@ class AudioWindowPlanner:
                 group = [request]
                 continue
             previous_end = max(item.requested.end for item in group)
-            same_source = (request.recording_id, request.canonical_recording_id, request.recording_family_id, request.source_audio) == (group[0].recording_id, group[0].canonical_recording_id, group[0].recording_family_id, group[0].source_audio)
+            same_source = (request.recording_id, request.canonical_recording_id, request.recording_family_id, request.source_audio, request.audio_checksum) == (group[0].recording_id, group[0].canonical_recording_id, group[0].recording_family_id, group[0].source_audio, group[0].audio_checksum)
             if same_source and request.requested.start <= previous_end + self.merge_gap:
                 group.append(request)
             else:

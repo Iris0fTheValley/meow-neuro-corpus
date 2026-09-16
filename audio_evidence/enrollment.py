@@ -22,6 +22,12 @@ class VerificationMethod(str, Enum):
     SYNTHETIC_FIXTURE = "SYNTHETIC_FIXTURE"
 
 
+class VerificationDecision(str, Enum):
+    SUPPORTS_CONFIRMATION = "SUPPORTS_CONFIRMATION"
+    REJECTS_CONFIRMATION = "REJECTS_CONFIRMATION"
+    INCONCLUSIVE = "INCONCLUSIVE"
+
+
 FORBIDDEN_BOOTSTRAP_DOMAINS = {
     "TARGET_ACTIVITY", "PVAD", "NEW_DIARIZATION", "TSE", "NEW_ASR",
     "SEMANTIC_CONTENT", "PERSONA_STYLE", "ENROLLMENT_SIMILARITY",
@@ -33,12 +39,14 @@ class VerificationEvidence:
     evidence_id: str
     authority_domain: str
     source_artifact: str
-    decision: str
+    decision: VerificationDecision
     revision: str
 
     def __post_init__(self) -> None:
         if not all((self.evidence_id, self.authority_domain, self.source_artifact, self.decision, self.revision)):
             raise ContractError("verification evidence must be fully traceable")
+        if not isinstance(self.decision, VerificationDecision):
+            raise ContractError("verification evidence decision must use VerificationDecision")
         if self.authority_domain.upper() in FORBIDDEN_BOOTSTRAP_DOMAINS:
             raise ContractError("circular/new-pipeline evidence cannot establish enrollment trust")
 
@@ -78,6 +86,8 @@ class EnrollmentReference:
             self._validate_confirmation()
 
     def _validate_confirmation(self) -> None:
+        if any(item.decision != VerificationDecision.SUPPORTS_CONFIRMATION for item in self.verification_evidence):
+            raise ContractError("negative or inconclusive evidence cannot confirm enrollment")
         if self.verification_method == VerificationMethod.SYNTHETIC_FIXTURE:
             if not self.synthetic_test_only or self.embedding_uri:
                 raise ContractError("synthetic enrollment is architecture-test-only and cannot publish an embedding")

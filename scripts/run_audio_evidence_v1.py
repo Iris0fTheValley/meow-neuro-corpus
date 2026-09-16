@@ -4,8 +4,8 @@ from __future__ import annotations
 
 This CLI intentionally has no corpus-wide command. Model execution is wired by
 injecting adapters into ``AudioEvidencePipeline`` from an environment-specific
-production runner. The CLI only plans supplied interactions or validates
-already materialized bounded artifacts.
+production runner. The CLI only plans explicitly supplied interactions;
+validation is the Python API ``audio_evidence.validation.validate_artifacts``.
 """
 
 import argparse
@@ -31,7 +31,7 @@ def atomic_json(path: Path, value) -> None:
     temporary.replace(path)
 
 
-def main() -> None:
+def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="M.E.O.W. audio-evidence-v1 bounded architecture entry")
     sub = parser.add_subparsers(dest="command", required=True)
     plan = sub.add_parser("plan", help="plan/merge only the supplied interaction JSONL")
@@ -40,7 +40,11 @@ def main() -> None:
     plan.add_argument("--padding-before", type=float, default=0.0)
     plan.add_argument("--padding-after", type=float, default=0.0)
     plan.add_argument("--merge-gap", type=float, default=0.0)
-    args = parser.parse_args()
+    return parser
+
+
+def main() -> None:
+    args = build_parser().parse_args()
     if args.command == "plan":
         planner = AudioWindowPlanner(args.padding_before, args.padding_after, args.merge_gap)
         requests = [planner.request_from_interaction(row) for row in read_jsonl(Path(args.interactions))]

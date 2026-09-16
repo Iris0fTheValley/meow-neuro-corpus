@@ -16,7 +16,7 @@
     "source_interval": {"$ref": "#/$defs/interval"},
     "source_provenance": {"type": "object", "minProperties": 1},
     "verification_method": {"enum": ["HUMAN_GOLD", "EXISTING_IDENTITY_PLUS_INDEPENDENT", "MULTI_EVIDENCE_CONSENSUS", "SYNTHETIC_FIXTURE"]},
-    "verification_evidence": {"type": "array", "minItems": 1, "items": {"type": "object", "required": ["evidence_id", "authority_domain", "source_artifact", "decision", "revision"]}},
+    "verification_evidence": {"type": "array", "minItems": 1, "items": {"type": "object", "required": ["evidence_id", "authority_domain", "source_artifact", "decision", "revision"], "properties": {"decision": {"const": "SUPPORTS_CONFIRMATION"}}}},
     "verification_status": {"const": "CONFIRMED_TARGET"},
     "audio_quality": {"type": "object", "required": ["speaker_boundary_clear", "identity_conflict", "hard_negative_collision"]},
     "overlap_status": {"const": "NO_OVERLAP_CONFIRMED"},
