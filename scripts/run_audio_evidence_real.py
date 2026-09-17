@@ -145,6 +145,13 @@ def main():
         selected = [tid for _, tid in sorted(recovered)] + selected
         if target_id not in selected:
             quarantine.append({"sample_id": row["sample_id"], "reason": "TARGET_AUDIO_EVIDENCE_UNAVAILABLE"}); continue
+        # A disagreement in an optional context turn must not invalidate a
+        # separately resolved target.  Drop only unresolved context evidence;
+        # an unresolved target remains quarantined fail-closed.
+        resolved_ids = {tid for tid in selected if (turn_lookup.get(tid) or {}).get("text_resolution_state") == "RESOLVED"}
+        if target_id not in resolved_ids:
+            quarantine.append({"sample_id": row["sample_id"], "reason": "TARGET_TEXT_UNRESOLVED"}); continue
+        selected = [tid for tid in selected if tid in resolved_ids]
         # Only assistant target rows are eligible for supervision.
         membership = {"train": FinalViewMembership.IN_TRAIN, "validation": FinalViewMembership.IN_VALIDATION, "sealed_eval": FinalViewMembership.IN_SEALED_EVAL}.get(split_assignments.get(row["canonical_recording_id"]), FinalViewMembership.EXCLUDED)
         try:
