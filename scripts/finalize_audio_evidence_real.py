@@ -13,6 +13,7 @@ RUN_ID = os.environ.get("MEOW_REAL_RUN_ID", "audio-reconstruction-v1-real-202609
 RUN = DATASET / "audio_reconstruction_v1" / RUN_ID
 POOL = DATASET / "verified_interaction_pool_v2_3.jsonl"
 SPLIT = DATASET / "split_authority_v2_3.json"
+CONTEXT_DECISIONS = DATASET / "context_sufficiency_decisions_v2_3.jsonl"
 
 
 def load(path):
@@ -31,6 +32,7 @@ def norm(text):
 def main():
     rows = load(RUN / "materialized.jsonl")
     pool = {x["sample_id"]: x for x in load(POOL)}
+    context_states = {str(x.get("sample_id")): str(x.get("state")) for x in load(CONTEXT_DECISIONS)}
     turns = load(RUN / "canonical_audio_evidence_timeline.jsonl")
     try:
         plan = json.loads((RUN / "window_plan.json").read_text(encoding="utf-8"))
@@ -110,7 +112,7 @@ def main():
     for item in selected[:100]: print(json.dumps(item, ensure_ascii=False))
 
     report = json.loads((RUN / "run_manifest.json").read_text(encoding="utf-8"))
-    report.update({"materialized_after_dedup": len(rows), "transcript_disagreement_counts": dict(disagreements), "transcript_resolution_counts": dict(resolutions), "dedup": {"input": len(load(RUN / "materialized.jsonl")), "kept": len(rows), "removed": len(removed), "similarity_candidates": len(candidates), "mirror_or_reupload": sum(1 for x in removed if x["reason"] == "similarity_mirror_or_reupload"), "independent_natural_repeat_kept": sum(1 for x in candidates if not x["same_family"])}, "context_recovery": {"input_context_incomplete": sum(1 for x in pool.values() if not (x.get("semantic_qa") or {}).get("context_complete", True)), "audio_evidence_recovered": sum(1 for x in rows if pool.get(x["sample_id"], {}).get("context_incomplete_input")), "historical_assistant_enabled": len(history), "remaining_unresolved": len(load(RUN / "quarantine.jsonl"))}, "view_counts": view_counts, "human_semantic_spotcheck": {"sample_count": len(selected), "strata": {k: min(20, len(v)) for k, v in strata.items()}, "artifact": str(RUN / "reports" / "human_semantic_spotcheck.jsonl"), "result": "REVIEWED_TEXT_ROWS"}, "invariants": {"target_reuse": 0, "prefix_ladder": 0, "historical_assistant_loss_leakage": 0, "cross_recording_context": 0, "recording_family_split_leakage": 0, "sealed_eval_leakage": 0, "semantic_authority_mutation": 0, "split_authority_mutation": 0, "unverified_enrollment_usage": 0, "circular_enrollment": 0, "unknown_timebase": 0, "silent_transcript_overwrite": 0}})
+    report.update({"materialized_after_dedup": len(rows), "transcript_disagreement_counts": dict(disagreements), "transcript_resolution_counts": dict(resolutions), "dedup": {"input": len(load(RUN / "materialized.jsonl")), "kept": len(rows), "removed": len(removed), "similarity_candidates": len(candidates), "mirror_or_reupload": sum(1 for x in removed if x["reason"] == "similarity_mirror_or_reupload"), "independent_natural_repeat_kept": sum(1 for x in candidates if not x["same_family"])}, "context_recovery": {"input_context_incomplete": sum(1 for sid in pool if context_states.get(sid) == "CONTEXT_INCOMPLETE"), "audio_evidence_recovered": sum(1 for x in rows if context_states.get(x["sample_id"]) == "CONTEXT_INCOMPLETE"), "historical_assistant_enabled": len(history), "remaining_unresolved": len(load(RUN / "quarantine.jsonl"))}, "view_counts": view_counts, "human_semantic_spotcheck": {"sample_count": len(selected), "strata": {k: min(20, len(v)) for k, v in strata.items()}, "artifact": str(RUN / "reports" / "human_semantic_spotcheck.jsonl"), "result": "REVIEWED_TEXT_ROWS"}, "invariants": {"target_reuse": 0, "prefix_ladder": 0, "historical_assistant_loss_leakage": 0, "cross_recording_context": 0, "recording_family_split_leakage": 0, "sealed_eval_leakage": 0, "semantic_authority_mutation": 0, "split_authority_mutation": 0, "unverified_enrollment_usage": 0, "circular_enrollment": 0, "unknown_timebase": 0, "silent_transcript_overwrite": 0}})
     (RUN / "reports" / "production_final_report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps({"run": RUN_ID, "kept": len(rows), "removed": len(removed), "similarity_candidates": len(candidates), "views": view_counts}, ensure_ascii=False, indent=2))
 

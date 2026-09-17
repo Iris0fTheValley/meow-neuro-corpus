@@ -31,6 +31,7 @@ import run_audio_evidence_production as replay  # noqa: E402
 CORPUS = ROOT.parent.parent
 DATASET = CORPUS / "datasets" / "meow_v02_sft_v2_2_semantic_verified"
 SPLIT = DATASET / "split_authority_v2_3.json"
+CONTEXT_DECISIONS = DATASET / "context_sufficiency_decisions_v2_3.jsonl"
 RUN_ID = os.environ.get("MEOW_REAL_RUN_ID", "audio-reconstruction-v1-real-20260917")
 OUT = DATASET / "audio_reconstruction_v1" / RUN_ID
 
@@ -39,14 +40,14 @@ def load_jsonl(path: Path):
     return [json.loads(line) for line in path.open(encoding="utf-8") if line.strip()]
 
 
-def prepare_real_interactions(pool, manifest, split):
+def prepare_real_interactions(pool, manifest, split, context_states):
     rows, _ = replay.prepare_interactions(pool, manifest, split)
     out = []
     for row in rows:
         row = dict(row)
         ts = dict(row.get("timestamps") or {})
         start, end = float(ts["start"]), float(ts["end"])
-        incomplete = not bool((row.get("semantic_qa") or {}).get("context_complete", True))
+        incomplete = context_states.get(str(row["sample_id"])) == "CONTEXT_INCOMPLETE" or not bool((row.get("semantic_qa") or {}).get("context_complete", True))
         # Context-incomplete samples get a real preceding-audio search window;
         # complete samples retain a small boundary guard.
         ts["start"] = max(0.0, start - (60.0 if incomplete else 2.0))
@@ -72,6 +73,7 @@ def main():
     pool = load_jsonl(replay.POOL)
     manifest = replay.source_metadata()
     identity_rows = load_jsonl(replay.IDENTITY)
+    context_states = {str(r.get("sample_id")): str(r.get("state")) for r in load_jsonl(CONTEXT_DECISIONS)}
     identity_map = {(str(r.get("source_id")), str(r.get("cluster"))): r for r in identity_rows}
     timelines = {sid: json.loads((replay.TIMELINE_DIR / f"{sid}.json").read_text(encoding="utf-8")) for sid in {str(r["source_id"]) for r in pool} if (replay.TIMELINE_DIR / f"{sid}.json").exists()}
 
@@ -85,7 +87,7 @@ def main():
         embeddings[eid] = ecapa.enrollment_embedding(ref).tolist()
     (OUT / "enrollment_embeddings.json").write_text(json.dumps({"backend": ecapa.activity.provenance.to_dict(), "embeddings": embeddings}, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    interactions = prepare_real_interactions(pool, manifest, json.loads(SPLIT.read_text(encoding="utf-8")))
+    interactions = prepare_real_interactions(pool, manifest, json.loads(SPLIT.read_text(encoding="utf-8")), context_states)
     planner = AudioWindowPlanner(padding_before=0.0, padding_after=0.0, merge_gap=1.0)
     plan = planner.merge([planner.request_from_interaction(x) for x in interactions])
     (OUT / "window_plan.json").write_text(json.dumps({**plan, "context_policy": "incomplete=60s pre-roll, complete=2s pre-roll, post=5s", "planner_backend": "audio-window-planner-v1"}, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -175,6 +177,25 @@ def main():
         else:
             seen.add(key); deduped.append(row)
     materialized = deduped
+    # Remove deterministic prefix-ladder supervision duplicates in the same
+    # exact prompt signature; keep the lexicographically first target.
+    ladder_removed = []
+    groups = defaultdict(list)
+    for row in materialized:
+        groups[(row.get("recording_id"), tuple(row.get("context_turn_ids") or []))].append(row)
+    keep_ids = set()
+    for _, values in groups.items():
+        ordered = sorted(values, key=lambda x: x["sample_id"])
+        for i, left in enumerate(ordered):
+            lt = str((left.get("messages") or [{}])[-1].get("content") or "").lower().split()
+            drop = False
+            for right in ordered[:i]:
+                rt = str((right.get("messages") or [{}])[-1].get("content") or "").lower().split()
+                if lt != rt and lt and rt and (len(lt) <= len(rt) and any(rt[j:j+len(lt)] == lt for j in range(len(rt)-len(lt)+1)) or len(rt) <= len(lt) and any(lt[j:j+len(rt)] == rt for j in range(len(lt)-len(rt)+1))):
+                    ladder_removed.append({"sample_id": left["sample_id"], "reason": "prefix_ladder", "kept_sample_id": right["sample_id"]}); drop = True; break
+            if not drop: keep_ids.add(left["sample_id"])
+    materialized = [r for r in materialized if r["sample_id"] in keep_ids]
+    dedup_removed.extend(ladder_removed)
     write_jsonl(OUT / "canonical_audio_evidence_timeline.jsonl", turn_lookup.values())
     write_jsonl(OUT / "materialized.jsonl", materialized)
     write_jsonl(OUT / "quarantine.jsonl", quarantine)
