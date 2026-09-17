@@ -65,6 +65,33 @@ def write_jsonl(path: Path, rows):
     path.write_text("".join(json.dumps(x, ensure_ascii=False, sort_keys=True) + "\n" for x in rows), encoding="utf-8")
 
 
+def bound_windows(plan: dict, max_seconds: float = 120.0) -> dict:
+    """Split long merged unions so ASR never receives an unbounded interval."""
+    windows, mappings = [], []
+    by_old = defaultdict(list)
+    for mapping in plan.get("sample_window_mappings", []):
+        by_old[mapping["window_id"]].append(mapping)
+    for old in plan.get("windows", []):
+        start = float(old["merged_interval"]["start"]); end = float(old["merged_interval"]["end"])
+        chunks = []
+        cursor = start
+        while cursor < end - 1e-6:
+            chunk_end = min(end, cursor + max_seconds)
+            identity = f"{old['window_id']}|{cursor:.6f}|{chunk_end:.6f}|bounded-120s-v1"
+            wid = "aw_" + hashlib.sha256(identity.encode()).hexdigest()[:20]
+            chunks.append((wid, cursor, chunk_end))
+            windows.append({**old, "window_id": wid, "merged_interval": {"start": cursor, "end": chunk_end, "timebase": Timebase.RECORDING_SECONDS.value}, "sample_ids": [] , "policy_version": "audio-window-planner-bounded-120s-v1"})
+            cursor = chunk_end
+        for mapping in by_old.get(old["window_id"], []):
+            req = mapping.get("requested_interval") or {}
+            midpoint = (float(req.get("start", start)) + float(req.get("end", end))) / 2.0
+            chosen = next((x for x in chunks if x[1] <= midpoint <= x[2]), chunks[-1])
+            mappings.append({**mapping, "window_id": chosen[0]})
+            for window in windows:
+                if window["window_id"] == chosen[0]: window["sample_ids"] = sorted(set(window["sample_ids"]) | {mapping["sample_id"]})
+    return {"schema_version": "1.0.0", "policy_version": "audio-window-planner-bounded-120s-v1", "windows": windows, "sample_window_mappings": sorted(mappings, key=lambda x: (x["sample_id"], x["window_id"]))}
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--limit-windows", type=int, default=0)
@@ -89,7 +116,7 @@ def main():
 
     interactions = prepare_real_interactions(pool, manifest, json.loads(SPLIT.read_text(encoding="utf-8")), context_states)
     planner = AudioWindowPlanner(padding_before=0.0, padding_after=0.0, merge_gap=1.0)
-    plan = planner.merge([planner.request_from_interaction(x) for x in interactions])
+    plan = bound_windows(planner.merge([planner.request_from_interaction(x) for x in interactions]), max_seconds=120.0)
     (OUT / "window_plan.json").write_text(json.dumps({**plan, "context_policy": "incomplete=60s pre-roll, complete=2s pre-roll, post=5s", "planner_backend": "audio-window-planner-v1"}, ensure_ascii=False, indent=2), encoding="utf-8")
     mapping_by_window = defaultdict(list)
     for mapping in plan["sample_window_mappings"]:
