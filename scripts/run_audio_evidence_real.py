@@ -131,7 +131,12 @@ def main():
         target_ids = [str(x) for x in row.get("target_turn_ids") or []]
         target_id = target_ids[-1]
         timeline = timelines.get(row["source_id"], {})
-        target_start = float(row["timestamps"]["start"]) + (60.0 if row.get("context_incomplete_input") else 2.0)
+        target_record = next((t for t in timeline.get("turns", []) if str(t.get("turn_id")) == target_id), None)
+        if target_record is None:
+            quarantine.append({"sample_id": row["sample_id"], "reason": "TARGET_TURN_PROVENANCE_MISSING"}); continue
+        # Use the target turn's canonical audio timestamp, never the expanded
+        # interaction request start, to bound historical recovery.
+        target_start = float(target_record["timestamp"]["start"])
         selected = []
         # Preserve the frozen selected context, then add real historical Neuro
         # assistant turns recovered in the expanded preceding interval.
@@ -140,7 +145,8 @@ def main():
         recovered = []
         for t in timeline.get("turns", []):
             tid = str(t.get("turn_id")); ident = identity_map.get((row["source_id"], str(t.get("speaker"))), {}).get("identity")
-            if tid in turn_lookup and ident in {"NEURO_FAMILY_HIGH", "NEURO_FAMILY_MEDIUM"} and float(t["timestamp"]["end"]) <= target_start and tid not in selected:
+            recovery_floor = max(0.0, target_start - (60.0 if row.get("context_incomplete_input") else 2.0))
+            if tid in turn_lookup and ident in {"NEURO_FAMILY_HIGH", "NEURO_FAMILY_MEDIUM"} and recovery_floor <= float(t["timestamp"]["start"]) and float(t["timestamp"]["end"]) <= target_start and tid not in selected:
                 recovered.append((float(t["timestamp"]["start"]), tid))
         selected = [tid for _, tid in sorted(recovered)] + selected
         if target_id not in selected:
