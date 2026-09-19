@@ -155,6 +155,20 @@ class TargetAndContextRegressionTests(unittest.TestCase):
         self.assertEqual(result["state"], TargetResolutionState.AUDIO_MAJOR_CONTRADICTION.value)
         self.assertTrue(result["explicit_contradiction"])
 
+    def test_sentinel_target_is_quarantined_without_semantic_rewrite(self):
+        result = resolve_target(
+            old_text="Filtered.",
+            new_text="different audio words",
+            baseline_materialized=True,
+            alignment_available=True,
+            identity_confirmed_target=True,
+            aligned_token_count=4,
+        )
+        self.assertEqual(result["state"], TargetResolutionState.UNRESOLVED.value)
+        self.assertEqual(result["reason"], "NON_CONVERSATIONAL_SENTINEL_TARGET")
+        self.assertEqual(result["chosen_text"], "Filtered.")
+        self.assertTrue(result["explicit_contradiction"])
+
     def test_minimal_context_stops_at_first_sufficient_suffix(self):
         candidates = [
             context_turn(f"old-{index}", float(index), float(index) + 0.4, "user" if index % 2 == 0 else "assistant", f"old {index}")

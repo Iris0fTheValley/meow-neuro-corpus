@@ -422,7 +422,11 @@ def resolve_target(
     similarity = text_similarity(old_value, new_value)
     old_token_count = len(normalized_tokens(old_value))
     evidence_is_substantial = aligned_token_count >= max(3, min(8, int(old_token_count * 0.4)))
-    if not old_value or not identity_confirmed_target:
+    if is_non_conversational_sentinel(old_value):
+        state = TargetResolutionState.UNRESOLVED
+        reason = "NON_CONVERSATIONAL_SENTINEL_TARGET"
+        explicit = True
+    elif not old_value or not identity_confirmed_target:
         state = TargetResolutionState.UNRESOLVED
         reason = "FROZEN_TARGET_TEXT_OR_IDENTITY_AUTHORITY_MISSING"
         explicit = True
