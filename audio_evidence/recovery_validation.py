@@ -103,10 +103,14 @@ def validate_recovery_v2(
 
     turn_by_id = {str(turn.get("audio_turn_id")): turn for turn in turns}
     reconciliation_by_turn: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    direct_reconciliation_by_turn: dict[str, dict[str, Any]] = {}
     for entry in reconciliation_rows:
         replacement_id = entry.get("audio_turn_id")
         if replacement_id:
             reconciliation_by_turn[str(replacement_id)].append(entry)
+        candidate_id = str(entry.get("candidate_span_id") or "")
+        if candidate_id.startswith("old:") and ":" not in candidate_id[4:]:
+            direct_reconciliation_by_turn[candidate_id[4:]] = entry
         for turn_id in entry.get("old_turn_ids") or []:
             reconciliation_by_turn[str(turn_id)].append(entry)
     speaker_by_turn = {str(row.get("audio_turn_id")): row for row in speaker_rows}
@@ -182,8 +186,18 @@ def validate_recovery_v2(
                 if source is None:
                     fail("TURN_RECONCILIATION_RESOLVED", sample, "message source turn absent")
                     continue
-                source_state = str(source.get("reconciliation_state") or "")
-                recovered = str(row.get("context_reconstruction_class") or "") in recovered_classes and index < len(messages) - 1
+                source_id = str(source.get("audio_turn_id") or "")
+                direct = direct_reconciliation_by_turn.get(source_id)
+                source_state = str(
+                    (direct or {}).get("reconciliation_state")
+                    or source.get("reconciliation_state")
+                    or ""
+                )
+                recovered = (
+                    str(row.get("context_reconstruction_class") or "") in recovered_classes
+                    and not row.get("was_baseline_materialized")
+                    and index < len(messages) - 1
+                )
                 if recovered and source_state in {
                     ReconciliationState.AMBIGUOUS.value,
                     ReconciliationState.AMBIGUOUS_BOUNDARY.value,

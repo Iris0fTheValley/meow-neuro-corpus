@@ -30,6 +30,7 @@ from audio_evidence.recovery_v2 import (  # noqa: E402
     ReconciliationState,
     SpeakerState,
     TargetResolutionState,
+    annotate_tokens_with_diarization,
     assign_tokens_to_old_turns,
     build_cluster_speaker_anchors,
     build_candidate_spans,
@@ -340,6 +341,7 @@ def main() -> int:
         tokens = sorted(token_map.values(), key=lambda item: (float(item["start"]), float(item["end"]), str(item.get("text") or "")))
         diarization = sorted(diarization_map.values(), key=lambda item: (float(item["start"]), float(item["end"])))
         activity = sorted(activity_map.values(), key=lambda item: (float(item["start"]), float(item["end"])))
+        tokens = annotate_tokens_with_diarization(tokens, diarization)
         assigned, unassigned, ambiguous_boundary_tokens = assign_tokens_to_old_turns(
             tokens,
             old_turns,
@@ -714,7 +716,7 @@ def main() -> int:
                     entry["training_eligible"] = True
                     entry["recovery_eligible"] = True
                     discovered["text_resolution_state"] = "RESOLVED"
-                    discovered["text_authority"] = "RECONSTRUCTED_CANDIDATE"
+                    discovered["text_authority"] = "RECONCILED_TEXT"
                     discovered["text_resolution_provenance"] = {
                         "status": "RESOLVED",
                         "resolver": "TURN_TOPOLOGY_RECONSTRUCTION_V3",
@@ -896,7 +898,13 @@ def main() -> int:
 
             if not selected or sufficiency.get("state") != ContextSufficiencyState.CONTEXT_SUFFICIENT.value:
                 frozen_context_records = [record_turns[turn_id] for turn_id in frozen_context_ids if turn_id in record_turns]
-                explicit_sentinel_contradiction = baseline_materialized and sentinel_only_context(frozen_context_records)
+                baseline_messages_have_sentinel = baseline_materialized and any(
+                    is_non_conversational_sentinel(message.get("content"))
+                    for message in (baseline.get("messages") or [])
+                )
+                explicit_sentinel_contradiction = baseline_materialized and (
+                    sentinel_only_context(frozen_context_records) or baseline_messages_have_sentinel
+                )
                 if baseline_materialized and not explicit_sentinel_contradiction:
                     # Monotonicity: absence of a newly reconstructable context
                     # is not evidence against an already safe baseline sample.
@@ -947,7 +955,11 @@ def main() -> int:
                 failure_reason = (
                     "NON_CONVERSATIONAL_SENTINEL_ONLY_CONTEXT"
                     if explicit_sentinel_contradiction
-                    else str(sufficiency.get("reason") or "CONTEXT_INSUFFICIENT")
+                    else (
+                        "NON_CONVERSATIONAL_SENTINEL_IN_BASELINE_CONTEXT"
+                        if baseline_messages_have_sentinel
+                        else str(sufficiency.get("reason") or "CONTEXT_INSUFFICIENT")
+                    )
                 )
                 quarantine_rows.append(QuarantineTrace(
                     sample_id=sample,

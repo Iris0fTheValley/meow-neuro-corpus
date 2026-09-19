@@ -242,6 +242,44 @@ def dominant_diarization_cluster(
     return ordered[0][0], overlap_seen
 
 
+def annotate_tokens_with_diarization(
+    tokens: Iterable[dict[str, Any]],
+    diarization: Iterable[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Attach generic boundary clusters to timed tokens with a linear sweep."""
+    segments = sorted(
+        [dict(item) for item in diarization],
+        key=lambda item: (float(item.get("start", 0)), float(item.get("end", 0))),
+    )
+    active: list[dict[str, Any]] = []
+    cursor = 0
+    annotated = []
+    for raw in sorted(tokens, key=lambda item: (float(item.get("start", 0)), float(item.get("end", 0)))):
+        token = dict(raw)
+        start, end = float(token.get("start", 0)), float(token.get("end", 0))
+        while cursor < len(segments) and float(segments[cursor].get("start", 0)) < end:
+            active.append(segments[cursor])
+            cursor += 1
+        active = [item for item in active if float(item.get("end", 0)) > start]
+        scores: dict[str, float] = {}
+        overlap_seen = False
+        for item in active:
+            amount = interval_overlap(start, end, float(item.get("start", 0)), float(item.get("end", 0)))
+            if amount <= 0:
+                continue
+            cluster = str(item.get("speaker_cluster") or "UNKNOWN")
+            scores[cluster] = scores.get(cluster, 0.0) + amount
+            overlap_seen = overlap_seen or bool(item.get("overlap"))
+        ordered = sorted(scores.items(), key=lambda pair: (-pair[1], pair[0]))
+        cluster = None
+        if ordered and not (len(ordered) > 1 and ordered[1][1] >= ordered[0][1] * 0.8):
+            cluster = ordered[0][0]
+        token["boundary_speaker_cluster"] = cluster
+        token["generic_overlap"] = overlap_seen
+        annotated.append(token)
+    return annotated
+
+
 def build_cluster_speaker_anchors(
     diarization: Iterable[dict[str, Any]],
     resolved_old_turns: Iterable[dict[str, Any]],
