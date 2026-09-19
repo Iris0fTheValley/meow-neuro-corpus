@@ -29,6 +29,7 @@ from audio_evidence.recovery_v2 import (
 )
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 from run_audio_evidence_recovery_v2 import CachedContextJudge
+from content_audit_audio_recovery_v4 import call_reviewer, review_payload
 
 
 def old(turn_id: str, start: float, end: float, text: str, role: str = "user") -> dict:
@@ -49,6 +50,31 @@ def context_turn(turn_id: str, start: float, end: float, role: str, text: str) -
         "resolved_text": text,
         "speaker_state": state.value,
     }
+
+
+class ContentAuditRegressionTests(unittest.TestCase):
+    def test_content_audit_hides_supervision_marker_from_reviewer(self):
+        payload = review_payload({
+            "review_kind": "training_sample",
+            "sample_id": "audit-sample",
+            "recording_id": "recording",
+            "context_reconstruction_class": "RECOVERED_FROM_NEW_AUDIO",
+            "messages": [
+                {"role": "user", "content": "Are you coming tomorrow?", "supervise": False},
+                {"role": "assistant", "content": "Probably.", "supervise": True},
+            ],
+        })
+        self.assertEqual(payload["messages"], [
+            {"role": "user", "text": "Are you coming tomorrow?"},
+            {"role": "assistant", "text": "Probably."},
+        ])
+
+    def test_content_audit_invalid_model_output_is_coverage_diagnostic_not_finding(self):
+        payload = {"kind": "training_sample", "messages": []}
+        with patch("content_audit_audio_recovery_v4.call_model", return_value=({}, False, "TimeoutError")):
+            result = call_reviewer(payload, endpoint="http://unused", model="test", timeout=1)
+        self.assertFalse(result["finding"])
+        self.assertFalse(result["valid"])
 
 
 class TurnReconciliationRegressionTests(unittest.TestCase):

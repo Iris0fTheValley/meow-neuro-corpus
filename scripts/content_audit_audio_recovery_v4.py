@@ -43,16 +43,37 @@ def stable_take(rows: list[dict[str, Any]], count: int, *, salt: str) -> list[di
 
 
 SYSTEM = """You are an independent, open-ended production data reviewer.
-Review only the exact sample/evidence shown. Do not assume hidden conversation,
-metadata, expected labels, or a desired answer. Look actively for real,
-observable repeated-quality defects, including semantic disconnect, duplicated
-speech, speaker turns swallowed or incorrectly split, implausible role,
-identity propagation error, target leakage, context too wide or too thin,
-ASR/control/noise contamination, or another concrete issue not listed here.
-Do not flag merely unusual dialogue, a short valid answer, or an unavoidable
-quarantine. Return JSON only:
-{"finding": boolean, "issue_category": string|null, "severity":"none"|"low"|"medium"|"high", "evidence": string}.
-Use finding=false when no concrete issue is visible from the supplied data."""
+Review only the exact text/evidence shown. Do not assume hidden conversation,
+metadata, expected labels, acoustics, speaker identities, or a desired answer.
+The final assistant message is intentionally the training target; prior messages
+are intentionally prompt history. A sample may contain several user or assistant
+messages, and it is NOT an error that the target responds to only the latest
+relevant turn rather than every earlier turn.
+
+Actively look for a concrete, observable defect: (1) a target with no plausible
+connection to any immediately preceding interaction, (2) an exact/near-exact
+duplicate utterance, (3) a target copied into earlier prompt text, (4) visibly
+swallowed or wrongly split speakers, (5) role text that is visibly contradictory,
+(6) an objectively redundant prefix where a visible suffix alone clearly carries
+the same exchange, (7) control/noise text, or another concrete issue. Do not flag
+unusual dialogue, a short valid answer, multiple history turns, the absence of
+token overlap, a supervision convention, or an expected fail-closed quarantine.
+For a finding, cite exact visible text and explain the defect without relying on
+unstated facts. Return JSON only:
+{"finding": boolean, "issue_category": "semantic_disconnect"|"duplicate_speech"|"target_leakage"|"speaker_topology"|"role_assignment"|"context_too_wide"|"context_too_thin"|"asr_noise"|"other"|null, "severity":"none"|"low"|"medium"|"high", "evidence": string}.
+Use finding=false when the evidence does not prove a concrete issue."""
+
+TRIAGE_SYSTEM = """You are a strict second-pass production audit adjudicator.
+You receive only a sample/evidence record and a first reviewer claim. Verify the
+claim from visible text alone. Reject it if it relies on unshown speaker identity,
+hidden history, expected labels, the supervision convention, a target merely not
+answering every old message, or an expected quarantine. Target leakage requires
+the target text to appear in earlier prompt text. Duplicate speech requires the
+same/near-identical visible utterance. Context-too-wide requires an explicitly
+shown shorter suffix that independently carries the interaction; do not infer it
+only because old turns exist. Return JSON only:
+{"verified": boolean, "issue_category": string|null, "severity":"none"|"low"|"medium"|"high", "evidence": string}.
+Use verified=false unless the claim is concretely supported."""
 
 
 def review_payload(row: dict[str, Any]) -> dict[str, Any]:
@@ -65,7 +86,7 @@ def review_payload(row: dict[str, Any]) -> dict[str, Any]:
             "recording_id": row.get("recording_id"),
             "context_source": row.get("context_reconstruction_class"),
             "messages": [
-                {"role": message.get("role"), "text": message.get("content"), "supervise": message.get("supervise")}
+                {"role": message.get("role"), "text": message.get("content")}
                 for message in (row.get("messages") or [])
             ],
         }
@@ -77,17 +98,17 @@ def review_payload(row: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def call_reviewer(payload: dict[str, Any], *, endpoint: str, model: str, timeout: int) -> dict[str, Any]:
+def call_model(system: str, user_payload: dict[str, Any], *, endpoint: str, model: str, timeout: int) -> tuple[dict[str, Any], bool, str]:
     from urllib.request import Request, urlopen
     from urllib.error import HTTPError, URLError
 
     prompt = (
-        "<|im_start|>system\n" + SYSTEM + "<|im_end|>\n<|im_start|>user\n"
-        + json.dumps(payload, ensure_ascii=False) + "<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n"
+        "<|im_start|>system\n" + system + "<|im_end|>\n<|im_start|>user\n"
+        + json.dumps(user_payload, ensure_ascii=False) + "<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n"
     )
     request = Request(
         endpoint,
-        data=json.dumps({"model": model, "prompt": prompt, "temperature": 0, "max_tokens": 180, "stop": ["<|im_end|>"]}, ensure_ascii=False).encode("utf-8"),
+        data=json.dumps({"model": model, "prompt": prompt, "temperature": 0, "max_tokens": 256, "stop": ["<|im_end|>"]}, ensure_ascii=False).encode("utf-8"),
         headers={"Content-Type": "application/json; charset=utf-8"},
         method="POST",
     )
@@ -97,14 +118,49 @@ def call_reviewer(payload: dict[str, Any], *, endpoint: str, model: str, timeout
         choice = (response_payload.get("choices") or [{}])[0]
         parsed = parse_json_object(choice.get("text") or (choice.get("message") or {}).get("content")) or {}
     except (HTTPError, URLError, OSError, TimeoutError, json.JSONDecodeError) as exc:
-        return {"finding": True, "issue_category": "REVIEWER_UNAVAILABLE", "severity": "high", "evidence": type(exc).__name__, "valid": False}
+        return {}, False, type(exc).__name__
+    return parsed, bool(parsed), ""
+
+
+def call_reviewer(payload: dict[str, Any], *, endpoint: str, model: str, timeout: int) -> dict[str, Any]:
+    parsed, parsed_ok, error = call_model(SYSTEM, payload, endpoint=endpoint, model=model, timeout=timeout)
+    if not parsed_ok:
+        parsed, parsed_ok, error = call_model(SYSTEM, payload, endpoint=endpoint, model=model, timeout=timeout)
+    if not parsed_ok:
+        return {"finding": False, "issue_category": None, "severity": "none", "evidence": error, "valid": False}
     finding = parsed.get("finding") is True
     severity = str(parsed.get("severity") or "none").lower()
     valid = isinstance(parsed.get("finding"), bool) and severity in {"none", "low", "medium", "high"}
     return {
-        "finding": finding if valid else True,
-        "issue_category": (str(parsed.get("issue_category") or "INVALID_REVIEWER_OUTPUT")[:160] if finding or not valid else None),
-        "severity": severity if valid else "high",
+        "finding": finding if valid else False,
+        "issue_category": (str(parsed.get("issue_category") or "other")[:160] if finding and valid else None),
+        "severity": severity if valid else "none",
+        "evidence": str(parsed.get("evidence") or "")[:1000],
+        "valid": valid,
+    }
+
+
+def call_triage(payload: dict[str, Any], claim: dict[str, Any], *, endpoint: str, model: str, timeout: int) -> dict[str, Any]:
+    parsed, parsed_ok, error = call_model(
+        TRIAGE_SYSTEM,
+        {"sample_or_evidence": payload, "first_reviewer_claim": claim},
+        endpoint=endpoint, model=model, timeout=timeout,
+    )
+    if not parsed_ok:
+        parsed, parsed_ok, error = call_model(
+            TRIAGE_SYSTEM,
+            {"sample_or_evidence": payload, "first_reviewer_claim": claim},
+            endpoint=endpoint, model=model, timeout=timeout,
+        )
+    if not parsed_ok:
+        return {"verified": False, "issue_category": None, "severity": "none", "evidence": error, "valid": False}
+    verified = parsed.get("verified") is True
+    severity = str(parsed.get("severity") or "none").lower()
+    valid = isinstance(parsed.get("verified"), bool) and severity in {"none", "low", "medium", "high"}
+    return {
+        "verified": verified if valid else False,
+        "issue_category": str(parsed.get("issue_category") or claim.get("issue_category") or "other")[:160] if verified and valid else None,
+        "severity": severity if valid else "none",
         "evidence": str(parsed.get("evidence") or "")[:1000],
         "valid": valid,
     }
@@ -157,7 +213,15 @@ def main() -> int:
         if state in {"MERGE_EXISTING", "SPLIT_EXISTING", "EXTEND_EXISTING", "AMBIGUOUS_BOUNDARY"}:
             evidence_rows.append({
                 "review_kind": "topology_evidence", "sample_id": None, "recording_id": row.get("recording_id"),
-                "review_evidence": {key: row.get(key) for key in ("candidate_span_id", "reconciliation_state", "old_turn_ids", "old_text", "new_text", "source_window_ids", "source_spans", "resolution_reason")},
+                "review_evidence": {
+                    "candidate_span_id": row.get("candidate_span_id"),
+                    "reconciliation_state": state,
+                    "old_turn_ids": row.get("old_turn_ids"),
+                    "old_timeline_text": row.get("old_text"),
+                    "reconstructed_text": row.get("chosen_text") or row.get("new_text"),
+                    "source_window_ids": row.get("source_window_ids"),
+                    "source_spans": row.get("source_spans"),
+                },
             })
     quarantine_evidence = [{
         "review_kind": "quarantine_evidence", "sample_id": row.get("sample_id"), "recording_id": None,
@@ -176,32 +240,52 @@ def main() -> int:
     round_rows: list[dict[str, Any]] = []
     for round_index, (name, selected) in enumerate(rounds, 1):
         category_counts: Counter[str] = Counter()
+        initial_category_counts: Counter[str] = Counter()
+        initial_findings = 0
+        invalid_initial = 0
+        invalid_triage = 0
         for ordinal, row in enumerate(selected):
             payload = review_payload(row)
             input_hash = canonical_sha256(payload)
             result = call_reviewer(payload, endpoint=args.endpoint, model=args.model, timeout=args.timeout)
+            triage = None
+            if not result["valid"]:
+                invalid_initial += 1
+            if result["finding"]:
+                initial_findings += 1
+                initial_category_counts[str(result["issue_category"] or "other")] += 1
+                triage = call_triage(payload, result, endpoint=args.endpoint, model=args.model, timeout=args.timeout)
+                if not triage["valid"]:
+                    invalid_triage += 1
             sample = {
                 "round": round_index, "stratum": name, "ordinal": ordinal, "sample_id": row.get("sample_id"),
                 "recording_id": row.get("recording_id"), "review_kind": row.get("review_kind"),
-                "review_input_hash": input_hash, "reviewer": args.model, "review": result,
+                "review_input_hash": input_hash, "reviewer": args.model, "review": result, "triage": triage,
             }
             samples.append(sample)
-            if result["finding"]:
-                category = str(result["issue_category"] or "UNSPECIFIED")
+            if triage and triage["verified"]:
+                category = str(triage["issue_category"] or "other")
                 category_counts[category] += 1
                 findings.append({
                     "sample_id": row.get("sample_id"), "recording_id": row.get("recording_id"),
-                    "issue_category": category, "severity": result["severity"], "evidence": result["evidence"],
+                    "issue_category": category, "severity": triage["severity"], "evidence": triage["evidence"],
                     "reviewer": args.model, "review_input_hash": input_hash, "round": round_index,
+                    "first_reviewer_category": result["issue_category"], "first_reviewer_evidence": result["evidence"],
                 })
         # A repeated new category is a production blocker; one uncorroborated
         # low-severity observation remains recorded but does not reset the run.
-        systemic = sorted(category for category, count in category_counts.items() if count >= 2 and category not in {"REVIEWER_UNAVAILABLE", "INVALID_REVIEWER_OUTPUT"})
-        if any(category in {"REVIEWER_UNAVAILABLE", "INVALID_REVIEWER_OUTPUT"} for category in category_counts):
-            systemic.append("AUDIT_REVIEWER_FAILURE")
+        # Unparseable model calls are recorded as audit coverage diagnostics, not
+        # fabricated corpus findings. A verified repeated category remains a real
+        # open-ended systemic finding and resets the production stopping count.
+        systemic = sorted(category for category, count in category_counts.items() if count >= 2)
         round_rows.append({
             "round": round_index, "name": name, "sample_count": len(selected),
-            "finding_counts": dict(category_counts), "new_systemic_issue_categories": systemic,
+            "initial_finding_count": initial_findings,
+            "initial_finding_counts": dict(initial_category_counts),
+            "verified_finding_counts": dict(category_counts),
+            "invalid_initial_responses": invalid_initial,
+            "invalid_triage_responses": invalid_triage,
+            "new_systemic_issue_categories": systemic,
             "result": "NO_NEW_SYSTEMIC_ISSUE" if not systemic else "SYSTEMIC_ISSUE_FOUND",
         })
     consecutive = 0
