@@ -29,7 +29,7 @@ from audio_evidence.recovery_v2 import (
 )
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 from run_audio_evidence_recovery_v2 import CachedContextJudge
-from content_audit_audio_recovery_v4 import call_reviewer, review_payload
+from content_audit_audio_recovery_v4 import call_reviewer, corroborate_finding, review_payload
 
 
 def old(turn_id: str, start: float, end: float, text: str, role: str = "user") -> dict:
@@ -75,6 +75,34 @@ class ContentAuditRegressionTests(unittest.TestCase):
             result = call_reviewer(payload, endpoint="http://unused", model="test", timeout=1)
         self.assertFalse(result["finding"])
         self.assertFalse(result["valid"])
+
+    def test_content_audit_requires_visible_target_leakage_evidence(self):
+        payload = {"kind": "training_sample", "messages": [
+            {"role": "user", "text": "Are you coming tomorrow?"},
+            {"role": "assistant", "text": "Probably."},
+        ]}
+        claim = {"finding": True, "issue_category": "target_leakage", "evidence": "hallucinated"}
+        triage = {"verified": True, "issue_category": "target_leakage", "severity": "high"}
+        self.assertIsNone(corroborate_finding(payload, claim, triage, context_state="CONTEXT_SUFFICIENT", source_row={}, turn_intervals={}))
+        payload["messages"].insert(0, {"role": "user", "text": "Probably."})
+        source_row = {"messages": [
+            {"source_turn_ids": ["old"]}, {"source_turn_ids": ["old"]}, {"source_turn_ids": ["target"]},
+        ]}
+        confirmed = corroborate_finding(payload, claim, triage, context_state="CONTEXT_SUFFICIENT", source_row=source_row, turn_intervals={})
+        self.assertEqual(confirmed["category"], "target_leakage")
+
+    def test_content_audit_keeps_natural_repeat_without_overlapping_source(self):
+        payload = {"kind": "training_sample", "messages": [
+            {"role": "user", "text": "Hold on a second."},
+            {"role": "user", "text": "Hold on a second."},
+            {"role": "assistant", "text": "Okay."},
+        ]}
+        claim = {"finding": True, "issue_category": "duplicate_speech", "evidence": "same text"}
+        triage = {"verified": True, "issue_category": "duplicate_speech", "severity": "medium"}
+        row = {"messages": [
+            {"source_turn_ids": ["first"]}, {"source_turn_ids": ["second"]}, {"source_turn_ids": ["target"]},
+        ]}
+        self.assertIsNone(corroborate_finding(payload, claim, triage, context_state="CONTEXT_SUFFICIENT", source_row=row, turn_intervals={"first": (1.0, 2.0), "second": (2.1, 3.0)}))
 
 
 class TurnReconciliationRegressionTests(unittest.TestCase):

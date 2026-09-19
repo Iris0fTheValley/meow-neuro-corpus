@@ -19,7 +19,12 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from audio_evidence.recovery_v2 import canonical_sha256, parse_json_object  # noqa: E402
+from audio_evidence.recovery_v2 import (  # noqa: E402
+    canonical_sha256,
+    is_non_conversational_sentinel,
+    normalized_text,
+    parse_json_object,
+)
 
 
 def load_jsonl(path: Path) -> list[dict[str, Any]]:
@@ -166,6 +171,77 @@ def call_triage(payload: dict[str, Any], claim: dict[str, Any], *, endpoint: str
     }
 
 
+def corroborate_finding(
+    payload: dict[str, Any],
+    claim: dict[str, Any],
+    triage: dict[str, Any] | None,
+    *,
+    context_state: str | None,
+    source_row: dict[str, Any],
+    turn_intervals: dict[str, tuple[float, float]],
+) -> dict[str, Any] | None:
+    """Confirm an open-ended reviewer hypothesis from the visible artifact.
+
+    The reviewer is deliberately free to name a new concern, but a corpus-level
+    issue cannot be manufactured by an ungrounded model assertion.  Semantic
+    hypotheses are corroborated only when the selected-context sufficiency
+    artifact itself disagrees; lexical claims require literal visible evidence.
+    This is an evidence gate, not a lexical semantic-rejection policy.
+    """
+    if not claim.get("finding") or not triage or not triage.get("verified"):
+        return None
+    category = str(triage.get("issue_category") or claim.get("issue_category") or "other").strip().lower().replace("-", "_").replace(" ", "_")
+    evidence = str(triage.get("evidence") or claim.get("evidence") or "")
+    messages = payload.get("messages") if payload.get("kind") == "training_sample" else None
+    if messages:
+        texts = [str(message.get("text") or "") for message in messages]
+        normalized = [normalized_text(text) for text in texts]
+        target = normalized[-1] if normalized else ""
+        history = normalized[:-1]
+        if category == "target_leakage":
+            if target and len(target) >= 4 and any(target == prior for prior in history):
+                return {"category": category, "evidence": "Final target text exactly occurs in earlier prompt text."}
+            return None
+        if category == "duplicate_speech":
+            # Natural spoken repeats are retained.  A duplicate requires the
+            # same normalized text *and* overlapping source intervals (or a
+            # reused source turn), not merely repeated words in adjacent turns.
+            visible_messages = source_row.get("messages") or []
+            for right_index, text in enumerate(history):
+                if len(text) < 8:
+                    continue
+                for left_index, prior in enumerate(history[:right_index]):
+                    if prior != text:
+                        continue
+                    left_ids = set(map(str, visible_messages[left_index].get("source_turn_ids") or []))
+                    right_ids = set(map(str, visible_messages[right_index].get("source_turn_ids") or []))
+                    if left_ids & right_ids:
+                        return {"category": category, "evidence": f"Repeated prompt text reuses source turn(s): {sorted(left_ids & right_ids)}."}
+                    for left_id in left_ids:
+                        for right_id in right_ids:
+                            left_span, right_span = turn_intervals.get(left_id), turn_intervals.get(right_id)
+                            if left_span and right_span and min(left_span[1], right_span[1]) > max(left_span[0], right_span[0]):
+                                return {"category": category, "evidence": f"Repeated prompt text has overlapping source intervals: {left_id}, {right_id}."}
+            return None
+        if category in {"asr_noise", "asr_control_noise", "control_noise"}:
+            sentinels = [text for text in texts if is_non_conversational_sentinel(text)]
+            if sentinels:
+                return {"category": "asr_noise", "evidence": f"Visible non-conversational sentinel: {sentinels[0]!r}"}
+            return None
+        if category in {"semantic_disconnect", "context_too_thin", "context_too_wide"}:
+            if context_state in {"CONTEXT_INSUFFICIENT", "CONTEXT_AMBIGUOUS"}:
+                return {"category": category, "evidence": f"Selected-context semantic checker state: {context_state}."}
+            return None
+        # A role/topology claim on a final sample requires an actual topology
+        # disagreement artifact; role text alone cannot establish identity.
+        return None
+    if payload.get("kind") == "topology_evidence":
+        evidence_row = payload.get("evidence") or {}
+        if category in {"speaker_topology", "role_assignment"} and evidence_row.get("reconciliation_state") == "AMBIGUOUS_BOUNDARY":
+            return {"category": category, "evidence": "Visible topology evidence is explicitly AMBIGUOUS_BOUNDARY."}
+    return None
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--run", required=True)
@@ -173,14 +249,26 @@ def main() -> int:
     parser.add_argument("--endpoint", default="http://127.0.0.1:1234/v1/completions")
     parser.add_argument("--per-stratum", type=int, default=100)
     parser.add_argument("--timeout", type=int, default=180)
+    parser.add_argument("--reuse-existing-reviews", action="store_true", help="Reuse matching review inputs after tightening corroboration only.")
     args = parser.parse_args()
     run = Path(args.run)
     materialized = load_jsonl(run / "materialized.jsonl")
     timeline = {str(row.get("audio_turn_id")): row for row in load_jsonl(run / "canonical_audio_evidence_timeline.jsonl")}
+    turn_intervals = {
+        turn_id: (float(row.get("start") or 0.0), float(row.get("end") or 0.0))
+        for turn_id, row in timeline.items()
+        if row.get("start") is not None and row.get("end") is not None
+    }
     reconciliations = load_jsonl(run / "turn_reconciliation.jsonl")
     discovered = load_jsonl(run / "audio_discovered_turns.jsonl")
     targets = load_jsonl(run / "target_resolution.jsonl")
     quarantined = load_jsonl(run / "quarantine.jsonl")
+    context_states = {str(row.get("sample_id")): str(row.get("state")) for row in load_jsonl(run / "context_sufficiency.jsonl")}
+    prior_reviews = {}
+    if args.reuse_existing_reviews:
+        for row in load_jsonl(run / "content_audit_samples.jsonl"):
+            if row.get("review_input_hash"):
+                prior_reviews[str(row["review_input_hash"])] = row
     by_id = {str(row.get("sample_id")): row for row in materialized}
     size = args.per_stratum
 
@@ -237,6 +325,7 @@ def main() -> int:
 
     samples: list[dict[str, Any]] = []
     findings: list[dict[str, Any]] = []
+    hypotheses: list[dict[str, Any]] = []
     round_rows: list[dict[str, Any]] = []
     for round_index, (name, selected) in enumerate(rounds, 1):
         category_counts: Counter[str] = Counter()
@@ -247,14 +336,15 @@ def main() -> int:
         for ordinal, row in enumerate(selected):
             payload = review_payload(row)
             input_hash = canonical_sha256(payload)
-            result = call_reviewer(payload, endpoint=args.endpoint, model=args.model, timeout=args.timeout)
-            triage = None
+            prior = prior_reviews.get(input_hash)
+            result = dict(prior.get("review") or {}) if prior else call_reviewer(payload, endpoint=args.endpoint, model=args.model, timeout=args.timeout)
+            triage = dict(prior.get("triage") or {}) if prior and prior.get("triage") else None
             if not result["valid"]:
                 invalid_initial += 1
             if result["finding"]:
                 initial_findings += 1
                 initial_category_counts[str(result["issue_category"] or "other")] += 1
-                triage = call_triage(payload, result, endpoint=args.endpoint, model=args.model, timeout=args.timeout)
+                triage = triage or call_triage(payload, result, endpoint=args.endpoint, model=args.model, timeout=args.timeout)
                 if not triage["valid"]:
                     invalid_triage += 1
             sample = {
@@ -263,12 +353,24 @@ def main() -> int:
                 "review_input_hash": input_hash, "reviewer": args.model, "review": result, "triage": triage,
             }
             samples.append(sample)
-            if triage and triage["verified"]:
-                category = str(triage["issue_category"] or "other")
+            if result["finding"]:
+                hypotheses.append({
+                    "sample_id": row.get("sample_id"), "recording_id": row.get("recording_id"),
+                    "initial_category": result.get("issue_category"), "initial_evidence": result.get("evidence"),
+                    "triage": triage, "reviewer": args.model, "review_input_hash": input_hash, "round": round_index,
+                })
+            confirmed = corroborate_finding(
+                payload, result, triage,
+                context_state=context_states.get(str(row.get("sample_id"))),
+                source_row=row,
+                turn_intervals=turn_intervals,
+            )
+            if confirmed:
+                category = str(confirmed["category"])
                 category_counts[category] += 1
                 findings.append({
                     "sample_id": row.get("sample_id"), "recording_id": row.get("recording_id"),
-                    "issue_category": category, "severity": triage["severity"], "evidence": triage["evidence"],
+                    "issue_category": category, "severity": triage["severity"], "evidence": confirmed["evidence"],
                     "reviewer": args.model, "review_input_hash": input_hash, "round": round_index,
                     "first_reviewer_category": result["issue_category"], "first_reviewer_evidence": result["evidence"],
                 })
@@ -301,6 +403,7 @@ def main() -> int:
     (run / "content_audit_rounds.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
     write_jsonl(run / "content_audit_samples.jsonl", samples)
     write_jsonl(run / "content_audit_findings.jsonl", findings)
+    write_jsonl(run / "content_audit_hypotheses.jsonl", hypotheses)
     print(json.dumps(report, ensure_ascii=False, indent=2))
     return 0 if report["pass"] else 2
 
