@@ -93,8 +93,13 @@ class CachedContextJudge:
             for row in load_jsonl(cache_path)
             if row.get("judge_input_sha256")
         }
+        self.calls = 0
+        self.cache_hits = 0
+        self.model_calls = 0
+        self.decision_counts: Counter[str] = Counter()
 
     def __call__(self, context_turns: list[dict[str, Any]], target_turn: dict[str, Any]) -> dict[str, Any]:
+        self.calls += 1
         # Lexical overlap is not a semantic relation.  A valid reply such as
         # "Probably" to "Are you coming tomorrow?" shares no content token.
         # Structural invalidity is filtered before selection; every remaining
@@ -109,7 +114,11 @@ class CachedContextJudge:
         key = canonical_sha256(payload)
         prior = self.cache.get(key)
         if prior:
-            return dict(prior)
+            self.cache_hits += 1
+            result = dict(prior)
+            self.decision_counts[str(result.get("state"))] += 1
+            return result
+        self.model_calls += 1
         result = call_context_sufficiency_judge(
             context_turns,
             target_turn,
@@ -125,6 +134,7 @@ class CachedContextJudge:
         with self.path.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(result, ensure_ascii=False, sort_keys=True) + "\n")
         self.cache[key] = dict(result)
+        self.decision_counts[str(result.get("state"))] += 1
         return result
 
 
@@ -177,6 +187,7 @@ def percentile(values: list[int], fraction: float) -> int:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--baseline-run", default=str(DEFAULT_BASELINE_RUN))
+    parser.add_argument("--reference-run", default=str(RUN_ROOT / "audio-reconstruction-v1-recovery-v3-20260919-r6"))
     parser.add_argument("--cache-run", default=str(DEFAULT_CACHE_RUN))
     parser.add_argument("--out-name", default=DEFAULT_OUT_NAME)
     parser.add_argument("--limit", type=int, default=0, help="smoke-test interactions only")
@@ -190,6 +201,7 @@ def main() -> int:
     args = parser.parse_args()
 
     baseline_run = Path(args.baseline_run)
+    reference_run = Path(args.reference_run)
     cache_run = Path(args.cache_run)
     out = RUN_ROOT / args.out_name
     if out.exists() and any(out.iterdir()):
@@ -220,6 +232,10 @@ def main() -> int:
     baseline_ids = set(baseline_by_sample)
     baseline_quarantine_rows = load_jsonl(baseline_run / "quarantine.jsonl")
     baseline_quarantine = {str(row.get("sample_id")): str(row.get("reason")) for row in baseline_quarantine_rows}
+    reference_lexical_rejects = sum(
+        1 for row in load_jsonl(reference_run / "quarantine.jsonl")
+        if row.get("failure_reason") == "DETERMINISTIC_NO_CONTENT_WORD_OVERLAP"
+    )
     baseline_role_votes: dict[tuple[str, str], Counter[str]] = defaultdict(Counter)
     for row in baseline_rows:
         sid = str(row.get("recording_id"))
@@ -1180,6 +1196,10 @@ def main() -> int:
         if row.get("was_baseline_materialized") and row.get("explicit_contradiction")
     )
     baseline_unexplained = len(baseline_ids - materialized_ids) - baseline_explicitly_downgraded
+    materialized_true_new_ids = {
+        str(turn.get("audio_turn_id")) for turn in timeline_rows
+        if turn.get("reconciliation_state") == ReconciliationState.TRUE_NEW.value and turn.get("training_eligible")
+    }
     code_commit, working_tree_dirty = git_state()
     cache_manifest = json.loads((cache_run / "run_manifest.json").read_text(encoding="utf-8"))
     manifest = {
@@ -1223,6 +1243,33 @@ def main() -> int:
         "turn_reconciliation_counts": dict(reconciliation_counts),
         "speaker_resolution_counts": dict(speaker_counts),
         "target_resolution_counts": dict(target_counts),
+        "context_semantic_judge": {
+            "calls": context_judge.calls,
+            "cache_hits": context_judge.cache_hits,
+            "model_calls": context_judge.model_calls,
+            "decisions": dict(context_judge.decision_counts),
+        },
+        "old_lexical_prefilter_rejects": reference_lexical_rejects,
+        "true_new_topology_materialized": len(materialized_true_new_ids),
+        "true_new_selected_in_training": sum(
+            1 for row in materialized_rows
+            for turn_id in row.get("context_turn_ids") or []
+            if str(turn_id) in materialized_true_new_ids
+        ),
+        "true_new_rejected_by_speaker_ambiguity": sum(
+            row.get("reconciliation_state") == ReconciliationState.TRUE_NEW.value
+            and row.get("speaker_state") == SpeakerState.AMBIGUOUS_SPEAKER.value
+            for row in discovered_rows
+        ),
+        "cross_window_anchor_conflicts_found": sum(
+            bool((row.get("speaker_resolution") or {}).get("evidence", {}).get("cluster_anchor_conflict"))
+            for row in discovered_rows
+        ),
+        "cross_window_anchor_conflicts_rejected": sum(
+            bool((row.get("speaker_resolution") or {}).get("evidence", {}).get("cluster_anchor_conflict"))
+            and not row.get("training_eligible")
+            for row in discovered_rows
+        ),
         "quarantine_reason_counts": dict(quarantine_counts),
         "dedup_removed": len(dedup_removed),
         "dedup_removed_by_reason": dict(Counter(row.get("reason") for row in dedup_removed)),

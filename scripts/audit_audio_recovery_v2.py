@@ -159,6 +159,8 @@ def main() -> int:
     context_selections = load_jsonl(run / "context_selection.jsonl")
     validation = json.loads((run / "validation_report.json").read_text(encoding="utf-8"))
     manifest = json.loads((run / "run_manifest.json").read_text(encoding="utf-8"))
+    content_audit_path = run / "content_audit_rounds.json"
+    content_audit = json.loads(content_audit_path.read_text(encoding="utf-8")) if content_audit_path.exists() else None
 
     # Reconciliation is the old/new dedup authority.  Materialized-level dedup
     # can legitimately be empty, so persist suppressed candidate spans as the
@@ -350,7 +352,10 @@ def main() -> int:
         "sampling_audit_pass": audit["pass"],
         "sampling_total_records": audit["total_sampled_records"],
         "consecutive_no_new_issue_rounds": consecutive,
-        "production_gate_passed": bool(validation.get("pass")) and audit["pass"],
+        "content_audit_pass": bool((content_audit or {}).get("pass")),
+        "content_audit_total_records": int((content_audit or {}).get("total_sampled_records") or 0),
+        "content_audit_consecutive_no_new_issue_rounds": int((content_audit or {}).get("consecutive_no_new_systemic_issue_rounds") or 0),
+        "production_gate_passed": bool(validation.get("pass")) and audit["pass"] and bool((content_audit or {}).get("pass")),
     })
     finalizer_commit, finalizer_dirty = git_state()
     manifest["audit_finalizer"] = {
@@ -368,6 +373,7 @@ def main() -> int:
         f"- Audit/finalizer commit: `{finalizer_commit}`",
         f"- Validator pass: `{str(validation.get('pass')).lower()}`",
         f"- Sampling audit pass: `{str(audit['pass']).lower()}`",
+        f"- Open-ended content audit pass: `{str(bool((content_audit or {}).get('pass'))).lower()}`",
         f"- Expensive model stages executed: `{manifest.get('expensive_model_stages_executed')}`",
         "",
         "## Recovery",
@@ -449,6 +455,19 @@ def main() -> int:
             f"- Round {item['round']} `{item['name']}`: {item['sample_count']} records, "
             f"new systemic issues={item['new_systemic_issue_categories']}, result={item['result']}"
         )
+    if content_audit:
+        report.extend([
+            "",
+            "## Open-ended content audit",
+            "",
+            f"- Total reviewed: {content_audit.get('total_sampled_records')}",
+            f"- Consecutive rounds without new systemic issue: {content_audit.get('consecutive_no_new_systemic_issue_rounds')}",
+        ])
+        for item in content_audit.get("rounds") or []:
+            report.append(
+                f"- Round {item.get('round')} `{item.get('name')}`: {item.get('sample_count')} records, "
+                f"new systemic issues={item.get('new_systemic_issue_categories')}, result={item.get('result')}"
+            )
     report.extend([
         f"- Consecutive rounds without new systemic issue: {consecutive}",
         "",
