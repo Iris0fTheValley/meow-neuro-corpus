@@ -88,6 +88,13 @@ def is_non_conversational_sentinel(text: Any) -> bool:
     return normalized_text(text) in SENTINEL_EXACT
 
 
+def sentinel_only_context(turns: Sequence[dict[str, Any]]) -> bool:
+    return bool(turns) and all(
+        is_non_conversational_sentinel(turn.get("resolved_text") or turn.get("text"))
+        for turn in turns
+    )
+
+
 def interval_overlap(a0: float, a1: float, b0: float, b1: float) -> float:
     return max(0.0, min(a1, b1) - max(a0, b0))
 

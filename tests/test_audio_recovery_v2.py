@@ -16,6 +16,7 @@ from audio_evidence.recovery_v2 import (
     resolve_speaker_state,
     resolve_target,
     select_minimal_context,
+    sentinel_only_context,
 )
 
 
@@ -105,6 +106,8 @@ class SpeakerAndSentinelRegressionTests(unittest.TestCase):
     def test_standalone_filtered_is_sentinel_but_natural_sentence_is_not(self):
         self.assertTrue(is_non_conversational_sentinel("Filtered."))
         self.assertFalse(is_non_conversational_sentinel("That word was filtered yesterday."))
+        self.assertTrue(sentinel_only_context([{"resolved_text": "Filtered."}]))
+        self.assertFalse(sentinel_only_context([{"resolved_text": "Filtered."}, {"resolved_text": "Real speech."}]))
 
     def test_unknown_speaker_does_not_default_to_user(self):
         result = resolve_speaker_state(None)

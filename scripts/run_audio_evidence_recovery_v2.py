@@ -42,6 +42,7 @@ from audio_evidence.recovery_v2 import (  # noqa: E402
     resolve_speaker_state,
     resolve_target,
     select_minimal_context,
+    sentinel_only_context,
 )
 from audio_evidence.recovery_validation import validate_recovery_v2  # noqa: E402
 import run_audio_evidence_production as replay  # noqa: E402
@@ -616,13 +617,20 @@ def main() -> int:
                 selection_policy = "MINIMAL_CONTIGUOUS_SUFFIX"
 
             if not selected or sufficiency.get("state") != ContextSufficiencyState.CONTEXT_SUFFICIENT.value:
+                frozen_context_records = [record_turns[turn_id] for turn_id in frozen_context_ids if turn_id in record_turns]
+                explicit_sentinel_contradiction = baseline_materialized and sentinel_only_context(frozen_context_records)
+                failure_reason = (
+                    "NON_CONVERSATIONAL_SENTINEL_ONLY_CONTEXT"
+                    if explicit_sentinel_contradiction
+                    else str(sufficiency.get("reason") or "CONTEXT_INSUFFICIENT")
+                )
                 quarantine_rows.append(QuarantineTrace(
                     sample_id=sample,
                     was_baseline_materialized=baseline_materialized,
                     was_baseline_quarantined=sample in baseline_quarantine,
                     baseline_reason=baseline_quarantine.get(sample),
                     failure_stage="CONTEXT_SELECTION",
-                    failure_reason=str(sufficiency.get("reason") or "CONTEXT_INSUFFICIENT"),
+                    failure_reason=failure_reason,
                     target_interval=target_interval,
                     containing_window_ids=tuple(containing_windows),
                     intersecting_window_ids=tuple(intersecting_windows),
@@ -631,8 +639,8 @@ def main() -> int:
                     diarization_available=evidence_flags["diarization"],
                     identity_evidence_available=target_resolution["identity_evidence_available"],
                     old_new_disagreement_state=target_resolution["state"],
-                    explicit_contradiction=False,
-                    resolution_attempts=("VISIBLE_CONTEXT_MINIMALITY_SEARCH",),
+                    explicit_contradiction=explicit_sentinel_contradiction,
+                    resolution_attempts=("VISIBLE_CONTEXT_MINIMALITY_SEARCH", "NON_CONVERSATIONAL_SENTINEL_FILTER"),
                 ).to_dict())
                 continue
 
