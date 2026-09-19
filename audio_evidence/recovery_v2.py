@@ -809,18 +809,23 @@ def build_context_judge_payload(
     context_turns: Sequence[dict[str, Any]],
     target_turn: dict[str, Any],
 ) -> dict[str, Any]:
+    def compact(text: Any) -> str:
+        # Keep the narrow judge request bounded while preserving the exact
+        # selected turn ordering and role evidence.
+        return str(text or "").strip()[:600]
+
     return {
         "task": "Judge semantic sufficiency of this exact training interaction slice.",
         "selected_context": [
             {
                 "role": str(turn.get("role") or ""),
-                "text": str(turn.get("resolved_text") or ""),
+                "text": compact(turn.get("resolved_text")),
             }
             for turn in context_turns
         ],
         "frozen_target": {
             "role": "assistant",
-            "text": str(target_turn.get("resolved_text") or ""),
+            "text": compact(target_turn.get("resolved_text")),
         },
         "allowed_states": [state.value for state in ContextSufficiencyState],
         "constraints": [
@@ -872,7 +877,7 @@ def call_context_sufficiency_judge(
         "model": model,
         "prompt": prompt,
         "temperature": 0,
-        "max_tokens": 256,
+        "max_tokens": 128,
         "stop": ["<|im_end|>"],
         "stream": False,
     }
