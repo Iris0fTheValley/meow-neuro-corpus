@@ -17,7 +17,9 @@ from enum import Enum
 import hashlib
 import json
 import re
-from typing import Any, Iterable, Optional, Sequence
+from typing import Any, Callable, Iterable, Optional, Sequence
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
 
 
 TARGET_IDENTITIES = {
@@ -69,6 +71,39 @@ class ContextSufficiencyState(str, Enum):
     CONTEXT_SUFFICIENT = "CONTEXT_SUFFICIENT"
     CONTEXT_INSUFFICIENT = "CONTEXT_INSUFFICIENT"
     CONTEXT_AMBIGUOUS = "CONTEXT_AMBIGUOUS"
+
+
+RECOVERY_ALLOWED_RECONCILIATION_STATES = {
+    ReconciliationState.MATCH_EXISTING.value,
+    ReconciliationState.EXTEND_EXISTING.value,
+    ReconciliationState.SPLIT_EXISTING.value,
+    ReconciliationState.MERGE_EXISTING.value,
+    ReconciliationState.TRUE_NEW.value,
+}
+
+
+def reconciliation_recovery_eligible(
+    state: Any,
+    *,
+    boundary_validated: bool = True,
+    role_validated: bool = True,
+) -> bool:
+    """Whether a reconciled turn may be used to recover a previously absent context.
+
+    Baseline monotonic retention is deliberately handled separately.  In
+    particular, an ambiguous audio hypothesis cannot rescue a sample that was
+    previously context-incomplete.
+    """
+    value = str(state or "")
+    if value not in RECOVERY_ALLOWED_RECONCILIATION_STATES:
+        return False
+    if value in {
+        ReconciliationState.EXTEND_EXISTING.value,
+        ReconciliationState.SPLIT_EXISTING.value,
+        ReconciliationState.MERGE_EXISTING.value,
+    }:
+        return bool(boundary_validated and role_validated)
+    return True
 
 
 def canonical_sha256(value: Any) -> str:
@@ -204,6 +239,198 @@ def dominant_diarization_cluster(
     if len(ordered) > 1 and ordered[1][1] >= ordered[0][1] * 0.8:
         return None, overlap_seen
     return ordered[0][0], overlap_seen
+
+
+def build_cluster_speaker_anchors(
+    diarization: Iterable[dict[str, Any]],
+    resolved_old_turns: Iterable[dict[str, Any]],
+    *,
+    minimum_seconds: float = 1.0,
+    dominance_ratio: float = 0.9,
+) -> dict[str, dict[str, Any]]:
+    """Anchor generic clusters to frozen speaker states through timed overlap.
+
+    Generic diarization never creates identity.  It can only carry an already
+    frozen identity state across a contiguous recording after accumulating
+    dominant, non-conflicting overlap with turns resolved directly by the
+    frozen identity authority.
+    """
+    votes: dict[str, dict[str, float]] = {}
+    supporting_turns: dict[str, dict[str, set[str]]] = {}
+    trusted = [
+        turn for turn in resolved_old_turns
+        if (turn.get("speaker_resolution_state") or turn.get("speaker_state")) in {
+            SpeakerState.CONFIRMED_TARGET.value,
+            SpeakerState.CONFIRMED_NON_TARGET.value,
+        }
+        and (turn.get("speaker_resolution") or {}).get("resolution_basis") == "FROZEN_IDENTITY_AUTHORITY"
+    ]
+    for segment in diarization:
+        cluster = str(segment.get("speaker_cluster") or "")
+        if not cluster or segment.get("overlap"):
+            continue
+        start, end = float(segment.get("start", 0)), float(segment.get("end", 0))
+        if end <= start:
+            continue
+        for turn in trusted:
+            amount = interval_overlap(start, end, float(turn["start"]), float(turn["end"]))
+            if amount <= 0:
+                continue
+            state = str(turn.get("speaker_resolution_state") or turn.get("speaker_state"))
+            votes.setdefault(cluster, {}).setdefault(state, 0.0)
+            votes[cluster][state] += amount
+            supporting_turns.setdefault(cluster, {}).setdefault(state, set()).add(str(turn["audio_turn_id"]))
+    result: dict[str, dict[str, Any]] = {}
+    for cluster, state_votes in votes.items():
+        ordered = sorted(state_votes.items(), key=lambda pair: (-pair[1], pair[0]))
+        winner, winner_seconds = ordered[0]
+        total = sum(state_votes.values())
+        ratio = winner_seconds / max(total, 1e-9)
+        confirmed = winner_seconds >= minimum_seconds and ratio >= dominance_ratio
+        result[cluster] = {
+            "speaker_state": winner if confirmed else SpeakerState.AMBIGUOUS_SPEAKER.value,
+            "role": (
+                "assistant" if confirmed and winner == SpeakerState.CONFIRMED_TARGET.value
+                else "user" if confirmed and winner == SpeakerState.CONFIRMED_NON_TARGET.value
+                else None
+            ),
+            "resolution_basis": "FROZEN_IDENTITY_ANCHORED_DIARIZATION_CONTINUITY" if confirmed else "CONFLICTING_OR_INSUFFICIENT_CLUSTER_ANCHORS",
+            "cluster": cluster,
+            "vote_seconds": {key: round(value, 6) for key, value in state_votes.items()},
+            "dominance_ratio": round(ratio, 6),
+            "supporting_old_turn_ids": sorted(supporting_turns.get(cluster, {}).get(winner, set())),
+            "generic_diarization_created_identity": False,
+        }
+    return result
+
+
+def resolve_anchored_cluster_speaker(
+    cluster: Any,
+    anchors: dict[str, dict[str, Any]],
+    *,
+    target_activity_available: bool = False,
+) -> dict[str, Any]:
+    anchor = anchors.get(str(cluster or ""))
+    if anchor and anchor.get("speaker_state") in {
+        SpeakerState.CONFIRMED_TARGET.value,
+        SpeakerState.CONFIRMED_NON_TARGET.value,
+    }:
+        return {
+            "speaker_state": anchor["speaker_state"],
+            "role": anchor["role"],
+            "resolution_basis": anchor["resolution_basis"],
+            "evidence": {
+                "frozen_identity": None,
+                "identity_evidence_available": True,
+                "target_activity_available": bool(target_activity_available),
+                "generic_diarization_available": True,
+                "activity_used_for_identity": False,
+                "generic_diarization_used_for_identity": False,
+                "anchored_cluster_continuity_used": True,
+                "cluster_anchor": anchor,
+            },
+        }
+    return resolve_speaker_state(
+        None,
+        identity_evidence_available=False,
+        target_activity_available=target_activity_available,
+        generic_diarization_available=bool(cluster),
+    )
+
+
+def split_existing_turn(
+    old_turn: dict[str, Any],
+    assigned_tokens: Sequence[dict[str, Any]],
+    cluster_anchors: dict[str, dict[str, Any]],
+    *,
+    is_frozen_target: bool = False,
+    minimum_tokens_per_child: int = 2,
+) -> list[dict[str, Any]]:
+    """Create role-resolved children when timed tokens prove a speaker split."""
+    if is_frozen_target:
+        return []
+    groups: list[list[dict[str, Any]]] = []
+    for token in sorted(assigned_tokens, key=lambda item: (float(item["start"]), float(item["end"]))):
+        cluster = str(token.get("boundary_speaker_cluster") or "")
+        if not cluster:
+            continue
+        if not groups or str(groups[-1][-1].get("boundary_speaker_cluster") or "") != cluster:
+            groups.append([])
+        groups[-1].append(token)
+    if len(groups) < 2 or any(len(group) < minimum_tokens_per_child for group in groups):
+        return []
+    resolutions = [
+        resolve_anchored_cluster_speaker(group[0].get("boundary_speaker_cluster"), cluster_anchors)
+        for group in groups
+    ]
+    states = [resolution["speaker_state"] for resolution in resolutions]
+    if any(state == SpeakerState.AMBIGUOUS_SPEAKER.value for state in states) or len(set(states)) < 2:
+        return []
+    children = []
+    for index, (group, resolution) in enumerate(zip(groups, resolutions)):
+        text = " ".join(str(token.get("text") or "").strip() for token in group).strip()
+        if not text or is_non_conversational_sentinel(text):
+            return []
+        children.append({
+            "audio_turn_id": f"reconciled:split:{old_turn['turn_id']}:{index}",
+            "start": float(group[0]["start"]),
+            "end": float(group[-1]["end"]),
+            "resolved_text": text,
+            "old_turn_ids": [str(old_turn["turn_id"])],
+            "reconciliation_state": ReconciliationState.SPLIT_EXISTING.value,
+            "speaker_cluster": group[0].get("boundary_speaker_cluster"),
+            "speaker_resolution": resolution,
+            "speaker_resolution_state": resolution["speaker_state"],
+            "role": resolution["role"],
+            "boundary_validated": True,
+            "role_validated": True,
+            "source_spans": [
+                {"start": float(token["start"]), "end": float(token["end"]), "text": token.get("text")}
+                for token in group
+            ],
+        })
+    return children
+
+
+def merge_existing_turns(
+    span: dict[str, Any],
+    old_turns: Sequence[dict[str, Any]],
+    cluster_anchors: dict[str, dict[str, Any]],
+    *,
+    frozen_target_turn_ids: set[str],
+) -> Optional[dict[str, Any]]:
+    """Materialize a proven same-speaker merge as a replacement topology node."""
+    ordered = sorted(old_turns, key=lambda turn: (float(turn["start"]), str(turn["turn_id"])))
+    if len(ordered) < 2 or any(str(turn["turn_id"]) in frozen_target_turn_ids for turn in ordered):
+        return None
+    resolution = resolve_anchored_cluster_speaker(span.get("speaker_cluster"), cluster_anchors)
+    if resolution["speaker_state"] == SpeakerState.AMBIGUOUS_SPEAKER.value or span.get("generic_overlap"):
+        return None
+    if text_similarity(" ".join(str(turn.get("text") or "") for turn in ordered), span.get("text")) < 0.6:
+        return None
+    turn_id = "reconciled:merge:" + canonical_sha256({
+        "recording_id": span.get("recording_id"),
+        "old_turn_ids": [str(turn["turn_id"]) for turn in ordered],
+        "cluster": span.get("speaker_cluster"),
+    })[:16]
+    return {
+        "audio_turn_id": turn_id,
+        "start": float(ordered[0]["start"]),
+        "end": float(ordered[-1]["end"]),
+        "resolved_text": " ".join(str(turn.get("text") or "").strip() for turn in ordered).strip(),
+        "old_turn_ids": [str(turn["turn_id"]) for turn in ordered],
+        "reconciliation_state": ReconciliationState.MERGE_EXISTING.value,
+        "speaker_cluster": span.get("speaker_cluster"),
+        "speaker_resolution": resolution,
+        "speaker_resolution_state": resolution["speaker_state"],
+        "role": resolution["role"],
+        "boundary_validated": True,
+        "role_validated": True,
+        "source_spans": [
+            {"start": float(token["start"]), "end": float(token["end"]), "text": token.get("text")}
+            for token in span.get("tokens") or []
+        ],
+    }
 
 
 def assign_tokens_to_old_turns(
@@ -568,11 +795,136 @@ def context_sufficiency(
     }
 
 
+CONTEXT_JUDGE_SYSTEM_PROMPT = (
+    "You are a narrow context-sufficiency judge for an already verified frozen assistant target. "
+    "Use only the selected context and frozen target shown. Do not use hidden history, future turns, "
+    "identity diagnostics, metadata, or external knowledge. Decide whether the selected context makes "
+    "the target a plausible, understandable response. Temporal adjacency alone is never sufficient. "
+    "Return exactly one compact JSON object with state, confidence, and reason. State must be exactly "
+    "CONTEXT_SUFFICIENT, CONTEXT_INSUFFICIENT, or CONTEXT_AMBIGUOUS."
+)
+
+
+def build_context_judge_payload(
+    context_turns: Sequence[dict[str, Any]],
+    target_turn: dict[str, Any],
+) -> dict[str, Any]:
+    return {
+        "task": "Judge semantic sufficiency of this exact training interaction slice.",
+        "selected_context": [
+            {
+                "role": str(turn.get("role") or ""),
+                "text": str(turn.get("resolved_text") or ""),
+            }
+            for turn in context_turns
+        ],
+        "frozen_target": {
+            "role": "assistant",
+            "text": str(target_turn.get("resolved_text") or ""),
+        },
+        "allowed_states": [state.value for state in ContextSufficiencyState],
+        "constraints": [
+            "Use no evidence outside selected_context and frozen_target.",
+            "Do not adjudicate or rewrite the frozen target.",
+            "A short time gap does not establish a response relation.",
+            "Return JSON only.",
+        ],
+        "output_schema": {
+            "state": "CONTEXT_SUFFICIENT | CONTEXT_INSUFFICIENT | CONTEXT_AMBIGUOUS",
+            "confidence": "number 0..1",
+            "reason": "short reason based only on shown text",
+        },
+    }
+
+
+def parse_json_object(text: Any) -> Optional[dict[str, Any]]:
+    value = str(text or "").strip()
+    try:
+        parsed = json.loads(value)
+        return parsed if isinstance(parsed, dict) else None
+    except json.JSONDecodeError:
+        match = re.search(r"\{.*\}", value, flags=re.DOTALL)
+        if not match:
+            return None
+        try:
+            parsed = json.loads(match.group(0))
+            return parsed if isinstance(parsed, dict) else None
+        except json.JSONDecodeError:
+            return None
+
+
+def call_context_sufficiency_judge(
+    context_turns: Sequence[dict[str, Any]],
+    target_turn: dict[str, Any],
+    *,
+    model: str,
+    endpoint: str,
+    timeout_seconds: int = 180,
+) -> dict[str, Any]:
+    payload = build_context_judge_payload(context_turns, target_turn)
+    prompt = (
+        "<|im_start|>system\n" + CONTEXT_JUDGE_SYSTEM_PROMPT
+        + "<|im_end|>\n<|im_start|>user\n"
+        + json.dumps(payload, ensure_ascii=False)
+        + "<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n"
+    )
+    body = {
+        "model": model,
+        "prompt": prompt,
+        "temperature": 0,
+        "max_tokens": 256,
+        "stop": ["<|im_end|>"],
+        "stream": False,
+    }
+    request = Request(
+        endpoint,
+        data=json.dumps(body, ensure_ascii=False).encode("utf-8"),
+        headers={"Content-Type": "application/json; charset=utf-8"},
+        method="POST",
+    )
+    try:
+        with urlopen(request, timeout=timeout_seconds) as response:
+            response_payload = json.loads(response.read().decode("utf-8"))
+        choice = (response_payload.get("choices") or [{}])[0]
+        parsed = parse_json_object(choice.get("text") or (choice.get("message") or {}).get("content"))
+    except (HTTPError, URLError, TimeoutError, OSError, json.JSONDecodeError) as exc:
+        return {
+            "state": ContextSufficiencyState.CONTEXT_AMBIGUOUS.value,
+            "confidence": 0.0,
+            "reason": f"JUDGE_REQUEST_FAILED:{type(exc).__name__}",
+            "checker": "semantic-context-sufficiency-judge-v3",
+            "judge_valid": False,
+            "judge_input_sha256": canonical_sha256(payload),
+            "visible_context_only": True,
+            "hidden_history_accessed": False,
+        }
+    state = str((parsed or {}).get("state") or "").upper()
+    try:
+        confidence = float((parsed or {}).get("confidence"))
+    except (TypeError, ValueError):
+        confidence = -1.0
+    valid = state in {item.value for item in ContextSufficiencyState} and 0.0 <= confidence <= 1.0
+    return {
+        "state": state if valid else ContextSufficiencyState.CONTEXT_AMBIGUOUS.value,
+        "confidence": confidence if valid else 0.0,
+        "reason": str((parsed or {}).get("reason") or "INVALID_JUDGE_OUTPUT")[:500],
+        "checker": "semantic-context-sufficiency-judge-v3",
+        "judge_valid": valid,
+        "judge_model": model,
+        "judge_input_sha256": canonical_sha256(payload),
+        "selected_context_turn_ids": [str(turn["audio_turn_id"]) for turn in context_turns],
+        "selected_target_turn_id": str(target_turn["audio_turn_id"]),
+        "visible_context_only": True,
+        "hidden_history_accessed": False,
+    }
+
+
 def select_minimal_context(
     candidates: Sequence[dict[str, Any]],
     target_turn: dict[str, Any],
     *,
     required_turn_ids: Optional[set[str]] = None,
+    judge: Optional[Callable[[Sequence[dict[str, Any]], dict[str, Any]], dict[str, Any]]] = None,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     """Return the first sufficient contiguous suffix, expanding backwards."""
     required = {str(value) for value in (required_turn_ids or set())}
@@ -582,13 +934,14 @@ def select_minimal_context(
         and turn.get("speaker_state") != SpeakerState.AMBIGUOUS_SPEAKER.value
         and not is_non_conversational_sentinel(turn.get("resolved_text"))
     ]
-    last_result = context_sufficiency([], target_turn)
+    checker = judge or context_sufficiency
+    last_result = checker([], target_turn)
     for size in range(1, len(eligible) + 1):
         selected = eligible[-size:]
         ids = {str(turn["audio_turn_id"]) for turn in selected}
         if required and not required.issubset(ids):
             continue
-        result = context_sufficiency(selected, target_turn)
+        result = checker(selected, target_turn)
         last_result = result
         if result["state"] == ContextSufficiencyState.CONTEXT_SUFFICIENT.value:
             result["candidate_turn_count"] = len(eligible)

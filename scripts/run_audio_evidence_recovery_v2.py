@@ -31,18 +31,24 @@ from audio_evidence.recovery_v2 import (  # noqa: E402
     SpeakerState,
     TargetResolutionState,
     assign_tokens_to_old_turns,
+    build_cluster_speaker_anchors,
     build_candidate_spans,
+    call_context_sufficiency_judge,
     canonical_sha256,
     context_sufficiency,
     deduplicate_recovery_rows,
     interval_overlap,
     is_non_conversational_sentinel,
+    merge_existing_turns,
     reconcile_old_turn,
     reconcile_span,
+    reconciliation_recovery_eligible,
     resolve_speaker_state,
+    resolve_anchored_cluster_speaker,
     resolve_target,
     select_minimal_context,
     sentinel_only_context,
+    split_existing_turn,
 )
 from audio_evidence.recovery_validation import validate_recovery_v2  # noqa: E402
 import run_audio_evidence_production as replay  # noqa: E402
@@ -53,23 +59,66 @@ DATASET = CORPUS / "datasets" / "meow_v02_sft_v2_2_semantic_verified"
 RUN_ROOT = DATASET / "audio_reconstruction_v1"
 DEFAULT_BASELINE_RUN = RUN_ROOT / "audio-reconstruction-v1-real-completion-20260919"
 DEFAULT_CACHE_RUN = RUN_ROOT / "audio-reconstruction-v1-real-context60-bounded120-20260918"
-DEFAULT_OUT_NAME = "audio-reconstruction-v1-recovery-v2-20260919"
+DEFAULT_OUT_NAME = "audio-reconstruction-v1-recovery-v3-20260919"
 CONTEXT_DECISIONS = DATASET / "context_sufficiency_decisions_v2_3.jsonl"
 
-SCHEMA_VERSION = "audio-reconstruction-recovery-v2.0.0"
-THRESHOLD_VERSION = "audio-recovery-v2-thresholds-20260919"
+SCHEMA_VERSION = "audio-reconstruction-recovery-v3.0.0"
+THRESHOLD_VERSION = "audio-recovery-v3-thresholds-20260919"
 TIMEBASE_VERSION = "window-local-to-recording-v1"
 CONFIG = {
     "candidate_search_seconds": 60.0,
     "context_hard_gap_seconds": 8.0,
     "alignment_boundary_tolerance_seconds": 0.12,
     "candidate_span_max_gap_seconds": 1.25,
+    "cluster_anchor_minimum_seconds": 1.0,
+    "cluster_anchor_dominance_ratio": 0.90,
     "old_new_match_similarity": 0.88,
     "old_new_merge_similarity": 0.60,
     "target_audio_match_similarity": 0.86,
     "target_audio_minor_similarity": 0.55,
     "threshold_version": THRESHOLD_VERSION,
 }
+
+
+class CachedContextJudge:
+    def __init__(self, path: Path, *, model: str, endpoint: str):
+        self.path = path
+        self.model = model
+        self.endpoint = endpoint
+        self.cache = {
+            str(row.get("judge_input_sha256")): row
+            for row in load_jsonl(path)
+            if row.get("judge_input_sha256")
+        }
+
+    def __call__(self, context_turns: list[dict[str, Any]], target_turn: dict[str, Any]) -> dict[str, Any]:
+        payload = {
+            "context": [
+                {"role": turn.get("role"), "text": turn.get("resolved_text")}
+                for turn in context_turns
+            ],
+            "target": {"role": "assistant", "text": target_turn.get("resolved_text")},
+        }
+        key = canonical_sha256(payload)
+        prior = self.cache.get(key)
+        if prior:
+            return dict(prior)
+        result = call_context_sufficiency_judge(
+            context_turns,
+            target_turn,
+            model=self.model,
+            endpoint=self.endpoint,
+        )
+        result.update({
+            "judge_input_sha256": key,
+            "judge_model": self.model,
+            "judge_endpoint": self.endpoint,
+        })
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        with self.path.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(result, ensure_ascii=False, sort_keys=True) + "\n")
+        self.cache[key] = dict(result)
+        return result
 
 
 def load_jsonl(path: Path) -> list[dict[str, Any]]:
@@ -124,6 +173,8 @@ def main() -> int:
     parser.add_argument("--cache-run", default=str(DEFAULT_CACHE_RUN))
     parser.add_argument("--out-name", default=DEFAULT_OUT_NAME)
     parser.add_argument("--limit", type=int, default=0, help="smoke-test interactions only")
+    parser.add_argument("--context-judge-model", default="qwen3.8-27b-efficientthink-simpo-lynnstyle")
+    parser.add_argument("--context-judge-endpoint", default="http://127.0.0.1:1234/v1/completions")
     args = parser.parse_args()
 
     baseline_run = Path(args.baseline_run)
@@ -185,6 +236,11 @@ def main() -> int:
         windows_by_recording[str(window["recording_id"])].append(window)
     checkpoint = json.loads((cache_run / "checkpoint.json").read_text(encoding="utf-8")).get("completed") or {}
     cache = EvidenceCache(cache_run / "cache")
+    context_judge = CachedContextJudge(
+        out / "context_sufficiency_judge_cache.jsonl",
+        model=args.context_judge_model,
+        endpoint=args.context_judge_endpoint,
+    )
 
     def cached_stage(window_id: str, stage: str) -> Any:
         key = (checkpoint.get(window_id) or {}).get(stage)
@@ -330,7 +386,12 @@ def main() -> int:
                     turn_id in (token.get("candidate_old_turn_ids") or []) for token in ambiguous_boundary_tokens
                 ),
                 "materialized_as_single_turn": False,
-                "training_eligible": speaker_resolution["speaker_state"] != SpeakerState.AMBIGUOUS_SPEAKER.value,
+                "baseline_monotonic_eligible": speaker_resolution["speaker_state"] != SpeakerState.AMBIGUOUS_SPEAKER.value,
+                "recovery_eligible": reconciliation_recovery_eligible(
+                    reconciliation["reconciliation_state"],
+                    boundary_validated=not bool(reconciliation.get("ambiguous_boundary_token_count")),
+                    role_validated=speaker_resolution["speaker_state"] != SpeakerState.AMBIGUOUS_SPEAKER.value,
+                ),
             })
             reconciliation_rows.append(reconciliation)
             chosen_text = str(reconciliation.get("chosen_text") or old["text"]).strip()
@@ -339,6 +400,14 @@ def main() -> int:
                 speaker_resolution["speaker_state"] != SpeakerState.AMBIGUOUS_SPEAKER.value
                 and not sentinel
                 and bool(chosen_text)
+            )
+            recovery_eligible = (
+                training_eligible
+                and reconciliation_recovery_eligible(
+                    reconciliation["reconciliation_state"],
+                    boundary_validated=not bool(reconciliation.get("ambiguous_boundary_token_count")),
+                    role_validated=speaker_resolution["speaker_state"] != SpeakerState.AMBIGUOUS_SPEAKER.value,
+                )
             )
             text_authority = str(reconciliation.get("chosen_text_authority") or "OLD_TRANSCRIPT")
             record = {
@@ -372,6 +441,8 @@ def main() -> int:
                 "speaker_resolution": speaker_resolution,
                 "role": speaker_resolution["role"],
                 "training_eligible": training_eligible,
+                "baseline_monotonic_eligible": training_eligible,
+                "recovery_eligible": recovery_eligible,
                 "non_conversational_sentinel": sentinel,
                 "reconciliation_state": reconciliation["reconciliation_state"],
                 "source_audio": str((source_manifest.get(sid) or {}).get("audio_path") or f"raw_audio/{sid}.webm"),
@@ -407,6 +478,91 @@ def main() -> int:
                     "evidence": speaker_resolution["evidence"],
                 })
 
+        cluster_anchors = build_cluster_speaker_anchors(
+            diarization,
+            list(record_turns.values()),
+            minimum_seconds=CONFIG["cluster_anchor_minimum_seconds"],
+            dominance_ratio=CONFIG["cluster_anchor_dominance_ratio"],
+        )
+        replaced_for_recovery: set[str] = set()
+
+        # First apply topology corrections whose token-level speaker evidence
+        # is stronger than the stale legacy boundary.
+        for old in old_turns:
+            old_id = str(old["turn_id"])
+            children = split_existing_turn(
+                old,
+                assigned.get(old_id) or [],
+                cluster_anchors,
+                is_frozen_target=old_id in all_target_ids,
+            )
+            if len(children) < 2:
+                continue
+            replaced_for_recovery.add(old_id)
+            record_turns[old_id]["recovery_eligible"] = False
+            reconciliation_rows.append({
+                "candidate_span_id": f"old:{old_id}:split",
+                "recording_id": sid,
+                "old_turn_ids": [old_id],
+                "reconciliation_state": ReconciliationState.SPLIT_EXISTING.value,
+                "chosen_text": None,
+                "chosen_text_authority": "TOPOLOGY_CHILDREN",
+                "materialized_as_single_turn": False,
+                "training_eligible": False,
+                "recovery_eligible": True,
+                "boundary_validated": True,
+                "role_validated": True,
+                "resolution_reason": "TIMED_SPEAKER_BOUNDARY_PROVES_LEGACY_SPLIT",
+            })
+            for child in children:
+                child.update({
+                    "schema_version": "1.0.0",
+                    "pipeline_version": SCHEMA_VERSION,
+                    "recording_id": sid,
+                    "canonical_recording_id": canonical_recording_id,
+                    "recording_family_id": recording_family_id,
+                    "timebase": "SECONDS_FROM_RECORDING_START",
+                    "old_transcript": old["text"],
+                    "new_asr_hypothesis": child["resolved_text"],
+                    "text_resolution_state": "RESOLVED",
+                    "text_authority": "RECONCILED_TEXT",
+                    "text_resolution_provenance": {
+                        "status": "RESOLVED",
+                        "resolver": "TURN_TOPOLOGY_RECONSTRUCTION_V3",
+                        "reconciliation_state": ReconciliationState.SPLIT_EXISTING.value,
+                        "resolution_reason": "TIMED_SPEAKER_BOUNDARY_PROVES_LEGACY_SPLIT",
+                        "resolved_disagreements": ["BOUNDARY_CORRECTION"],
+                    },
+                    "disagreement_flags": [],
+                    "identity": None,
+                    "identity_authority_revision": "multimodal-fusion-proxy-2026-09-12-v2-chat-tts-rejection",
+                    "training_eligible": True,
+                    "baseline_monotonic_eligible": False,
+                    "recovery_eligible": True,
+                    "non_conversational_sentinel": False,
+                    "source_audio": str((source_manifest.get(sid) or {}).get("audio_path") or f"raw_audio/{sid}.webm"),
+                    "source_interval": {"start": child["start"], "end": child["end"], "timebase": "SECONDS_FROM_RECORDING_START"},
+                    "source_window_ids": sorted(set(
+                        value for token in assigned.get(old_id) or []
+                        if token in child.get("source_spans", [])
+                        for value in token.get("source_window_ids", [])
+                    )),
+                    "alignment_token_count": len(child.get("source_spans") or []),
+                    "ambiguous_boundary_token_count": 0,
+                    "target_activity_available": False,
+                    "diarization_available": True,
+                })
+                record_turns[child["audio_turn_id"]] = child
+                timeline_rows.append(child)
+                correction_rows.append({
+                    "audio_turn_id": child["audio_turn_id"],
+                    "recording_id": sid,
+                    "correction_type": "SPLIT_EXISTING",
+                    "old_turn_ids": [old_id],
+                    "legacy_role_validated": True,
+                    "evidence": child.get("source_spans"),
+                })
+
         candidate_spans = build_candidate_spans(
             tokens,
             diarization,
@@ -426,6 +582,66 @@ def main() -> int:
                 "materialized_as_single_turn": False,
                 "training_eligible": False,
             })
+            if entry["reconciliation_state"] == ReconciliationState.MERGE_EXISTING.value:
+                merged = merge_existing_turns(
+                    span,
+                    overlapping,
+                    cluster_anchors,
+                    frozen_target_turn_ids=all_target_ids,
+                )
+                if merged:
+                    entry.update(merged)
+                    entry.update({
+                        "candidate_span_id": span["candidate_span_id"],
+                        "recording_id": sid,
+                        "source_window_ids": span["source_window_ids"],
+                        "materialized_as_single_turn": True,
+                        "training_eligible": True,
+                        "recovery_eligible": True,
+                        "boundary_validated": True,
+                        "role_validated": True,
+                    })
+                    for old_id in merged["old_turn_ids"]:
+                        replaced_for_recovery.add(old_id)
+                        if old_id in record_turns:
+                            record_turns[old_id]["recovery_eligible"] = False
+                    merged.update({
+                        "schema_version": "1.0.0",
+                        "pipeline_version": SCHEMA_VERSION,
+                        "canonical_recording_id": canonical_recording_id,
+                        "recording_family_id": recording_family_id,
+                        "old_transcript": entry.get("old_text"),
+                        "new_asr_hypothesis": entry.get("new_text"),
+                        "text_resolution_state": "RESOLVED",
+                        "text_authority": "OLD_TRANSCRIPT",
+                        "text_resolution_provenance": {
+                            "status": "RESOLVED",
+                            "resolver": "TURN_TOPOLOGY_RECONSTRUCTION_V3",
+                            "reconciliation_state": ReconciliationState.MERGE_EXISTING.value,
+                            "resolution_reason": "SAME_SPEAKER_AUDIO_PROVES_LEGACY_MERGE",
+                            "resolved_disagreements": ["BOUNDARY_CORRECTION"],
+                        },
+                        "disagreement_flags": [],
+                        "identity": None,
+                        "source_audio": str((source_manifest.get(sid) or {}).get("audio_path") or f"raw_audio/{sid}.webm"),
+                        "source_interval": {"start": merged["start"], "end": merged["end"], "timebase": "SECONDS_FROM_RECORDING_START"},
+                        "source_window_ids": span["source_window_ids"],
+                        "alignment_token_count": len(span.get("tokens") or []),
+                        "ambiguous_boundary_token_count": 0,
+                        "target_activity_available": False,
+                        "diarization_available": True,
+                        "non_conversational_sentinel": is_non_conversational_sentinel(merged["resolved_text"]),
+                    })
+                    record_turns[merged["audio_turn_id"]] = merged
+                    timeline_rows.append(merged)
+                    correction_rows.append({
+                        "audio_turn_id": merged["audio_turn_id"],
+                        "recording_id": sid,
+                        "correction_type": "MERGE_EXISTING",
+                        "old_turn_ids": merged["old_turn_ids"],
+                        "legacy_role_validated": True,
+                        "evidence": entry,
+                    })
             if entry["reconciliation_state"] in {
                 ReconciliationState.MERGE_EXISTING.value,
                 ReconciliationState.TRUE_NEW.value,
@@ -433,15 +649,13 @@ def main() -> int:
             }:
                 reconciliation_rows.append(entry)
             if entry["reconciliation_state"] == ReconciliationState.TRUE_NEW.value:
-                speaker_resolution = resolve_speaker_state(
-                    None,
-                    baseline_role=None,
-                    identity_evidence_available=False,
+                speaker_resolution = resolve_anchored_cluster_speaker(
+                    span.get("speaker_cluster"),
+                    cluster_anchors,
                     target_activity_available=any(
                         interval_overlap(float(span["start"]), float(span["end"]), float(item["start"]), float(item["end"])) > 0
                         for item in activity
                     ),
-                    generic_diarization_available=bool(span.get("speaker_cluster")),
                 )
                 discovered = {
                     **span,
@@ -449,15 +663,46 @@ def main() -> int:
                     "speaker_resolution": speaker_resolution,
                     "speaker_state": speaker_resolution["speaker_state"],
                     "candidate_state": "RECONSTRUCTED_CANDIDATE",
-                    "training_eligible": False,
+                    "training_eligible": (
+                        speaker_resolution["speaker_state"] != SpeakerState.AMBIGUOUS_SPEAKER.value
+                        and not is_non_conversational_sentinel(span.get("text"))
+                    ),
+                    "recovery_eligible": (
+                        speaker_resolution["speaker_state"] != SpeakerState.AMBIGUOUS_SPEAKER.value
+                        and not is_non_conversational_sentinel(span.get("text"))
+                    ),
                     "non_conversational_sentinel": is_non_conversational_sentinel(span.get("text")),
                 }
                 discovered_rows.append(discovered)
-                ambiguous_speaker_rows.append({
-                    "audio_turn_id": span["candidate_span_id"],
-                    "recording_id": sid,
-                    **speaker_resolution,
-                })
+                if speaker_resolution["speaker_state"] == SpeakerState.AMBIGUOUS_SPEAKER.value:
+                    ambiguous_speaker_rows.append({
+                        "audio_turn_id": span["candidate_span_id"],
+                        "recording_id": sid,
+                        **speaker_resolution,
+                    })
+                if discovered["training_eligible"]:
+                    discovered["audio_turn_id"] = "audio:new:" + str(span["candidate_span_id"]).split("audio:candidate:", 1)[-1]
+                    entry["audio_turn_id"] = discovered["audio_turn_id"]
+                    entry["training_eligible"] = True
+                    entry["recovery_eligible"] = True
+                    discovered["text_resolution_state"] = "RESOLVED"
+                    discovered["text_authority"] = "RECONSTRUCTED_CANDIDATE"
+                    discovered["text_resolution_provenance"] = {
+                        "status": "RESOLVED",
+                        "resolver": "TURN_TOPOLOGY_RECONSTRUCTION_V3",
+                        "reconciliation_state": ReconciliationState.TRUE_NEW.value,
+                        "resolution_reason": "ANCHORED_SPEAKER_TRUE_NEW",
+                        "resolved_disagreements": [],
+                    }
+                    discovered["resolved_text"] = span["text"]
+                    discovered["speaker_resolution_state"] = speaker_resolution["speaker_state"]
+                    discovered["canonical_recording_id"] = canonical_recording_id
+                    discovered["recording_family_id"] = recording_family_id
+                    discovered["identity"] = None
+                    discovered["source_audio"] = str((source_manifest.get(sid) or {}).get("audio_path") or f"raw_audio/{sid}.webm")
+                    discovered["source_interval"] = {"start": span["start"], "end": span["end"], "timebase": "SECONDS_FROM_RECORDING_START"}
+                    record_turns[discovered["audio_turn_id"]] = discovered
+                    timeline_rows.append(discovered)
 
         for row in sorted(interactions_by_recording[sid], key=lambda item: str(item["sample_id"])):
             sample = str(row["sample_id"])
@@ -569,7 +814,8 @@ def main() -> int:
                 if turn["audio_turn_id"] != target_id
                 and float(turn["end"]) <= target_start + 1e-6
                 and float(turn["start"]) >= floor
-                and turn.get("training_eligible")
+                and turn.get("recovery_eligible")
+                and turn["audio_turn_id"] not in replaced_for_recovery
             ]
             context_candidate_rows.append({
                 "sample_id": sample,
@@ -613,7 +859,11 @@ def main() -> int:
                     selected, sufficiency = select_minimal_context(candidates, target)
                     selection_policy = "MINIMAL_CONTIGUOUS_SUFFIX_FALLBACK"
             else:
-                selected, sufficiency = select_minimal_context(candidates, target)
+                selected, sufficiency = select_minimal_context(
+                    candidates,
+                    target,
+                    judge=context_judge,
+                )
                 selection_policy = "MINIMAL_CONTIGUOUS_SUFFIX"
 
             if not selected or sufficiency.get("state") != ContextSufficiencyState.CONTEXT_SUFFICIENT.value:
@@ -697,7 +947,10 @@ def main() -> int:
 
             selected_set = set(selected_ids)
             original_set = set(frozen_context_ids)
-            audio_ids = {turn_id for turn_id in selected_ids if turn_id.startswith("audio:candidate:")}
+            audio_ids = {
+                turn_id for turn_id in selected_ids
+                if turn_id.startswith("audio:new:")
+            }
             added_existing = sorted(selected_set - original_set - audio_ids)
             reconciled_ids = sorted(
                 turn_id for turn_id in selected_ids
@@ -959,3 +1212,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+    merge_existing_turns,
+    reconciliation_recovery_eligible,

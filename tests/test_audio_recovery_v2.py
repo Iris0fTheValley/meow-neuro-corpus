@@ -8,15 +8,20 @@ from audio_evidence.recovery_v2 import (
     SpeakerState,
     TargetResolutionState,
     assign_tokens_to_old_turns,
+    build_cluster_speaker_anchors,
     build_candidate_spans,
     context_sufficiency,
     is_non_conversational_sentinel,
+    merge_existing_turns,
+    reconciliation_recovery_eligible,
     reconcile_old_turn,
     reconcile_span,
     resolve_speaker_state,
+    resolve_anchored_cluster_speaker,
     resolve_target,
     select_minimal_context,
     sentinel_only_context,
+    split_existing_turn,
 )
 
 
@@ -100,6 +105,71 @@ class TurnReconciliationRegressionTests(unittest.TestCase):
         self.assertEqual(confirmed["role"], "assistant")
         self.assertEqual(unknown["speaker_state"], SpeakerState.AMBIGUOUS_SPEAKER.value)
         self.assertIsNone(unknown["role"])
+
+    def test_ambiguous_reconciliation_cannot_recover_new_context(self):
+        result = reconcile_old_turn(
+            old("t1", 0, 2, "I don't think that's a good idea."),
+            [token("Let's", 0, 0.3), token("go inside", 0.3, 0.8), token("the cave now", 0.8, 1.5)],
+        )
+        self.assertEqual(result["reconciliation_state"], ReconciliationState.AMBIGUOUS.value)
+        self.assertFalse(reconciliation_recovery_eligible(result["reconciliation_state"]))
+
+    def test_cluster_anchor_can_resolve_true_new_without_diarization_becoming_identity(self):
+        old_turn = context_turn("anchor", 0, 2, "user", "Known guest speech")
+        old_turn["speaker_resolution"] = {"resolution_basis": "FROZEN_IDENTITY_AUTHORITY"}
+        diarization = [{"start": 0, "end": 2, "speaker_cluster": "C0", "overlap": False}]
+        anchors = build_cluster_speaker_anchors(diarization, [old_turn])
+        result = resolve_anchored_cluster_speaker("C0", anchors)
+        self.assertEqual(result["speaker_state"], SpeakerState.CONFIRMED_NON_TARGET.value)
+        self.assertFalse(result["evidence"]["generic_diarization_used_for_identity"])
+        self.assertTrue(result["evidence"]["anchored_cluster_continuity_used"])
+
+    def test_split_existing_creates_role_resolved_children(self):
+        anchor_user = context_turn("u", 0, 1, "user", "Known guest")
+        anchor_user["speaker_resolution"] = {"resolution_basis": "FROZEN_IDENTITY_AUTHORITY"}
+        anchor_assistant = context_turn("a", 2, 3, "assistant", "Known target")
+        anchor_assistant["speaker_resolution"] = {"resolution_basis": "FROZEN_IDENTITY_AUTHORITY"}
+        anchors = build_cluster_speaker_anchors(
+            [
+                {"start": 0, "end": 1, "speaker_cluster": "U", "overlap": False},
+                {"start": 2, "end": 3, "speaker_cluster": "A", "overlap": False},
+            ],
+            [anchor_user, anchor_assistant],
+            minimum_seconds=0.5,
+        )
+        values = [
+            {**token("What's your", 10.0, 10.5), "boundary_speaker_cluster": "A"},
+            {**token("plan this time", 10.5, 11.0), "boundary_speaker_cluster": "A"},
+            {**token("My plan is", 11.1, 11.6), "boundary_speaker_cluster": "U"},
+            {**token("to explore more", 11.6, 12.2), "boundary_speaker_cluster": "U"},
+        ]
+        children = split_existing_turn(old("broken", 10, 12.3, "combined"), values, anchors)
+        self.assertEqual([child["role"] for child in children], ["assistant", "user"])
+        self.assertTrue(all(reconciliation_recovery_eligible(child["reconciliation_state"]) for child in children))
+
+    def test_merge_existing_materializes_corrected_topology(self):
+        anchor = context_turn("a", 0, 2, "assistant", "Known target")
+        anchor["speaker_resolution"] = {"resolution_basis": "FROZEN_IDENTITY_AUTHORITY"}
+        anchors = build_cluster_speaker_anchors(
+            [{"start": 0, "end": 2, "speaker_cluster": "A", "overlap": False}],
+            [anchor],
+            minimum_seconds=0.5,
+        )
+        turns = [
+            old("x", 10, 11, "not even God", "assistant"),
+            old("y", 11, 12, "will save you from my wrath.", "user"),
+        ]
+        span = {
+            "recording_id": "r",
+            "speaker_cluster": "A",
+            "generic_overlap": False,
+            "text": "not even God will save you from my wrath",
+            "tokens": [token("not even God", 10, 11), token("will save you from my wrath", 11, 12)],
+        }
+        merged = merge_existing_turns(span, turns, anchors, frozen_target_turn_ids=set())
+        self.assertIsNotNone(merged)
+        self.assertEqual(merged["role"], "assistant")
+        self.assertEqual(merged["reconciliation_state"], ReconciliationState.MERGE_EXISTING.value)
 
 
 class SpeakerAndSentinelRegressionTests(unittest.TestCase):
@@ -201,6 +271,50 @@ class TargetAndContextRegressionTests(unittest.TestCase):
         selected, result = select_minimal_context(candidates, target)
         self.assertEqual(result["state"], ContextSufficiencyState.CONTEXT_SUFFICIENT.value)
         self.assertNotIn("target", [turn["audio_turn_id"] for turn in selected])
+
+    def test_semantic_judge_rejects_temporally_adjacent_unrelated_context(self):
+        target = context_turn("target", 2, 3, "assistant", "Yeah, the password is on the second page.")
+        candidates = [context_turn("pizza", 0, 1, "user", "I like pizza.")]
+
+        def judge(context, _target):
+            related = any("password" in turn["resolved_text"].lower() for turn in context)
+            return {
+                "state": (
+                    ContextSufficiencyState.CONTEXT_SUFFICIENT.value
+                    if related else ContextSufficiencyState.CONTEXT_INSUFFICIENT.value
+                ),
+                "checker": "test-semantic-judge",
+                "judge_valid": True,
+            }
+
+        selected, result = select_minimal_context(candidates, target, judge=judge)
+        self.assertFalse(selected)
+        self.assertEqual(result["state"], ContextSufficiencyState.CONTEXT_INSUFFICIENT.value)
+
+    def test_semantic_judge_accepts_minimal_password_context(self):
+        target = context_turn("target", 4, 5, "assistant", "Yeah, the password is on the second page.")
+        candidates = [
+            context_turn("where", 0, 1, "user", "Where is the password?"),
+            context_turn("history", 1.2, 2, "assistant", "I think it was written somewhere."),
+            context_turn("page", 2.2, 3, "user", "Which page?"),
+        ]
+
+        def judge(context, _target):
+            sufficient = any("password" in turn["resolved_text"].lower() for turn in context) and any(
+                "page" in turn["resolved_text"].lower() for turn in context
+            )
+            return {
+                "state": (
+                    ContextSufficiencyState.CONTEXT_SUFFICIENT.value
+                    if sufficient else ContextSufficiencyState.CONTEXT_INSUFFICIENT.value
+                ),
+                "checker": "test-semantic-judge",
+                "judge_valid": True,
+            }
+
+        selected, result = select_minimal_context(candidates, target, judge=judge)
+        self.assertEqual(result["state"], ContextSufficiencyState.CONTEXT_SUFFICIENT.value)
+        self.assertEqual([turn["audio_turn_id"] for turn in selected], ["where", "history", "page"])
 
 
 if __name__ == "__main__":

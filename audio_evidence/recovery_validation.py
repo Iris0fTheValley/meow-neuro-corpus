@@ -7,6 +7,7 @@ from typing import Any, Iterable, Mapping
 
 from .recovery_v2 import (
     ContextSufficiencyState,
+    ReconciliationState,
     SpeakerState,
     TargetResolutionState,
     is_non_conversational_sentinel,
@@ -17,6 +18,8 @@ from .recovery_v2 import (
 MANDATORY_GATES = (
     "TURN_RECONCILIATION_RESOLVED",
     "NO_UNRECONCILED_AUDIO_NEW",
+    "AMBIGUOUS_RECONCILIATION_USED_FOR_RECOVERY",
+    "UNRESOLVED_TRUE_NEW_IN_TRAINING",
     "NO_OLD_NEW_DUPLICATE",
     "NO_MULTI_OLD_TURN_SWALLOW",
     "NO_BIDIRECTIONAL_BOUNDARY_SMEAR",
@@ -30,6 +33,8 @@ MANDATORY_GATES = (
     "NO_CONTROL_TEXT_IN_MESSAGES",
     "CONTEXT_IS_MINIMAL",
     "CONTEXT_SUFFICIENCY_CHECKED",
+    "CONTEXT_SUFFICIENCY_ACTUALLY_JUDGED",
+    "RECOVERED_SAMPLE_WITHOUT_SUFFICIENT_CONTEXT",
     "NO_BOOL_CONTEXT_SUFFICIENCY",
     "BASELINE_MONOTONICITY",
     "NO_UNEXPLAINED_BASELINE_REGRESSION",
@@ -50,6 +55,7 @@ MANDATORY_GATES = (
     "IDENTITY_AUTHORITY_PRESERVED",
     "FAMILY_SPLIT_LEAKAGE",
     "SEALED_EVAL_LEAKAGE",
+    "CROSS_RECORDING_CONTEXT",
 )
 
 
@@ -98,6 +104,9 @@ def validate_recovery_v2(
     turn_by_id = {str(turn.get("audio_turn_id")): turn for turn in turns}
     reconciliation_by_turn: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for entry in reconciliation_rows:
+        replacement_id = entry.get("audio_turn_id")
+        if replacement_id:
+            reconciliation_by_turn[str(replacement_id)].append(entry)
         for turn_id in entry.get("old_turn_ids") or []:
             reconciliation_by_turn[str(turn_id)].append(entry)
     speaker_by_turn = {str(row.get("audio_turn_id")): row for row in speaker_rows}
@@ -126,8 +135,12 @@ def validate_recovery_v2(
         state = str(entry.get("reconciliation_state") or "")
         if state in {"", "NEW_ASR"}:
             fail("TURN_RECONCILIATION_RESOLVED", entry.get("candidate_span_id"), "legacy/unresolved reconciliation state")
-        if state == "MERGE_EXISTING" and entry.get("materialized_as_single_turn"):
-            fail("NO_MULTI_OLD_TURN_SWALLOW", entry.get("candidate_span_id"), "multi-old span materialized as one role")
+        if (
+            state == "MERGE_EXISTING"
+            and entry.get("materialized_as_single_turn")
+            and not (entry.get("boundary_validated") and entry.get("role_validated"))
+        ):
+            fail("NO_MULTI_OLD_TURN_SWALLOW", entry.get("candidate_span_id"), "multi-old span materialized without same-speaker topology proof")
         if state == "AMBIGUOUS_BOUNDARY" and entry.get("training_eligible"):
             fail("NO_BIDIRECTIONAL_BOUNDARY_SMEAR", entry.get("candidate_span_id"), "ambiguous edge entered training")
 
@@ -136,6 +149,11 @@ def validate_recovery_v2(
     prompt_groups: dict[tuple[str, tuple[str, ...]], list[tuple[str, list[str]]]] = defaultdict(list)
     family_memberships: dict[str, set[str]] = defaultdict(set)
     materialized_ids = set()
+    recovered_classes = {
+        "RECOVERED_FROM_EXISTING_TIMELINE",
+        "RECOVERED_FROM_NEW_AUDIO",
+        "RECOVERED_FROM_BOTH",
+    }
     for row in rows:
         sample = str(row.get("sample_id"))
         materialized_ids.add(sample)
@@ -164,6 +182,15 @@ def validate_recovery_v2(
                 if source is None:
                     fail("TURN_RECONCILIATION_RESOLVED", sample, "message source turn absent")
                     continue
+                source_state = str(source.get("reconciliation_state") or "")
+                recovered = str(row.get("context_reconstruction_class") or "") in recovered_classes and index < len(messages) - 1
+                if recovered and source_state in {
+                    ReconciliationState.AMBIGUOUS.value,
+                    ReconciliationState.AMBIGUOUS_BOUNDARY.value,
+                }:
+                    fail("AMBIGUOUS_RECONCILIATION_USED_FOR_RECOVERY", sample, "ambiguous turn entered recovered context")
+                if source_state == ReconciliationState.TRUE_NEW.value and source.get("speaker_resolution_state") == SpeakerState.AMBIGUOUS_SPEAKER.value:
+                    fail("UNRESOLVED_TRUE_NEW_IN_TRAINING", sample, "unresolved TRUE_NEW source entered messages")
                 if source.get("speaker_resolution_state") == SpeakerState.AMBIGUOUS_SPEAKER.value:
                     fail("SPEAKER_STATE_EXPLICIT", sample, "ambiguous speaker entered messages")
                 if is_non_conversational_sentinel(message.get("content")):
@@ -178,8 +205,20 @@ def validate_recovery_v2(
         sufficiency = sufficiency_by_sample.get(sample)
         if not sufficiency or sufficiency.get("state") != ContextSufficiencyState.CONTEXT_SUFFICIENT.value:
             fail("CONTEXT_SUFFICIENCY_CHECKED", sample, "selected context was not marked sufficient")
+            if str(row.get("context_reconstruction_class") or "") in recovered_classes:
+                fail("RECOVERED_SAMPLE_WITHOUT_SUFFICIENT_CONTEXT", sample, "recovered sample lacks sufficient context")
         if sufficiency and str(sufficiency.get("checker") or "").startswith("bool"):
             fail("NO_BOOL_CONTEXT_SUFFICIENCY", sample, "boolean context checker used")
+        recovered_requires_judge = (
+            str(row.get("context_reconstruction_class") or "") in recovered_classes
+            and not row.get("was_baseline_materialized")
+        )
+        if recovered_requires_judge:
+            if not sufficiency or not (
+                str(sufficiency.get("checker") or "").startswith("semantic-context-sufficiency-judge")
+                and sufficiency.get("judge_valid") is True
+            ):
+                fail("CONTEXT_SUFFICIENCY_ACTUALLY_JUDGED", sample, "recovered sample did not use semantic sufficiency judge")
         target_resolution = target_by_sample.get(sample) or {}
         if target_resolution.get("state") in {
             TargetResolutionState.AUDIO_MAJOR_CONTRADICTION.value,
@@ -197,6 +236,8 @@ def validate_recovery_v2(
         interaction_keys[str(row.get("interaction_dedup_key") or "")].append(sample)
         target_tokens = normalized_tokens(messages[-1].get("content") if messages else "")
         prompt_groups[(str(row.get("recording_id")), tuple(context_ids))].append((sample, target_tokens))
+        if {str(message.get("source_recording_id") or row.get("recording_id")) for message in messages} != {str(row.get("recording_id"))}:
+            fail("CROSS_RECORDING_CONTEXT", sample, "message source recording differs from interaction recording")
         family_memberships[str(row.get("recording_family_id"))].add(str(row.get("final_view_membership")))
 
     for samples in supervised_targets.values():
@@ -275,7 +316,7 @@ def validate_recovery_v2(
         "prefix_ladder_same_target": int(gates["PREFIX_LADDER"] != "PASS"),
         "historical_assistant_loss_leakage": int(gates["HISTORICAL_ASSISTANT_LOSS_LEAKAGE"] != "PASS"),
         "supervised_target_count_per_sample_invalid": int(gates["SINGLE_SUPERVISED_TARGET"] != "PASS"),
-        "cross_recording_context": 0,
+        "cross_recording_context": int(gates.get("CROSS_RECORDING_CONTEXT") == "FAIL"),
         "family_split_leakage": int(gates["FAMILY_SPLIT_LEAKAGE"] != "PASS"),
         "sealed_eval_leakage": int(gates["SEALED_EVAL_LEAKAGE"] != "PASS"),
         "mandatory_validator_not_checked": mandatory_not_checked,
