@@ -18,6 +18,7 @@ class TranscriptDisagreement(str, Enum):
 class TextAuthority(str, Enum):
     OLD_TRANSCRIPT = "OLD_TRANSCRIPT"
     NEW_ASR = "NEW_ASR"
+    RECONCILED_TEXT = "RECONCILED_TEXT"
     ADJUDICATED_TEXT = "ADJUDICATED_TEXT"
 
 
