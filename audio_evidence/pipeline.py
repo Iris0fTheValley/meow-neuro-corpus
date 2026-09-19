@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import hashlib
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Iterable, List, Optional
 
 from .adapters import (
     ASRAdapter,
@@ -16,7 +16,7 @@ from .cache import CheckpointStore, EvidenceCache
 from .contracts import AUDIO_EVIDENCE_SCHEMA_VERSION, PIPELINE_VERSION, TIMEBASE_NORMALIZATION_VERSION, ActivitySegment, AlignmentUnit, ContractError, DiarizationTurn, Interval, ModelProvenance, Timebase, TranscriptHypothesis, interval_from_dict, to_recording_interval
 from .enrollment import EnrollmentBank
 from .routing import AmbiguityRouter, TargetActivityPolicy
-from .transcript import automatic_text_resolution, detect_disagreement
+from .transcript import automatic_text_resolution, detect_disagreement, resolve_frozen_target_text
 
 
 def _activity_from_dict(value: Dict[str, Any], planned_window: Interval) -> ActivitySegment:
@@ -93,16 +93,30 @@ class AudioEvidencePipeline:
         self.router = router or AmbiguityRouter(activity_policy)
         self.allow_synthetic = allow_synthetic
 
-    def _cached(self, stage: str, window: Dict[str, Any], revision: str, parameters: Dict[str, Any], enrollment_revision: str, function):
+    def _cached(self, stage: str, window: Dict[str, Any], revision: str, parameters: Dict[str, Any], enrollment_revision: str, function, *, cache_required: bool = False):
         cache_parameters = dict(parameters)
         cache_parameters["timebase_normalization_version"] = TIMEBASE_NORMALIZATION_VERSION
         key = self.cache.key(str(window["audio_checksum"]), dict(window["merged_interval"]), revision, cache_parameters, enrollment_revision)
+        if cache_required:
+            # Completion-only mode: an evidence stage that is absent from the
+            # frozen cache is unavailable, never recomputed.  This makes it
+            # impossible to trigger an expensive model stage by accident, and
+            # surfaces a cold cache as an explicit finalization failure.
+            cached = self.cache.get(stage, key)
+            if cached is None:
+                # Absent evidence in cache-only mode is a hard failure: silently
+                # degrading to "UNAVAILABLE" would let a cold cache masquerade as
+                # an empty audio result and quietly quarantine valid targets.
+                raise ContractError("%s evidence is absent from the frozen cache for window %s" % (stage, window.get("window_id")))
+            self.checkpoint.record(str(window["window_id"]), stage, key)
+            return cached, True
         payload, hit = self.cache.get_or_compute(stage, key, function)
         self.checkpoint.record(str(window["window_id"]), stage, key)
         return payload, hit
 
-    def process_window(self, window: Dict[str, Any], enrollment_id: str, old_turns: List[Dict[str, Any]], *, force_tse: bool = False, severe_background: bool = False, speaker_ambiguity: bool = False) -> Dict[str, Any]:
+    def process_window(self, window: Dict[str, Any], enrollment_id: str, old_turns: List[Dict[str, Any]], *, force_tse: bool = False, severe_background: bool = False, speaker_ambiguity: bool = False, frozen_verified_target_turn_ids: Optional[Iterable[str]] = None, cache_only: bool = False) -> Dict[str, Any]:
         enrollment = self.bank.confirmed(enrollment_id, allow_synthetic=self.allow_synthetic)
+        frozen_target_ids = {str(value) for value in (frozen_verified_target_turn_ids or [])}
         enrollment_cache_revision = "%s:%s:%s:%s" % (self.bank.revision, enrollment.enrollment_id, enrollment.checksum, enrollment.embedding_revision)
         interval = window.get("merged_interval") or {}
         if interval.get("timebase") != Timebase.RECORDING_SECONDS.value:
@@ -121,7 +135,7 @@ class AudioEvidencePipeline:
         activity_values: List[Dict[str, Any]] = []
         if self.activity is not None:
             try:
-                activity_values, cache_hits["target_activity"] = self._cached("target_activity", window, self.activity.provenance.revision, self.activity.provenance.parameters, enrollment_cache_revision, lambda: [_normalize_timed_value(item.to_dict(), bounded_interval) for item in self.activity.detect(audio, enrollment)])
+                activity_values, cache_hits["target_activity"] = self._cached("target_activity", window, self.activity.provenance.revision, self.activity.provenance.parameters, enrollment_cache_revision, lambda: [_normalize_timed_value(item.to_dict(), bounded_interval) for item in self.activity.detect(audio, enrollment)], cache_required=cache_only)
                 activity_values = [_normalize_timed_value(item, bounded_interval) for item in activity_values]
                 stage_status["target_activity"] = "AVAILABLE"
             except AdapterUnavailable:
@@ -133,7 +147,7 @@ class AudioEvidencePipeline:
         diarization_values: List[Dict[str, Any]] = []
         if self.diarization is not None:
             try:
-                diarization_values, cache_hits["diarization"] = self._cached("diarization", window, self.diarization.provenance.revision, self.diarization.provenance.parameters, enrollment_cache_revision, lambda: [_normalize_timed_value(item.to_dict(), bounded_interval) for item in self.diarization.diarize(audio)])
+                diarization_values, cache_hits["diarization"] = self._cached("diarization", window, self.diarization.provenance.revision, self.diarization.provenance.parameters, enrollment_cache_revision, lambda: [_normalize_timed_value(item.to_dict(), bounded_interval) for item in self.diarization.diarize(audio)], cache_required=cache_only)
                 diarization_values = [_normalize_timed_value(item, bounded_interval) for item in diarization_values]
                 stage_status["diarization"] = "AVAILABLE"
             except AdapterUnavailable:
@@ -178,6 +192,7 @@ class AudioEvidencePipeline:
                 hypothesis_value, cache_hits["asr"] = self._cached(
                     "asr", window, self.asr.provenance.revision, asr_parameters, enrollment_cache_revision,
                     lambda: self.asr.transcribe(asr_audio).to_dict(),
+                    cache_required=cache_only,
                 )
                 model = hypothesis_value["model"]
                 hypothesis = TranscriptHypothesis(
@@ -198,6 +213,7 @@ class AudioEvidencePipeline:
                 alignment_values, cache_hits["alignment"] = self._cached(
                     "alignment", window, self.aligner.provenance.revision, alignment_parameters, enrollment_cache_revision,
                     lambda: [_normalize_timed_value(item.to_dict(), bounded_interval) for item in self.aligner.align(asr_audio, hypothesis.text)],
+                    cache_required=cache_only,
                 )
                 alignment_values = [_normalize_timed_value(item, bounded_interval) for item in alignment_values]
                 alignment = [AlignmentUnit(str(item["text"]), to_recording_interval(interval_from_dict(item), bounded_interval), item.get("confidence")) for item in alignment_values]
@@ -215,6 +231,10 @@ class AudioEvidencePipeline:
             turn_start = float(old.get("start", interval["start"]))
             turn_end = float(old.get("end", interval["end"]))
             turn_alignment = [item for item in alignment if turn_start <= (item.interval.start + item.interval.end) / 2.0 <= turn_end]
+            # ASR produced a window hypothesis that the aligner could not
+            # attribute to this turn: the target span disagrees with the frozen
+            # boundaries.  That is a boundary conflict, not absent evidence.
+            unattributed_target_span = hypothesis is not None and multiple_source_turns and not turn_alignment
             if hypothesis is None:
                 new_text = None
             elif not multiple_source_turns:
@@ -243,6 +263,17 @@ class AudioEvidencePipeline:
                 from .transcript import TranscriptDisagreement
                 disagreement_value = TranscriptDisagreement.BOUNDARY_CHANGE
             text_resolution = automatic_text_resolution(old_text, new_text, disagreement_value)
+            if turn_id in frozen_target_ids:
+                # This turn already owns a frozen semantic-verified truth: the
+                # pre-existing transcript stays the supervisory authority and
+                # the new ASR hypothesis is independent confirmation evidence.
+                text_resolution = resolve_frozen_target_text(
+                    old_text, new_text, disagreement_value,
+                    # No hypothesis of any kind means the ASR stage itself did
+                    # not produce evidence for this window, so the frozen
+                    # transcript stands alone as the authority.
+                    no_new_asr_evidence=hypothesis is None,
+                )
             turns.append({
                 "schema_version": AUDIO_EVIDENCE_SCHEMA_VERSION,
                 "pipeline_version": PIPELINE_VERSION,

@@ -22,6 +22,7 @@ from audio_evidence.contracts import (  # noqa: E402
     ActivitySegment, AlignmentUnit, ContractError, DiarizationTurn, Interval,
     ModelProvenance, Timebase, TranscriptHypothesis, interval_from_dict, to_recording_interval,
 )
+from audio_evidence.deduplication import deduplicate_materialized, removal_counts  # noqa: E402
 from audio_evidence.enrollment import (  # noqa: E402
     EnrollmentBank, EnrollmentReference, VerificationEvidence, VerificationMethod,
     VerificationStatus, VerificationDecision,
@@ -32,7 +33,10 @@ from audio_evidence.materialization import (  # noqa: E402
 from audio_evidence.pipeline import AudioEvidencePipeline  # noqa: E402
 from audio_evidence.planning import AudioWindowPlanner, WindowRequest  # noqa: E402
 from audio_evidence.routing import AmbiguityRouter, RouteReason, TargetActivityPolicy  # noqa: E402
-from audio_evidence.transcript import TranscriptDisagreement, detect_disagreement  # noqa: E402
+from audio_evidence.transcript import (  # noqa: E402
+    TextResolutionState, TranscriptDisagreement, automatic_text_resolution,
+    detect_disagreement, resolve_frozen_target_text,
+)
 from audio_evidence.validation import validate_artifacts  # noqa: E402
 from scripts.run_audio_evidence_v1 import build_parser  # noqa: E402
 
@@ -576,6 +580,142 @@ class IntegrationSmokeTests(unittest.TestCase):
         report = validate_artifacts(bank, [], [], [first, second])
         self.assertEqual(report["gates"]["TARGET_REUSE"], "PASS")
         self.assertEqual(report["gates"]["PREFIX_LADDER"], "PASS")
+
+    def test_hard_dedup_and_prefix_ladder_share_one_removal_ledger(self):
+        """Regression: every dedup stage must reach dedup.jsonl and the manifest.
+
+        A previous revision accumulated ladder removals into an undefined list,
+        which crashed the finalization step after every expensive window had
+        already been computed.  The removal ledger is now a single value.
+        """
+        rows = [
+            {"sample_id": "s1", "recording_id": "rec-1", "context_turn_ids": ["t1"], "interaction_dedup_key": "k1", "messages": [{"role": "assistant", "content": "alpha beta gamma"}]},
+            {"sample_id": "s2", "recording_id": "rec-1", "context_turn_ids": ["t1"], "interaction_dedup_key": "k1", "messages": [{"role": "assistant", "content": "alpha beta gamma"}]},
+            {"sample_id": "s3", "recording_id": "rec-1", "context_turn_ids": ["t1"], "interaction_dedup_key": "k3", "messages": [{"role": "assistant", "content": "alpha beta gamma delta"}]},
+            {"sample_id": "s4", "recording_id": "rec-1", "context_turn_ids": ["t1"], "interaction_dedup_key": "k4", "messages": [{"role": "assistant", "content": "unrelated wording entirely"}]},
+        ]
+        kept, removed = deduplicate_materialized(rows)
+        counts = removal_counts(removed)
+        self.assertEqual([row["sample_id"] for row in kept], ["s1", "s4"])
+        self.assertEqual(counts["duplicate_interaction_provenance"], 1)
+        self.assertEqual(counts["prefix_ladder"], 1)
+        self.assertEqual(len(removed), 2)
+        self.assertEqual({entry["sample_id"] for entry in removed}, {"s2", "s3"})
+        self.assertEqual(sum(counts.values()), len(rows) - len(kept))
+
+    def test_frozen_target_authority_never_lets_new_asr_overwrite_verified_text(self):
+        old = "we should keep the verified frozen target wording"
+        cases = {
+            "MATCH": ("we should keep the verified frozen target wording", TextResolutionState.RESOLVED.value, "NEW_ASR", old),
+            "MINOR_TEXT_CHANGE": ("we should keep the verified frozen target word", TextResolutionState.RESOLVED.value, "OLD_TRANSCRIPT", old),
+            "MISSING_NEW_SPEECH": ("", TextResolutionState.RESOLVED.value, "OLD_TRANSCRIPT", old),
+        }
+        for disagreement_name, (new_text, state, authority, expected_text) in cases.items():
+            # MINOR_TEXT_CHANGE must really classify as minor, so pick a
+            # near-identical hypothesis for that case.
+            candidate = new_text if disagreement_name != "MINOR_TEXT_CHANGE" else "we should keep the verified frozen target wording now"
+            disagreement = detect_disagreement(old, candidate)
+            resolution = resolve_frozen_target_text(old, candidate, disagreement)
+            with self.subTest(case=disagreement_name):
+                self.assertEqual(disagreement.value, disagreement_name)
+                self.assertEqual(resolution["text_resolution_state"], state)
+                self.assertEqual(resolution["text_authority"], authority)
+                self.assertEqual(resolution["resolved_text"], expected_text)
+                self.assertFalse(resolution.get("old_transcript_overwritten", False))
+                self.assertEqual(resolution["text_resolution_provenance"]["evidence"]["new_asr_hypothesis"], candidate or None)
+        for conflict in ("MAJOR_TRANSCRIPT_CONFLICT", "BOUNDARY_CHANGE", "SPEAKER_ASSIGNMENT_CHANGE"):
+            if conflict == "MAJOR_TRANSCRIPT_CONFLICT":
+                disagreement = detect_disagreement(old, "totally unrelated words here")
+            elif conflict == "BOUNDARY_CHANGE":
+                disagreement = detect_disagreement(old, old, boundary_changed=True)
+            else:
+                disagreement = detect_disagreement(old, old, speaker_assignment_changed=True)
+            resolution = resolve_frozen_target_text(old, "totally unrelated words here", disagreement)
+            with self.subTest(conflict=conflict):
+                self.assertEqual(disagreement.value, conflict)
+                self.assertEqual(resolution["text_resolution_state"], TextResolutionState.UNRESOLVED.value)
+                self.assertIsNone(resolution["resolved_text"])
+        missing_old = resolve_frozen_target_text("", "new speech only", detect_disagreement("", "new speech only"))
+        self.assertEqual(missing_old["text_resolution_state"], TextResolutionState.UNRESOLVED.value)
+        self.assertEqual(missing_old["text_resolution_provenance"]["reason"], "FROZEN_TARGET_OLD_TRANSCRIPT_MISSING")
+
+    def test_pipeline_caches_only_mode_never_executes_a_model_stage(self):
+        bank = EnrollmentBank("test-bank", "test-r1")
+        bank.add(confirmed_reference(synthetic=True))
+        with tempfile.TemporaryDirectory() as directory:
+            cache = EvidenceCache(Path(directory) / "cache")
+            calls = []
+            activity_model = ModelProvenance("target_activity", "mock", "r1", {"target_activity_threshold": 0.8, "target_activity_threshold_version": "fixture-v1"})
+            activity = CallableTargetActivityAdapter(activity_model, lambda audio, enr: calls.append("activity") or [ActivitySegment(audio.interval, 0.99, activity_model, enr.enrollment_id)])
+            pipeline = AudioEvidencePipeline(bank, cache, CheckpointStore(Path(directory) / "cp.json"), activity=activity, diarization=None, tse=None, asr=None, aligner=None, allow_synthetic=True)
+            window = window_fixture()
+            # Cold cache: cache-only mode must refuse to run the adapter and
+            # must fail loudly instead of degrading to an empty evidence set.
+            with self.assertRaisesRegex(ContractError, "absent from the frozen cache"):
+                pipeline.process_window(window, "enr-1", [{"audio_turn_id": "t4", "old_transcript": "keep me", "start": 0, "end": 4}], cache_only=True)
+            self.assertEqual(calls, [])
+            # Warm cache: the same window is served from evidence, still with no adapter call.
+            pipeline.process_window(window, "enr-1", [{"audio_turn_id": "t4", "old_transcript": "keep me", "start": 0, "end": 4}])
+            warm = pipeline.process_window(window, "enr-1", [{"audio_turn_id": "t4", "old_transcript": "keep me", "start": 0, "end": 4}], cache_only=True)
+            self.assertEqual(calls, ["activity"])
+            self.assertEqual(warm["stage_status"]["target_activity"], "AVAILABLE")
+            self.assertTrue(warm["cache_hits"]["target_activity"])
+
+    def test_pipeline_resolves_verified_target_under_frozen_authority_only_for_that_turn(self):
+        bank = EnrollmentBank("test-bank", "test-r1")
+        bank.add(confirmed_reference(synthetic=True))
+        asr_model = ModelProvenance("asr", "mock-asr", "r1")
+        align_model = ModelProvenance("alignment", "mock-align", "r1")
+        asr = CallableASRAdapter(asr_model, lambda audio: TranscriptHypothesis("history wording and target words", asr_model, audio.uri))
+        align = CallableForcedAlignmentAdapter(align_model, lambda audio, text: [
+            AlignmentUnit("history wording", Interval(0, 2), 0.9),
+            AlignmentUnit("target words", Interval(2, 4), 0.9),
+        ])
+        with tempfile.TemporaryDirectory() as directory:
+            pipeline = AudioEvidencePipeline(bank, EvidenceCache(Path(directory) / "cache"), CheckpointStore(Path(directory) / "cp.json"), activity=None, diarization=None, tse=None, asr=asr, aligner=align, allow_synthetic=True)
+            window = window_fixture()
+            turns = [
+                {"audio_turn_id": "h1", "role": "assistant", "identity": "NEURO_FAMILY", "old_transcript": "history words", "start": 0, "end": 2},
+                {"audio_turn_id": "t4", "role": "assistant", "identity": "NEURO_FAMILY", "old_transcript": "target words", "start": 2, "end": 4},
+            ]
+            result = pipeline.process_window(window, "enr-1", turns, frozen_verified_target_turn_ids=["t4"])
+        by_id = {turn["audio_turn_id"]: turn for turn in result["turns"]}
+        target, context = by_id["t4"], by_id["h1"]
+        # Exact match under the frozen authority resolves to the new hypothesis.
+        self.assertEqual(target["disagreement_flags"], ["MATCH"])
+        self.assertEqual(target["text_resolution_state"], "RESOLVED")
+        self.assertEqual(target["text_authority"], "NEW_ASR")
+        self.assertEqual(target["resolved_text"], "target words")
+        # The optional context turn stays under the conservative fail-closed
+        # policy even though its text is near-identical to the old transcript.
+        self.assertEqual(context["text_resolution_state"], "UNRESOLVED")
+        self.assertIsNone(context["resolved_text"])
+
+    def test_pipeline_keeps_frozen_target_text_when_new_asr_differs_minorly(self):
+        bank = EnrollmentBank("test-bank", "test-r1")
+        bank.add(confirmed_reference(synthetic=True))
+        asr_model = ModelProvenance("asr", "mock-asr", "r1")
+        align_model = ModelProvenance("alignment", "mock-align", "r1")
+        old_text = "keep the verified frozen target wording here"
+        new_text = "keep the verified frozen target wording there"
+        asr = CallableASRAdapter(asr_model, lambda audio: TranscriptHypothesis(new_text, asr_model, audio.uri))
+        align = CallableForcedAlignmentAdapter(align_model, lambda audio, text: [AlignmentUnit(new_text, Interval(0, 4), 0.9)])
+        with tempfile.TemporaryDirectory() as directory:
+            pipeline = AudioEvidencePipeline(bank, EvidenceCache(Path(directory) / "cache"), CheckpointStore(Path(directory) / "cp.json"), activity=None, diarization=None, tse=None, asr=asr, aligner=align, allow_synthetic=True)
+            result = pipeline.process_window(
+                window_fixture(), "enr-1",
+                [{"audio_turn_id": "t4", "role": "assistant", "identity": "NEURO_FAMILY", "old_transcript": old_text, "start": 0, "end": 4}],
+                frozen_verified_target_turn_ids=["t4"],
+            )
+        turn = result["turns"][0]
+        self.assertEqual(turn["disagreement_flags"], ["MINOR_TEXT_CHANGE"])
+        self.assertEqual(turn["text_resolution_state"], "RESOLVED")
+        self.assertEqual(turn["text_authority"], "OLD_TRANSCRIPT")
+        self.assertEqual(turn["resolved_text"], old_text)
+        provenance = turn["text_resolution_provenance"]
+        self.assertEqual(provenance["new_asr_role"], "INDEPENDENT_AUDIO_CONFIRMATION_EVIDENCE")
+        self.assertEqual(provenance["evidence"]["new_asr_hypothesis"], new_text)
+        self.assertFalse(turn["old_transcript_overwritten"])
 
     def test_validator_traces_every_evidence_stage_and_authority(self):
         bank = EnrollmentBank("bank", "r1")

@@ -4,7 +4,7 @@ import json
 import os
 import time
 from pathlib import Path
-from typing import Any, Callable, Dict
+from typing import Any, Callable, Dict, Optional
 
 from .contracts import ContractError, canonical_sha256
 
@@ -141,23 +141,53 @@ class CheckpointStore:
     def __init__(self, path: Path, *, stale_lock_seconds: float = 3600.0) -> None:
         self.path = path
         self.stale_lock_seconds = stale_lock_seconds
+        self._document: Dict[str, Any] = {}
+        self._loaded = False
+        self._dirty = False
 
     def load(self) -> Dict[str, Any]:
-        if not self.path.exists():
-            return {"schema_version": "1.0.0", "completed": {}}
-        return json.loads(self.path.read_text(encoding="utf-8"))
+        # Memoized: a production run records >10k stage entries, and re-reading
+        # the growing checkpoint file for every record would dominate wall time.
+        if not self._loaded:
+            if not self.path.exists():
+                self._document = {"schema_version": "1.0.0", "completed": {}}
+            else:
+                self._document = json.loads(self.path.read_text(encoding="utf-8"))
+            self._loaded = True
+        return self._document
+
+    def seed(self, document: Optional[Dict[str, Any]]) -> None:
+        """Preload prior durable progress so redundant writes can be skipped."""
+        if not document:
+            return
+        completed = self.load().setdefault("completed", {})
+        for window_id, stages in (document.get("completed") or {}).items():
+            completed.setdefault(str(window_id), {}).update(stages or {})
+
+    def is_recorded(self, window_id: str, stage: str, cache_key: str) -> bool:
+        return (self.load().get("completed", {}).get(str(window_id), {}) or {}).get(stage) == cache_key
 
     def record(self, window_id: str, stage: str, cache_key: str) -> None:
+        if self.is_recorded(window_id, stage, cache_key):
+            return
+        self.load().setdefault("completed", {}).setdefault(str(window_id), {})[stage] = cache_key
+        self._dirty = True
+        self._write()
+
+    def _write(self) -> None:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         lock = self.path.with_suffix(self.path.suffix + ".lockdir")
         _acquire_lock(lock, self.stale_lock_seconds, "checkpoint:%s" % self.path.name)
         temporary = self.path.with_suffix(self.path.suffix + ".%s.tmp" % os.getpid())
         try:
-            value = self.load()
-            value.setdefault("completed", {}).setdefault(window_id, {})[stage] = cache_key
-            temporary.write_text(json.dumps(value, ensure_ascii=False, sort_keys=True, indent=2), encoding="utf-8")
+            temporary.write_text(json.dumps(self._document, ensure_ascii=False, sort_keys=True, indent=2), encoding="utf-8")
             os.replace(str(temporary), str(self.path))
+            self._dirty = False
         finally:
             if temporary.exists():
                 temporary.unlink()
             _release_lock(lock)
+
+    def flush(self) -> None:
+        if self._dirty:
+            self._write()

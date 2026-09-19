@@ -5,7 +5,7 @@ from enum import Enum
 from typing import Any, Dict, Iterable, List
 
 from .contracts import ContractError, MATERIALIZATION_VERSION, canonical_sha256
-from .transcript import TextAuthority, TextResolutionState
+from .transcript import MATERIALIZATION_BLOCKING_FLAGS, TextAuthority, TextResolutionState
 
 
 class FinalViewMembership(str, Enum):
@@ -68,7 +68,7 @@ def materialize_role_preserving(
         except ValueError:
             raise ContractError("selected turn has no explicit text authority")
         resolution = turn.get("text_resolution_provenance") or {}
-        unresolved_flags = {"MAJOR_TRANSCRIPT_CONFLICT", "BOUNDARY_CHANGE", "SPEAKER_ASSIGNMENT_CHANGE", "MINOR_TEXT_CHANGE", "MISSING_OLD_SPEECH", "MISSING_NEW_SPEECH"}
+        unresolved_flags = MATERIALIZATION_BLOCKING_FLAGS
         active_disagreements = unresolved_flags & set(turn.get("disagreement_flags") or [])
         resolved_disagreements = set(resolution.get("resolved_disagreements") or [])
         if active_disagreements and (resolution.get("status") != "RESOLVED" or not active_disagreements.issubset(resolved_disagreements)):

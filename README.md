@@ -14,6 +14,7 @@ This public snapshot contains the reproducibility layer for the M.E.O.W. v0.2 Ne
 - Chat-TTS rejection layer: reject-only; 11 explicit TTS rejects, 78 quarantine/review, 979 no reject across 1,068 clusters. It cannot promote or recalibrate family identity.
 - Candidate grades after identity closure: `S=7,951`, `A=287`; `training_candidate=true` remains `0`.
 - `HUMAN_VERIFIED=0` is not a promotion prerequisite. Source-disjoint multi-evidence `AUTO_TRUSTED` anchors are allowed for calibration and validation, with provenance preserved.
+- Raw-waveform audio reconstruction (`audio-reconstruction-v1-real-completion-20260919`): `4,875` windows re-driven with `0` cache misses and `0` expensive model stages executed; `6,780` materialized rows (`6,744` after dedup), `3,003` quarantined, train/validation/sealed membership `5,507 / 554 / 719`, mandatory validator PASS.
 
 ## Reproduction boundary
 

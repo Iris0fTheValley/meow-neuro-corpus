@@ -2,7 +2,7 @@ from __future__ import annotations
 
 """Finalize a real raw-waveform run without mutating frozen authorities."""
 
-import hashlib, json, os, re, statistics
+import argparse, hashlib, json, os, re, statistics
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -29,7 +29,11 @@ def norm(text):
     return re.sub(r"[^a-z0-9 ]", "", str(text or "").lower()).split()
 
 
-def main():
+def main(run_id=None):
+    global RUN_ID, RUN
+    if run_id:
+        RUN_ID = run_id
+        RUN = DATASET / "audio_reconstruction_v1" / RUN_ID
     rows = load(RUN / "materialized.jsonl")
     pool = {x["sample_id"]: x for x in load(POOL)}
     context_states = {str(x.get("sample_id")): str(x.get("state")) for x in load(CONTEXT_DECISIONS)}
@@ -46,6 +50,10 @@ def main():
     # Hard dedup already performed by the runner. Similarity analysis removes
     # only exact target repeats within the same recording family (mirror or
     # reupload); equal wording across families is a natural repeat.
+    # The runner's removal ledger (hard dedup + prefix ladder) is folded into
+    # the final ledger so dedup.jsonl, the manifest and the finalizer input all
+    # describe the same set of removed rows.
+    runner_ledger = load(RUN / "dedup.jsonl")
     candidates, removed, kept = [], [], []
     for row in sorted(rows, key=lambda x: x["sample_id"]):
         target = norm((row.get("messages") or [{}])[-1].get("content"))
@@ -64,7 +72,10 @@ def main():
             kept.append(row)
     rows = kept
     dump(RUN / "similarity_dedup_candidates.jsonl", candidates)
-    dump(RUN / "dedup.jsonl", removed)
+    ledger = runner_ledger + removed
+    dump(RUN / "dedup.jsonl", ledger)
+    ledger_by_reason = Counter(str(entry.get("reason")) for entry in ledger)
+    runner_ledger_by_reason = Counter(str(entry.get("reason")) for entry in runner_ledger)
 
     # Actual recording-balanced policy: within each frozen split, retain at
     # most ceil(split_count / recording_count) rows per recording and emit a
@@ -112,9 +123,14 @@ def main():
     for item in selected[:100]: print(json.dumps(item, ensure_ascii=False))
 
     report = json.loads((RUN / "run_manifest.json").read_text(encoding="utf-8"))
-    report.update({"materialized_after_dedup": len(rows), "transcript_disagreement_counts": dict(disagreements), "transcript_resolution_counts": dict(resolutions), "dedup": {"input": len(load(RUN / "materialized.jsonl")), "kept": len(rows), "removed": len(removed), "similarity_candidates": len(candidates), "mirror_or_reupload": sum(1 for x in removed if x["reason"] == "similarity_mirror_or_reupload"), "independent_natural_repeat_kept": sum(1 for x in candidates if not x["same_family"])}, "context_recovery": {"input_context_incomplete": sum(1 for sid in pool if context_states.get(sid) == "CONTEXT_INCOMPLETE"), "audio_evidence_recovered": sum(1 for x in rows if context_states.get(x["sample_id"]) == "CONTEXT_INCOMPLETE"), "historical_assistant_enabled": len(history), "remaining_unresolved": len(load(RUN / "quarantine.jsonl"))}, "view_counts": view_counts, "human_semantic_spotcheck": {"sample_count": len(selected), "strata": {k: min(20, len(v)) for k, v in strata.items()}, "artifact": str(RUN / "reports" / "human_semantic_spotcheck.jsonl"), "result": "REVIEWED_TEXT_ROWS"}, "invariants": {"target_reuse": 0, "prefix_ladder": 0, "historical_assistant_loss_leakage": 0, "cross_recording_context": 0, "recording_family_split_leakage": 0, "sealed_eval_leakage": 0, "semantic_authority_mutation": 0, "split_authority_mutation": 0, "unverified_enrollment_usage": 0, "circular_enrollment": 0, "unknown_timebase": 0, "silent_transcript_overwrite": 0}})
+    gates = (report.get("validator") or {}).get("gates") or {}
+    gate_failures = {name: value for name, value in gates.items() if value != "PASS"}
+    report.update({"materialized_after_dedup": len(rows), "transcript_disagreement_counts": dict(disagreements), "transcript_resolution_counts": dict(resolutions), "dedup": {"input": len(load(RUN / "materialized.jsonl")), "kept": len(rows), "removed": len(removed), "runner_ledger_removed": len(runner_ledger), "runner_ledger_by_reason": dict(runner_ledger_by_reason), "total_removed": len(ledger), "total_removed_by_reason": dict(ledger_by_reason), "similarity_candidates": len(candidates), "mirror_or_reupload": sum(1 for x in removed if x["reason"] == "similarity_mirror_or_reupload"), "independent_natural_repeat_kept": sum(1 for x in candidates if not x["same_family"])}, "context_recovery": {"input_context_incomplete": sum(1 for sid in pool if context_states.get(sid) == "CONTEXT_INCOMPLETE"), "audio_evidence_recovered": sum(1 for x in rows if context_states.get(x["sample_id"]) == "CONTEXT_INCOMPLETE"), "historical_assistant_enabled": len(history), "remaining_unresolved": len(load(RUN / "quarantine.jsonl"))}, "view_counts": view_counts, "human_semantic_spotcheck": {"sample_count": len(selected), "strata": {k: min(20, len(v)) for k, v in strata.items()}, "artifact": str(RUN / "reports" / "human_semantic_spotcheck.jsonl"), "result": "REVIEWED_TEXT_ROWS"}, "invariants": {"target_reuse": 0 if gates.get("TARGET_REUSE", "PASS") == "PASS" else -1, "prefix_ladder": 0 if gates.get("PREFIX_LADDER", "PASS") == "PASS" else -1, "historical_assistant_loss_leakage": 0 if gates.get("HISTORICAL_ASSISTANT_LOSS_LEAKAGE", "PASS") == "PASS" else -1, "cross_recording_context": 0 if gates.get("AUDIO_INTERVAL_NO_CROSS_RECORDING", "PASS") == "PASS" else -1, "recording_family_split_leakage": 0 if gates.get("SPLIT_AUTHORITY_PRESERVED", "PASS") == "PASS" else -1, "sealed_eval_leakage": 0 if gates.get("TRAIN_AUTHORITY_CONSISTENT", "PASS") == "PASS" else -1, "semantic_authority_mutation": 0 if gates.get("SEMANTIC_TRUTH_UNCHANGED", "PASS") == "PASS" else -1, "split_authority_mutation": 0 if gates.get("SPLIT_AUTHORITY_PRESERVED", "PASS") == "PASS" else -1, "unverified_enrollment_usage": 0 if gates.get("NO_UNVERIFIED_ENROLLMENT", "PASS") == "PASS" else -1, "circular_enrollment": 0 if gates.get("NO_CIRCULAR_ENROLLMENT_BOOTSTRAP", "PASS") == "PASS" else -1, "unknown_timebase": 0 if gates.get("TIMESTAMP_TIMEBASE_CONSISTENT", "PASS") == "PASS" else -1, "silent_transcript_overwrite": 0 if gates.get("NO_SILENT_TRANSCRIPT_OVERWRITE", "PASS") == "PASS" else -1}, "mandatory_validator": {"pass": bool((report.get("validator") or {}).get("pass")), "non_pass_gates": gate_failures, "error_count": len((report.get("validator") or {}).get("errors") or [])}, "production_completion_gate_passed": bool(rows) and bool((report.get("validator") or {}).get("pass"))})
     (RUN / "reports" / "production_final_report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(json.dumps({"run": RUN_ID, "kept": len(rows), "removed": len(removed), "similarity_candidates": len(candidates), "views": view_counts}, ensure_ascii=False, indent=2))
+    print(json.dumps({"run": RUN_ID, "kept": len(rows), "removed": len(removed), "runner_ledger_removed": len(runner_ledger), "similarity_candidates": len(candidates), "views": view_counts, "validator_pass": report["mandatory_validator"]["pass"]}, ensure_ascii=False, indent=2))
 
 
-if __name__ == "__main__": main()
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--run-id", default=None)
+    main(parser.parse_args().run_id)
