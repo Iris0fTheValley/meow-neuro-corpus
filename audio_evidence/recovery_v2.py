@@ -17,6 +17,7 @@ from enum import Enum
 import hashlib
 import json
 import re
+from bisect import bisect_left
 from typing import Any, Callable, Iterable, Optional, Sequence
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
@@ -585,12 +586,50 @@ def build_candidate_spans(
     window_ids: Sequence[str],
     max_gap: float = 1.25,
 ) -> list[dict[str, Any]]:
+    diarization_sorted = sorted(
+        [dict(item) for item in diarization],
+        key=lambda item: (float(item.get("start", 0)), float(item.get("end", 0))),
+    )
+    diarization_starts = [float(item.get("start", 0)) for item in diarization_sorted]
+
+    def local_dominant(start: float, end: float) -> tuple[Optional[str], bool]:
+        scores: dict[str, float] = {}
+        overlap_seen = False
+        right = bisect_left(diarization_starts, end)
+        index = right - 1
+        while index >= 0:
+            item = diarization_sorted[index]
+            item_start, item_end = float(item.get("start", 0)), float(item.get("end", 0))
+            if item_end <= start:
+                break
+            amount = interval_overlap(start, end, item_start, item_end)
+            if amount > 0:
+                cluster = str(item.get("speaker_cluster") or "UNKNOWN")
+                scores[cluster] = scores.get(cluster, 0.0) + amount
+                overlap_seen = overlap_seen or bool(item.get("overlap"))
+            index -= 1
+        # A very long segment may start before the current bisect window.
+        for item in diarization_sorted[:max(0, index + 1)]:
+            if float(item.get("end", 0)) <= start:
+                continue
+            if float(item.get("start", 0)) < start and float(item.get("end", 0)) > start:
+                amount = interval_overlap(start, end, float(item.get("start", 0)), float(item.get("end", 0)))
+                cluster = str(item.get("speaker_cluster") or "UNKNOWN")
+                scores[cluster] = scores.get(cluster, 0.0) + amount
+                overlap_seen = overlap_seen or bool(item.get("overlap"))
+        if not scores:
+            return None, overlap_seen
+        ordered = sorted(scores.items(), key=lambda pair: (-pair[1], pair[0]))
+        if len(ordered) > 1 and ordered[1][1] >= ordered[0][1] * 0.8:
+            return None, overlap_seen
+        return ordered[0][0], overlap_seen
+
     groups: list[list[dict[str, Any]]] = []
     current: list[dict[str, Any]] = []
     current_cluster: Optional[str] = None
     for token in sorted(tokens, key=lambda item: (float(item["start"]), float(item["end"]))):
         start, end = float(token["start"]), float(token["end"])
-        cluster, overlap = dominant_diarization_cluster(start, end, diarization)
+        cluster, overlap = local_dominant(start, end)
         item = dict(token)
         item["boundary_speaker_cluster"] = cluster
         item["generic_overlap"] = overlap
@@ -616,7 +655,7 @@ def build_candidate_spans(
         if not text:
             continue
         start, end = float(group[0]["start"]), float(group[-1]["end"])
-        cluster, overlap = dominant_diarization_cluster(start, end, diarization)
+        cluster, overlap = local_dominant(start, end)
         spans.append({
             "candidate_span_id": "audio:candidate:%s:%s" % (
                 recording_id,

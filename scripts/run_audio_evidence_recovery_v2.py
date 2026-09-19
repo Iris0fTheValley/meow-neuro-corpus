@@ -40,6 +40,7 @@ from audio_evidence.recovery_v2 import (  # noqa: E402
     interval_overlap,
     is_non_conversational_sentinel,
     merge_existing_turns,
+    normalized_tokens,
     reconcile_old_turn,
     reconcile_span,
     reconciliation_recovery_eligible,
@@ -92,6 +93,32 @@ class CachedContextJudge:
         }
 
     def __call__(self, context_turns: list[dict[str, Any]], target_turn: dict[str, Any]) -> dict[str, Any]:
+        context_text = " ".join(str(turn.get("resolved_text") or "") for turn in context_turns).lower()
+        target_tokens = {
+            token for token in normalized_tokens(str(target_turn.get("resolved_text") or ""))
+            if len(token) > 2
+        }
+        context_tokens = {
+            token for token in normalized_tokens(context_text)
+            if len(token) > 2
+        }
+        # Deterministic conservative prefilter: obviously unrelated suffixes
+        # do not consume a model call, but any lexical relation still goes
+        # through the real semantic judge.
+        if context_turns and not (target_tokens & context_tokens):
+            return {
+                "state": ContextSufficiencyState.CONTEXT_INSUFFICIENT.value,
+                "confidence": 0.99,
+                "reason": "DETERMINISTIC_NO_CONTENT_WORD_OVERLAP",
+                "checker": "deterministic-context-prefilter-v3",
+                "judge_valid": True,
+                "judge_input_sha256": canonical_sha256({
+                    "context": [{"role": turn.get("role"), "text": turn.get("resolved_text")} for turn in context_turns],
+                    "target": target_turn.get("resolved_text"),
+                }),
+                "visible_context_only": True,
+                "hidden_history_accessed": False,
+            }
         payload = {
             "context": [
                 {"role": turn.get("role"), "text": turn.get("resolved_text")}
