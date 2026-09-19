@@ -146,6 +146,8 @@ def audit_materialized_round(
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--run", required=True)
+    parser.add_argument("--hf-artifact-revision", help="Immutable Hub revision containing the complete data artifact upload.")
+    parser.add_argument("--hf-metadata-revision", help="Metadata revision, or an explicit self-reference marker before its final upload.")
     args = parser.parse_args()
     run = Path(args.run)
 
@@ -357,6 +359,14 @@ def main() -> int:
         "content_audit_consecutive_no_new_issue_rounds": int((content_audit or {}).get("consecutive_no_new_systemic_issue_rounds") or 0),
         "production_gate_passed": bool(validation.get("pass")) and audit["pass"] and bool((content_audit or {}).get("pass")),
     })
+    if args.hf_artifact_revision:
+        manifest["hf_artifact_revision"] = args.hf_artifact_revision
+    if args.hf_metadata_revision:
+        manifest["hf_metadata_revision"] = args.hf_metadata_revision
+        manifest["hf_metadata_revision_note"] = (
+            "A metadata commit cannot self-reference its own immutable SHA; the final metadata revision is recorded by the release controller."
+            if args.hf_metadata_revision == "SELF_REFERENTIAL_FINAL_METADATA_COMMIT_REPORTED_EXTERNALLY" else None
+        )
     finalizer_commit, finalizer_dirty = git_state()
     manifest["audit_finalizer"] = {
         "code_commit": finalizer_commit,
@@ -374,6 +384,8 @@ def main() -> int:
         f"- Validator pass: `{str(validation.get('pass')).lower()}`",
         f"- Sampling audit pass: `{str(audit['pass']).lower()}`",
         f"- Open-ended content audit pass: `{str(bool((content_audit or {}).get('pass'))).lower()}`",
+        f"- HF artifact revision: `{manifest.get('hf_artifact_revision', 'NOT_PUBLISHED')}`",
+        f"- HF metadata revision: `{manifest.get('hf_metadata_revision', 'NOT_PUBLISHED')}`",
         f"- Expensive model stages executed: `{manifest.get('expensive_model_stages_executed')}`",
         "",
         "## Recovery",
