@@ -83,43 +83,22 @@ CONFIG = {
 
 
 class CachedContextJudge:
-    def __init__(self, path: Path, *, model: str, endpoint: str):
+    def __init__(self, path: Path, *, model: str, endpoint: str, seed_paths: tuple[Path, ...] = ()):
         self.path = path
         self.model = model
         self.endpoint = endpoint
         self.cache = {
             str(row.get("judge_input_sha256")): row
-            for row in load_jsonl(path)
+            for cache_path in (*seed_paths, path)
+            for row in load_jsonl(cache_path)
             if row.get("judge_input_sha256")
         }
 
     def __call__(self, context_turns: list[dict[str, Any]], target_turn: dict[str, Any]) -> dict[str, Any]:
-        context_text = " ".join(str(turn.get("resolved_text") or "") for turn in context_turns).lower()
-        target_tokens = {
-            token for token in normalized_tokens(str(target_turn.get("resolved_text") or ""))
-            if len(token) > 2
-        }
-        context_tokens = {
-            token for token in normalized_tokens(context_text)
-            if len(token) > 2
-        }
-        # Deterministic conservative prefilter: obviously unrelated suffixes
-        # do not consume a model call, but any lexical relation still goes
-        # through the real semantic judge.
-        if context_turns and not (target_tokens & context_tokens):
-            return {
-                "state": ContextSufficiencyState.CONTEXT_INSUFFICIENT.value,
-                "confidence": 0.99,
-                "reason": "DETERMINISTIC_NO_CONTENT_WORD_OVERLAP",
-                "checker": "deterministic-context-prefilter-v3",
-                "judge_valid": True,
-                "judge_input_sha256": canonical_sha256({
-                    "context": [{"role": turn.get("role"), "text": turn.get("resolved_text")} for turn in context_turns],
-                    "target": target_turn.get("resolved_text"),
-                }),
-                "visible_context_only": True,
-                "hidden_history_accessed": False,
-            }
+        # Lexical overlap is not a semantic relation.  A valid reply such as
+        # "Probably" to "Are you coming tomorrow?" shares no content token.
+        # Structural invalidity is filtered before selection; every remaining
+        # recovery candidate is judged from its visible text.
         payload = {
             "context": [
                 {"role": turn.get("role"), "text": turn.get("resolved_text")}
@@ -204,6 +183,10 @@ def main() -> int:
     parser.add_argument("--context-judge-model", default="qwen3.8-27b-efficientthink-simpo-lynnstyle")
     parser.add_argument("--context-judge-endpoint", default="http://127.0.0.1:1234/v1/completions")
     parser.add_argument("--context-judge-cache", default="")
+    parser.add_argument(
+        "--context-judge-seed-cache", action="append", default=[],
+        help="read-only cache from an earlier compatible visible-context judge run",
+    )
     args = parser.parse_args()
 
     baseline_run = Path(args.baseline_run)
@@ -269,6 +252,7 @@ def main() -> int:
         Path(args.context_judge_cache) if args.context_judge_cache else out / "context_sufficiency_judge_cache.jsonl",
         model=args.context_judge_model,
         endpoint=args.context_judge_endpoint,
+        seed_paths=tuple(Path(value) for value in args.context_judge_seed_cache),
     )
 
     def cached_stage(window_id: str, stage: str) -> Any:
@@ -331,9 +315,16 @@ def main() -> int:
                 item = token_map.setdefault(key, dict(token, source_window_ids=[]))
                 item["source_window_ids"] = sorted(set(item["source_window_ids"]) | {window_id})
             for item in diarization:
-                key = (round(float(item.get("start", 0)), 2), round(float(item.get("end", 0)), 2), str(item.get("speaker_cluster") or "UNKNOWN"))
-                value = diarization_map.setdefault(key, dict(item, source_window_ids=[]))
-                value["source_window_ids"] = sorted(set(value["source_window_ids"]) | {window_id})
+                # Local ECAPA labels are window-scoped. Do not coalesce the
+                # same label across different bounded windows.
+                key = (
+                    window_id,
+                    round(float(item.get("start", 0)), 2),
+                    round(float(item.get("end", 0)), 2),
+                    str(item.get("speaker_cluster") or "UNKNOWN"),
+                )
+                value = diarization_map.setdefault(key, dict(item, source_window_ids=[window_id]))
+                value["source_window_ids"] = [window_id]
             for item in activity:
                 key = (round(float(item.get("start", 0)), 2), round(float(item.get("end", 0)), 2), str(item.get("enrollment_id") or ""))
                 value = activity_map.setdefault(key, dict(item, source_window_ids=[]))
@@ -572,11 +563,7 @@ def main() -> int:
                     "non_conversational_sentinel": False,
                     "source_audio": str((source_manifest.get(sid) or {}).get("audio_path") or f"raw_audio/{sid}.webm"),
                     "source_interval": {"start": child["start"], "end": child["end"], "timebase": "SECONDS_FROM_RECORDING_START"},
-                    "source_window_ids": sorted(set(
-                        value for token in assigned.get(old_id) or []
-                        if token in child.get("source_spans", [])
-                        for value in token.get("source_window_ids", [])
-                    )),
+                    "source_window_ids": list(child.get("source_window_ids") or []),
                     "alignment_token_count": len(child.get("source_spans") or []),
                     "ambiguous_boundary_token_count": 0,
                     "target_activity_available": False,
@@ -680,7 +667,7 @@ def main() -> int:
                 reconciliation_rows.append(entry)
             if entry["reconciliation_state"] == ReconciliationState.TRUE_NEW.value:
                 speaker_resolution = resolve_anchored_cluster_speaker(
-                    span.get("speaker_cluster"),
+                    span.get("speaker_cluster_keys") or span.get("speaker_cluster"),
                     cluster_anchors,
                     target_activity_available=any(
                         interval_overlap(float(span["start"]), float(span["end"]), float(item["start"]), float(item["end"])) > 0

@@ -27,6 +27,10 @@ MANDATORY_GATES = (
     "SPEAKER_STATE_EXPLICIT",
     "NO_UNKNOWN_AS_USER_DEFAULT",
     "NO_ACTIVITY_ONLY_IDENTITY_PROMOTION",
+    "CROSS_WINDOW_LOCAL_CLUSTER_IDENTITY_REUSE",
+    "CONFLICTING_WINDOW_CLUSTER_ANCHOR_IN_TRAINING",
+    "TRUE_NEW_WITH_UNSCOPED_CLUSTER_AUTHORITY",
+    "AMBIGUOUS_SPEAKER_IN_TRAINING",
     "LEGACY_CONTEXT_ROLE_VALIDATED",
     "NO_LEGACY_SPLIT_ROLE_CONTINUATION",
     "NO_SENTINEL_TURN",
@@ -34,6 +38,8 @@ MANDATORY_GATES = (
     "CONTEXT_IS_MINIMAL",
     "CONTEXT_SUFFICIENCY_CHECKED",
     "CONTEXT_SUFFICIENCY_ACTUALLY_JUDGED",
+    "RECOVERED_SAMPLE_WITHOUT_SEMANTIC_CONTEXT_JUDGEMENT",
+    "LEXICAL_OVERLAP_USED_AS_SEMANTIC_REJECTION",
     "RECOVERED_SAMPLE_WITHOUT_SUFFICIENT_CONTEXT",
     "NO_BOOL_CONTEXT_SUFFICIENCY",
     "BASELINE_MONOTONICITY",
@@ -134,6 +140,23 @@ def validate_recovery_v2(
             fail("NO_SENTINEL_TURN", turn_id, "sentinel marked training eligible")
         if not reconciliation_by_turn.get(turn_id):
             fail("TURN_RECONCILIATION_RESOLVED", turn_id, "turn has no reconciliation record")
+        state_for_scope = str(turn.get("reconciliation_state") or "")
+        scope_evidence = (resolution.get("evidence") or {})
+        if state_for_scope in {
+            ReconciliationState.TRUE_NEW.value,
+            ReconciliationState.MERGE_EXISTING.value,
+            ReconciliationState.SPLIT_EXISTING.value,
+        } and scope_evidence.get("anchored_cluster_continuity_used"):
+            scoped_keys = scope_evidence.get("scoped_cluster_keys") or []
+            anchor_states = {
+                str((entry or {}).get("speaker_state") or "")
+                for entry in (scope_evidence.get("cluster_anchors") or [])
+            }
+            if scope_evidence.get("unscoped_cluster_authority") or not scoped_keys or any("::" not in str(key) for key in scoped_keys):
+                fail("TRUE_NEW_WITH_UNSCOPED_CLUSTER_AUTHORITY", turn_id, "topology speaker authority lacks window-local cluster scope")
+                fail("CROSS_WINDOW_LOCAL_CLUSTER_IDENTITY_REUSE", turn_id, "bare local cluster label was used beyond its window")
+            if scope_evidence.get("cluster_anchor_conflict") or len(anchor_states) > 1:
+                fail("CONFLICTING_WINDOW_CLUSTER_ANCHOR_IN_TRAINING", turn_id, "conflicting window-local anchors support topology turn")
 
     for entry in reconciliation_rows:
         state = str(entry.get("reconciliation_state") or "")
@@ -207,6 +230,7 @@ def validate_recovery_v2(
                     fail("UNRESOLVED_TRUE_NEW_IN_TRAINING", sample, "unresolved TRUE_NEW source entered messages")
                 if source.get("speaker_resolution_state") == SpeakerState.AMBIGUOUS_SPEAKER.value:
                     fail("SPEAKER_STATE_EXPLICIT", sample, "ambiguous speaker entered messages")
+                    fail("AMBIGUOUS_SPEAKER_IN_TRAINING", sample, "ambiguous speaker entered messages")
                 if is_non_conversational_sentinel(message.get("content")):
                     fail("NO_CONTROL_TEXT_IN_MESSAGES", sample, "control/sentinel message entered training")
             if len(message.get("source_turn_ids") or []) > 1:
@@ -233,6 +257,7 @@ def validate_recovery_v2(
                 and sufficiency.get("judge_valid") is True
             ):
                 fail("CONTEXT_SUFFICIENCY_ACTUALLY_JUDGED", sample, "recovered sample did not use semantic sufficiency judge")
+                fail("RECOVERED_SAMPLE_WITHOUT_SEMANTIC_CONTEXT_JUDGEMENT", sample, "recovered sample did not use semantic sufficiency judge")
         target_resolution = target_by_sample.get(sample) or {}
         if target_resolution.get("state") in {
             TargetResolutionState.AUDIO_MAJOR_CONTRADICTION.value,
@@ -301,6 +326,12 @@ def validate_recovery_v2(
             fail("QUARANTINE_BASELINE_STATE_TRACEABLE", sample, "baseline state absent")
         if row.get("failure_reason") == "TARGET_AUDIO_EVIDENCE_UNAVAILABLE" and row.get("was_baseline_materialized"):
             fail("TARGET_RESCUE_EVIDENCE_VALID", sample, "baseline regression mislabeled as unavailable evidence")
+        if row.get("failure_reason") == "DETERMINISTIC_NO_CONTENT_WORD_OVERLAP":
+            fail("LEXICAL_OVERLAP_USED_AS_SEMANTIC_REJECTION", sample, "lexical overlap was used as a semantic rejection")
+
+    for row in sufficiency_rows:
+        if row.get("reason") == "DETERMINISTIC_NO_CONTENT_WORD_OVERLAP" or str(row.get("checker") or "").startswith("deterministic-context-prefilter"):
+            fail("LEXICAL_OVERLAP_USED_AS_SEMANTIC_REJECTION", row.get("sample_id"), "lexical overlap was used as a semantic rejection")
 
     if expected_identity_hash != actual_identity_hash:
         fail("IDENTITY_AUTHORITY_PRESERVED", None, "identity authority hash changed")
@@ -322,6 +353,10 @@ def validate_recovery_v2(
         "baseline_unexplained_regression": len(missing_baseline),
         "unknown_speaker_defaulted_to_user": int(gates["NO_UNKNOWN_AS_USER_DEFAULT"] != "PASS"),
         "activity_only_identity_promotion": int(gates["NO_ACTIVITY_ONLY_IDENTITY_PROMOTION"] != "PASS"),
+        "cross_window_local_cluster_identity_reuse": int(gates["CROSS_WINDOW_LOCAL_CLUSTER_IDENTITY_REUSE"] != "PASS"),
+        "conflicting_cluster_anchor_in_training": int(gates["CONFLICTING_WINDOW_CLUSTER_ANCHOR_IN_TRAINING"] != "PASS"),
+        "true_new_with_unscoped_cluster_authority": int(gates["TRUE_NEW_WITH_UNSCOPED_CLUSTER_AUTHORITY"] != "PASS"),
+        "ambiguous_speaker_in_training": int(gates["AMBIGUOUS_SPEAKER_IN_TRAINING"] != "PASS"),
         "unreconciled_audio_new_in_training": int(gates["NO_UNRECONCILED_AUDIO_NEW"] != "PASS"),
         "old_new_duplicate_in_training": int(gates["NO_OLD_NEW_DUPLICATE"] != "PASS"),
         "sentinel_turn_in_training": int(gates["NO_SENTINEL_TURN"] != "PASS" or gates["NO_CONTROL_TEXT_IN_MESSAGES"] != "PASS"),
@@ -334,6 +369,8 @@ def validate_recovery_v2(
         "family_split_leakage": int(gates["FAMILY_SPLIT_LEAKAGE"] != "PASS"),
         "sealed_eval_leakage": int(gates["SEALED_EVAL_LEAKAGE"] != "PASS"),
         "mandatory_validator_not_checked": mandatory_not_checked,
+        "recovered_sample_without_semantic_context_judgement": int(gates["RECOVERED_SAMPLE_WITHOUT_SEMANTIC_CONTEXT_JUDGEMENT"] != "PASS"),
+        "lexical_overlap_used_as_semantic_rejection": int(gates["LEXICAL_OVERLAP_USED_AS_SEMANTIC_REJECTION"] != "PASS"),
     }
     return {
         "schema_version": "2.0.0",

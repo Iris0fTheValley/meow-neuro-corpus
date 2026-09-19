@@ -1,6 +1,10 @@
 from __future__ import annotations
 
 import unittest
+from pathlib import Path
+import sys
+from tempfile import TemporaryDirectory
+from unittest.mock import patch
 
 from audio_evidence.recovery_v2 import (
     ContextSufficiencyState,
@@ -23,6 +27,8 @@ from audio_evidence.recovery_v2 import (
     sentinel_only_context,
     split_existing_turn,
 )
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
+from run_audio_evidence_recovery_v2 import CachedContextJudge
 
 
 def old(turn_id: str, start: float, end: float, text: str, role: str = "user") -> dict:
@@ -117,9 +123,9 @@ class TurnReconciliationRegressionTests(unittest.TestCase):
     def test_cluster_anchor_can_resolve_true_new_without_diarization_becoming_identity(self):
         old_turn = context_turn("anchor", 0, 2, "user", "Known guest speech")
         old_turn["speaker_resolution"] = {"resolution_basis": "FROZEN_IDENTITY_AUTHORITY"}
-        diarization = [{"start": 0, "end": 2, "speaker_cluster": "C0", "overlap": False}]
+        diarization = [{"start": 0, "end": 2, "speaker_cluster": "C0", "source_window_ids": ["w0"], "overlap": False}]
         anchors = build_cluster_speaker_anchors(diarization, [old_turn])
-        result = resolve_anchored_cluster_speaker("C0", anchors)
+        result = resolve_anchored_cluster_speaker("w0::C0", anchors)
         self.assertEqual(result["speaker_state"], SpeakerState.CONFIRMED_NON_TARGET.value)
         self.assertFalse(result["evidence"]["generic_diarization_used_for_identity"])
         self.assertTrue(result["evidence"]["anchored_cluster_continuity_used"])
@@ -131,27 +137,29 @@ class TurnReconciliationRegressionTests(unittest.TestCase):
         anchor_assistant["speaker_resolution"] = {"resolution_basis": "FROZEN_IDENTITY_AUTHORITY"}
         anchors = build_cluster_speaker_anchors(
             [
-                {"start": 0, "end": 1, "speaker_cluster": "U", "overlap": False},
-                {"start": 2, "end": 3, "speaker_cluster": "A", "overlap": False},
+                {"start": 0, "end": 1, "speaker_cluster": "U", "source_window_ids": ["w"], "overlap": False},
+                {"start": 2, "end": 3, "speaker_cluster": "A", "source_window_ids": ["w"], "overlap": False},
             ],
             [anchor_user, anchor_assistant],
             minimum_seconds=0.5,
         )
+        # Each local diarization label is explicitly scoped to the window.
         values = [
-            {**token("What's your", 10.0, 10.5), "boundary_speaker_cluster": "A"},
-            {**token("plan this time", 10.5, 11.0), "boundary_speaker_cluster": "A"},
-            {**token("My plan is", 11.1, 11.6), "boundary_speaker_cluster": "U"},
-            {**token("to explore more", 11.6, 12.2), "boundary_speaker_cluster": "U"},
+            {**token("What's your", 10.0, 10.5), "boundary_speaker_cluster_keys": ["w::A"], "source_window_ids": ["w"]},
+            {**token("plan this time", 10.5, 11.0), "boundary_speaker_cluster_keys": ["w::A"], "source_window_ids": ["w"]},
+            {**token("My plan is", 11.1, 11.6), "boundary_speaker_cluster_keys": ["w::U"], "source_window_ids": ["w"]},
+            {**token("to explore more", 11.6, 12.2), "boundary_speaker_cluster_keys": ["w::U"], "source_window_ids": ["w"]},
         ]
         children = split_existing_turn(old("broken", 10, 12.3, "combined"), values, anchors)
         self.assertEqual([child["role"] for child in children], ["assistant", "user"])
         self.assertTrue(all(reconciliation_recovery_eligible(child["reconciliation_state"]) for child in children))
+        self.assertEqual(children[0]["source_window_ids"], ["w"])
 
     def test_merge_existing_materializes_corrected_topology(self):
         anchor = context_turn("a", 0, 2, "assistant", "Known target")
         anchor["speaker_resolution"] = {"resolution_basis": "FROZEN_IDENTITY_AUTHORITY"}
         anchors = build_cluster_speaker_anchors(
-            [{"start": 0, "end": 2, "speaker_cluster": "A", "overlap": False}],
+            [{"start": 0, "end": 2, "speaker_cluster": "A", "source_window_ids": ["w"], "overlap": False}],
             [anchor],
             minimum_seconds=0.5,
         )
@@ -161,7 +169,7 @@ class TurnReconciliationRegressionTests(unittest.TestCase):
         ]
         span = {
             "recording_id": "r",
-            "speaker_cluster": "A",
+            "speaker_cluster_keys": ["w::A"],
             "generic_overlap": False,
             "text": "not even God will save you from my wrath",
             "tokens": [token("not even God", 10, 11), token("will save you from my wrath", 11, 12)],
@@ -170,6 +178,31 @@ class TurnReconciliationRegressionTests(unittest.TestCase):
         self.assertIsNotNone(merged)
         self.assertEqual(merged["role"], "assistant")
         self.assertEqual(merged["reconciliation_state"], ReconciliationState.MERGE_EXISTING.value)
+
+    def test_same_local_cluster_name_cannot_cross_window_identity(self):
+        guest = context_turn("guest", 0, 2, "user", "Known guest")
+        guest["speaker_resolution"] = {"resolution_basis": "FROZEN_IDENTITY_AUTHORITY"}
+        target = context_turn("target", 10, 12, "assistant", "Known target")
+        target["speaker_resolution"] = {"resolution_basis": "FROZEN_IDENTITY_AUTHORITY"}
+        anchors = build_cluster_speaker_anchors(
+            [
+                {"start": 0, "end": 2, "speaker_cluster": "ECAPA_CLUSTER_00", "source_window_ids": ["window-a"], "overlap": False},
+                {"start": 10, "end": 12, "speaker_cluster": "ECAPA_CLUSTER_00", "source_window_ids": ["window-b"], "overlap": False},
+            ],
+            [guest, target],
+            minimum_seconds=0.5,
+        )
+        self.assertNotEqual(anchors["window-a::ECAPA_CLUSTER_00"]["speaker_state"], anchors["window-b::ECAPA_CLUSTER_00"]["speaker_state"])
+        result = resolve_anchored_cluster_speaker(
+            ["window-a::ECAPA_CLUSTER_00", "window-b::ECAPA_CLUSTER_00"], anchors,
+        )
+        self.assertEqual(result["speaker_state"], SpeakerState.AMBIGUOUS_SPEAKER.value)
+        self.assertTrue(result["evidence"]["cluster_anchor_conflict"])
+
+    def test_bare_local_cluster_label_is_fail_closed(self):
+        result = resolve_anchored_cluster_speaker("ECAPA_CLUSTER_00", {})
+        self.assertEqual(result["speaker_state"], SpeakerState.AMBIGUOUS_SPEAKER.value)
+        self.assertTrue(result["evidence"]["unscoped_cluster_authority"])
 
 
 class SpeakerAndSentinelRegressionTests(unittest.TestCase):
@@ -202,6 +235,20 @@ class SpeakerAndSentinelRegressionTests(unittest.TestCase):
 
 
 class TargetAndContextRegressionTests(unittest.TestCase):
+    def test_lexically_disjoint_context_reaches_semantic_judge(self):
+        context = [context_turn("question", 0, 1, "user", "Are you coming tomorrow?")]
+        target = context_turn("target", 1.1, 1.5, "assistant", "Probably.")
+        with TemporaryDirectory() as directory:
+            with patch("run_audio_evidence_recovery_v2.call_context_sufficiency_judge") as call:
+                call.return_value = {
+                    "state": ContextSufficiencyState.CONTEXT_SUFFICIENT.value,
+                    "checker": "semantic-context-sufficiency-judge-v3",
+                    "judge_valid": True,
+                }
+                result = CachedContextJudge(Path(directory) / "judge.jsonl", model="test", endpoint="http://unused")(context, target)
+        self.assertEqual(result["state"], ContextSufficiencyState.CONTEXT_SUFFICIENT.value)
+        call.assert_called_once()
+
     def test_baseline_target_without_new_audio_remains_confirmed(self):
         result = resolve_target(
             old_text="Frozen target.",

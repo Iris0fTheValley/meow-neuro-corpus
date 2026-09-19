@@ -12,6 +12,7 @@ create semantic, identity, or split authority.  In particular:
 """
 
 from dataclasses import dataclass
+from collections import Counter
 from difflib import SequenceMatcher
 from enum import Enum
 import hashlib
@@ -246,7 +247,14 @@ def annotate_tokens_with_diarization(
     tokens: Iterable[dict[str, Any]],
     diarization: Iterable[dict[str, Any]],
 ) -> list[dict[str, Any]]:
-    """Attach generic boundary clusters to timed tokens with a linear sweep."""
+    """Attach window-scoped generic boundary clusters to timed tokens.
+
+    ECAPA cluster labels are local to a bounded window.  A label such as
+    ``ECAPA_CLUSTER_00`` is therefore deliberately never emitted as an
+    authority-bearing identifier by itself.  Tokens retain every overlapping
+    ``window_id::local_cluster`` observation so downstream topology can demand
+    agreement where a token is reconstructed from more than one window.
+    """
     segments = sorted(
         [dict(item) for item in diarization],
         key=lambda item: (float(item.get("start", 0)), float(item.get("end", 0))),
@@ -257,27 +265,52 @@ def annotate_tokens_with_diarization(
     for raw in sorted(tokens, key=lambda item: (float(item.get("start", 0)), float(item.get("end", 0)))):
         token = dict(raw)
         start, end = float(token.get("start", 0)), float(token.get("end", 0))
+        token_window_ids = {str(value) for value in (token.get("source_window_ids") or []) if str(value)}
         while cursor < len(segments) and float(segments[cursor].get("start", 0)) < end:
             active.append(segments[cursor])
             cursor += 1
         active = [item for item in active if float(item.get("end", 0)) > start]
         scores: dict[str, float] = {}
+        scoped_scores: dict[str, float] = {}
         overlap_seen = False
         for item in active:
+            item_window_ids = {str(value) for value in (item.get("source_window_ids") or []) if str(value)}
+            if token_window_ids and item_window_ids and not (token_window_ids & item_window_ids):
+                continue
             amount = interval_overlap(start, end, float(item.get("start", 0)), float(item.get("end", 0)))
             if amount <= 0:
                 continue
             cluster = str(item.get("speaker_cluster") or "UNKNOWN")
             scores[cluster] = scores.get(cluster, 0.0) + amount
+            window_ids = [str(value) for value in (item.get("source_window_ids") or []) if str(value)]
+            for window_id in window_ids:
+                scoped = scoped_cluster_key(window_id, cluster)
+                scoped_scores[scoped] = scoped_scores.get(scoped, 0.0) + amount
             overlap_seen = overlap_seen or bool(item.get("overlap"))
         ordered = sorted(scores.items(), key=lambda pair: (-pair[1], pair[0]))
         cluster = None
         if ordered and not (len(ordered) > 1 and ordered[1][1] >= ordered[0][1] * 0.8):
             cluster = ordered[0][0]
         token["boundary_speaker_cluster"] = cluster
+        token["boundary_speaker_cluster_keys"] = sorted(scoped_scores)
         token["generic_overlap"] = overlap_seen
         annotated.append(token)
     return annotated
+
+
+def scoped_cluster_key(window_id: Any, local_cluster_id: Any) -> str:
+    """Canonical key for a diarization label that is only valid in one window."""
+    return "%s::%s" % (str(window_id), str(local_cluster_id))
+
+
+def _scoped_keys(value: Any) -> list[str]:
+    """Accept only explicit window-scoped cluster identifiers.
+
+    Bare ECAPA labels are intentionally discarded rather than upgraded through
+    a recording-wide lookup.  This makes an absent scope fail closed.
+    """
+    values = value if isinstance(value, (list, tuple, set)) else [value]
+    return sorted({str(item) for item in values if "::" in str(item)})
 
 
 def build_cluster_speaker_anchors(
@@ -289,10 +322,10 @@ def build_cluster_speaker_anchors(
 ) -> dict[str, dict[str, Any]]:
     """Anchor generic clusters to frozen speaker states through timed overlap.
 
-    Generic diarization never creates identity.  It can only carry an already
-    frozen identity state across a contiguous recording after accumulating
-    dominant, non-conflicting overlap with turns resolved directly by the
-    frozen identity authority.
+    Generic diarization never creates identity. It can only carry an already
+    frozen identity state within the *same bounded window* after accumulating
+    dominant, non-conflicting overlap with turns resolved directly by frozen
+    identity authority. Local labels must not cross window boundaries.
     """
     votes: dict[str, dict[str, float]] = {}
     supporting_turns: dict[str, dict[str, set[str]]] = {}
@@ -306,7 +339,8 @@ def build_cluster_speaker_anchors(
     ]
     for segment in diarization:
         cluster = str(segment.get("speaker_cluster") or "")
-        if not cluster or segment.get("overlap"):
+        window_ids = [str(value) for value in (segment.get("source_window_ids") or []) if str(value)]
+        if not cluster or not window_ids or segment.get("overlap"):
             continue
         start, end = float(segment.get("start", 0)), float(segment.get("end", 0))
         if end <= start:
@@ -316,9 +350,11 @@ def build_cluster_speaker_anchors(
             if amount <= 0:
                 continue
             state = str(turn.get("speaker_resolution_state") or turn.get("speaker_state"))
-            votes.setdefault(cluster, {}).setdefault(state, 0.0)
-            votes[cluster][state] += amount
-            supporting_turns.setdefault(cluster, {}).setdefault(state, set()).add(str(turn["audio_turn_id"]))
+            for window_id in window_ids:
+                cluster_key = scoped_cluster_key(window_id, cluster)
+                votes.setdefault(cluster_key, {}).setdefault(state, 0.0)
+                votes[cluster_key][state] += amount
+                supporting_turns.setdefault(cluster_key, {}).setdefault(state, set()).add(str(turn["audio_turn_id"]))
     result: dict[str, dict[str, Any]] = {}
     for cluster, state_votes in votes.items():
         ordered = sorted(state_votes.items(), key=lambda pair: (-pair[1], pair[0]))
@@ -335,6 +371,9 @@ def build_cluster_speaker_anchors(
             ),
             "resolution_basis": "FROZEN_IDENTITY_ANCHORED_DIARIZATION_CONTINUITY" if confirmed else "CONFLICTING_OR_INSUFFICIENT_CLUSTER_ANCHORS",
             "cluster": cluster,
+            "cluster_scope": cluster.split("::", 1)[0],
+            "local_cluster_id": cluster.split("::", 1)[1],
+            "window_local_authority": True,
             "vote_seconds": {key: round(value, 6) for key, value in state_votes.items()},
             "dominance_ratio": round(ratio, 6),
             "supporting_old_turn_ids": sorted(supporting_turns.get(cluster, {}).get(winner, set())),
@@ -349,11 +388,18 @@ def resolve_anchored_cluster_speaker(
     *,
     target_activity_available: bool = False,
 ) -> dict[str, Any]:
-    anchor = anchors.get(str(cluster or ""))
-    if anchor and anchor.get("speaker_state") in {
+    keys = _scoped_keys(cluster)
+    unscoped = bool(cluster) and not keys
+    anchor_entries = [anchors.get(key) for key in keys]
+    confirmed = {
         SpeakerState.CONFIRMED_TARGET.value,
         SpeakerState.CONFIRMED_NON_TARGET.value,
-    }:
+    }
+    states = [str((entry or {}).get("speaker_state") or "") for entry in anchor_entries]
+    all_scoped_confirmed = bool(keys) and len(anchor_entries) == len(keys) and all(state in confirmed for state in states)
+    conflict = len(set(states)) > 1 or any(entry is None for entry in anchor_entries)
+    if all_scoped_confirmed and len(set(states)) == 1:
+        anchor = anchor_entries[0]
         return {
             "speaker_state": anchor["speaker_state"],
             "role": anchor["role"],
@@ -366,15 +412,31 @@ def resolve_anchored_cluster_speaker(
                 "activity_used_for_identity": False,
                 "generic_diarization_used_for_identity": False,
                 "anchored_cluster_continuity_used": True,
-                "cluster_anchor": anchor,
+                "window_local_cluster_authority": True,
+                "scoped_cluster_keys": keys,
+                "cluster_anchor_conflict": False,
+                "cluster_anchors": anchor_entries,
             },
         }
-    return resolve_speaker_state(
+    result = resolve_speaker_state(
         None,
         identity_evidence_available=False,
         target_activity_available=target_activity_available,
-        generic_diarization_available=bool(cluster),
+        generic_diarization_available=bool(keys),
     )
+    result["evidence"].update({
+        "anchored_cluster_continuity_used": False,
+        "window_local_cluster_authority": bool(keys),
+        "scoped_cluster_keys": keys,
+        "cluster_anchor_conflict": conflict,
+        "unscoped_cluster_authority": unscoped,
+        "cluster_anchors": anchor_entries,
+    })
+    if conflict:
+        result["resolution_basis"] = "CONFLICTING_WINDOW_LOCAL_CLUSTER_ANCHORS"
+    elif keys:
+        result["resolution_basis"] = "INSUFFICIENT_WINDOW_LOCAL_CLUSTER_ANCHORS"
+    return result
 
 
 def split_existing_turn(
@@ -390,16 +452,18 @@ def split_existing_turn(
         return []
     groups: list[list[dict[str, Any]]] = []
     for token in sorted(assigned_tokens, key=lambda item: (float(item["start"]), float(item["end"]))):
-        cluster = str(token.get("boundary_speaker_cluster") or "")
-        if not cluster:
+        cluster_keys = _scoped_keys(token.get("boundary_speaker_cluster_keys"))
+        if not cluster_keys:
             continue
-        if not groups or str(groups[-1][-1].get("boundary_speaker_cluster") or "") != cluster:
+        if not groups:
+            groups.append([])
+        elif _split_token_relation(groups[-1][-1], token) == "different":
             groups.append([])
         groups[-1].append(token)
     if len(groups) < 2 or any(len(group) < minimum_tokens_per_child for group in groups):
         return []
     resolutions = [
-        resolve_anchored_cluster_speaker(group[0].get("boundary_speaker_cluster"), cluster_anchors)
+        resolve_anchored_cluster_speaker(_group_cluster_keys(group), cluster_anchors)
         for group in groups
     ]
     states = [resolution["speaker_state"] for resolution in resolutions]
@@ -417,14 +481,22 @@ def split_existing_turn(
             "resolved_text": text,
             "old_turn_ids": [str(old_turn["turn_id"])],
             "reconciliation_state": ReconciliationState.SPLIT_EXISTING.value,
-            "speaker_cluster": group[0].get("boundary_speaker_cluster"),
+            "speaker_cluster": _group_cluster_keys(group)[0] if len(_group_cluster_keys(group)) == 1 else None,
+            "speaker_cluster_keys": _group_cluster_keys(group),
             "speaker_resolution": resolution,
             "speaker_resolution_state": resolution["speaker_state"],
             "role": resolution["role"],
             "boundary_validated": True,
             "role_validated": True,
+            "source_window_ids": sorted({
+                str(window_id) for token in group for window_id in (token.get("source_window_ids") or [])
+            }),
             "source_spans": [
-                {"start": float(token["start"]), "end": float(token["end"]), "text": token.get("text")}
+                {
+                    "start": float(token["start"]), "end": float(token["end"]), "text": token.get("text"),
+                    "token_id": token.get("token_id"),
+                    "source_window_ids": list(token.get("source_window_ids") or []),
+                }
                 for token in group
             ],
         })
@@ -442,7 +514,9 @@ def merge_existing_turns(
     ordered = sorted(old_turns, key=lambda turn: (float(turn["start"]), str(turn["turn_id"])))
     if len(ordered) < 2 or any(str(turn["turn_id"]) in frozen_target_turn_ids for turn in ordered):
         return None
-    resolution = resolve_anchored_cluster_speaker(span.get("speaker_cluster"), cluster_anchors)
+    resolution = resolve_anchored_cluster_speaker(
+        span.get("speaker_cluster_keys") or span.get("speaker_cluster"), cluster_anchors
+    )
     if resolution["speaker_state"] == SpeakerState.AMBIGUOUS_SPEAKER.value or span.get("generic_overlap"):
         return None
     if text_similarity(" ".join(str(turn.get("text") or "") for turn in ordered), span.get("text")) < 0.6:
@@ -460,16 +534,39 @@ def merge_existing_turns(
         "old_turn_ids": [str(turn["turn_id"]) for turn in ordered],
         "reconciliation_state": ReconciliationState.MERGE_EXISTING.value,
         "speaker_cluster": span.get("speaker_cluster"),
+        "speaker_cluster_keys": _scoped_keys(span.get("speaker_cluster_keys") or span.get("speaker_cluster")),
         "speaker_resolution": resolution,
         "speaker_resolution_state": resolution["speaker_state"],
         "role": resolution["role"],
         "boundary_validated": True,
         "role_validated": True,
         "source_spans": [
-            {"start": float(token["start"]), "end": float(token["end"]), "text": token.get("text")}
+            {
+                "start": float(token["start"]), "end": float(token["end"]), "text": token.get("text"),
+                "token_id": token.get("token_id"),
+                "source_window_ids": list(token.get("source_window_ids") or []),
+            }
             for token in span.get("tokens") or []
         ],
     }
+
+
+def _split_token_relation(left: dict[str, Any], right: dict[str, Any]) -> str:
+    left_map = {key.split("::", 1)[0]: key.split("::", 1)[1] for key in _scoped_keys(left.get("boundary_speaker_cluster_keys"))}
+    right_map = {key.split("::", 1)[0]: key.split("::", 1)[1] for key in _scoped_keys(right.get("boundary_speaker_cluster_keys"))}
+    shared = set(left_map) & set(right_map)
+    if not shared:
+        return "unknown"
+    return "same" if all(left_map[key] == right_map[key] for key in shared) else "different"
+
+
+def _group_cluster_keys(group: Sequence[dict[str, Any]]) -> list[str]:
+    by_window: dict[str, Counter[str]] = {}
+    for token in group:
+        for key in _scoped_keys(token.get("boundary_speaker_cluster_keys")):
+            window_id, local_cluster = key.split("::", 1)
+            by_window.setdefault(window_id, Counter())[local_cluster] += 1
+    return sorted(scoped_cluster_key(window_id, votes.most_common(1)[0][0]) for window_id, votes in by_window.items())
 
 
 def assign_tokens_to_old_turns(
@@ -624,67 +721,56 @@ def build_candidate_spans(
     window_ids: Sequence[str],
     max_gap: float = 1.25,
 ) -> list[dict[str, Any]]:
-    diarization_sorted = sorted(
-        [dict(item) for item in diarization],
-        key=lambda item: (float(item.get("start", 0)), float(item.get("end", 0))),
-    )
-    diarization_starts = [float(item.get("start", 0)) for item in diarization_sorted]
+    # ``diarization`` is intentionally no longer aggregated by bare cluster
+    # name. Tokens have already been annotated with window-local observations.
+    del diarization
 
-    def local_dominant(start: float, end: float) -> tuple[Optional[str], bool]:
-        scores: dict[str, float] = {}
-        overlap_seen = False
-        right = bisect_left(diarization_starts, end)
-        index = right - 1
-        while index >= 0:
-            item = diarization_sorted[index]
-            item_start, item_end = float(item.get("start", 0)), float(item.get("end", 0))
-            if item_end <= start:
-                break
-            amount = interval_overlap(start, end, item_start, item_end)
-            if amount > 0:
-                cluster = str(item.get("speaker_cluster") or "UNKNOWN")
-                scores[cluster] = scores.get(cluster, 0.0) + amount
-                overlap_seen = overlap_seen or bool(item.get("overlap"))
-            index -= 1
-        # A very long segment may start before the current bisect window.
-        for item in diarization_sorted[:max(0, index + 1)]:
-            if float(item.get("end", 0)) <= start:
-                continue
-            if float(item.get("start", 0)) < start and float(item.get("end", 0)) > start:
-                amount = interval_overlap(start, end, float(item.get("start", 0)), float(item.get("end", 0)))
-                cluster = str(item.get("speaker_cluster") or "UNKNOWN")
-                scores[cluster] = scores.get(cluster, 0.0) + amount
-                overlap_seen = overlap_seen or bool(item.get("overlap"))
-        if not scores:
-            return None, overlap_seen
-        ordered = sorted(scores.items(), key=lambda pair: (-pair[1], pair[0]))
-        if len(ordered) > 1 and ordered[1][1] >= ordered[0][1] * 0.8:
-            return None, overlap_seen
-        return ordered[0][0], overlap_seen
+    def key_map(token: dict[str, Any]) -> dict[str, str]:
+        result: dict[str, str] = {}
+        for key in _scoped_keys(token.get("boundary_speaker_cluster_keys")):
+            window_id, local_cluster = key.split("::", 1)
+            result[window_id] = local_cluster
+        return result
+
+    def token_relation(left: dict[str, Any], right: dict[str, Any]) -> str:
+        """same/different/unknown using only shared window-local labels."""
+        left_map, right_map = key_map(left), key_map(right)
+        shared = set(left_map) & set(right_map)
+        if not shared:
+            return "unknown"
+        values = {left_map[window_id] == right_map[window_id] for window_id in shared}
+        return "same" if values == {True} else "different"
+
+    def span_cluster_keys(group: Sequence[dict[str, Any]]) -> list[str]:
+        # A local window can contribute at most one dominant label to a span.
+        votes: dict[str, Counter[str]] = {}
+        for item in group:
+            for window_id, local_cluster in key_map(item).items():
+                votes.setdefault(window_id, Counter())[local_cluster] += 1
+        return sorted(
+            scoped_cluster_key(window_id, counter.most_common(1)[0][0])
+            for window_id, counter in votes.items()
+            if len(counter) == 1 or counter.most_common(2)[0][1] > counter.most_common(2)[1][1]
+        )
 
     groups: list[list[dict[str, Any]]] = []
     current: list[dict[str, Any]] = []
-    current_cluster: Optional[str] = None
     for token in sorted(tokens, key=lambda item: (float(item["start"]), float(item["end"]))):
         start, end = float(token["start"]), float(token["end"])
-        cluster, overlap = local_dominant(start, end)
         item = dict(token)
-        item["boundary_speaker_cluster"] = cluster
-        item["generic_overlap"] = overlap
         hard_break = bool(
             current
             and (
                 start - float(current[-1]["end"]) > max_gap
-                or overlap
+                or item.get("generic_overlap")
                 or current[-1].get("generic_overlap")
-                or (cluster and current_cluster and cluster != current_cluster)
+                or token_relation(current[-1], item) == "different"
             )
         )
         if hard_break:
             groups.append(current)
             current = []
         current.append(item)
-        current_cluster = cluster or current_cluster
     if current:
         groups.append(current)
     spans = []
@@ -693,11 +779,19 @@ def build_candidate_spans(
         if not text:
             continue
         start, end = float(group[0]["start"]), float(group[-1]["end"])
-        cluster, overlap = local_dominant(start, end)
+        cluster_keys = span_cluster_keys(group)
+        source_window_ids = sorted({
+            str(window_id)
+            for token in group
+            for window_id in (token.get("source_window_ids") or [])
+        })
+        # A cluster label has no recording-global meaning. Retain a readable
+        # compatibility field only when exactly one scoped key supports span.
+        cluster = cluster_keys[0] if len(cluster_keys) == 1 else None
         spans.append({
             "candidate_span_id": "audio:candidate:%s:%s" % (
                 recording_id,
-                canonical_sha256({"windows": sorted(window_ids), "start": round(start, 3), "end": round(end, 3), "text": normalized_text(text)})[:16],
+                canonical_sha256({"windows": source_window_ids, "start": round(start, 3), "end": round(end, 3), "text": normalized_text(text)})[:16],
             ),
             "recording_id": recording_id,
             "start": start,
@@ -705,8 +799,9 @@ def build_candidate_spans(
             "text": text,
             "tokens": group,
             "speaker_cluster": cluster,
-            "generic_overlap": overlap,
-            "source_window_ids": sorted(set(window_ids)),
+            "speaker_cluster_keys": cluster_keys,
+            "generic_overlap": any(bool(token.get("generic_overlap")) for token in group),
+            "source_window_ids": source_window_ids,
             "candidate_index": index,
         })
     return spans
