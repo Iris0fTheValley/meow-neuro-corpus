@@ -585,6 +585,26 @@ def main() -> int:
                     "target_activity_available": False,
                     "diarization_available": True,
                 })
+                # The parent split event records the legacy boundary repair;
+                # each materialized child also needs a direct reconciliation
+                # ledger entry so validators can resolve its source topology.
+                reconciliation_rows.append({
+                    "audio_turn_id": child["audio_turn_id"],
+                    "candidate_span_id": f"old:{old_id}:split:{child['audio_turn_id'].rsplit(':', 1)[-1]}",
+                    "recording_id": sid,
+                    "old_turn_ids": [old_id],
+                    "reconciliation_state": ReconciliationState.SPLIT_EXISTING.value,
+                    "chosen_text": child["resolved_text"],
+                    "chosen_text_authority": "TOPOLOGY_CHILDREN",
+                    "materialized_as_single_turn": False,
+                    "training_eligible": True,
+                    "recovery_eligible": True,
+                    "boundary_validated": True,
+                    "role_validated": True,
+                    "resolution_reason": "TIMED_SPEAKER_BOUNDARY_PROVES_LEGACY_SPLIT",
+                    "source_window_ids": list(child.get("source_window_ids") or []),
+                    "source_spans": list(child.get("source_spans") or []),
+                })
                 record_turns[child["audio_turn_id"]] = child
                 timeline_rows.append(child)
                 correction_rows.append({
