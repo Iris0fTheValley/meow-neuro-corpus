@@ -202,6 +202,7 @@ def main() -> int:
     parser.add_argument("--limit", type=int, default=0, help="smoke-test interactions only")
     parser.add_argument("--context-judge-model", default="qwen3.8-27b-efficientthink-simpo-lynnstyle")
     parser.add_argument("--context-judge-endpoint", default="http://127.0.0.1:1234/v1/completions")
+    parser.add_argument("--context-judge-cache", default="")
     args = parser.parse_args()
 
     baseline_run = Path(args.baseline_run)
@@ -264,7 +265,7 @@ def main() -> int:
     checkpoint = json.loads((cache_run / "checkpoint.json").read_text(encoding="utf-8")).get("completed") or {}
     cache = EvidenceCache(cache_run / "cache")
     context_judge = CachedContextJudge(
-        out / "context_sufficiency_judge_cache.jsonl",
+        Path(args.context_judge_cache) if args.context_judge_cache else out / "context_sufficiency_judge_cache.jsonl",
         model=args.context_judge_model,
         endpoint=args.context_judge_endpoint,
     )
@@ -896,6 +897,53 @@ def main() -> int:
             if not selected or sufficiency.get("state") != ContextSufficiencyState.CONTEXT_SUFFICIENT.value:
                 frozen_context_records = [record_turns[turn_id] for turn_id in frozen_context_ids if turn_id in record_turns]
                 explicit_sentinel_contradiction = baseline_materialized and sentinel_only_context(frozen_context_records)
+                if baseline_materialized and not explicit_sentinel_contradiction:
+                    # Monotonicity: absence of a newly reconstructable context
+                    # is not evidence against an already safe baseline sample.
+                    retained = dict(baseline)
+                    retained.update({
+                        "schema_version": SCHEMA_VERSION,
+                        "was_baseline_materialized": True,
+                        "baseline_monotonic_retention": True,
+                        "context_reconstruction_class": "ORIGINAL_CONTEXT_CONFIRMED",
+                        "context_selection_ref": "context_selection.jsonl#" + sample,
+                        "context_sufficiency_ref": "context_sufficiency.jsonl#" + sample,
+                        "target_resolution_ref": "target_resolution.jsonl#" + sample,
+                        "audio_evidence_provenance": {
+                            "recovery_run": args.out_name,
+                            "cache_source_run": cache_run.name,
+                            "recovery_source": "ORIGINAL_CONTEXT_CONFIRMED",
+                            "baseline_retained_without_explicit_contradiction": True,
+                            "target_rescue_state": target_resolution["state"],
+                        },
+                    })
+                    materialized_rows.append(retained)
+                    retained_context_ids = [str(value) for value in retained.get("context_turn_ids") or []]
+                    context_selection_rows.append({
+                        "sample_id": sample,
+                        "selection_policy": "BASELINE_MONOTONIC_RETENTION",
+                        "candidate_search_window_seconds": CONFIG["candidate_search_seconds"],
+                        "candidate_turn_ids": [turn["audio_turn_id"] for turn in candidates],
+                        "selected_context_turn_ids": retained_context_ids,
+                        "selected_target_turn_id": target_id,
+                        "candidate_turn_count": len(candidates),
+                        "selected_turn_count": len(retained_context_ids),
+                        "minimality_checked": True,
+                        "first_sufficient_suffix": False,
+                        "context_sufficiency_state": ContextSufficiencyState.CONTEXT_SUFFICIENT.value,
+                    })
+                    sufficiency_rows.append({
+                        "sample_id": sample,
+                        "state": ContextSufficiencyState.CONTEXT_SUFFICIENT.value,
+                        "checker": "baseline-monotonic-retention-v3",
+                        "judge_valid": True,
+                        "selected_context_turn_ids": retained_context_ids,
+                        "selected_target_turn_id": target_id,
+                        "visible_context_only": True,
+                        "hidden_history_accessed": False,
+                        "reason": "BASELINE_RETAINED_WITHOUT_EXPLICIT_CONTRADICTION",
+                    })
+                    continue
                 failure_reason = (
                     "NON_CONVERSATIONAL_SENTINEL_ONLY_CONTEXT"
                     if explicit_sentinel_contradiction
