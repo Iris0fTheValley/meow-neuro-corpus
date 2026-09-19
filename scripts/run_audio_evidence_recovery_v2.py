@@ -746,6 +746,16 @@ def main() -> int:
         }, ensure_ascii=False), flush=True)
 
     materialized_rows, dedup_removed = deduplicate_recovery_rows(materialized_rows)
+    dedup_removed.extend({
+        "sample_id": None,
+        "candidate_span_id": row.get("candidate_span_id"),
+        "recording_id": row.get("recording_id"),
+        "reason": "MULTI_TURN_MERGE",
+        "dedup_class": "MULTI_TURN_MERGE",
+        "old_turn_ids": row.get("old_turn_ids") or [],
+        "new_text": row.get("new_text"),
+        "resolution": "SUPPRESSED_BY_TURN_RECONCILIATION",
+    } for row in reconciliation_rows if row.get("reconciliation_state") == ReconciliationState.MERGE_EXISTING.value)
     materialized_ids = {str(row["sample_id"]) for row in materialized_rows}
     # Any baseline removal not backed by an explicit contradiction is restored.
     removed_baseline_ids = baseline_ids - materialized_ids
