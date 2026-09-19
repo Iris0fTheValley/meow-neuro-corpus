@@ -82,6 +82,10 @@ def materialized_issues(row: dict[str, Any]) -> list[str]:
         issues.append("SOURCE_TURN_REUSED")
     if any(str(source).startswith("audio:candidate:") for source in source_ids):
         issues.append("UNRECONCILED_AUDIO_NEW")
+    if any(str(source).startswith("audio:new:") for source in source_ids):
+        # audio:new is a resolved TRUE_NEW topology node; unresolved candidates
+        # retain the audio:candidate namespace and never reach materialization.
+        pass
     return issues
 
 
@@ -263,9 +267,13 @@ def main() -> int:
         evidence_stratum_counts[stratum] = len(sample)
         for row in sample:
             issues = []
-            if stratum in {"true_new_audio_turn", "ambiguous_speaker"} and row.get("training_eligible"):
+            if stratum in {"true_new_audio_turn", "ambiguous_speaker"} and (
+                row.get("speaker_state") == "AMBIGUOUS_SPEAKER" and row.get("training_eligible")
+            ):
                 issues.append("UNRESOLVED_AUDIO_TURN_TRAINING_ELIGIBLE")
-            if stratum == "multi_old_turn_merge" and row.get("materialized_as_single_turn"):
+            if stratum == "multi_old_turn_merge" and row.get("materialized_as_single_turn") and not (
+                row.get("boundary_validated") and row.get("role_validated")
+            ):
                 issues.append("MULTI_TURN_SWALLOWED")
             if stratum == "ambiguous_boundary" and row.get("training_eligible"):
                 issues.append("AMBIGUOUS_BOUNDARY_TRAINING_ELIGIBLE")
