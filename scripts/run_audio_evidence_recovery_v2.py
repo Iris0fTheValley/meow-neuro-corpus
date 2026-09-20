@@ -1342,6 +1342,8 @@ def main() -> int:
         "cache_hits": context_judge.cache_hits,
         "model_calls": context_judge.model_calls,
         "model": context_judge.model,
+        "endpoint": context_judge.endpoint,
+        "transport": "stepfun-step-plan" if "/step_plan/" in context_judge.endpoint else "openai-compatible",
         "model_revision": context_judge.model_revision,
         "prompt_revision": context_judge.prompt_revision,
         "policy_revision": context_judge.policy_revision,

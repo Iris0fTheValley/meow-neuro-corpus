@@ -476,6 +476,37 @@ class TargetAndContextRegressionTests(unittest.TestCase):
         self.assertEqual(result["reason"], "JUDGE_API_KEY_MISSING:STEPFUN_API_KEY")
         open_url.assert_not_called()
 
+    def test_step_plan_endpoint_uses_same_openai_compatible_transport(self):
+        context = [context_turn("question", 0, 1, "user", "Are you coming tomorrow?")]
+        target = context_turn("target", 1.1, 1.5, "assistant", "Probably.")
+        response = MagicMock()
+        response.__enter__.return_value = response
+        response.status = 200
+        response.read.return_value = json.dumps({
+            "choices": [{"finish_reason": "stop", "message": {"content": json.dumps({
+                "state": "CONTEXT_SUFFICIENT",
+                "relation": "TARGET_RESPONDS_TO_CONTEXT",
+                "immediate_trigger_turn_id": "question",
+                "confidence": 0.95,
+                "reason": "direct answer",
+            })}}]
+        }).encode("utf-8")
+        with patch.dict(os.environ, {"STEPFUN_API_KEY": "test-secret"}, clear=False):
+            with patch("audio_evidence.recovery_v2.urlopen", return_value=response) as open_url:
+                result = call_context_sufficiency_judge(
+                    context,
+                    target,
+                    model="step-3.7-flash",
+                    endpoint="https://api.stepfun.com/step_plan/v1/chat/completions",
+                )
+        self.assertTrue(result["judge_valid"])
+        request = open_url.call_args.args[0]
+        self.assertEqual(request.get_header("Authorization"), "Bearer test-secret")
+        body = json.loads(request.data.decode("utf-8"))
+        self.assertEqual(body["response_format"], {"type": "json_object"})
+        self.assertEqual(body["reasoning_effort"], "low")
+        self.assertEqual(body["max_tokens"], 8192)
+
     def test_lexically_disjoint_context_reaches_semantic_judge(self):
         context = [context_turn("question", 0, 1, "user", "Are you coming tomorrow?")]
         target = context_turn("target", 1.1, 1.5, "assistant", "Probably.")
