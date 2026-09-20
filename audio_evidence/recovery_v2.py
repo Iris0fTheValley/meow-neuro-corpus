@@ -19,6 +19,7 @@ import hashlib
 import json
 import os
 import re
+import time
 from bisect import bisect_left
 from typing import Any, Callable, Iterable, Optional, Sequence
 from urllib.error import HTTPError, URLError
@@ -1304,17 +1305,30 @@ def call_context_sufficiency_judge(
         method="POST",
     )
     try:
-        with urlopen(request, timeout=timeout_seconds) as response:
-            response_payload = json.loads(response.read().decode("utf-8"))
+        for attempt in range(3):
+            try:
+                with urlopen(request, timeout=timeout_seconds) as response:
+                    response_payload = json.loads(response.read().decode("utf-8"))
+                break
+            except HTTPError as exc:
+                retryable = exc.code in {408, 409, 425, 429} or 500 <= exc.code < 600
+                if not retryable or attempt == 2:
+                    raise
+                time.sleep(min(8.0, 2.0 ** attempt))
+            except (URLError, TimeoutError, OSError):
+                if attempt == 2:
+                    raise
+                time.sleep(min(8.0, 2.0 ** attempt))
         choice = (response_payload.get("choices") or [{}])[0]
         parsed = parse_json_object(choice.get("text") or (choice.get("message") or {}).get("content"))
     except (HTTPError, URLError, TimeoutError, OSError, json.JSONDecodeError) as exc:
+        status = f":{exc.code}" if isinstance(exc, HTTPError) else ""
         return {
             "state": ContextSufficiencyState.CONTEXT_AMBIGUOUS.value,
             "relation": ContextRelation.MISSING_IMMEDIATE_TRIGGER.value,
             "immediate_trigger_turn_id": None,
             "confidence": 0.0,
-            "reason": f"JUDGE_REQUEST_FAILED:{type(exc).__name__}",
+            "reason": f"JUDGE_REQUEST_FAILED:{type(exc).__name__}{status}",
             "checker": "semantic-context-sufficiency-judge-v4-directional",
             "judge_valid": False,
             "judge_input_sha256": canonical_sha256(payload),
