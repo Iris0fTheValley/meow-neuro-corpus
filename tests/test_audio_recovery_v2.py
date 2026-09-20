@@ -341,6 +341,31 @@ class SpeakerAndSentinelRegressionTests(unittest.TestCase):
 
 
 class TargetAndContextRegressionTests(unittest.TestCase):
+    def test_minimal_context_uses_batch_judge_but_preserves_suffix_order(self):
+        candidates = [
+            context_turn("old", 0, 1, "user", "Old topic."),
+            context_turn("trigger", 1, 2, "user", "Are you coming tomorrow?"),
+        ]
+        target = context_turn("target", 2.1, 2.5, "assistant", "Probably.")
+
+        class BatchJudge:
+            def __init__(self):
+                self.requests = []
+
+            def batch(self, requests):
+                self.requests.extend(requests)
+                return [
+                    {"state": ContextSufficiencyState.CONTEXT_AMBIGUOUS.value},
+                    {"state": ContextSufficiencyState.CONTEXT_INSUFFICIENT.value, "relation": ContextRelation.RELATED_BUT_NOT_RESPONSE.value},
+                    {"state": ContextSufficiencyState.CONTEXT_SUFFICIENT.value, "relation": ContextRelation.TARGET_RESPONDS_TO_CONTEXT.value, "immediate_trigger_turn_id": "trigger"},
+                ]
+
+        judge = BatchJudge()
+        selected, result = select_minimal_context(candidates, target, judge=judge)
+        self.assertEqual([turn["audio_turn_id"] for turn in selected], ["old", "trigger"])
+        self.assertEqual(result["minimality_checked_prefix_sizes"], 2)
+        self.assertEqual(len(judge.requests), 3)
+
     def test_stepfun_chat_endpoint_uses_json_mode_and_bearer_key(self):
         context = [context_turn("question", 0, 1, "user", "Are you coming tomorrow?")]
         target = context_turn("target", 1.1, 1.5, "assistant", "Probably.")

@@ -9,6 +9,7 @@ the frozen semantic, identity, recording-lineage, or split authorities.
 
 import argparse
 from collections import Counter, defaultdict
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 import hashlib
 import json
@@ -17,6 +18,7 @@ from pathlib import Path
 import statistics
 import subprocess
 import sys
+import threading
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -102,6 +104,7 @@ class CachedContextJudge:
         endpoint: str,
         model_revision: str = "unspecified-model-revision",
         api_key_env: str = "",
+        concurrency: int = 1,
         seed_paths: tuple[Path, ...] = (),
     ):
         self.path = path
@@ -109,6 +112,8 @@ class CachedContextJudge:
         self.endpoint = endpoint
         self.model_revision = model_revision
         self.api_key_env = api_key_env
+        self.concurrency = max(1, int(concurrency))
+        self._lock = threading.Lock()
         self.prompt_revision = CONTEXT_JUDGE_PROMPT_REVISION
         self.policy_revision = CONTEXT_JUDGE_POLICY_REVISION
         self.schema_revision = CONTEXT_JUDGE_SCHEMA_REVISION
@@ -129,7 +134,6 @@ class CachedContextJudge:
         self.decision_counts: Counter[str] = Counter()
 
     def __call__(self, context_turns: list[dict[str, Any]], target_turn: dict[str, Any]) -> dict[str, Any]:
-        self.calls += 1
         # Lexical overlap is not a semantic relation.  A valid reply such as
         # "Probably" to "Are you coming tomorrow?" shares no content token.
         # Structural invalidity is filtered before selection; every remaining
@@ -145,13 +149,17 @@ class CachedContextJudge:
             policy_revision=self.policy_revision,
             schema_revision=self.schema_revision,
         )
-        prior = self.cache.get(key)
+        with self._lock:
+            self.calls += 1
+            prior = self.cache.get(key)
         if prior:
-            self.cache_hits += 1
+            with self._lock:
+                self.cache_hits += 1
+                self.decision_counts[str(prior.get("state"))] += 1
             result = dict(prior)
-            self.decision_counts[str(result.get("state"))] += 1
             return result
-        self.model_calls += 1
+        with self._lock:
+            self.model_calls += 1
         result = call_context_sufficiency_judge(
             context_turns,
             target_turn,
@@ -169,12 +177,26 @@ class CachedContextJudge:
             "judge_endpoint": self.endpoint,
             "judge_api_key_env": self.api_key_env or None,
         })
-        self.path.parent.mkdir(parents=True, exist_ok=True)
-        with self.path.open("a", encoding="utf-8") as handle:
-            handle.write(json.dumps(result, ensure_ascii=False, sort_keys=True) + "\n")
-        self.cache[key] = dict(result)
-        self.decision_counts[str(result.get("state"))] += 1
+        with self._lock:
+            existing = self.cache.get(key)
+            if existing:
+                return dict(existing)
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            with self.path.open("a", encoding="utf-8") as handle:
+                handle.write(json.dumps(result, ensure_ascii=False, sort_keys=True) + "\n")
+            self.cache[key] = dict(result)
+            self.decision_counts[str(result.get("state"))] += 1
         return result
+
+    def batch(
+        self,
+        requests: list[tuple[list[dict[str, Any]], dict[str, Any]]],
+    ) -> list[dict[str, Any]]:
+        if self.concurrency <= 1 or len(requests) <= 1:
+            return [self(context, target) for context, target in requests]
+        with ThreadPoolExecutor(max_workers=self.concurrency, thread_name_prefix="context-judge") as pool:
+            futures = [pool.submit(self, context, target) for context, target in requests]
+            return [future.result() for future in futures]
 
 
 def load_jsonl(path: Path) -> list[dict[str, Any]]:
@@ -241,6 +263,12 @@ def main() -> int:
         "--context-judge-api-key-env",
         default="",
         help="environment variable containing the provider API key; never put the key on the command line",
+    )
+    parser.add_argument(
+        "--context-judge-concurrency",
+        type=int,
+        default=1,
+        help="maximum concurrent context-judge API requests; cache writes remain serialized",
     )
     parser.add_argument("--context-judge-cache", default="")
     parser.add_argument(
@@ -319,6 +347,7 @@ def main() -> int:
         endpoint=args.context_judge_endpoint,
         model_revision=args.context_judge_model_revision,
         api_key_env=args.context_judge_api_key_env,
+        concurrency=args.context_judge_concurrency,
         seed_paths=tuple(Path(value) for value in args.context_judge_seed_cache),
     )
 
@@ -1280,6 +1309,7 @@ def main() -> int:
             "prompt_revision": context_judge.prompt_revision,
             "policy_revision": context_judge.policy_revision,
             "schema_revision": context_judge.schema_revision,
+            "concurrency": context_judge.concurrency,
             "decisions": dict(context_judge.decision_counts),
         },
         "old_lexical_prefilter_rejects": reference_lexical_rejects,

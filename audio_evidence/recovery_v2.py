@@ -1408,13 +1408,26 @@ def select_minimal_context(
         and not is_non_conversational_sentinel(turn.get("resolved_text"))
     ]
     checker = judge or context_sufficiency
-    last_result = checker([], target_turn)
+    suffixes = []
     for size in range(1, len(eligible) + 1):
         selected = eligible[-size:]
         ids = {str(turn["audio_turn_id"]) for turn in selected}
         if required and not required.issubset(ids):
             continue
-        result = checker(selected, target_turn)
+        suffixes.append(selected)
+
+    # API-backed judges may batch independent suffix checks. The final choice
+    # still follows the original suffix order, preserving minimality semantics.
+    batch_checker = getattr(checker, "batch", None)
+    if callable(batch_checker):
+        batch_results = batch_checker([([], target_turn), *[(selected, target_turn) for selected in suffixes]])
+        last_result = batch_results[0] if batch_results else checker([], target_turn)
+        judged_suffixes = zip(suffixes, batch_results[1:])
+    else:
+        last_result = checker([], target_turn)
+        judged_suffixes = ((selected, checker(selected, target_turn)) for selected in suffixes)
+
+    for selected, result in judged_suffixes:
         last_result = result
         relation = str(result.get("relation") or "")
         # Test doubles and pre-directional callers may only return the old
