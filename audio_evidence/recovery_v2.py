@@ -1275,7 +1275,8 @@ def call_context_sufficiency_judge(
         # Keep reasoning bounded so the visible judge object is not truncated.
         if is_chat_endpoint:
             body["max_tokens"] = 512
-            body["reasoning_effort"] = "low"
+            if model == "step-3.5-flash":
+                body["reasoning_effort"] = "low"
         env_name = api_key_env or "STEPFUN_API_KEY"
         api_key = os.environ.get(env_name, "").strip()
         if not api_key:

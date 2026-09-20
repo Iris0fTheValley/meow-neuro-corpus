@@ -360,7 +360,7 @@ class TargetAndContextRegressionTests(unittest.TestCase):
                 result = call_context_sufficiency_judge(
                     context,
                     target,
-                    model="step-1-8k",
+                    model="step-3.5-flash",
                     endpoint="https://api.stepfun.com/v1/chat/completions",
                 )
         self.assertEqual(result["state"], ContextSufficiencyState.CONTEXT_SUFFICIENT.value)
