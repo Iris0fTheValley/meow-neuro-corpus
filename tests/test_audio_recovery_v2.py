@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import unittest
+import json
+import os
 from pathlib import Path
 import sys
 from tempfile import TemporaryDirectory
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from audio_evidence.recovery_v2 import (
     CONTEXT_JUDGE_POLICY_REVISION,
@@ -23,6 +25,7 @@ from audio_evidence.recovery_v2 import (
     merge_existing_turns,
     merge_obvious_audio_fragments,
     build_context_judge_payload,
+    call_context_sufficiency_judge,
     context_judge_cache_key,
     reconciliation_recovery_eligible,
     reconcile_old_turn,
@@ -338,6 +341,49 @@ class SpeakerAndSentinelRegressionTests(unittest.TestCase):
 
 
 class TargetAndContextRegressionTests(unittest.TestCase):
+    def test_stepfun_chat_endpoint_uses_json_mode_and_bearer_key(self):
+        context = [context_turn("question", 0, 1, "user", "Are you coming tomorrow?")]
+        target = context_turn("target", 1.1, 1.5, "assistant", "Probably.")
+        response = MagicMock()
+        response.__enter__.return_value = response
+        response.read.return_value = json.dumps({
+            "choices": [{"message": {"content": json.dumps({
+                "state": "CONTEXT_SUFFICIENT",
+                "relation": "TARGET_RESPONDS_TO_CONTEXT",
+                "immediate_trigger_turn_id": "question",
+                "confidence": 0.95,
+                "reason": "direct answer",
+            })}}]
+        }).encode("utf-8")
+        with patch.dict(os.environ, {"STEPFUN_API_KEY": "test-secret"}, clear=False):
+            with patch("audio_evidence.recovery_v2.urlopen", return_value=response) as open_url:
+                result = call_context_sufficiency_judge(
+                    context,
+                    target,
+                    model="step-1-8k",
+                    endpoint="https://api.stepfun.com/v1/chat/completions",
+                )
+        self.assertEqual(result["state"], ContextSufficiencyState.CONTEXT_SUFFICIENT.value)
+        request = open_url.call_args.args[0]
+        self.assertEqual(request.get_header("Authorization"), "Bearer test-secret")
+        body = json.loads(request.data.decode("utf-8"))
+        self.assertEqual(body["response_format"], {"type": "json_object"})
+        self.assertEqual(body["messages"][0]["role"], "system")
+
+    def test_stepfun_without_key_fails_closed_without_network_call(self):
+        context = [context_turn("question", 0, 1, "user", "Are you coming tomorrow?")]
+        target = context_turn("target", 1.1, 1.5, "assistant", "Probably.")
+        with patch.dict(os.environ, {}, clear=True):
+            with patch("audio_evidence.recovery_v2.urlopen") as open_url:
+                result = call_context_sufficiency_judge(
+                    context,
+                    target,
+                    model="step-1-8k",
+                    endpoint="https://api.stepfun.com/v1/chat/completions",
+                )
+        self.assertEqual(result["reason"], "JUDGE_API_KEY_MISSING:STEPFUN_API_KEY")
+        open_url.assert_not_called()
+
     def test_lexically_disjoint_context_reaches_semantic_judge(self):
         context = [context_turn("question", 0, 1, "user", "Are you coming tomorrow?")]
         target = context_turn("target", 1.1, 1.5, "assistant", "Probably.")

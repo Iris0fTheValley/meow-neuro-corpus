@@ -101,12 +101,14 @@ class CachedContextJudge:
         model: str,
         endpoint: str,
         model_revision: str = "unspecified-model-revision",
+        api_key_env: str = "",
         seed_paths: tuple[Path, ...] = (),
     ):
         self.path = path
         self.model = model
         self.endpoint = endpoint
         self.model_revision = model_revision
+        self.api_key_env = api_key_env
         self.prompt_revision = CONTEXT_JUDGE_PROMPT_REVISION
         self.policy_revision = CONTEXT_JUDGE_POLICY_REVISION
         self.schema_revision = CONTEXT_JUDGE_SCHEMA_REVISION
@@ -155,6 +157,7 @@ class CachedContextJudge:
             target_turn,
             model=self.model,
             endpoint=self.endpoint,
+            api_key_env=self.api_key_env,
         )
         result.update({
             "judge_input_sha256": key,
@@ -164,6 +167,7 @@ class CachedContextJudge:
             "judge_policy_revision": self.policy_revision,
             "judge_schema_revision": self.schema_revision,
             "judge_endpoint": self.endpoint,
+            "judge_api_key_env": self.api_key_env or None,
         })
         self.path.parent.mkdir(parents=True, exist_ok=True)
         with self.path.open("a", encoding="utf-8") as handle:
@@ -233,6 +237,11 @@ def main() -> int:
         help="immutable model revision or file hash; included in every judge cache key",
     )
     parser.add_argument("--context-judge-endpoint", default="http://127.0.0.1:1234/v1/completions")
+    parser.add_argument(
+        "--context-judge-api-key-env",
+        default="",
+        help="environment variable containing the provider API key; never put the key on the command line",
+    )
     parser.add_argument("--context-judge-cache", default="")
     parser.add_argument(
         "--context-judge-seed-cache", action="append", default=[],
@@ -309,6 +318,7 @@ def main() -> int:
         model=args.context_judge_model,
         endpoint=args.context_judge_endpoint,
         model_revision=args.context_judge_model_revision,
+        api_key_env=args.context_judge_api_key_env,
         seed_paths=tuple(Path(value) for value in args.context_judge_seed_cache),
     )
 

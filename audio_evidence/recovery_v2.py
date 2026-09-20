@@ -17,6 +17,7 @@ from difflib import SequenceMatcher
 from enum import Enum
 import hashlib
 import json
+import os
 import re
 from bisect import bisect_left
 from typing import Any, Callable, Iterable, Optional, Sequence
@@ -1236,26 +1237,63 @@ def call_context_sufficiency_judge(
     model: str,
     endpoint: str,
     timeout_seconds: int = 180,
+    api_key_env: str = "",
 ) -> dict[str, Any]:
     payload = build_context_judge_payload(context_turns, target_turn)
-    prompt = (
-        "<|im_start|>system\n" + CONTEXT_JUDGE_SYSTEM_PROMPT
-        + "<|im_end|>\n<|im_start|>user\n"
-        + json.dumps(payload, ensure_ascii=False)
-        + "<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n"
-    )
-    body = {
-        "model": model,
-        "prompt": prompt,
-        "temperature": 0,
-        "max_tokens": 128,
-        "stop": ["<|im_end|>"],
-        "stream": False,
-    }
+    is_chat_endpoint = endpoint.rstrip("/").endswith("/chat/completions")
+    if is_chat_endpoint:
+        body = {
+            "model": model,
+            "messages": [
+                {"role": "system", "content": CONTEXT_JUDGE_SYSTEM_PROMPT},
+                {"role": "user", "content": json.dumps(payload, ensure_ascii=False)},
+            ],
+            "temperature": 0,
+            "max_tokens": 256,
+            "response_format": {"type": "json_object"},
+            "stream": False,
+        }
+    else:
+        prompt = (
+            "<|im_start|>system\n" + CONTEXT_JUDGE_SYSTEM_PROMPT
+            + "<|im_end|>\n<|im_start|>user\n"
+            + json.dumps(payload, ensure_ascii=False)
+            + "<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n"
+        )
+        body = {
+            "model": model,
+            "prompt": prompt,
+            "temperature": 0,
+            "max_tokens": 128,
+            "stop": ["<|im_end|>"],
+            "stream": False,
+        }
+    endpoint_host = endpoint.lower()
+    if "api.stepfun.com" in endpoint_host:
+        env_name = api_key_env or "STEPFUN_API_KEY"
+        api_key = os.environ.get(env_name, "").strip()
+        if not api_key:
+            return {
+                "state": ContextSufficiencyState.CONTEXT_AMBIGUOUS.value,
+                "relation": ContextRelation.MISSING_IMMEDIATE_TRIGGER.value,
+                "immediate_trigger_turn_id": None,
+                "confidence": 0.0,
+                "reason": f"JUDGE_API_KEY_MISSING:{env_name}",
+                "checker": "semantic-context-sufficiency-judge-v4-directional",
+                "judge_valid": False,
+                "judge_input_sha256": canonical_sha256(payload),
+                "visible_context_only": True,
+                "hidden_history_accessed": False,
+            }
+    else:
+        api_key = ""
+    headers = {"Content-Type": "application/json; charset=utf-8"}
+    if api_key:
+        headers["Authorization"] = f"Bearer {api_key}"
     request = Request(
         endpoint,
         data=json.dumps(body, ensure_ascii=False).encode("utf-8"),
-        headers={"Content-Type": "application/json; charset=utf-8"},
+        headers=headers,
         method="POST",
     )
     try:
