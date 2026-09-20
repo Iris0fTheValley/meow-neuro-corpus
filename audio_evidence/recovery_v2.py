@@ -1274,7 +1274,7 @@ def call_context_sufficiency_judge(
         # small completion budget on it before emitting the required JSON.
         # Keep reasoning bounded so the visible judge object is not truncated.
         if is_chat_endpoint:
-            body["max_tokens"] = 1024
+            body["max_tokens"] = 8192 if model == "step-3.7-flash" else 1024
             if model in {"step-3.5-flash", "step-3.5-flash-2603", "step-3.7-flash"}:
                 body["reasoning_effort"] = "low"
         env_name = api_key_env or "STEPFUN_API_KEY"
