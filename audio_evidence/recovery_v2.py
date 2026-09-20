@@ -1305,20 +1305,26 @@ def call_context_sufficiency_judge(
         method="POST",
     )
     try:
-        for attempt in range(3):
+        for attempt in range(5):
             try:
                 with urlopen(request, timeout=timeout_seconds) as response:
                     response_payload = json.loads(response.read().decode("utf-8"))
                 break
             except HTTPError as exc:
                 retryable = exc.code in {408, 409, 425, 429} or 500 <= exc.code < 600
-                if not retryable or attempt == 2:
+                if not retryable or attempt == 4:
                     raise
-                time.sleep(min(8.0, 2.0 ** attempt))
+                retry_after = None
+                if exc.headers is not None:
+                    try:
+                        retry_after = float(exc.headers.get("Retry-After"))
+                    except (TypeError, ValueError):
+                        retry_after = None
+                time.sleep(max(5.0, min(60.0, retry_after or (5.0 * (2.0 ** attempt)))))
             except (URLError, TimeoutError, OSError):
-                if attempt == 2:
+                if attempt == 4:
                     raise
-                time.sleep(min(8.0, 2.0 ** attempt))
+                time.sleep(min(30.0, 5.0 * (2.0 ** attempt)))
         choice = (response_payload.get("choices") or [{}])[0]
         parsed = parse_json_object(choice.get("text") or (choice.get("message") or {}).get("content"))
     except (HTTPError, URLError, TimeoutError, OSError, json.JSONDecodeError) as exc:
