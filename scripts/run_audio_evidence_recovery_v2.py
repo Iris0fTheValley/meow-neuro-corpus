@@ -112,8 +112,12 @@ class CachedContextJudge:
         self.endpoint = endpoint
         self.model_revision = model_revision
         self.api_key_env = api_key_env
-        self.concurrency = max(1, int(concurrency))
+        # Step API concurrency is intentionally bounded at five.  The caller
+        # may request less, but this recovery path must never silently raise
+        # the provider-facing upper bound.
+        self.concurrency = min(5, max(1, int(concurrency)))
         self._lock = threading.Lock()
+        self._inflight: dict[str, threading.Event] = {}
         self.prompt_revision = CONTEXT_JUDGE_PROMPT_REVISION
         self.policy_revision = CONTEXT_JUDGE_POLICY_REVISION
         self.schema_revision = CONTEXT_JUDGE_SCHEMA_REVISION
@@ -132,6 +136,54 @@ class CachedContextJudge:
         self.cache_hits = 0
         self.model_calls = 0
         self.decision_counts: Counter[str] = Counter()
+        self._telemetry = {
+            "prompt_tokens": 0,
+            "cached_input_tokens": 0,
+            "completion_tokens": 0,
+            "reasoning_tokens": 0,
+            "usage_rows": 0,
+            "latency_ms_total": 0.0,
+            "retry_count_total": 0,
+            "invalid_judge_output_count": 0,
+            "http_status_counts": Counter(),
+            "error_type_counts": Counter(),
+            "finish_reason_counts": Counter(),
+        }
+
+    def _record_telemetry_locked(self, result: dict[str, Any]) -> None:
+        telemetry = result.get("judge_telemetry") or {}
+        for key in ("prompt_tokens", "cached_input_tokens", "completion_tokens", "reasoning_tokens"):
+            value = telemetry.get(key)
+            if value is not None:
+                self._telemetry[key] += int(value)
+        if any(telemetry.get(key) is not None for key in ("prompt_tokens", "cached_input_tokens", "completion_tokens", "reasoning_tokens")):
+            self._telemetry["usage_rows"] += 1
+        self._telemetry["latency_ms_total"] += float(telemetry.get("latency_ms") or 0.0)
+        self._telemetry["retry_count_total"] += int(telemetry.get("retry_count") or 0)
+        if telemetry.get("invalid_judge_output"):
+            self._telemetry["invalid_judge_output_count"] += 1
+        if telemetry.get("http_status") is not None:
+            self._telemetry["http_status_counts"][str(telemetry["http_status"])] += 1
+        if telemetry.get("error_type"):
+            self._telemetry["error_type_counts"][str(telemetry["error_type"])] += 1
+        if telemetry.get("finish_reason"):
+            self._telemetry["finish_reason_counts"][str(telemetry["finish_reason"])] += 1
+
+    def telemetry_snapshot(self) -> dict[str, Any]:
+        with self._lock:
+            return {
+                "prompt_tokens": self._telemetry["prompt_tokens"],
+                "cached_input_tokens": self._telemetry["cached_input_tokens"],
+                "completion_tokens": self._telemetry["completion_tokens"],
+                "reasoning_tokens": self._telemetry["reasoning_tokens"],
+                "usage_rows": self._telemetry["usage_rows"],
+                "latency_ms_total": round(self._telemetry["latency_ms_total"], 3),
+                "retry_count_total": self._telemetry["retry_count_total"],
+                "invalid_judge_output_count": self._telemetry["invalid_judge_output_count"],
+                "http_status_counts": dict(self._telemetry["http_status_counts"]),
+                "error_type_counts": dict(self._telemetry["error_type_counts"]),
+                "finish_reason_counts": dict(self._telemetry["finish_reason_counts"]),
+            }
 
     def __call__(self, context_turns: list[dict[str, Any]], target_turn: dict[str, Any]) -> dict[str, Any]:
         # Lexical overlap is not a semantic relation.  A valid reply such as
@@ -152,41 +204,64 @@ class CachedContextJudge:
         with self._lock:
             self.calls += 1
             prior = self.cache.get(key)
-        if prior:
-            with self._lock:
+            if prior:
                 self.cache_hits += 1
                 self.decision_counts[str(prior.get("state"))] += 1
-            result = dict(prior)
+                return dict(prior)
+            waiter = self._inflight.get(key)
+            if waiter is None:
+                waiter = threading.Event()
+                self._inflight[key] = waiter
+                self.model_calls += 1
+                is_leader = True
+            else:
+                is_leader = False
+        if not is_leader:
+            waiter.wait()
+            with self._lock:
+                self.cache_hits += 1
+                prior = self.cache.get(key)
+                if prior:
+                    self.decision_counts[str(prior.get("state"))] += 1
+                    return dict(prior)
+            # The leader always publishes a result before releasing the event.
+            # This fallback only protects against an unexpected provider-side
+            # exception escaping the leader path.
+            return self(context_turns, target_turn)
+        try:
+            result = call_context_sufficiency_judge(
+                context_turns,
+                target_turn,
+                model=self.model,
+                endpoint=self.endpoint,
+                api_key_env=self.api_key_env,
+            )
+            result.update({
+                "judge_input_sha256": key,
+                "judge_model": self.model,
+                "judge_model_revision": self.model_revision,
+                "judge_prompt_revision": self.prompt_revision,
+                "judge_policy_revision": self.policy_revision,
+                "judge_schema_revision": self.schema_revision,
+                "judge_endpoint": self.endpoint,
+                "judge_api_key_env": self.api_key_env or None,
+            })
+            with self._lock:
+                existing = self.cache.get(key)
+                if existing:
+                    return dict(existing)
+                self.path.parent.mkdir(parents=True, exist_ok=True)
+                with self.path.open("a", encoding="utf-8") as handle:
+                    handle.write(json.dumps(result, ensure_ascii=False, sort_keys=True) + "\n")
+                self.cache[key] = dict(result)
+                self.decision_counts[str(result.get("state"))] += 1
+                self._record_telemetry_locked(result)
             return result
-        with self._lock:
-            self.model_calls += 1
-        result = call_context_sufficiency_judge(
-            context_turns,
-            target_turn,
-            model=self.model,
-            endpoint=self.endpoint,
-            api_key_env=self.api_key_env,
-        )
-        result.update({
-            "judge_input_sha256": key,
-            "judge_model": self.model,
-            "judge_model_revision": self.model_revision,
-            "judge_prompt_revision": self.prompt_revision,
-            "judge_policy_revision": self.policy_revision,
-            "judge_schema_revision": self.schema_revision,
-            "judge_endpoint": self.endpoint,
-            "judge_api_key_env": self.api_key_env or None,
-        })
-        with self._lock:
-            existing = self.cache.get(key)
-            if existing:
-                return dict(existing)
-            self.path.parent.mkdir(parents=True, exist_ok=True)
-            with self.path.open("a", encoding="utf-8") as handle:
-                handle.write(json.dumps(result, ensure_ascii=False, sort_keys=True) + "\n")
-            self.cache[key] = dict(result)
-            self.decision_counts[str(result.get("state"))] += 1
-        return result
+        finally:
+            with self._lock:
+                event = self._inflight.pop(key, None)
+                if event is not None:
+                    event.set()
 
     def batch(
         self,
@@ -197,6 +272,26 @@ class CachedContextJudge:
         with ThreadPoolExecutor(max_workers=self.concurrency, thread_name_prefix="context-judge") as pool:
             futures = [pool.submit(self, context, target) for context, target in requests]
             return [future.result() for future in futures]
+
+
+def select_contexts_in_parallel(
+    requests: list[tuple[list[dict[str, Any]], dict[str, Any]]],
+    judge: CachedContextJudge,
+) -> list[tuple[list[dict[str, Any]], dict[str, Any]]]:
+    """Select each target's suffix serially while running targets in parallel."""
+    if not requests:
+        return []
+    worker_count = min(5, max(1, int(judge.concurrency)))
+
+    def run(request: tuple[list[dict[str, Any]], dict[str, Any]]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+        candidates, target = request
+        return select_minimal_context(candidates, target, judge=judge)
+
+    if worker_count <= 1 or len(requests) <= 1:
+        return [run(request) for request in requests]
+    with ThreadPoolExecutor(max_workers=worker_count, thread_name_prefix="context-target") as pool:
+        futures = [pool.submit(run, request) for request in requests]
+        return [future.result() for future in futures]
 
 
 def load_jsonl(path: Path) -> list[dict[str, Any]]:
@@ -849,6 +944,56 @@ def main() -> int:
                     record_turns[discovered["audio_turn_id"]] = discovered
                     timeline_rows.append(discovered)
 
+        # Build all eligible target selections for this recording first.  The
+        # target-level scheduler keeps each target's suffix ladder serial
+        # (1-turn, then 2-turn, ... early-stop) while using at most five
+        # workers across different targets.  The existing materialization loop
+        # below remains ordered and authority-preserving.
+        selection_jobs: list[tuple[str, list[dict[str, Any]], dict[str, Any]]] = []
+        blocking_target_states = {
+            TargetResolutionState.AUDIO_MAJOR_CONTRADICTION.value,
+            TargetResolutionState.LOCAL_REASR_REQUIRED.value,
+            TargetResolutionState.UNRESOLVED.value,
+        }
+        for candidate_row in sorted(interactions_by_recording[sid], key=lambda item: str(item["sample_id"])):
+            candidate_sample = str(candidate_row["sample_id"])
+            candidate_baseline = baseline_by_sample.get(candidate_sample)
+            candidate_target_ids = [str(value) for value in candidate_row.get("target_turn_ids") or []]
+            candidate_target_id = candidate_target_ids[-1] if candidate_target_ids else ""
+            candidate_target = record_turns.get(candidate_target_id)
+            candidate_resolution = resolve_target(
+                old_text=(candidate_target or {}).get("old_transcript"),
+                new_text=(candidate_target or {}).get("new_asr_hypothesis"),
+                baseline_materialized=candidate_baseline is not None,
+                alignment_available=bool((candidate_target or {}).get("alignment_token_count")),
+                identity_confirmed_target=(candidate_target or {}).get("speaker_resolution_state") == SpeakerState.CONFIRMED_TARGET.value,
+                ambiguous_boundary=(candidate_baseline is None and candidate_target_id in ambiguous_turn_ids),
+                aligned_token_count=int((candidate_target or {}).get("alignment_token_count") or 0),
+            )
+            if candidate_target is None or candidate_resolution["state"] in blocking_target_states:
+                continue
+            candidate_start = float(candidate_target["start"])
+            candidate_floor = max(0.0, candidate_start - CONFIG["candidate_search_seconds"])
+            candidate_context = [
+                turn for turn in record_turns.values()
+                if turn["audio_turn_id"] != candidate_target_id
+                and float(turn["end"]) <= candidate_start + 1e-6
+                and float(turn["start"]) >= candidate_floor
+                and turn.get("recovery_eligible")
+                and turn["audio_turn_id"] not in replaced_for_recovery
+            ]
+            selection_jobs.append((candidate_sample, candidate_context, candidate_target))
+        selection_results = {
+            sample: result
+            for (sample, _candidates, _target), result in zip(
+                selection_jobs,
+                select_contexts_in_parallel(
+                    [(candidates, target) for _sample, candidates, target in selection_jobs],
+                    context_judge,
+                ),
+            )
+        }
+
         for row in sorted(interactions_by_recording[sid], key=lambda item: str(item["sample_id"])):
             sample = str(row["sample_id"])
             baseline = baseline_by_sample.get(sample)
@@ -976,11 +1121,7 @@ def main() -> int:
             # authority: every sample (including a baseline row) is rejudged
             # from the current reconciled timeline and may be trimmed,
             # replaced, reconstructed, or quarantined.
-            selected, sufficiency = select_minimal_context(
-                candidates,
-                target,
-                judge=context_judge,
-            )
+            selected, sufficiency = selection_results[sample]
             selection_policy = (
                 "BASELINE_MINIMAL_CONTIGUOUS_SUFFIX_RECONSTRUCTED"
                 if baseline_materialized
@@ -1196,6 +1337,22 @@ def main() -> int:
         expected_identity_hash=identity_hash,
         actual_identity_hash=sha256_file(replay.IDENTITY),
     )
+    context_judge_summary = {
+        "calls": context_judge.calls,
+        "cache_hits": context_judge.cache_hits,
+        "model_calls": context_judge.model_calls,
+        "model": context_judge.model,
+        "model_revision": context_judge.model_revision,
+        "prompt_revision": context_judge.prompt_revision,
+        "policy_revision": context_judge.policy_revision,
+        "schema_revision": context_judge.schema_revision,
+        "concurrency": context_judge.concurrency,
+        "decisions": dict(context_judge.decision_counts),
+        "telemetry": context_judge.telemetry_snapshot(),
+    }
+    # Keep telemetry additive so existing validator/report consumers remain
+    # compatible while exposing provider usage and failure diagnostics.
+    validation["context_semantic_judge"] = context_judge_summary
 
     artifact_rows = {
         "turn_reconciliation.jsonl": reconciliation_rows,
@@ -1300,18 +1457,7 @@ def main() -> int:
         "turn_reconciliation_counts": dict(reconciliation_counts),
         "speaker_resolution_counts": dict(speaker_counts),
         "target_resolution_counts": dict(target_counts),
-        "context_semantic_judge": {
-            "calls": context_judge.calls,
-            "cache_hits": context_judge.cache_hits,
-            "model_calls": context_judge.model_calls,
-            "model": context_judge.model,
-            "model_revision": context_judge.model_revision,
-            "prompt_revision": context_judge.prompt_revision,
-            "policy_revision": context_judge.policy_revision,
-            "schema_revision": context_judge.schema_revision,
-            "concurrency": context_judge.concurrency,
-            "decisions": dict(context_judge.decision_counts),
-        },
+        "context_semantic_judge": context_judge_summary,
         "old_lexical_prefilter_rejects": reference_lexical_rejects,
         "true_new_topology_materialized": len(materialized_true_new_ids),
         "true_new_selected_in_training": sum(

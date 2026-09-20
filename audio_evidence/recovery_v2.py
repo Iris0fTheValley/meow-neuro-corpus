@@ -93,7 +93,7 @@ class ContextRelation(str, Enum):
 # same.  Keep these separate from the audio evidence schema revision because a
 # judge policy change must invalidate only judge decisions.
 CONTEXT_JUDGE_SCHEMA_REVISION = "context-judge-schema-v2"
-CONTEXT_JUDGE_PROMPT_REVISION = "context-judge-prompt-v4-directional"
+CONTEXT_JUDGE_PROMPT_REVISION = "context-judge-prompt-v5-static-rules"
 CONTEXT_JUDGE_POLICY_REVISION = "context-judge-policy-v4-immediate-trigger"
 
 
@@ -1168,9 +1168,15 @@ CONTEXT_JUDGE_SYSTEM_PROMPT = (
     "RELATED_BUT_NOT_RESPONSE means topical relation without an answer relation. UNRELATED means no "
     "grounded relation. MISSING_IMMEDIATE_TRIGGER means the target looks like an answer but the actual "
     "immediate user question/request is absent. Only TARGET_RESPONDS_TO_CONTEXT may be sufficient. "
-    "Return exactly one compact JSON object with state, relation, immediate_trigger_turn_id, confidence, "
-    "and reason. State must be exactly CONTEXT_SUFFICIENT, CONTEXT_INSUFFICIENT, or CONTEXT_AMBIGUOUS; "
-    "relation must be one of the five allowed relation labels."
+    "Use these exact state labels: CONTEXT_SUFFICIENT, CONTEXT_INSUFFICIENT, CONTEXT_AMBIGUOUS. "
+    "Use these exact relation labels: TARGET_RESPONDS_TO_CONTEXT, CONTEXT_RESPONDS_TO_TARGET, "
+    "RELATED_BUT_NOT_RESPONSE, UNRELATED, MISSING_IMMEDIATE_TRIGGER. "
+    "Constraints: use no evidence outside selected_context and frozen_target; do not adjudicate or "
+    "rewrite the frozen target; a short time gap does not establish a response relation; return JSON only. "
+    "Return exactly one compact JSON object matching this schema: {state, relation, "
+    "immediate_trigger_turn_id, confidence, reason}. immediate_trigger_turn_id must be a turn_id "
+    "from selected_context whenever relation is TARGET_RESPONDS_TO_CONTEXT; confidence is a number 0..1; "
+    "reason is a short explanation based only on shown text."
 )
 
 
@@ -1184,7 +1190,6 @@ def build_context_judge_payload(
         return str(text or "").strip()[:600]
 
     return {
-        "task": "Judge semantic sufficiency of this exact training interaction slice.",
         "selected_context": [
             {
                 "turn_id": str(turn.get("audio_turn_id") or turn.get("turn_id") or ""),
@@ -1196,21 +1201,6 @@ def build_context_judge_payload(
         "frozen_target": {
             "role": "assistant",
             "text": compact(target_turn.get("resolved_text")),
-        },
-        "allowed_states": [state.value for state in ContextSufficiencyState],
-        "allowed_relations": [relation.value for relation in ContextRelation],
-        "constraints": [
-            "Use no evidence outside selected_context and frozen_target.",
-            "Do not adjudicate or rewrite the frozen target.",
-            "A short time gap does not establish a response relation.",
-            "Return JSON only.",
-        ],
-        "output_schema": {
-            "state": "CONTEXT_SUFFICIENT | CONTEXT_INSUFFICIENT | CONTEXT_AMBIGUOUS",
-            "relation": "TARGET_RESPONDS_TO_CONTEXT | CONTEXT_RESPONDS_TO_TARGET | RELATED_BUT_NOT_RESPONSE | UNRELATED | MISSING_IMMEDIATE_TRIGGER",
-            "immediate_trigger_turn_id": "turn_id from selected_context, required for TARGET_RESPONDS_TO_CONTEXT",
-            "confidence": "number 0..1",
-            "reason": "short reason based only on shown text",
         },
     }
 
@@ -1241,6 +1231,9 @@ def call_context_sufficiency_judge(
     api_key_env: str = "",
 ) -> dict[str, Any]:
     payload = build_context_judge_payload(context_turns, target_turn)
+    started = time.monotonic()
+    retry_count = 0
+    http_status = None
     is_chat_endpoint = endpoint.rstrip("/").endswith("/chat/completions")
     if is_chat_endpoint:
         body = {
@@ -1292,6 +1285,18 @@ def call_context_sufficiency_judge(
                 "judge_input_sha256": canonical_sha256(payload),
                 "visible_context_only": True,
                 "hidden_history_accessed": False,
+                "judge_telemetry": {
+                    "latency_ms": round((time.monotonic() - started) * 1000, 3),
+                    "retry_count": 0,
+                    "http_status": None,
+                    "error_type": "API_KEY_MISSING",
+                    "finish_reason": None,
+                    "prompt_tokens": None,
+                    "cached_input_tokens": None,
+                    "completion_tokens": None,
+                    "reasoning_tokens": None,
+                    "invalid_judge_output": True,
+                },
             }
     else:
         api_key = ""
@@ -1308,12 +1313,17 @@ def call_context_sufficiency_judge(
         for attempt in range(5):
             try:
                 with urlopen(request, timeout=timeout_seconds) as response:
+                    http_status = getattr(response, "status", None)
+                    if not isinstance(http_status, int):
+                        http_status = None
                     response_payload = json.loads(response.read().decode("utf-8"))
                 break
             except HTTPError as exc:
+                http_status = exc.code
                 retryable = exc.code in {408, 409, 425, 429} or 500 <= exc.code < 600
                 if not retryable or attempt == 4:
                     raise
+                retry_count += 1
                 retry_after = None
                 if exc.headers is not None:
                     try:
@@ -1340,7 +1350,50 @@ def call_context_sufficiency_judge(
             "judge_input_sha256": canonical_sha256(payload),
             "visible_context_only": True,
             "hidden_history_accessed": False,
+            "judge_telemetry": {
+                "latency_ms": round((time.monotonic() - started) * 1000, 3),
+                "retry_count": retry_count,
+                "http_status": http_status,
+                "error_type": type(exc).__name__,
+                "finish_reason": None,
+                "prompt_tokens": None,
+                "cached_input_tokens": None,
+                "completion_tokens": None,
+                "reasoning_tokens": None,
+                "invalid_judge_output": True,
+            },
         }
+    usage = response_payload.get("usage") or {}
+    prompt_details = usage.get("prompt_tokens_details") or usage.get("input_tokens_details") or {}
+    completion_details = usage.get("completion_tokens_details") or usage.get("output_tokens_details") or {}
+    choice = (response_payload.get("choices") or [{}])[0]
+    finish_reason = choice.get("finish_reason")
+
+    def usage_int(*keys: str) -> Optional[int]:
+        for key in keys:
+            value = usage.get(key)
+            if value is None:
+                value = prompt_details.get(key) if key in prompt_details else completion_details.get(key)
+            try:
+                return int(value) if value is not None else None
+            except (TypeError, ValueError):
+                return None
+        return None
+
+    base_telemetry = {
+        "latency_ms": round((time.monotonic() - started) * 1000, 3),
+        "retry_count": retry_count,
+        "http_status": http_status,
+        "error_type": None,
+        "finish_reason": finish_reason,
+        "prompt_tokens": usage_int("prompt_tokens", "input_tokens"),
+        "cached_input_tokens": (
+            usage_int("cached_tokens", "cache_read_input_tokens", "cached_input_tokens")
+        ),
+        "completion_tokens": usage_int("completion_tokens", "output_tokens"),
+        "reasoning_tokens": usage_int("reasoning_tokens"),
+        "invalid_judge_output": False,
+    }
     state = str((parsed or {}).get("state") or "").upper()
     relation = str((parsed or {}).get("relation") or "").upper()
     immediate_trigger_turn_id = str((parsed or {}).get("immediate_trigger_turn_id") or "") or None
@@ -1357,6 +1410,7 @@ def call_context_sufficiency_judge(
         state = ContextSufficiencyState.CONTEXT_INSUFFICIENT.value
     if relation == ContextRelation.TARGET_RESPONDS_TO_CONTEXT.value and not immediate_trigger_turn_id:
         valid = False
+    base_telemetry["invalid_judge_output"] = not valid
     return {
         "state": state if valid else ContextSufficiencyState.CONTEXT_AMBIGUOUS.value,
         "relation": relation if valid else ContextRelation.MISSING_IMMEDIATE_TRIGGER.value,
@@ -1371,6 +1425,7 @@ def call_context_sufficiency_judge(
         "selected_target_turn_id": str(target_turn["audio_turn_id"]),
         "visible_context_only": True,
         "hidden_history_accessed": False,
+        "judge_telemetry": base_telemetry,
     }
 
 
@@ -1428,26 +1483,39 @@ def select_minimal_context(
         and not is_non_conversational_sentinel(turn.get("resolved_text"))
     ]
     checker = judge or context_sufficiency
-    suffixes = []
+    def empty_context_result() -> dict[str, Any]:
+        return {
+            "state": ContextSufficiencyState.CONTEXT_INSUFFICIENT.value,
+            "relation": ContextRelation.MISSING_IMMEDIATE_TRIGGER.value,
+            "immediate_trigger_turn_id": None,
+            "confidence": 0.0,
+            "checker": "deterministic-empty-context-v1",
+            "judge_valid": True,
+            "selected_context_turn_ids": [],
+            "selected_target_turn_id": str(target_turn["audio_turn_id"]),
+            "visible_context_only": True,
+            "hidden_history_accessed": False,
+            "reason": "MISSING_IMMEDIATE_TRIGGER",
+        }
+
+    if not eligible:
+        result = empty_context_result()
+        result.update({
+            "candidate_turn_count": 0,
+            "selected_turn_count": 0,
+            "minimality_checked_prefix_sizes": 0,
+        })
+        return [], result
+
+    checked_sizes: list[int] = []
+    last_result = empty_context_result()
     for size in range(1, len(eligible) + 1):
         selected = eligible[-size:]
-        ids = {str(turn["audio_turn_id"]) for turn in selected}
-        if required and not required.issubset(ids):
+        selected_ids = {str(turn["audio_turn_id"]) for turn in selected}
+        if required and not required.issubset(selected_ids):
             continue
-        suffixes.append(selected)
-
-    # API-backed judges may batch independent suffix checks. The final choice
-    # still follows the original suffix order, preserving minimality semantics.
-    batch_checker = getattr(checker, "batch", None)
-    if callable(batch_checker):
-        batch_results = batch_checker([([], target_turn), *[(selected, target_turn) for selected in suffixes]])
-        last_result = batch_results[0] if batch_results else checker([], target_turn)
-        judged_suffixes = zip(suffixes, batch_results[1:])
-    else:
-        last_result = checker([], target_turn)
-        judged_suffixes = ((selected, checker(selected, target_turn)) for selected in suffixes)
-
-    for selected, result in judged_suffixes:
+        checked_sizes.append(size)
+        result = checker(selected, target_turn)
         last_result = result
         relation = str(result.get("relation") or "")
         # Test doubles and pre-directional callers may only return the old
@@ -1455,13 +1523,45 @@ def select_minimal_context(
         if not relation and result.get("state") == ContextSufficiencyState.CONTEXT_SUFFICIENT.value:
             relation = ContextRelation.TARGET_RESPONDS_TO_CONTEXT.value
             result = {**result, "relation": relation}
+        trigger_id = result.get("immediate_trigger_turn_id")
+        if (
+            result.get("state") == ContextSufficiencyState.CONTEXT_SUFFICIENT.value
+            and relation == ContextRelation.TARGET_RESPONDS_TO_CONTEXT.value
+            and not trigger_id
+        ):
+            result = {
+                **result,
+                "state": ContextSufficiencyState.CONTEXT_INSUFFICIENT.value,
+                "relation": ContextRelation.MISSING_IMMEDIATE_TRIGGER.value,
+                "immediate_trigger_turn_id": None,
+                "judge_valid": False,
+                "reason": "MISSING_IMMEDIATE_TRIGGER",
+            }
+            relation = ContextRelation.MISSING_IMMEDIATE_TRIGGER.value
+        elif (
+            result.get("state") == ContextSufficiencyState.CONTEXT_SUFFICIENT.value
+            and relation == ContextRelation.TARGET_RESPONDS_TO_CONTEXT.value
+            and str(trigger_id) not in selected_ids
+        ):
+            # A judge may have reasoned about a larger hidden/previous suffix,
+            # but that cannot authorize the current visible suffix.  Fail
+            # closed and continue expanding until the trigger is actually in
+            # the selected prefix.
+            result = {
+                **result,
+                "state": ContextSufficiencyState.CONTEXT_INSUFFICIENT.value,
+                "relation": ContextRelation.MISSING_IMMEDIATE_TRIGGER.value,
+                "immediate_trigger_turn_id": None,
+                "judge_valid": False,
+                "reason": "IMMEDIATE_TRIGGER_OUTSIDE_SELECTED_SUFFIX",
+            }
+            relation = ContextRelation.MISSING_IMMEDIATE_TRIGGER.value
+        last_result = result
         if (
             result["state"] == ContextSufficiencyState.CONTEXT_SUFFICIENT.value
             and relation == ContextRelation.TARGET_RESPONDS_TO_CONTEXT.value
-            and (
-                not result.get("immediate_trigger_turn_id")
-                or str(result.get("immediate_trigger_turn_id")) in ids
-            )
+            and result.get("immediate_trigger_turn_id")
+            and str(result.get("immediate_trigger_turn_id")) in selected_ids
         ):
             result["candidate_turn_count"] = len(eligible)
             result["selected_turn_count"] = len(selected)
@@ -1469,7 +1569,7 @@ def select_minimal_context(
             return selected, result
     last_result["candidate_turn_count"] = len(eligible)
     last_result["selected_turn_count"] = 0
-    last_result["minimality_checked_prefix_sizes"] = len(eligible)
+    last_result["minimality_checked_prefix_sizes"] = max(checked_sizes, default=0)
     return [], last_result
 
 

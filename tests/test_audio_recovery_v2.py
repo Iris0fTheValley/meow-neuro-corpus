@@ -3,6 +3,8 @@ from __future__ import annotations
 import unittest
 import json
 import os
+import threading
+import time
 from pathlib import Path
 import sys
 from tempfile import TemporaryDirectory
@@ -38,7 +40,7 @@ from audio_evidence.recovery_v2 import (
     split_existing_turn,
 )
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
-from run_audio_evidence_recovery_v2 import CachedContextJudge
+from run_audio_evidence_recovery_v2 import CachedContextJudge, select_contexts_in_parallel
 from content_audit_audio_recovery_v4 import call_reviewer, corroborate_finding, review_payload
 
 
@@ -341,44 +343,99 @@ class SpeakerAndSentinelRegressionTests(unittest.TestCase):
 
 
 class TargetAndContextRegressionTests(unittest.TestCase):
-    def test_minimal_context_uses_batch_judge_but_preserves_suffix_order(self):
+    def test_minimal_context_early_stops_at_first_sufficient_suffix(self):
         candidates = [
             context_turn("old", 0, 1, "user", "Old topic."),
             context_turn("trigger", 1, 2, "user", "Are you coming tomorrow?"),
         ]
         target = context_turn("target", 2.1, 2.5, "assistant", "Probably.")
 
-        class BatchJudge:
+        class SequentialJudge:
             def __init__(self):
                 self.requests = []
 
-            def batch(self, requests):
-                self.requests.extend(requests)
-                return [
-                    {"state": ContextSufficiencyState.CONTEXT_AMBIGUOUS.value},
-                    {"state": ContextSufficiencyState.CONTEXT_INSUFFICIENT.value, "relation": ContextRelation.RELATED_BUT_NOT_RESPONSE.value},
-                    {"state": ContextSufficiencyState.CONTEXT_SUFFICIENT.value, "relation": ContextRelation.TARGET_RESPONDS_TO_CONTEXT.value, "immediate_trigger_turn_id": "trigger"},
-                ]
+            def __call__(self, context, _target):
+                ids = [turn["audio_turn_id"] for turn in context]
+                self.requests.append(ids)
+                if ids == ["trigger"]:
+                    return {"state": ContextSufficiencyState.CONTEXT_INSUFFICIENT.value, "relation": ContextRelation.RELATED_BUT_NOT_RESPONSE.value}
+                return {"state": ContextSufficiencyState.CONTEXT_SUFFICIENT.value, "relation": ContextRelation.TARGET_RESPONDS_TO_CONTEXT.value, "immediate_trigger_turn_id": "trigger"}
 
-        judge = BatchJudge()
+        judge = SequentialJudge()
         selected, result = select_minimal_context(candidates, target, judge=judge)
         self.assertEqual([turn["audio_turn_id"] for turn in selected], ["old", "trigger"])
         self.assertEqual(result["minimality_checked_prefix_sizes"], 2)
-        self.assertEqual(len(judge.requests), 3)
+        self.assertEqual(judge.requests, [["trigger"], ["old", "trigger"]])
+
+    def test_one_turn_sufficient_calls_only_one_suffix(self):
+        candidates = [context_turn("trigger", 0, 1, "user", "Are you coming tomorrow?")]
+        target = context_turn("target", 1.1, 1.5, "assistant", "Probably.")
+        calls = []
+
+        def judge(context, _target):
+            calls.append([turn["audio_turn_id"] for turn in context])
+            return {
+                "state": ContextSufficiencyState.CONTEXT_SUFFICIENT.value,
+                "relation": ContextRelation.TARGET_RESPONDS_TO_CONTEXT.value,
+                "immediate_trigger_turn_id": "trigger",
+                "judge_valid": True,
+            }
+
+        selected, result = select_minimal_context(candidates, target, judge=judge)
+        self.assertEqual([turn["audio_turn_id"] for turn in selected], ["trigger"])
+        self.assertEqual(calls, [["trigger"]])
+        self.assertEqual(result["minimality_checked_prefix_sizes"], 1)
+
+    def test_empty_context_is_deterministic_and_does_not_call_judge(self):
+        target = context_turn("target", 1, 2, "assistant", "Probably.")
+        judge = MagicMock()
+        selected, result = select_minimal_context([], target, judge=judge)
+        self.assertFalse(selected)
+        self.assertEqual(result["state"], ContextSufficiencyState.CONTEXT_INSUFFICIENT.value)
+        self.assertEqual(result["relation"], ContextRelation.MISSING_IMMEDIATE_TRIGGER.value)
+        self.assertTrue(result["judge_valid"])
+        self.assertTrue(result["visible_context_only"])
+        self.assertFalse(result["hidden_history_accessed"])
+        judge.assert_not_called()
+
+    def test_immediate_trigger_outside_current_suffix_cannot_pass(self):
+        candidates = [context_turn("visible", 0, 1, "user", "Visible but not the trigger.")]
+        target = context_turn("target", 1.1, 1.5, "assistant", "Probably.")
+
+        def judge(_context, _target):
+            return {
+                "state": ContextSufficiencyState.CONTEXT_SUFFICIENT.value,
+                "relation": ContextRelation.TARGET_RESPONDS_TO_CONTEXT.value,
+                "immediate_trigger_turn_id": "missing-trigger",
+                "judge_valid": True,
+            }
+
+        selected, result = select_minimal_context(candidates, target, judge=judge)
+        self.assertFalse(selected)
+        self.assertEqual(result["relation"], ContextRelation.MISSING_IMMEDIATE_TRIGGER.value)
+        self.assertEqual(result["reason"], "IMMEDIATE_TRIGGER_OUTSIDE_SELECTED_SUFFIX")
+        self.assertEqual(result["minimality_checked_prefix_sizes"], 1)
 
     def test_stepfun_chat_endpoint_uses_json_mode_and_bearer_key(self):
         context = [context_turn("question", 0, 1, "user", "Are you coming tomorrow?")]
         target = context_turn("target", 1.1, 1.5, "assistant", "Probably.")
         response = MagicMock()
         response.__enter__.return_value = response
+        response.status = 200
         response.read.return_value = json.dumps({
-            "choices": [{"message": {"content": json.dumps({
+            "choices": [{"finish_reason": "stop", "message": {"content": json.dumps({
                 "state": "CONTEXT_SUFFICIENT",
                 "relation": "TARGET_RESPONDS_TO_CONTEXT",
                 "immediate_trigger_turn_id": "question",
                 "confidence": 0.95,
                 "reason": "direct answer",
-            })}}]
+            })}}],
+            "usage": {
+                "prompt_tokens": 111,
+                "completion_tokens": 22,
+                "prompt_tokens_details": {"cached_tokens": 33},
+                "completion_tokens_details": {"reasoning_tokens": 44},
+            },
         }).encode("utf-8")
         with patch.dict(os.environ, {"STEPFUN_API_KEY": "test-secret"}, clear=False):
             with patch("audio_evidence.recovery_v2.urlopen", return_value=response) as open_url:
@@ -396,6 +453,14 @@ class TargetAndContextRegressionTests(unittest.TestCase):
         self.assertEqual(body["reasoning_effort"], "low")
         self.assertEqual(body["max_tokens"], 8192)
         self.assertEqual(body["messages"][0]["role"], "system")
+        self.assertIn("TARGET_RESPONDS_TO_CONTEXT", body["messages"][0]["content"])
+        self.assertEqual(set(json.loads(body["messages"][1]["content"])), {"selected_context", "frozen_target"})
+        self.assertEqual(result["judge_telemetry"]["invalid_judge_output"], False)
+        self.assertEqual(result["judge_telemetry"]["prompt_tokens"], 111)
+        self.assertEqual(result["judge_telemetry"]["cached_input_tokens"], 33)
+        self.assertEqual(result["judge_telemetry"]["completion_tokens"], 22)
+        self.assertEqual(result["judge_telemetry"]["reasoning_tokens"], 44)
+        self.assertEqual(result["judge_telemetry"]["finish_reason"], "stop")
 
     def test_stepfun_without_key_fails_closed_without_network_call(self):
         context = [context_turn("question", 0, 1, "user", "Are you coming tomorrow?")]
@@ -424,6 +489,55 @@ class TargetAndContextRegressionTests(unittest.TestCase):
                 result = CachedContextJudge(Path(directory) / "judge.jsonl", model="test", endpoint="http://unused")(context, target)
         self.assertEqual(result["state"], ContextSufficiencyState.CONTEXT_SUFFICIENT.value)
         call.assert_called_once()
+
+    def test_cache_hit_does_not_repeat_api_request(self):
+        context = [context_turn("question", 0, 1, "user", "Are you coming tomorrow?")]
+        target = context_turn("target", 1.1, 1.5, "assistant", "Probably.")
+        with TemporaryDirectory() as directory:
+            with patch("run_audio_evidence_recovery_v2.call_context_sufficiency_judge") as call:
+                call.return_value = {
+                    "state": ContextSufficiencyState.CONTEXT_SUFFICIENT.value,
+                    "relation": ContextRelation.TARGET_RESPONDS_TO_CONTEXT.value,
+                    "immediate_trigger_turn_id": "question",
+                    "judge_valid": True,
+                }
+                judge = CachedContextJudge(Path(directory) / "judge.jsonl", model="test", endpoint="http://unused")
+                judge(context, target)
+                judge(context, target)
+        call.assert_called_once()
+        self.assertEqual(judge.model_calls, 1)
+        self.assertEqual(judge.cache_hits, 1)
+
+    def test_target_concurrency_is_bounded_at_five(self):
+        active = 0
+        max_active = 0
+        lock = threading.Lock()
+
+        class ParallelJudge:
+            concurrency = 5
+
+            def __call__(self, _context, _target):
+                nonlocal active, max_active
+                with lock:
+                    active += 1
+                    max_active = max(max_active, active)
+                time.sleep(0.02)
+                with lock:
+                    active -= 1
+                return {
+                    "state": ContextSufficiencyState.CONTEXT_INSUFFICIENT.value,
+                    "relation": ContextRelation.RELATED_BUT_NOT_RESPONSE.value,
+                    "judge_valid": True,
+                }
+
+        requests = [
+            ([context_turn(f"q-{index}", float(index), float(index) + 0.5, "user", "Question")],
+             context_turn(f"t-{index}", float(index) + 0.6, float(index) + 1, "assistant", "Answer"))
+            for index in range(10)
+        ]
+        select_contexts_in_parallel(requests, ParallelJudge())
+        self.assertLessEqual(max_active, 5)
+        self.assertGreater(max_active, 1)
 
     def test_baseline_target_without_new_audio_remains_confirmed(self):
         result = resolve_target(
@@ -496,9 +610,7 @@ class TargetAndContextRegressionTests(unittest.TestCase):
         context = [context_turn("q", 0, 1, "user", "Where is the password?")]
         target = context_turn("target", 1, 2, "assistant", "It is on page two.")
         payload = build_context_judge_payload(context, target)
-        self.assertIn(ContextRelation.TARGET_RESPONDS_TO_CONTEXT.value, payload["allowed_relations"])
-        self.assertIn("relation", payload["output_schema"])
-        self.assertIn("immediate_trigger_turn_id", payload["output_schema"])
+        self.assertEqual(set(payload), {"selected_context", "frozen_target"})
         self.assertEqual(payload["selected_context"][0]["turn_id"], "q")
 
     def test_judge_cache_key_changes_for_any_authority_revision(self):
@@ -564,6 +676,11 @@ class TargetAndContextRegressionTests(unittest.TestCase):
                     ContextSufficiencyState.CONTEXT_SUFFICIENT.value
                     if sufficient else ContextSufficiencyState.CONTEXT_INSUFFICIENT.value
                 ),
+                "relation": (
+                    ContextRelation.TARGET_RESPONDS_TO_CONTEXT.value
+                    if sufficient else ContextRelation.RELATED_BUT_NOT_RESPONSE.value
+                ),
+                "immediate_trigger_turn_id": "page" if sufficient else None,
                 "checker": "test-semantic-judge",
                 "judge_valid": True,
             }
