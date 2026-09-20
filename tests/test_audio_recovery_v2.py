@@ -368,6 +368,8 @@ class TargetAndContextRegressionTests(unittest.TestCase):
         self.assertEqual(request.get_header("Authorization"), "Bearer test-secret")
         body = json.loads(request.data.decode("utf-8"))
         self.assertEqual(body["response_format"], {"type": "json_object"})
+        self.assertEqual(body["reasoning_effort"], "low")
+        self.assertEqual(body["max_tokens"], 512)
         self.assertEqual(body["messages"][0]["role"], "system")
 
     def test_stepfun_without_key_fails_closed_without_network_call(self):

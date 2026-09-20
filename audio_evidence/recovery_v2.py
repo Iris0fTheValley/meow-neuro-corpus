@@ -1270,6 +1270,12 @@ def call_context_sufficiency_judge(
         }
     endpoint_host = endpoint.lower()
     if "api.stepfun.com" in endpoint_host:
+        # Step 3.5 Flash exposes reasoning_content separately and can spend a
+        # small completion budget on it before emitting the required JSON.
+        # Keep reasoning bounded so the visible judge object is not truncated.
+        if is_chat_endpoint:
+            body["max_tokens"] = 512
+            body["reasoning_effort"] = "low"
         env_name = api_key_env or "STEPFUN_API_KEY"
         api_key = os.environ.get(env_name, "").strip()
         if not api_key:
