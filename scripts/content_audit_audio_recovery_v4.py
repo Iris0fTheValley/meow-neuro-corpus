@@ -12,6 +12,7 @@ import argparse
 from collections import Counter, defaultdict
 import hashlib
 import json
+import os
 from pathlib import Path
 import sys
 from typing import Any
@@ -102,34 +103,64 @@ def review_payload(row: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def call_model(system: str, user_payload: dict[str, Any], *, endpoint: str, model: str, timeout: int) -> tuple[dict[str, Any], bool, str]:
+def call_model(
+    system: str,
+    user_payload: dict[str, Any],
+    *,
+    endpoint: str,
+    model: str,
+    timeout: int,
+    api_key_env: str = "STEPFUN_API_KEY",
+) -> tuple[dict[str, Any], bool, str]:
     from urllib.request import Request, urlopen
     from urllib.error import HTTPError, URLError
 
-    prompt = (
-        "<|im_start|>system\n" + system + "<|im_end|>\n<|im_start|>user\n"
-        + json.dumps(user_payload, ensure_ascii=False) + "<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n"
-    )
+    is_chat_endpoint = "/chat/completions" in endpoint or "/step_plan/" in endpoint
+    if is_chat_endpoint:
+        api_key = os.environ.get(api_key_env, "").strip()
+        if not api_key:
+            return {}, False, "missing_api_key"
+        request_body = {
+            "model": model,
+            "messages": [
+                {"role": "system", "content": system},
+                {"role": "user", "content": json.dumps(user_payload, ensure_ascii=False)},
+            ],
+            "temperature": 0,
+            "max_tokens": 32768 if "/step_plan/" in endpoint else 256,
+            "response_format": {"type": "json_object"},
+        }
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json; charset=utf-8",
+        }
+    else:
+        prompt = (
+            "<|im_start|>system\n" + system + "<|im_end|>\n<|im_start|>user\n"
+            + json.dumps(user_payload, ensure_ascii=False) + "<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n"
+        )
+        request_body = {"model": model, "prompt": prompt, "temperature": 0, "max_tokens": 256, "stop": ["<|im_end|>"]}
+        headers = {"Content-Type": "application/json; charset=utf-8"}
     request = Request(
         endpoint,
-        data=json.dumps({"model": model, "prompt": prompt, "temperature": 0, "max_tokens": 256, "stop": ["<|im_end|>"]}, ensure_ascii=False).encode("utf-8"),
-        headers={"Content-Type": "application/json; charset=utf-8"},
+        data=json.dumps(request_body, ensure_ascii=False).encode("utf-8"),
+        headers=headers,
         method="POST",
     )
     try:
         with urlopen(request, timeout=timeout) as response:
             response_payload = json.loads(response.read().decode("utf-8"))
         choice = (response_payload.get("choices") or [{}])[0]
-        parsed = parse_json_object(choice.get("text") or (choice.get("message") or {}).get("content")) or {}
+        parsed = parse_json_object((choice.get("message") or {}).get("content") or choice.get("text")) or {}
     except (HTTPError, URLError, OSError, TimeoutError, json.JSONDecodeError) as exc:
         return {}, False, type(exc).__name__
     return parsed, bool(parsed), ""
 
 
-def call_reviewer(payload: dict[str, Any], *, endpoint: str, model: str, timeout: int) -> dict[str, Any]:
-    parsed, parsed_ok, error = call_model(SYSTEM, payload, endpoint=endpoint, model=model, timeout=timeout)
+def call_reviewer(payload: dict[str, Any], *, endpoint: str, model: str, timeout: int, api_key_env: str = "STEPFUN_API_KEY") -> dict[str, Any]:
+    parsed, parsed_ok, error = call_model(SYSTEM, payload, endpoint=endpoint, model=model, timeout=timeout, api_key_env=api_key_env)
     if not parsed_ok:
-        parsed, parsed_ok, error = call_model(SYSTEM, payload, endpoint=endpoint, model=model, timeout=timeout)
+        parsed, parsed_ok, error = call_model(SYSTEM, payload, endpoint=endpoint, model=model, timeout=timeout, api_key_env=api_key_env)
     if not parsed_ok:
         return {"finding": False, "issue_category": None, "severity": "none", "evidence": error, "valid": False}
     finding = parsed.get("finding") is True
@@ -144,17 +175,17 @@ def call_reviewer(payload: dict[str, Any], *, endpoint: str, model: str, timeout
     }
 
 
-def call_triage(payload: dict[str, Any], claim: dict[str, Any], *, endpoint: str, model: str, timeout: int) -> dict[str, Any]:
+def call_triage(payload: dict[str, Any], claim: dict[str, Any], *, endpoint: str, model: str, timeout: int, api_key_env: str = "STEPFUN_API_KEY") -> dict[str, Any]:
     parsed, parsed_ok, error = call_model(
         TRIAGE_SYSTEM,
         {"sample_or_evidence": payload, "first_reviewer_claim": claim},
-        endpoint=endpoint, model=model, timeout=timeout,
+        endpoint=endpoint, model=model, timeout=timeout, api_key_env=api_key_env,
     )
     if not parsed_ok:
         parsed, parsed_ok, error = call_model(
             TRIAGE_SYSTEM,
             {"sample_or_evidence": payload, "first_reviewer_claim": claim},
-            endpoint=endpoint, model=model, timeout=timeout,
+            endpoint=endpoint, model=model, timeout=timeout, api_key_env=api_key_env,
         )
     if not parsed_ok:
         return {"verified": False, "issue_category": None, "severity": "none", "evidence": error, "valid": False}
@@ -249,6 +280,7 @@ def main() -> int:
     parser.add_argument("--run", required=True)
     parser.add_argument("--model", required=True)
     parser.add_argument("--endpoint", default="http://127.0.0.1:1234/v1/completions")
+    parser.add_argument("--api-key-env", default="STEPFUN_API_KEY")
     parser.add_argument("--per-stratum", type=int, default=100)
     parser.add_argument("--timeout", type=int, default=180)
     parser.add_argument("--reuse-existing-reviews", action="store_true", help="Reuse matching review inputs after tightening corroboration only.")
@@ -352,14 +384,18 @@ def main() -> int:
             payload = review_payload(row)
             input_hash = canonical_sha256(payload)
             prior = prior_reviews.get(input_hash)
-            result = dict(prior.get("review") or {}) if prior else call_reviewer(payload, endpoint=args.endpoint, model=args.model, timeout=args.timeout)
+            result = dict(prior.get("review") or {}) if prior else call_reviewer(
+                payload, endpoint=args.endpoint, model=args.model, timeout=args.timeout, api_key_env=args.api_key_env,
+            )
             triage = dict(prior.get("triage") or {}) if prior and prior.get("triage") else None
             if not result["valid"]:
                 invalid_initial += 1
             if result["finding"]:
                 initial_findings += 1
                 initial_category_counts[str(result["issue_category"] or "other")] += 1
-                triage = triage or call_triage(payload, result, endpoint=args.endpoint, model=args.model, timeout=args.timeout)
+                triage = triage or call_triage(
+                    payload, result, endpoint=args.endpoint, model=args.model, timeout=args.timeout, api_key_env=args.api_key_env,
+                )
                 if not triage["valid"]:
                     invalid_triage += 1
             sample = {
