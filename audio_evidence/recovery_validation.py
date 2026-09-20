@@ -6,6 +6,7 @@ from collections import defaultdict
 from typing import Any, Iterable, Mapping
 
 from .recovery_v2 import (
+    ContextRelation,
     ContextSufficiencyState,
     ReconciliationState,
     SpeakerState,
@@ -38,6 +39,7 @@ MANDATORY_GATES = (
     "CONTEXT_IS_MINIMAL",
     "CONTEXT_SUFFICIENCY_CHECKED",
     "CONTEXT_SUFFICIENCY_ACTUALLY_JUDGED",
+    "CONTEXT_DIRECTION_AUTHORITY",
     "RECOVERED_SAMPLE_WITHOUT_SEMANTIC_CONTEXT_JUDGEMENT",
     "LEXICAL_OVERLAP_USED_AS_SEMANTIC_REJECTION",
     "RECOVERED_SAMPLE_WITHOUT_SUFFICIENT_CONTEXT",
@@ -245,6 +247,11 @@ def validate_recovery_v2(
             fail("CONTEXT_SUFFICIENCY_CHECKED", sample, "selected context was not marked sufficient")
             if str(row.get("context_reconstruction_class") or "") in recovered_classes:
                 fail("RECOVERED_SAMPLE_WITHOUT_SUFFICIENT_CONTEXT", sample, "recovered sample lacks sufficient context")
+        if sufficiency and (
+            sufficiency.get("state") == ContextSufficiencyState.CONTEXT_SUFFICIENT.value
+            and sufficiency.get("relation") != ContextRelation.TARGET_RESPONDS_TO_CONTEXT.value
+        ):
+            fail("CONTEXT_DIRECTION_AUTHORITY", sample, "sufficient context lacks TARGET_RESPONDS_TO_CONTEXT relation")
         if sufficiency and str(sufficiency.get("checker") or "").startswith("bool"):
             fail("NO_BOOL_CONTEXT_SUFFICIENCY", sample, "boolean context checker used")
         recovered_requires_judge = (
@@ -304,7 +311,13 @@ def validate_recovery_v2(
         sample for sample, row in quarantine_by_sample.items()
         if row.get("was_baseline_materialized") and row.get("explicit_contradiction")
     }
-    missing_baseline = baseline_materialized_ids - materialized_ids - explicitly_removed_baseline
+    baseline_context_quarantined = {
+        sample for sample, row in quarantine_by_sample.items()
+        if row.get("was_baseline_materialized")
+        and row.get("baseline_context_disposition") == "BASELINE_CONTEXT_QUARANTINED"
+        and row.get("baseline_membership_preserved") is True
+    }
+    missing_baseline = baseline_materialized_ids - materialized_ids - explicitly_removed_baseline - baseline_context_quarantined
     if missing_baseline:
         fail("BASELINE_MONOTONICITY", sorted(missing_baseline)[:100], "baseline samples disappeared without explicit contradiction")
         fail("NO_UNEXPLAINED_BASELINE_REGRESSION", sorted(missing_baseline)[:100], "unexplained baseline regression")

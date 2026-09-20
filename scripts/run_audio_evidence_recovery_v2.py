@@ -25,7 +25,11 @@ sys.path.insert(0, str(ROOT))
 from audio_evidence.cache import EvidenceCache  # noqa: E402
 from audio_evidence.materialization import FinalViewMembership, materialize_role_preserving  # noqa: E402
 from audio_evidence.recovery_v2 import (  # noqa: E402
+    CONTEXT_JUDGE_POLICY_REVISION,
+    CONTEXT_JUDGE_PROMPT_REVISION,
+    CONTEXT_JUDGE_SCHEMA_REVISION,
     ContextSufficiencyState,
+    ContextRelation,
     QuarantineTrace,
     ReconciliationState,
     SpeakerState,
@@ -41,6 +45,7 @@ from audio_evidence.recovery_v2 import (  # noqa: E402
     interval_overlap,
     is_non_conversational_sentinel,
     merge_existing_turns,
+    merge_obvious_audio_fragments,
     normalized_tokens,
     reconcile_old_turn,
     reconcile_span,
@@ -64,14 +69,17 @@ DEFAULT_CACHE_RUN = RUN_ROOT / "audio-reconstruction-v1-real-context60-bounded12
 DEFAULT_OUT_NAME = "audio-reconstruction-v1-recovery-v3-20260919"
 CONTEXT_DECISIONS = DATASET / "context_sufficiency_decisions_v2_3.jsonl"
 
-SCHEMA_VERSION = "audio-reconstruction-recovery-v3.0.0"
-THRESHOLD_VERSION = "audio-recovery-v3-thresholds-20260919"
+SCHEMA_VERSION = "audio-reconstruction-recovery-v4.0.0"
+THRESHOLD_VERSION = "audio-recovery-v4-thresholds-20260920"
 TIMEBASE_VERSION = "window-local-to-recording-v1"
 CONFIG = {
     "candidate_search_seconds": 60.0,
     "context_hard_gap_seconds": 8.0,
     "alignment_boundary_tolerance_seconds": 0.12,
     "candidate_span_max_gap_seconds": 1.25,
+    "candidate_fragment_merge_max_gap_seconds": 1.5,
+    "boundary_echo_max_candidate_tokens": 8,
+    "boundary_echo_max_tail_tokens": 12,
     "cluster_anchor_minimum_seconds": 1.0,
     "cluster_anchor_dominance_ratio": 0.90,
     "old_new_match_similarity": 0.88,
@@ -79,19 +87,39 @@ CONFIG = {
     "target_audio_match_similarity": 0.86,
     "target_audio_minor_similarity": 0.55,
     "threshold_version": THRESHOLD_VERSION,
+    "context_judge_schema_revision": CONTEXT_JUDGE_SCHEMA_REVISION,
+    "context_judge_prompt_revision": CONTEXT_JUDGE_PROMPT_REVISION,
+    "context_judge_policy_revision": CONTEXT_JUDGE_POLICY_REVISION,
 }
 
 
 class CachedContextJudge:
-    def __init__(self, path: Path, *, model: str, endpoint: str, seed_paths: tuple[Path, ...] = ()):
+    def __init__(
+        self,
+        path: Path,
+        *,
+        model: str,
+        endpoint: str,
+        model_revision: str = "unspecified-model-revision",
+        seed_paths: tuple[Path, ...] = (),
+    ):
         self.path = path
         self.model = model
         self.endpoint = endpoint
+        self.model_revision = model_revision
+        self.prompt_revision = CONTEXT_JUDGE_PROMPT_REVISION
+        self.policy_revision = CONTEXT_JUDGE_POLICY_REVISION
+        self.schema_revision = CONTEXT_JUDGE_SCHEMA_REVISION
         self.cache = {
             str(row.get("judge_input_sha256")): row
             for cache_path in (*seed_paths, path)
             for row in load_jsonl(cache_path)
             if row.get("judge_input_sha256")
+            and row.get("judge_model") == self.model
+            and row.get("judge_model_revision") == self.model_revision
+            and row.get("judge_prompt_revision") == self.prompt_revision
+            and row.get("judge_policy_revision") == self.policy_revision
+            and row.get("judge_schema_revision") == self.schema_revision
         }
         self.calls = 0
         self.cache_hits = 0
@@ -104,14 +132,17 @@ class CachedContextJudge:
         # "Probably" to "Are you coming tomorrow?" shares no content token.
         # Structural invalidity is filtered before selection; every remaining
         # recovery candidate is judged from its visible text.
-        payload = {
-            "context": [
-                {"role": turn.get("role"), "text": turn.get("resolved_text")}
-                for turn in context_turns
-            ],
-            "target": {"role": "assistant", "text": target_turn.get("resolved_text")},
-        }
-        key = canonical_sha256(payload)
+        from audio_evidence.recovery_v2 import context_judge_cache_key
+
+        key = context_judge_cache_key(
+            context_turns,
+            target_turn,
+            judge_model=self.model,
+            judge_model_revision=self.model_revision,
+            prompt_revision=self.prompt_revision,
+            policy_revision=self.policy_revision,
+            schema_revision=self.schema_revision,
+        )
         prior = self.cache.get(key)
         if prior:
             self.cache_hits += 1
@@ -128,6 +159,10 @@ class CachedContextJudge:
         result.update({
             "judge_input_sha256": key,
             "judge_model": self.model,
+            "judge_model_revision": self.model_revision,
+            "judge_prompt_revision": self.prompt_revision,
+            "judge_policy_revision": self.policy_revision,
+            "judge_schema_revision": self.schema_revision,
             "judge_endpoint": self.endpoint,
         })
         self.path.parent.mkdir(parents=True, exist_ok=True)
@@ -192,6 +227,11 @@ def main() -> int:
     parser.add_argument("--out-name", default=DEFAULT_OUT_NAME)
     parser.add_argument("--limit", type=int, default=0, help="smoke-test interactions only")
     parser.add_argument("--context-judge-model", default="qwen3.8-27b-efficientthink-simpo-lynnstyle")
+    parser.add_argument(
+        "--context-judge-model-revision",
+        default="local-qwen3.8-27b-efficientthink-simpo-lynnstyle-revision-20260920",
+        help="immutable model revision or file hash; included in every judge cache key",
+    )
     parser.add_argument("--context-judge-endpoint", default="http://127.0.0.1:1234/v1/completions")
     parser.add_argument("--context-judge-cache", default="")
     parser.add_argument(
@@ -268,6 +308,7 @@ def main() -> int:
         Path(args.context_judge_cache) if args.context_judge_cache else out / "context_sufficiency_judge_cache.jsonl",
         model=args.context_judge_model,
         endpoint=args.context_judge_endpoint,
+        model_revision=args.context_judge_model_revision,
         seed_paths=tuple(Path(value) for value in args.context_judge_seed_cache),
     )
 
@@ -623,12 +664,23 @@ def main() -> int:
             window_ids=[str(window["window_id"]) for window in windows],
             max_gap=CONFIG["candidate_span_max_gap_seconds"],
         )
+        candidate_spans = merge_obvious_audio_fragments(
+            candidate_spans,
+            max_gap=CONFIG["candidate_fragment_merge_max_gap_seconds"],
+        )
         for span in candidate_spans:
             overlapping = [
                 old for old in old_turns
                 if interval_overlap(float(span["start"]), float(span["end"]), float(old["start"]), float(old["end"])) > 0
             ]
-            entry = reconcile_span(span, overlapping)
+            entry = reconcile_span(
+                span,
+                overlapping,
+                preceding_old_turns=[
+                    old for old in old_turns
+                    if float(old["end"]) <= float(span["start"]) + CONFIG["alignment_boundary_tolerance_seconds"]
+                ],
+            )
             entry.update({
                 "recording_id": sid,
                 "source_window_ids": span["source_window_ids"],
@@ -698,6 +750,7 @@ def main() -> int:
             if entry["reconciliation_state"] in {
                 ReconciliationState.MERGE_EXISTING.value,
                 ReconciliationState.TRUE_NEW.value,
+                ReconciliationState.BOUNDARY_ECHO.value,
                 ReconciliationState.AMBIGUOUS_BOUNDARY.value,
             }:
                 reconciliation_rows.append(entry)
@@ -879,45 +932,21 @@ def main() -> int:
                 "candidate_source": "EXISTING_TIMELINE_RECONCILED",
             })
             frozen_context_ids = [str(value) for value in row.get("context_turn_ids") or []]
-            selected: list[dict[str, Any]] = []
-            sufficiency: dict[str, Any]
-            selection_policy = ""
-            if baseline:
-                baseline_context_ids = [str(value) for value in baseline.get("context_turn_ids") or []]
-                if not baseline_context_ids:
-                    baseline_context_ids = frozen_context_ids
-                selected = [record_turns[turn_id] for turn_id in baseline_context_ids if turn_id in record_turns and record_turns[turn_id].get("training_eligible")]
-                if not selected:
-                    selected, _ = select_minimal_context(candidates, target)
-                visible_check = context_sufficiency(selected, target)
-                sufficiency = {
-                    **visible_check,
-                    "state": ContextSufficiencyState.CONTEXT_SUFFICIENT.value,
-                    "checker": "baseline-visible-context-monotonic-v2",
-                    "reason": "BASELINE_MATERIALIZED_CONTEXT_RETAINED_AFTER_VISIBLE_CHECK",
-                    "baseline_visible_check_state": visible_check["state"],
-                }
-                selection_policy = "BASELINE_MONOTONIC_VISIBLE_CONTEXT"
-            elif context_states.get(sample) == "SELF_CONTAINED":
-                selected = [record_turns[turn_id] for turn_id in frozen_context_ids if turn_id in record_turns and record_turns[turn_id].get("training_eligible")]
-                if len(selected) == len(frozen_context_ids) and selected:
-                    sufficiency = {
-                        **context_sufficiency(selected, target),
-                        "state": ContextSufficiencyState.CONTEXT_SUFFICIENT.value,
-                        "checker": "frozen-selected-context-sufficiency-v2.3",
-                        "reason": "FROZEN_SELECTED_CONTEXT_RECHECKED_VISIBLE_ONLY",
-                    }
-                    selection_policy = "FROZEN_CONTEXT_CONFIRMED"
-                else:
-                    selected, sufficiency = select_minimal_context(candidates, target)
-                    selection_policy = "MINIMAL_CONTIGUOUS_SUFFIX_FALLBACK"
-            else:
-                selected, sufficiency = select_minimal_context(
-                    candidates,
-                    target,
-                    judge=context_judge,
-                )
-                selection_policy = "MINIMAL_CONTIGUOUS_SUFFIX"
+            # Baseline monotonicity freezes target/sample membership and the
+            # split authority only.  Historical context is evidence, not
+            # authority: every sample (including a baseline row) is rejudged
+            # from the current reconciled timeline and may be trimmed,
+            # replaced, reconstructed, or quarantined.
+            selected, sufficiency = select_minimal_context(
+                candidates,
+                target,
+                judge=context_judge,
+            )
+            selection_policy = (
+                "BASELINE_MINIMAL_CONTIGUOUS_SUFFIX_RECONSTRUCTED"
+                if baseline_materialized
+                else "MINIMAL_CONTIGUOUS_SUFFIX"
+            )
 
             if not selected or sufficiency.get("state") != ContextSufficiencyState.CONTEXT_SUFFICIENT.value:
                 frozen_context_records = [record_turns[turn_id] for turn_id in frozen_context_ids if turn_id in record_turns]
@@ -928,53 +957,6 @@ def main() -> int:
                 explicit_sentinel_contradiction = baseline_materialized and (
                     sentinel_only_context(frozen_context_records) or baseline_messages_have_sentinel
                 )
-                if baseline_materialized and not explicit_sentinel_contradiction:
-                    # Monotonicity: absence of a newly reconstructable context
-                    # is not evidence against an already safe baseline sample.
-                    retained = dict(baseline)
-                    retained.update({
-                        "schema_version": SCHEMA_VERSION,
-                        "was_baseline_materialized": True,
-                        "baseline_monotonic_retention": True,
-                        "context_reconstruction_class": "ORIGINAL_CONTEXT_CONFIRMED",
-                        "context_selection_ref": "context_selection.jsonl#" + sample,
-                        "context_sufficiency_ref": "context_sufficiency.jsonl#" + sample,
-                        "target_resolution_ref": "target_resolution.jsonl#" + sample,
-                        "audio_evidence_provenance": {
-                            "recovery_run": args.out_name,
-                            "cache_source_run": cache_run.name,
-                            "recovery_source": "ORIGINAL_CONTEXT_CONFIRMED",
-                            "baseline_retained_without_explicit_contradiction": True,
-                            "target_rescue_state": target_resolution["state"],
-                        },
-                    })
-                    materialized_rows.append(retained)
-                    retained_context_ids = [str(value) for value in retained.get("context_turn_ids") or []]
-                    context_selection_rows.append({
-                        "sample_id": sample,
-                        "selection_policy": "BASELINE_MONOTONIC_RETENTION",
-                        "candidate_search_window_seconds": CONFIG["candidate_search_seconds"],
-                        "candidate_turn_ids": [turn["audio_turn_id"] for turn in candidates],
-                        "selected_context_turn_ids": retained_context_ids,
-                        "selected_target_turn_id": target_id,
-                        "candidate_turn_count": len(candidates),
-                        "selected_turn_count": len(retained_context_ids),
-                        "minimality_checked": True,
-                        "first_sufficient_suffix": False,
-                        "context_sufficiency_state": ContextSufficiencyState.CONTEXT_SUFFICIENT.value,
-                    })
-                    sufficiency_rows.append({
-                        "sample_id": sample,
-                        "state": ContextSufficiencyState.CONTEXT_SUFFICIENT.value,
-                        "checker": "baseline-monotonic-retention-v3",
-                        "judge_valid": True,
-                        "selected_context_turn_ids": retained_context_ids,
-                        "selected_target_turn_id": target_id,
-                        "visible_context_only": True,
-                        "hidden_history_accessed": False,
-                        "reason": "BASELINE_RETAINED_WITHOUT_EXPLICIT_CONTRADICTION",
-                    })
-                    continue
                 failure_reason = (
                     "NON_CONVERSATIONAL_SENTINEL_ONLY_CONTEXT"
                     if explicit_sentinel_contradiction
@@ -984,6 +966,8 @@ def main() -> int:
                         else str(sufficiency.get("reason") or "CONTEXT_INSUFFICIENT")
                     )
                 )
+                if baseline_materialized and not explicit_sentinel_contradiction:
+                    failure_reason = "BASELINE_CONTEXT_QUARANTINED:" + failure_reason
                 quarantine_rows.append(QuarantineTrace(
                     sample_id=sample,
                     was_baseline_materialized=baseline_materialized,
@@ -1002,6 +986,10 @@ def main() -> int:
                     explicit_contradiction=explicit_sentinel_contradiction,
                     resolution_attempts=("VISIBLE_CONTEXT_MINIMALITY_SEARCH", "NON_CONVERSATIONAL_SENTINEL_FILTER"),
                 ).to_dict())
+                quarantine_rows[-1]["baseline_context_disposition"] = (
+                    "BASELINE_CONTEXT_QUARANTINED" if baseline_materialized else None
+                )
+                quarantine_rows[-1]["baseline_membership_preserved"] = bool(baseline_materialized)
                 continue
 
             selected_ids = [str(turn["audio_turn_id"]) for turn in selected]
@@ -1120,13 +1108,15 @@ def main() -> int:
         "resolution": "SUPPRESSED_BY_TURN_RECONCILIATION",
     } for row in reconciliation_rows if row.get("reconciliation_state") == ReconciliationState.MERGE_EXISTING.value)
     materialized_ids = {str(row["sample_id"]) for row in materialized_rows}
-    # Any baseline removal not backed by an explicit contradiction is restored.
+    # Baseline target/sample membership remains accounted for even when the
+    # newly authoritative context judge quarantines the historical context.
+    # The quarantine is explicit and auditable; no old context is silently
+    # copied back into the new run.
     removed_baseline_ids = baseline_ids - materialized_ids
     if removed_baseline_ids:
-        by_sample_before_dedup = {str(row["sample_id"]): row for row in materialized_rows}
         explicit_quarantine = {
             str(row["sample_id"]) for row in quarantine_rows
-            if row.get("explicit_contradiction")
+            if row.get("explicit_contradiction") or row.get("baseline_context_disposition") == "BASELINE_CONTEXT_QUARANTINED"
         }
         unexplained = removed_baseline_ids - explicit_quarantine
         if unexplained:
@@ -1215,7 +1205,14 @@ def main() -> int:
         1 for row in quarantine_rows
         if row.get("was_baseline_materialized") and row.get("explicit_contradiction")
     )
-    baseline_unexplained = len(baseline_ids - materialized_ids) - baseline_explicitly_downgraded
+    baseline_context_quarantined = sum(
+        1 for row in quarantine_rows
+        if row.get("baseline_context_disposition") == "BASELINE_CONTEXT_QUARANTINED"
+    )
+    baseline_unexplained = max(
+        0,
+        len(baseline_ids - materialized_ids) - baseline_explicitly_downgraded - baseline_context_quarantined,
+    )
     materialized_true_new_ids = {
         str(turn.get("audio_turn_id")) for turn in timeline_rows
         if turn.get("reconciliation_state") == ReconciliationState.TRUE_NEW.value and turn.get("training_eligible")
@@ -1258,6 +1255,7 @@ def main() -> int:
         "new_quarantine": len(quarantine_rows),
         "baseline_retained": baseline_retained,
         "baseline_explicitly_downgraded": baseline_explicitly_downgraded,
+        "baseline_context_quarantined": baseline_context_quarantined,
         "baseline_unexplained_regression": baseline_unexplained,
         "context_source_counts": dict(context_counts),
         "turn_reconciliation_counts": dict(reconciliation_counts),
@@ -1267,6 +1265,11 @@ def main() -> int:
             "calls": context_judge.calls,
             "cache_hits": context_judge.cache_hits,
             "model_calls": context_judge.model_calls,
+            "model": context_judge.model,
+            "model_revision": context_judge.model_revision,
+            "prompt_revision": context_judge.prompt_revision,
+            "policy_revision": context_judge.policy_revision,
+            "schema_revision": context_judge.schema_revision,
             "decisions": dict(context_judge.decision_counts),
         },
         "old_lexical_prefilter_rejects": reference_lexical_rejects,
@@ -1329,6 +1332,7 @@ def main() -> int:
         f"- Baseline materialized: {len(baseline_ids)}",
         f"- Baseline retained: {baseline_retained}",
         f"- Baseline explicitly downgraded: {baseline_explicitly_downgraded}",
+        f"- Baseline context quarantined: {baseline_context_quarantined}",
         f"- Baseline unexplained regression: {baseline_unexplained}",
         "",
         "## New production",

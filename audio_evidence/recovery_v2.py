@@ -49,6 +49,7 @@ class ReconciliationState(str, Enum):
     SPLIT_EXISTING = "SPLIT_EXISTING"
     MERGE_EXISTING = "MERGE_EXISTING"
     TRUE_NEW = "TRUE_NEW"
+    BOUNDARY_ECHO = "BOUNDARY_ECHO"
     AMBIGUOUS = "AMBIGUOUS"
     AMBIGUOUS_BOUNDARY = "AMBIGUOUS_BOUNDARY"
 
@@ -73,6 +74,25 @@ class ContextSufficiencyState(str, Enum):
     CONTEXT_SUFFICIENT = "CONTEXT_SUFFICIENT"
     CONTEXT_INSUFFICIENT = "CONTEXT_INSUFFICIENT"
     CONTEXT_AMBIGUOUS = "CONTEXT_AMBIGUOUS"
+
+
+class ContextRelation(str, Enum):
+    """Direction-aware relation between visible context and frozen target."""
+
+    TARGET_RESPONDS_TO_CONTEXT = "TARGET_RESPONDS_TO_CONTEXT"
+    CONTEXT_RESPONDS_TO_TARGET = "CONTEXT_RESPONDS_TO_TARGET"
+    RELATED_BUT_NOT_RESPONSE = "RELATED_BUT_NOT_RESPONSE"
+    UNRELATED = "UNRELATED"
+    MISSING_IMMEDIATE_TRIGGER = "MISSING_IMMEDIATE_TRIGGER"
+
+
+# These revisions are part of the semantic judge authority.  A cached result
+# from a different value is not compatible, even when its visible text is the
+# same.  Keep these separate from the audio evidence schema revision because a
+# judge policy change must invalidate only judge decisions.
+CONTEXT_JUDGE_SCHEMA_REVISION = "context-judge-schema-v2"
+CONTEXT_JUDGE_PROMPT_REVISION = "context-judge-prompt-v4-directional"
+CONTEXT_JUDGE_POLICY_REVISION = "context-judge-policy-v4-immediate-trigger"
 
 
 RECOVERY_ALLOWED_RECONCILIATION_STATES = {
@@ -158,6 +178,125 @@ def text_similarity(left: Any, right: Any) -> float:
     aset, bset = set(a), set(b)
     jaccard = len(aset & bset) / max(1, len(aset | bset))
     return max(sequence, jaccard)
+
+
+def boundary_echo_match(
+    candidate_span: dict[str, Any],
+    preceding_old_turns: Sequence[dict[str, Any]],
+    *,
+    max_candidate_tokens: int = 8,
+    max_tail_tokens: int = 12,
+    boundary_tolerance: float = 0.15,
+) -> Optional[dict[str, Any]]:
+    """Detect a new span that is only the tail of the preceding old turn.
+
+    A short ASR span immediately after an old turn is not evidence of a new
+    utterance when it exactly repeats the old turn's final words.  This is
+    intentionally text/boundary evidence only; it never assigns a speaker.
+    Longer spans are accepted only when their entire normalized token sequence
+    is a suffix of the old turn.  The returned record is suitable for the
+    reconciliation ledger and makes the rejection auditable.
+    """
+    candidate_text = str(candidate_span.get("text") or "").strip()
+    candidate_tokens = normalized_tokens(candidate_text)
+    if not candidate_tokens or len(candidate_tokens) > max_candidate_tokens:
+        return None
+    candidate_start = float(candidate_span.get("start") or 0.0)
+    ordered = sorted(
+        (
+            turn for turn in preceding_old_turns
+            if float(turn.get("end") or 0.0) <= candidate_start + boundary_tolerance
+        ),
+        key=lambda turn: (float(turn.get("end") or 0.0), str(turn.get("turn_id") or "")),
+        reverse=True,
+    )
+    for old_turn in ordered:
+        old_tokens = normalized_tokens(old_turn.get("text") or old_turn.get("resolved_text"))
+        if not old_tokens:
+            continue
+        tail = old_tokens[-max_tail_tokens:]
+        if len(candidate_tokens) <= len(tail) and tail[-len(candidate_tokens):] == candidate_tokens:
+            return {
+                "old_turn_id": str(old_turn.get("turn_id") or old_turn.get("audio_turn_id") or ""),
+                "old_text": str(old_turn.get("text") or old_turn.get("resolved_text") or "").strip(),
+                "candidate_text": candidate_text,
+                "candidate_tokens": candidate_tokens,
+                "match": "EXACT_NORMALIZED_SUFFIX",
+                "boundary_gap_seconds": round(candidate_start - float(old_turn.get("end") or 0.0), 6),
+            }
+    return None
+
+
+def _shared_scoped_cluster(left: dict[str, Any], right: dict[str, Any]) -> bool:
+    left_keys = set(_scoped_keys(left.get("speaker_cluster_keys") or left.get("speaker_cluster")))
+    right_keys = set(_scoped_keys(right.get("speaker_cluster_keys") or right.get("speaker_cluster")))
+    return bool(left_keys & right_keys)
+
+
+def merge_obvious_audio_fragments(
+    spans: Sequence[dict[str, Any]],
+    *,
+    max_gap: float = 1.5,
+) -> list[dict[str, Any]]:
+    """Merge adjacent same-speaker ASR fragments before TRUE_NEW admission.
+
+    Fragments are merged only when they share a window-scoped cluster and the
+    boundary looks like a continuation (unfinished punctuation, a continuation
+    conjunction, or a very short right fragment).  This prevents the topology
+    classifier from deciding on individual ASR fragments.
+    """
+    ordered = sorted(spans, key=lambda item: (float(item.get("start") or 0.0), str(item.get("candidate_span_id") or "")))
+    merged: list[dict[str, Any]] = []
+    continuation_words = {
+        "and", "or", "but", "so", "because", "to", "of", "for", "with", "that", "which", "then", "than",
+    }
+    for span in ordered:
+        if not merged:
+            merged.append(dict(span))
+            continue
+        previous = merged[-1]
+        gap = float(span.get("start") or 0.0) - float(previous.get("end") or 0.0)
+        left_text = str(previous.get("text") or "").strip()
+        right_text = str(span.get("text") or "").strip()
+        right_tokens = normalized_tokens(right_text)
+        continuation = (
+            gap <= max_gap
+            and not previous.get("generic_overlap")
+            and not span.get("generic_overlap")
+            and _shared_scoped_cluster(previous, span)
+            and (
+                not re.search(r"[.!?]$", left_text)
+                or (right_tokens and right_tokens[0] in continuation_words)
+                or len(right_tokens) <= 2
+            )
+        )
+        if not continuation:
+            merged.append(dict(span))
+            continue
+        tokens = list(previous.get("tokens") or []) + list(span.get("tokens") or [])
+        text = " ".join(value for value in (left_text, right_text) if value).strip()
+        window_ids = sorted(set(previous.get("source_window_ids") or []) | set(span.get("source_window_ids") or []))
+        cluster_keys = sorted(set(previous.get("speaker_cluster_keys") or []) | set(span.get("speaker_cluster_keys") or []))
+        merged[-1] = {
+            **previous,
+            "candidate_span_id": "audio:candidate:merged:" + canonical_sha256({
+                "left": previous.get("candidate_span_id"),
+                "right": span.get("candidate_span_id"),
+                "text": normalized_text(text),
+            })[:16],
+            "end": float(span.get("end") or previous.get("end") or 0.0),
+            "text": text,
+            "tokens": tokens,
+            "source_window_ids": window_ids,
+            "speaker_cluster_keys": cluster_keys,
+            "speaker_cluster": cluster_keys[0] if len(cluster_keys) == 1 else None,
+            "fragment_merge_count": int(previous.get("fragment_merge_count") or 0) + 1,
+            "fragment_merge_provenance": [
+                *(previous.get("fragment_merge_provenance") or [previous.get("candidate_span_id")]),
+                span.get("candidate_span_id"),
+            ],
+        }
+    return merged
 
 
 def resolve_speaker_state(
@@ -681,10 +820,31 @@ def reconcile_old_turn(
 def reconcile_span(
     span: dict[str, Any],
     overlapping_old_turns: Sequence[dict[str, Any]],
+    *,
+    preceding_old_turns: Sequence[dict[str, Any]] = (),
 ) -> dict[str, Any]:
     text = str(span.get("text") or "").strip()
     old = sorted(overlapping_old_turns, key=lambda turn: (float(turn["start"]), str(turn["turn_id"])))
     if not old:
+        echo = boundary_echo_match(span, preceding_old_turns)
+        if echo:
+            return {
+                "candidate_span_id": span.get("candidate_span_id"),
+                "reconciliation_state": ReconciliationState.BOUNDARY_ECHO.value,
+                "old_turn_ids": [echo["old_turn_id"]],
+                "old_text": echo["old_text"],
+                "new_text": text or None,
+                "chosen_text": None,
+                "chosen_text_authority": None,
+                "similarity": round(text_similarity(echo["old_text"], text), 6),
+                "confidence": 0.98,
+                "resolution_reason": "OLD_TURN_BOUNDARY_ECHO_NOT_TRUE_NEW",
+                "boundary_echo": echo,
+                "source_spans": [
+                    {"start": float(token["start"]), "end": float(token["end"]), "text": token.get("text")}
+                    for token in span.get("tokens") or []
+                ],
+            }
         state = ReconciliationState.TRUE_NEW
         reason = "NO_OLD_TIMELINE_TURN_OVERLAP"
     elif len(old) == 1:
@@ -936,28 +1096,56 @@ def context_sufficiency(
     context_turns: Sequence[dict[str, Any]],
     target_turn: dict[str, Any],
 ) -> dict[str, Any]:
-    """Deterministic conservative checker using selected context and target only."""
+    """Conservative visible-only checker with an explicit response direction.
+
+    This function is a structural fallback and test helper.  Production
+    recovery uses the directional semantic judge below; nevertheless, the
+    fallback must never call temporal adjacency sufficient by itself.
+    """
     visible_context = [
         turn for turn in context_turns
         if turn.get("speaker_state") != SpeakerState.AMBIGUOUS_SPEAKER.value
         and not is_non_conversational_sentinel(turn.get("resolved_text"))
     ]
     target_text = str(target_turn.get("resolved_text") or "").strip()
+    relation = ContextRelation.UNRELATED.value
+    immediate_trigger_turn_id = None
     if not target_text:
         state, reason = ContextSufficiencyState.CONTEXT_INSUFFICIENT, "TARGET_TEXT_MISSING"
+        relation = ContextRelation.MISSING_IMMEDIATE_TRIGGER.value
     elif not visible_context:
         state, reason = ContextSufficiencyState.CONTEXT_INSUFFICIENT, "NO_VISIBLE_CONTEXT"
+        relation = ContextRelation.MISSING_IMMEDIATE_TRIGGER.value
     elif not any(turn.get("role") == "user" for turn in visible_context):
         state, reason = ContextSufficiencyState.CONTEXT_AMBIGUOUS, "NO_CONFIRMED_NON_TARGET_CONTEXT"
+        relation = ContextRelation.CONTEXT_RESPONDS_TO_TARGET.value
     else:
         last_end = float(visible_context[-1]["end"])
         target_start = float(target_turn["start"])
         if target_start - last_end > 8.0:
             state, reason = ContextSufficiencyState.CONTEXT_AMBIGUOUS, "LARGE_PRE_TARGET_GAP"
+            relation = ContextRelation.MISSING_IMMEDIATE_TRIGGER.value
         else:
-            state, reason = ContextSufficiencyState.CONTEXT_SUFFICIENT, "CONTIGUOUS_CONFIRMED_INTERACTION"
+            last_user = next((turn for turn in reversed(visible_context) if turn.get("role") == "user"), None)
+            trigger_tokens = normalized_tokens((last_user or {}).get("resolved_text"))
+            target_tokens = normalized_tokens(target_text)
+            overlap = set(trigger_tokens) & set(target_tokens)
+            response_like = (
+                len(target_tokens) <= 4
+                or (target_tokens and target_tokens[0] in {"it", "they", "that", "this", "yes", "no", "sure", "probably", "maybe"})
+                or bool(overlap)
+            )
+            if response_like and last_user:
+                state, reason = ContextSufficiencyState.CONTEXT_SUFFICIENT, "VISIBLE_IMMEDIATE_USER_TRIGGER"
+                relation = ContextRelation.TARGET_RESPONDS_TO_CONTEXT.value
+                immediate_trigger_turn_id = str(last_user.get("audio_turn_id") or last_user.get("turn_id") or "")
+            else:
+                state, reason = ContextSufficiencyState.CONTEXT_AMBIGUOUS, "MISSING_IMMEDIATE_TRIGGER"
+                relation = ContextRelation.MISSING_IMMEDIATE_TRIGGER.value
     return {
         "state": state.value,
+        "relation": relation,
+        "immediate_trigger_turn_id": immediate_trigger_turn_id,
         "checker": "deterministic-minimal-context-v2",
         "selected_context_turn_ids": [str(turn["audio_turn_id"]) for turn in visible_context],
         "selected_target_turn_id": str(target_turn["audio_turn_id"]),
@@ -972,8 +1160,15 @@ CONTEXT_JUDGE_SYSTEM_PROMPT = (
     "Use only the selected context and frozen target shown. Do not use hidden history, future turns, "
     "identity diagnostics, metadata, or external knowledge. Decide whether the selected context makes "
     "the target a plausible, understandable response. Temporal adjacency alone is never sufficient. "
-    "Return exactly one compact JSON object with state, confidence, and reason. State must be exactly "
-    "CONTEXT_SUFFICIENT, CONTEXT_INSUFFICIENT, or CONTEXT_AMBIGUOUS."
+    "First classify the direction of the interaction. TARGET_RESPONDS_TO_CONTEXT means the frozen "
+    "assistant target answers a visible user trigger in the selected context. CONTEXT_RESPONDS_TO_TARGET "
+    "means a visible context turn is an answer to the target or an unseen later trigger. "
+    "RELATED_BUT_NOT_RESPONSE means topical relation without an answer relation. UNRELATED means no "
+    "grounded relation. MISSING_IMMEDIATE_TRIGGER means the target looks like an answer but the actual "
+    "immediate user question/request is absent. Only TARGET_RESPONDS_TO_CONTEXT may be sufficient. "
+    "Return exactly one compact JSON object with state, relation, immediate_trigger_turn_id, confidence, "
+    "and reason. State must be exactly CONTEXT_SUFFICIENT, CONTEXT_INSUFFICIENT, or CONTEXT_AMBIGUOUS; "
+    "relation must be one of the five allowed relation labels."
 )
 
 
@@ -990,6 +1185,7 @@ def build_context_judge_payload(
         "task": "Judge semantic sufficiency of this exact training interaction slice.",
         "selected_context": [
             {
+                "turn_id": str(turn.get("audio_turn_id") or turn.get("turn_id") or ""),
                 "role": str(turn.get("role") or ""),
                 "text": compact(turn.get("resolved_text")),
             }
@@ -1000,6 +1196,7 @@ def build_context_judge_payload(
             "text": compact(target_turn.get("resolved_text")),
         },
         "allowed_states": [state.value for state in ContextSufficiencyState],
+        "allowed_relations": [relation.value for relation in ContextRelation],
         "constraints": [
             "Use no evidence outside selected_context and frozen_target.",
             "Do not adjudicate or rewrite the frozen target.",
@@ -1008,6 +1205,8 @@ def build_context_judge_payload(
         ],
         "output_schema": {
             "state": "CONTEXT_SUFFICIENT | CONTEXT_INSUFFICIENT | CONTEXT_AMBIGUOUS",
+            "relation": "TARGET_RESPONDS_TO_CONTEXT | CONTEXT_RESPONDS_TO_TARGET | RELATED_BUT_NOT_RESPONSE | UNRELATED | MISSING_IMMEDIATE_TRIGGER",
+            "immediate_trigger_turn_id": "turn_id from selected_context, required for TARGET_RESPONDS_TO_CONTEXT",
             "confidence": "number 0..1",
             "reason": "short reason based only on shown text",
         },
@@ -1067,25 +1266,39 @@ def call_context_sufficiency_judge(
     except (HTTPError, URLError, TimeoutError, OSError, json.JSONDecodeError) as exc:
         return {
             "state": ContextSufficiencyState.CONTEXT_AMBIGUOUS.value,
+            "relation": ContextRelation.MISSING_IMMEDIATE_TRIGGER.value,
+            "immediate_trigger_turn_id": None,
             "confidence": 0.0,
             "reason": f"JUDGE_REQUEST_FAILED:{type(exc).__name__}",
-            "checker": "semantic-context-sufficiency-judge-v3",
+            "checker": "semantic-context-sufficiency-judge-v4-directional",
             "judge_valid": False,
             "judge_input_sha256": canonical_sha256(payload),
             "visible_context_only": True,
             "hidden_history_accessed": False,
         }
     state = str((parsed or {}).get("state") or "").upper()
+    relation = str((parsed or {}).get("relation") or "").upper()
+    immediate_trigger_turn_id = str((parsed or {}).get("immediate_trigger_turn_id") or "") or None
     try:
         confidence = float((parsed or {}).get("confidence"))
     except (TypeError, ValueError):
         confidence = -1.0
-    valid = state in {item.value for item in ContextSufficiencyState} and 0.0 <= confidence <= 1.0
+    valid = (
+        state in {item.value for item in ContextSufficiencyState}
+        and relation in {item.value for item in ContextRelation}
+        and 0.0 <= confidence <= 1.0
+    )
+    if relation != ContextRelation.TARGET_RESPONDS_TO_CONTEXT.value:
+        state = ContextSufficiencyState.CONTEXT_INSUFFICIENT.value
+    if relation == ContextRelation.TARGET_RESPONDS_TO_CONTEXT.value and not immediate_trigger_turn_id:
+        valid = False
     return {
         "state": state if valid else ContextSufficiencyState.CONTEXT_AMBIGUOUS.value,
+        "relation": relation if valid else ContextRelation.MISSING_IMMEDIATE_TRIGGER.value,
+        "immediate_trigger_turn_id": immediate_trigger_turn_id if valid else None,
         "confidence": confidence if valid else 0.0,
         "reason": str((parsed or {}).get("reason") or "INVALID_JUDGE_OUTPUT")[:500],
-        "checker": "semantic-context-sufficiency-judge-v3",
+        "checker": "semantic-context-sufficiency-judge-v4-directional",
         "judge_valid": valid,
         "judge_model": model,
         "judge_input_sha256": canonical_sha256(payload),
@@ -1096,6 +1309,39 @@ def call_context_sufficiency_judge(
     }
 
 
+def context_judge_cache_key(
+    context_turns: Sequence[dict[str, Any]],
+    target_turn: dict[str, Any],
+    *,
+    judge_model: str,
+    judge_model_revision: str,
+    prompt_revision: str = CONTEXT_JUDGE_PROMPT_REVISION,
+    policy_revision: str = CONTEXT_JUDGE_POLICY_REVISION,
+    schema_revision: str = CONTEXT_JUDGE_SCHEMA_REVISION,
+) -> str:
+    """Build the versioned, normalized cache key for a context judgement."""
+    normalized_context = [
+        {
+            "role": str(turn.get("role") or ""),
+            "text": normalized_text(turn.get("resolved_text") or turn.get("text")),
+        }
+        for turn in context_turns
+    ]
+    payload = {
+        "normalized_context": normalized_context,
+        "normalized_target": {
+            "role": "assistant",
+            "text": normalized_text(target_turn.get("resolved_text") or target_turn.get("text")),
+        },
+        "judge_model": str(judge_model),
+        "judge_model_revision": str(judge_model_revision),
+        "prompt_revision": str(prompt_revision),
+        "policy_revision": str(policy_revision),
+        "schema_revision": str(schema_revision),
+    }
+    return canonical_sha256(payload)
+
+
 def select_minimal_context(
     candidates: Sequence[dict[str, Any]],
     target_turn: dict[str, Any],
@@ -1103,7 +1349,12 @@ def select_minimal_context(
     required_turn_ids: Optional[set[str]] = None,
     judge: Optional[Callable[[Sequence[dict[str, Any]], dict[str, Any]], dict[str, Any]]] = None,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
-    """Return the first sufficient contiguous suffix, expanding backwards."""
+    """Return the first sufficient contiguous suffix, expanding backwards.
+
+    Candidates are considered from the target backwards.  A suffix is accepted
+    only for the direct response direction; related, reverse, and missing
+    immediate-trigger judgements continue the search or fail closed.
+    """
     required = {str(value) for value in (required_turn_ids or set())}
     eligible = [
         turn for turn in sorted(candidates, key=lambda item: (float(item["start"]), str(item["audio_turn_id"])))
@@ -1120,7 +1371,20 @@ def select_minimal_context(
             continue
         result = checker(selected, target_turn)
         last_result = result
-        if result["state"] == ContextSufficiencyState.CONTEXT_SUFFICIENT.value:
+        relation = str(result.get("relation") or "")
+        # Test doubles and pre-directional callers may only return the old
+        # state field.  The production semantic judge always emits relation.
+        if not relation and result.get("state") == ContextSufficiencyState.CONTEXT_SUFFICIENT.value:
+            relation = ContextRelation.TARGET_RESPONDS_TO_CONTEXT.value
+            result = {**result, "relation": relation}
+        if (
+            result["state"] == ContextSufficiencyState.CONTEXT_SUFFICIENT.value
+            and relation == ContextRelation.TARGET_RESPONDS_TO_CONTEXT.value
+            and (
+                not result.get("immediate_trigger_turn_id")
+                or str(result.get("immediate_trigger_turn_id")) in ids
+            )
+        ):
             result["candidate_turn_count"] = len(eligible)
             result["selected_turn_count"] = len(selected)
             result["minimality_checked_prefix_sizes"] = size

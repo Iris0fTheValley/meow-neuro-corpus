@@ -89,7 +89,6 @@ def review_payload(row: dict[str, Any]) -> dict[str, Any]:
             "kind": "training_sample",
             "sample_id": row.get("sample_id"),
             "recording_id": row.get("recording_id"),
-            "context_source": row.get("context_reconstruction_class"),
             "messages": [
                 {"role": message.get("role"), "text": message.get("content")}
                 for message in (row.get("messages") or [])
@@ -229,8 +228,11 @@ def corroborate_finding(
                 return {"category": "asr_noise", "evidence": f"Visible non-conversational sentinel: {sentinels[0]!r}"}
             return None
         if category in {"semantic_disconnect", "context_too_thin", "context_too_wide"}:
-            if context_state in {"CONTEXT_INSUFFICIENT", "CONTEXT_AMBIGUOUS"}:
-                return {"category": category, "evidence": f"Selected-context semantic checker state: {context_state}."}
+            # Production context-judge verdicts are intentionally unavailable
+            # to this reviewer.  The independent reviewer/triage pair must
+            # ground the claim in the final visible messages alone.
+            if evidence.strip():
+                return {"category": category, "evidence": evidence[:1000]}
             return None
         # A role/topology claim on a final sample requires an actual topology
         # disagreement artifact; role text alone cannot establish identity.
@@ -259,11 +261,7 @@ def main() -> int:
         for turn_id, row in timeline.items()
         if row.get("start") is not None and row.get("end") is not None
     }
-    reconciliations = load_jsonl(run / "turn_reconciliation.jsonl")
-    discovered = load_jsonl(run / "audio_discovered_turns.jsonl")
     targets = load_jsonl(run / "target_resolution.jsonl")
-    quarantined = load_jsonl(run / "quarantine.jsonl")
-    context_states = {str(row.get("sample_id")): str(row.get("state")) for row in load_jsonl(run / "context_sufficiency.jsonl")}
     prior_reviews = {}
     if args.reuse_existing_reviews:
         for row in load_jsonl(run / "content_audit_samples.jsonl"):
@@ -278,49 +276,66 @@ def main() -> int:
     split_rows: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for row in materialized:
         split_rows[str(row.get("final_view_membership"))].append(row)
-    context_rows: dict[str, list[dict[str, Any]]] = defaultdict(list)
-    for row in materialized:
-        context_rows[str(row.get("context_reconstruction_class"))].append(row)
+    long_rows = sorted(materialized, key=lambda row: len(row.get("context_turn_ids") or []), reverse=True)
+    retained_rows = [row for row in materialized if row.get("was_baseline_materialized")]
+    newly_materialized_rows = [row for row in materialized if not row.get("was_baseline_materialized")]
     true_new_ids = {str(row.get("audio_turn_id")) for row in timeline.values() if row.get("reconciliation_state") == "TRUE_NEW"}
-    topology_sample_rows = [
+    true_new_rows = [
         row for row in materialized
         if set(map(str, row.get("context_turn_ids") or [])) & true_new_ids
     ]
-    merge_ids = {str(row.get("audio_turn_id")) for row in timeline.values() if row.get("reconciliation_state") == "MERGE_EXISTING"}
-    merge_sample_rows = [row for row in materialized if set(map(str, row.get("context_turn_ids") or [])) & merge_ids]
-    long_rows = sorted(materialized, key=lambda row: len(row.get("context_turn_ids") or []), reverse=True)
-    short_rows = [row for row in materialized if any(len(str(message.get("content") or "")) <= 5 for message in row.get("messages") or [])]
-    retained_rows = [row for row in materialized if row.get("was_baseline_materialized")]
+    assistant_to_assistant_rows = [
+        row for row in materialized
+        if len(row.get("messages") or []) >= 2
+        and row["messages"][-2].get("role") == "assistant"
+    ]
     target_by_state: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for target in targets:
         if str(target.get("sample_id")) in by_id:
             target_by_state[str(target.get("state"))].append(by_id[str(target["sample_id"])])
-    evidence_rows = []
-    for row in reconciliations:
-        state = str(row.get("reconciliation_state"))
-        if state in {"MERGE_EXISTING", "SPLIT_EXISTING", "EXTEND_EXISTING", "AMBIGUOUS_BOUNDARY"}:
-            evidence_rows.append({
-                "review_kind": "topology_evidence", "sample_id": None, "recording_id": row.get("recording_id"),
-                "review_evidence": {
-                    "candidate_span_id": row.get("candidate_span_id"),
-                    "reconciliation_state": state,
-                    "old_turn_ids": row.get("old_turn_ids"),
-                    "old_timeline_text": row.get("old_text"),
-                    "reconstructed_text": row.get("chosen_text") or row.get("new_text"),
-                    "source_window_ids": row.get("source_window_ids"),
-                    "source_spans": row.get("source_spans"),
-                },
-            })
-    quarantine_evidence = [{
-        "review_kind": "quarantine_evidence", "sample_id": row.get("sample_id"), "recording_id": None,
-        "review_evidence": {key: row.get(key) for key in ("failure_stage", "failure_reason", "target_interval", "old_new_disagreement_state", "explicit_contradiction", "resolution_attempts")},
-    } for row in quarantined]
-
     rounds = [
-        ("random_split_and_recording_family", training(sum((stable_take(split_rows[key], size, salt="r1" + key) for key in ("IN_TRAIN", "IN_VALIDATION", "IN_SEALED_EVAL")), []))),
-        ("recovered_context_and_true_new", training(sum((stable_take(context_rows[key], size, salt="r2" + key) for key in ("RECOVERED_FROM_EXISTING_TIMELINE", "RECOVERED_FROM_NEW_AUDIO", "RECOVERED_FROM_BOTH")), [])) + training(stable_take(topology_sample_rows, size, salt="r2true"))),
-        ("topology_edges_and_context_extent", stable_take(evidence_rows, size * 2, salt="r3topology") + training(stable_take(long_rows, size, salt="r3long")) + training(stable_take(short_rows, size, salt="r3short")) + training(stable_take(merge_sample_rows, size, salt="r3merge"))),
-        ("target_rescue_baseline_quarantine_ambiguity", training(sum((stable_take(target_by_state[key], size, salt="r4" + key) for key in ("AUDIO_CONFIRMED", "AUDIO_MINOR_DISAGREEMENT", "BASELINE_CONFIRMED")), [])) + training(stable_take(retained_rows, size, salt="r4retained")) + stable_take(quarantine_evidence, size * 2, salt="r4quarantine")),
+        # Every round has independent random samples from all final splits;
+        # additional strata target the known reconstruction failure surfaces.
+        ("random_splits_true_new_long_assistant_to_assistant_baseline", training(
+            stable_take(split_rows["IN_TRAIN"], size, salt="r1train")
+            + stable_take(split_rows["IN_VALIDATION"], size, salt="r1validation")
+            + stable_take(split_rows["IN_SEALED_EVAL"], size, salt="r1sealed")
+            + stable_take(true_new_rows, size, salt="r1true_new")
+            + stable_take(long_rows, size, salt="r1long")
+            + stable_take(assistant_to_assistant_rows, size, salt="r1assistant_assistant")
+            + stable_take(retained_rows, size, salt="r1baseline_retained")
+            + stable_take(newly_materialized_rows, size, salt="r1newly_materialized")
+        )),
+        ("random_splits_true_new_long_assistant_to_assistant_baseline", training(
+            stable_take(split_rows["IN_TRAIN"], size, salt="r2train")
+            + stable_take(split_rows["IN_VALIDATION"], size, salt="r2validation")
+            + stable_take(split_rows["IN_SEALED_EVAL"], size, salt="r2sealed")
+            + stable_take(true_new_rows, size, salt="r2true_new")
+            + stable_take(long_rows, size, salt="r2long")
+            + stable_take(assistant_to_assistant_rows, size, salt="r2assistant_assistant")
+            + stable_take(retained_rows, size, salt="r2baseline_retained")
+            + stable_take(newly_materialized_rows, size, salt="r2newly_materialized")
+        )),
+        ("random_splits_true_new_long_assistant_to_assistant_baseline", training(
+            stable_take(split_rows["IN_TRAIN"], size, salt="r3train")
+            + stable_take(split_rows["IN_VALIDATION"], size, salt="r3validation")
+            + stable_take(split_rows["IN_SEALED_EVAL"], size, salt="r3sealed")
+            + stable_take(true_new_rows, size, salt="r3true_new")
+            + stable_take(long_rows, size, salt="r3long")
+            + stable_take(assistant_to_assistant_rows, size, salt="r3assistant_assistant")
+            + stable_take(retained_rows, size, salt="r3baseline_retained")
+            + stable_take(newly_materialized_rows, size, salt="r3newly_materialized")
+        )),
+        ("random_splits_true_new_long_assistant_to_assistant_baseline", training(
+            stable_take(split_rows["IN_TRAIN"], size, salt="r4train")
+            + stable_take(split_rows["IN_VALIDATION"], size, salt="r4validation")
+            + stable_take(split_rows["IN_SEALED_EVAL"], size, salt="r4sealed")
+            + stable_take(true_new_rows, size, salt="r4true_new")
+            + stable_take(long_rows, size, salt="r4long")
+            + stable_take(assistant_to_assistant_rows, size, salt="r4assistant_assistant")
+            + stable_take(retained_rows, size, salt="r4baseline_retained")
+            + stable_take(newly_materialized_rows, size, salt="r4newly_materialized")
+        )),
     ]
 
     samples: list[dict[str, Any]] = []
@@ -361,7 +376,7 @@ def main() -> int:
                 })
             confirmed = corroborate_finding(
                 payload, result, triage,
-                context_state=context_states.get(str(row.get("sample_id"))),
+                context_state=None,
                 source_row=row,
                 turn_intervals=turn_intervals,
             )

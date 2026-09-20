@@ -7,6 +7,10 @@ from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
 from audio_evidence.recovery_v2 import (
+    CONTEXT_JUDGE_POLICY_REVISION,
+    CONTEXT_JUDGE_PROMPT_REVISION,
+    CONTEXT_JUDGE_SCHEMA_REVISION,
+    ContextRelation,
     ContextSufficiencyState,
     ReconciliationState,
     SpeakerState,
@@ -17,6 +21,9 @@ from audio_evidence.recovery_v2 import (
     context_sufficiency,
     is_non_conversational_sentinel,
     merge_existing_turns,
+    merge_obvious_audio_fragments,
+    build_context_judge_payload,
+    context_judge_cache_key,
     reconciliation_recovery_eligible,
     reconcile_old_turn,
     reconcile_span,
@@ -113,6 +120,48 @@ class TurnReconciliationRegressionTests(unittest.TestCase):
         )
         self.assertEqual(result["reconciliation_state"], ReconciliationState.MATCH_EXISTING.value)
         self.assertEqual(result["chosen_text"], "I have not, no.")
+
+    def test_old_turn_tail_echo_is_not_true_new(self):
+        result = reconcile_span(
+            {
+                "candidate_span_id": "echo",
+                "start": 2.2,
+                "end": 2.6,
+                "text": "list",
+                "tokens": [token("list", 2.2, 2.6)],
+            },
+            [],
+            preceding_old_turns=[old("old", 0, 2, "I've already added Atlantis and your mom to my list.")],
+        )
+        self.assertEqual(result["reconciliation_state"], ReconciliationState.BOUNDARY_ECHO.value)
+        self.assertFalse(reconciliation_recovery_eligible(result["reconciliation_state"]))
+        self.assertEqual(result["boundary_echo"]["old_turn_id"], "old")
+
+    def test_obvious_same_utterance_fragments_merge_before_admission(self):
+        spans = [
+            {
+                "candidate_span_id": "a",
+                "start": 0,
+                "end": 0.8,
+                "text": "I already added",
+                "tokens": [token("I already added", 0, 0.8)],
+                "speaker_cluster_keys": ["w::C0"],
+                "source_window_ids": ["w"],
+            },
+            {
+                "candidate_span_id": "b",
+                "start": 1.1,
+                "end": 1.8,
+                "text": "Atlantis to my list",
+                "tokens": [token("Atlantis to my list", 1.1, 1.8)],
+                "speaker_cluster_keys": ["w::C0"],
+                "source_window_ids": ["w"],
+            },
+        ]
+        merged = merge_obvious_audio_fragments(spans)
+        self.assertEqual(len(merged), 1)
+        self.assertEqual(merged[0]["text"], "I already added Atlantis to my list")
+        self.assertEqual(merged[0]["fragment_merge_count"], 1)
 
     def test_new_span_covering_two_old_turns_is_merge_not_third_turn(self):
         values = [old("a", 0, 1, "old A"), old("b", 1, 2, "old B")]
@@ -362,6 +411,39 @@ class TargetAndContextRegressionTests(unittest.TestCase):
         result = context_sufficiency(only_assistant, target)
         self.assertEqual(result["state"], ContextSufficiencyState.CONTEXT_AMBIGUOUS.value)
         self.assertFalse(result["hidden_history_accessed"])
+
+    def test_context_sufficiency_marks_missing_immediate_trigger(self):
+        context = [context_turn("old", 0, 1, "user", "Hacker mans are the worst hackers of all time.")]
+        target = context_turn("target", 1.1, 2, "assistant", "I did, with Blender, a free 3D modeling software.")
+        result = context_sufficiency(context, target)
+        self.assertEqual(result["relation"], ContextRelation.MISSING_IMMEDIATE_TRIGGER.value)
+        self.assertNotEqual(result["state"], ContextSufficiencyState.CONTEXT_SUFFICIENT.value)
+
+    def test_context_judge_payload_requires_direction_and_trigger(self):
+        context = [context_turn("q", 0, 1, "user", "Where is the password?")]
+        target = context_turn("target", 1, 2, "assistant", "It is on page two.")
+        payload = build_context_judge_payload(context, target)
+        self.assertIn(ContextRelation.TARGET_RESPONDS_TO_CONTEXT.value, payload["allowed_relations"])
+        self.assertIn("relation", payload["output_schema"])
+        self.assertIn("immediate_trigger_turn_id", payload["output_schema"])
+        self.assertEqual(payload["selected_context"][0]["turn_id"], "q")
+
+    def test_judge_cache_key_changes_for_any_authority_revision(self):
+        context = [context_turn("q", 0, 1, "user", "Where is the password?")]
+        target = context_turn("target", 1, 2, "assistant", "It is on page two.")
+        base = context_judge_cache_key(
+            context, target, judge_model="m", judge_model_revision="r",
+            prompt_revision=CONTEXT_JUDGE_PROMPT_REVISION,
+            policy_revision=CONTEXT_JUDGE_POLICY_REVISION,
+            schema_revision=CONTEXT_JUDGE_SCHEMA_REVISION,
+        )
+        changed = context_judge_cache_key(
+            context, target, judge_model="m", judge_model_revision="r",
+            prompt_revision="changed-prompt",
+            policy_revision=CONTEXT_JUDGE_POLICY_REVISION,
+            schema_revision=CONTEXT_JUDGE_SCHEMA_REVISION,
+        )
+        self.assertNotEqual(base, changed)
 
     def test_target_is_never_selected_as_context(self):
         target = context_turn("target", 5, 6, "assistant", "Answer")
