@@ -505,7 +505,7 @@ class TargetAndContextRegressionTests(unittest.TestCase):
         body = json.loads(request.data.decode("utf-8"))
         self.assertEqual(body["response_format"], {"type": "json_object"})
         self.assertEqual(body["reasoning_effort"], "low")
-        self.assertEqual(body["max_tokens"], 8192)
+        self.assertEqual(body["max_tokens"], 32768)
 
     def test_lexically_disjoint_context_reaches_semantic_judge(self):
         context = [context_turn("question", 0, 1, "user", "Are you coming tomorrow?")]

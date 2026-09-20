@@ -1268,8 +1268,16 @@ def call_context_sufficiency_judge(
         # small completion budget on it before emitting the required JSON.
         # Keep reasoning bounded so the visible judge object is not truncated.
         if is_chat_endpoint:
-            body["max_tokens"] = 8192 if model == "step-3.7-flash" else 1024
-            if model in {"step-3.5-flash", "step-3.5-flash-2603", "step-3.7-flash"}:
+            if "/step_plan/" in endpoint_host:
+                # Step Plan's router can spend substantial hidden-reasoning
+                # budget before emitting the JSON object.  Telemetry from the
+                # first Step Plan run showed finish_reason=length at 8192;
+                # the documented Step Plan channel permits a much larger
+                # max_tokens value, so do not truncate those responses.
+                body["max_tokens"] = 32768
+            else:
+                body["max_tokens"] = 8192 if model == "step-3.7-flash" else 1024
+            if model in {"step-3.5-flash", "step-3.5-flash-2603", "step-3.7-flash", "step-router-v1"}:
                 body["reasoning_effort"] = "low"
         env_name = api_key_env or "STEPFUN_API_KEY"
         api_key = os.environ.get(env_name, "").strip()
