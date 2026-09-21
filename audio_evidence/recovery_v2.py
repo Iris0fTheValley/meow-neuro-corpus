@@ -93,8 +93,8 @@ class ContextRelation(str, Enum):
 # same.  Keep these separate from the audio evidence schema revision because a
 # judge policy change must invalidate only judge decisions.
 CONTEXT_JUDGE_SCHEMA_REVISION = "context-judge-schema-v2"
-CONTEXT_JUDGE_PROMPT_REVISION = "context-judge-prompt-v5-static-rules"
-CONTEXT_JUDGE_POLICY_REVISION = "context-judge-policy-v4-immediate-trigger"
+CONTEXT_JUDGE_PROMPT_REVISION = "context-judge-prompt-v6-immediate-anchor"
+CONTEXT_JUDGE_POLICY_REVISION = "context-judge-policy-v5-immediate-anchor"
 
 
 RECOVERY_ALLOWED_RECONCILIATION_STATES = {
@@ -1161,7 +1161,15 @@ CONTEXT_JUDGE_SYSTEM_PROMPT = (
     "You are a narrow context-sufficiency judge for an already verified frozen assistant target. "
     "Use only the selected context and frozen target shown. Do not use hidden history, future turns, "
     "identity diagnostics, metadata, or external knowledge. Decide whether the selected context makes "
-    "the target a plausible, understandable response. Temporal adjacency alone is never sufficient. "
+    "the target a plausible, understandable response with its immediate interaction anchor visible. "
+    "Temporal adjacency, a generic related topic, or a merely plausible answer in hidden history is "
+    "never sufficient. Before returning TARGET_RESPONDS_TO_CONTEXT, identify the visible user turn "
+    "that introduces the target's request, topic, referent, or speech act. If the target contains an "
+    "anaphora, callback, unexplained named entity, topic shift, or answer to an absent question and "
+    "the selected suffix does not visibly ground it, return MISSING_IMMEDIATE_TRIGGER and continue "
+    "searching a larger suffix. A target may be elliptical or answer an earlier relevant turn, but "
+    "that relevant turn must be inside the selected context. Do not accept a one-turn suffix merely "
+    "because the target could be plausible after omitted history. "
     "First classify the direction of the interaction. TARGET_RESPONDS_TO_CONTEXT means the frozen "
     "assistant target answers a visible user trigger in the selected context. CONTEXT_RESPONDS_TO_TARGET "
     "means a visible context turn is an answer to the target or an unseen later trigger. "

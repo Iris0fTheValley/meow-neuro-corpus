@@ -14,6 +14,7 @@ from audio_evidence.recovery_v2 import (
     CONTEXT_JUDGE_POLICY_REVISION,
     CONTEXT_JUDGE_PROMPT_REVISION,
     CONTEXT_JUDGE_SCHEMA_REVISION,
+    CONTEXT_JUDGE_SYSTEM_PROMPT,
     ContextRelation,
     ContextSufficiencyState,
     ReconciliationState,
@@ -658,6 +659,11 @@ class TargetAndContextRegressionTests(unittest.TestCase):
         payload = build_context_judge_payload(context, target)
         self.assertEqual(set(payload), {"selected_context", "frozen_target"})
         self.assertEqual(payload["selected_context"][0]["turn_id"], "q")
+
+    def test_context_judge_prompt_requires_visible_interaction_anchor(self):
+        self.assertIn("immediate interaction anchor visible", CONTEXT_JUDGE_SYSTEM_PROMPT)
+        self.assertIn("could be plausible after omitted history", CONTEXT_JUDGE_SYSTEM_PROMPT)
+        self.assertIn("MISSING_IMMEDIATE_TRIGGER", CONTEXT_JUDGE_SYSTEM_PROMPT)
 
     def test_judge_cache_key_changes_for_any_authority_revision(self):
         context = [context_turn("q", 0, 1, "user", "Where is the password?")]
