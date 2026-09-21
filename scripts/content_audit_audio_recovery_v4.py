@@ -130,6 +130,8 @@ def call_model(
             "max_tokens": 32768 if "/step_plan/" in endpoint else 256,
             "response_format": {"type": "json_object"},
         }
+        if "/step_plan/" in endpoint:
+            request_body["reasoning_effort"] = "low"
         headers = {
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json; charset=utf-8",
