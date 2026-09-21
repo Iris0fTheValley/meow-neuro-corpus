@@ -78,8 +78,23 @@ class ContentAuditRegressionTests(unittest.TestCase):
         })
         self.assertEqual(payload["messages"], [
             {"role": "user", "text": "Are you coming tomorrow?"},
-            {"role": "assistant", "text": "Probably."},
+            {"role": "assistant", "text": "Probably.", "is_target": True},
         ])
+
+    def test_content_audit_marks_only_final_visible_message_as_target(self):
+        payload = review_payload({
+            "review_kind": "training_sample",
+            "sample_id": "audit-target",
+            "recording_id": "recording",
+            "messages": [
+                {"role": "assistant", "content": "Context can contain an earlier assistant turn."},
+                {"role": "user", "content": "The visible trigger is here."},
+                {"role": "assistant", "content": "The final target answers the trigger."},
+            ],
+        })
+        self.assertNotIn("is_target", payload["messages"][0])
+        self.assertNotIn("is_target", payload["messages"][1])
+        self.assertTrue(payload["messages"][-1]["is_target"])
 
     def test_content_audit_invalid_model_output_is_coverage_diagnostic_not_finding(self):
         payload = {"kind": "training_sample", "messages": []}

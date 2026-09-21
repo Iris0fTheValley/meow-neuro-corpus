@@ -49,35 +49,49 @@ def stable_take(rows: list[dict[str, Any]], count: int, *, salt: str) -> list[di
 
 
 SYSTEM = """You are an independent, open-ended production data reviewer.
-Review only the exact text/evidence shown. Do not assume hidden conversation,
+Review only the exact visible messages shown. Do not assume hidden conversation,
 metadata, expected labels, acoustics, speaker identities, or a desired answer.
-The final assistant message is intentionally the training target; prior messages
-are intentionally prompt history. A sample may contain several user or assistant
-messages, and it is NOT an error that the target responds to only the latest
-relevant turn rather than every earlier turn.
+The ordered message list has one and only one target: the final message marked
+is_target=true. Every earlier message is context, not a separate candidate
+response to audit. Never report a defect about an earlier context message merely
+because it does not answer an even earlier message. This rule is especially
+important when context contains assistant-to-assistant turns.
 
-Actively look for a concrete, observable defect: (1) a target with no plausible
-connection to any immediately preceding interaction, (2) an exact/near-exact
-duplicate utterance, (3) a target copied into earlier prompt text, (4) visibly
-swallowed or wrongly split speakers, (5) role text that is visibly contradictory,
-(6) an objectively redundant prefix where a visible suffix alone clearly carries
-the same exchange, (7) control/noise text, or another concrete issue. Do not flag
-unusual dialogue, a short valid answer, multiple history turns, the absence of
-token overlap, a supervision convention, or an expected fail-closed quarantine.
+Judge whether the final target has a plausible, grounded connection to the
+visible context. A valid target may be elliptical, self-referential, a game-state
+update, a continuation of an implied shared topic, or a response to an earlier
+relevant turn rather than the last message. Do not require token overlap, a direct
+question/answer form, an explicit acknowledgement, or a response to every old
+message. Do flag a semantic disconnect only when the final target itself is a
+clear non sequitur or visibly depends on an absent immediate trigger/antecedent;
+do not flag a surprising name, awkward wording, or an unstated real-world fact
+by itself.
+
+Also look for a concrete, observable defect: (1) an exact/near-exact duplicate
+utterance, (2) the final target copied into earlier prompt text, (3) visibly
+swallowed or wrongly split speakers, (4) role text that is visibly contradictory,
+(5) an objectively redundant prefix where a visible suffix alone clearly carries
+the same exchange, (6) control/noise text, or another concrete issue. Do not flag
+unusual dialogue, a short valid answer, multiple history turns, a supervision
+convention, or an expected fail-closed quarantine.
 For a finding, cite exact visible text and explain the defect without relying on
 unstated facts. Return JSON only:
 {"finding": boolean, "issue_category": "semantic_disconnect"|"duplicate_speech"|"target_leakage"|"speaker_topology"|"role_assignment"|"context_too_wide"|"context_too_thin"|"asr_noise"|"other"|null, "severity":"none"|"low"|"medium"|"high", "evidence": string}.
 Use finding=false when the evidence does not prove a concrete issue."""
 
 TRIAGE_SYSTEM = """You are a strict second-pass production audit adjudicator.
-You receive only a sample/evidence record and a first reviewer claim. Verify the
-claim from visible text alone. Reject it if it relies on unshown speaker identity,
-hidden history, expected labels, the supervision convention, a target merely not
-answering every old message, or an expected quarantine. Target leakage requires
-the target text to appear in earlier prompt text. Duplicate speech requires the
-same/near-identical visible utterance. Context-too-wide requires an explicitly
-shown shorter suffix that independently carries the interaction; do not infer it
-only because old turns exist. Return JSON only:
+You receive only a sample/evidence record and a first reviewer claim. The final
+message marked is_target=true is the only target; earlier messages are context
+and must not be judged as if they were replies to earlier context. Verify the
+claim from visible text alone. Reject it if it relies on unshown speaker
+identity, hidden history, expected labels, the supervision convention, a target
+merely not answering every old message, or an expected quarantine. A semantic
+disconnect must be about the final target itself and require a clear non sequitur
+or an absent immediate trigger, not merely an elliptical or indirect reply.
+Target leakage requires the target text to appear in earlier prompt text.
+Duplicate speech requires the same/near-identical visible utterance.
+Context-too-wide requires an explicitly shown shorter suffix that independently
+carries the interaction; do not infer it only because old turns exist. Return JSON only:
 {"verified": boolean, "issue_category": string|null, "severity":"none"|"low"|"medium"|"high", "evidence": string}.
 Use verified=false unless the claim is concretely supported."""
 
@@ -86,14 +100,17 @@ def review_payload(row: dict[str, Any]) -> dict[str, Any]:
     # The visible audit view intentionally excludes semantic verdicts, identity
     # diagnostics, future timeline, and any evaluator expectation.
     if row.get("review_kind") == "training_sample":
+        messages = [
+            {"role": message.get("role"), "text": message.get("content")}
+            for message in (row.get("messages") or [])
+        ]
+        if messages:
+            messages[-1]["is_target"] = True
         return {
             "kind": "training_sample",
             "sample_id": row.get("sample_id"),
             "recording_id": row.get("recording_id"),
-            "messages": [
-                {"role": message.get("role"), "text": message.get("content")}
-                for message in (row.get("messages") or [])
-            ],
+            "messages": messages,
         }
     return {
         "kind": row.get("review_kind"),
