@@ -20,6 +20,14 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+# Audit evidence and model explanations may contain Unicode. On Windows the
+# inherited console encoding can otherwise raise after all audit files were
+# already written, obscuring the real audit result.
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="backslashreplace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="backslashreplace")
+
 from audio_evidence.recovery_v2 import (  # noqa: E402
     canonical_sha256,
     is_non_conversational_sentinel,

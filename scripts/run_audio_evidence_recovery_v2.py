@@ -24,6 +24,14 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+# Windows PowerShell can expose a legacy GBK stdout even when the recovery
+# artifacts contain valid Unicode. Keep terminal/report printing from turning
+# a completed cache-only run into a non-zero process exit.
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="backslashreplace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="backslashreplace")
+
 from audio_evidence.cache import EvidenceCache  # noqa: E402
 from audio_evidence.materialization import FinalViewMembership, materialize_role_preserving  # noqa: E402
 from audio_evidence.recovery_v2 import (  # noqa: E402
